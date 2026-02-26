@@ -119,17 +119,17 @@ export class PermissionComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     console.log('PermissionComponent ngOnInit called');
-    
+
     // Check if we're online before proceeding
     if (!navigator.onLine) {
       this.error = 'ไม่มีการเชื่อมต่ออินเทอร์เน็ต กรุณาตรวจสอบการเชื่อมต่อและลองใหม่อีกครั้ง';
       return;
     }
-    
+
     // Add network event listeners
     window.addEventListener('online', this.onlineHandler);
     window.addEventListener('offline', this.offlineHandler);
-    
+
     this.checkTokenAndAuthenticate();
   }
 
@@ -143,7 +143,7 @@ export class PermissionComponent implements OnInit, OnDestroy {
     // Get token from query parameters
     this.route.queryParams.subscribe(params => {
       this.token = params['Token'] || 'Nn8UhphvuWsbSrpw7WHPqAUU';
-      
+
       if (!this.token) {
         // No token provided, redirect to FDA website
         window.location.href = 'https://privus.fda.moph.go.th/';
@@ -151,7 +151,7 @@ export class PermissionComponent implements OnInit, OnDestroy {
       }
 
       // console.log('Token received:', this.token);
-       // ลบ query param ออกจาก URL (ไม่ reload หน้า)
+      // ลบ query param ออกจาก URL (ไม่ reload หน้า)
       this.location.replaceState(this.router.url.split('?')[0]);
       // Call GET_AUTHEN API with token
       this.callGetAuthen();
@@ -175,7 +175,7 @@ export class PermissionComponent implements OnInit, OnDestroy {
       next: (response: any) => {
         // console.log('Authentication response:', response);
         this.loadingService.hide();
-        
+
         if (response.RESULT == null) {
           this.authen = response.AUTHEN_INFORMATION;
           this.permissions = response.List_Personal_Group_Permission;
@@ -212,11 +212,11 @@ export class PermissionComponent implements OnInit, OnDestroy {
       next: (response: any) => {
         // console.log('Permissions response:', response);
         this.loadingService.hide();
-        
+
         if (response && response.RESULT) {
           this.permissions = response.RESULT;
           // console.log('Loaded permissions:', this.permissions);
-          
+
           // If only one permission, auto-select it
           if (this.permissions.length === 1) {
             this.selectPermission(this.permissions[0]);
@@ -234,15 +234,17 @@ export class PermissionComponent implements OnInit, OnDestroy {
   }
 
   selectPermission(permission: PersonalGroupPermission): void {
+    debugger
     this.selectedGroup = permission;
     this.loadingService.show('กำลังโหลดเมนู...');
     this.error = '';
-        this.loadingService.hide();
-    this.router.navigate(['/Planing']); 
+    this.loadingService.hide();
+    this.authService.storeSelectedPermission(permission, this.token, this.authen);
+    this.router.navigate(['/Planing']);
     return
     // console.log('Selecting permission:', permission);
     // console.log('Token:', this.token);
-    
+
     // เรียก API เพื่อดึง menu ตาม permission ก่อน
     this.http.post<MenuDataResponse>(environment.GET_MENU, {
       token: this.token,
@@ -259,18 +261,18 @@ export class PermissionComponent implements OnInit, OnDestroy {
       next: (menuData: MenuDataResponse) => {
         // console.log('Menu data loaded:', menuData);
         this.loadingService.hide();
-        
+
         if (menuData && menuData.List_tb_group_menu && menuData.List_tb_group_menu.length > 0) {
           // Store selected permission using auth service
           this.authService.storeSelectedPermission(permission, this.token, this.authen);
-          
+
           this.List_tb_group_menu = menuData.List_tb_group_menu;
           this.List_menu = menuData.List_menu;
           this.List_submenu = menuData.List_submenu;
-          
+
           // แปลงข้อมูลเป็น menu structure
           const menuItems = this.convertToMenuStructure(menuData);
-          
+
           // Store complete session data
           this.sessionService.createNewSession(
             this.token,
@@ -279,7 +281,7 @@ export class PermissionComponent implements OnInit, OnDestroy {
             this.authen,
             menuItems
           );
-          
+
           // Navigate to main application
           this.router.navigate(['/pages']);
         } else {
@@ -296,14 +298,14 @@ export class PermissionComponent implements OnInit, OnDestroy {
 
   getUniqueGroups(): PersonalGroupPermission[] {
     const uniqueGroups = new Map<string, PersonalGroupPermission>();
-    
+
     this.permissions.forEach(permission => {
       const key = `${permission.Group_Id}_${permission.Department_id}`;
       if (!uniqueGroups.has(key)) {
         uniqueGroups.set(key, permission);
       }
     });
-    
+
     return Array.from(uniqueGroups.values());
   }
 
@@ -410,7 +412,7 @@ export class PermissionComponent implements OnInit, OnDestroy {
       if (item.subItems && item.subItems.length > 0) {
         // เรียงลำดับ subItems ตาม id (ซึ่งควรจะสอดคล้องกับ sort_index)
         item.subItems.sort((a: MenuItem, b: MenuItem) => (a.id || 0) - (b.id || 0));
-        
+
         // เรียกใช้ฟังก์ชันซ้ำสำหรับ subItems
         this.sortMenuItems(item.subItems);
       }

@@ -33,12 +33,13 @@
                         <thead>
                             <tr style="text-align: center;">
                                 <th style="width:5%">ลำดับ</th>
-                                <th style="width:10%">ปีงบ</th>
-
-                                <th style="width:15%">รหัส</th>
-                                <th style="width:20%">ชื่อย่อ</th>
-                                <th style="width:35%">ชื่อโครงการ</th>
-                                <!-- <th style="width:10%">สถานะ</th> -->
+                                <th style="width:10%">หน่วยงาน</th>
+                                <th style="width:15%">แผนงาน</th>
+                                <th style="width:20%">ผลผลิต</th>
+                                <th style="width:35%">กิจกรรม</th>
+                                <th style="width:10%">หมวดงบ</th>
+                                <th style="width:10%">โครงการ</th>
+                                <th style="width:20%">งบประมาณ</th>
                                 <th style="width:5%">แก้ไข</th>
                                 <th style="width:5%">ลบ</th>
                             </tr>
@@ -64,12 +65,6 @@
                                         [term]="service.searchTerm">{{data.Plan_Name}}</ngb-highlight>
                                 </td>
 
-                                <!-- <td class="text-center">
-                                    <span class="badge"
-                                        [ngClass]="isActive(data.Active) ? 'bg-success' : 'bg-secondary'">
-                                        {{ isActive(data.Active) ? 'ใช้งาน' : 'ปิดใช้งาน' }}
-                                    </span>
-                                </td> -->
 
                                 <td class="text-center">
                                     <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
@@ -111,54 +106,69 @@
 </div>
 
 <ng-template #fullDataModal let-modal>
-    <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title">ข้อมูลโครงการ</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                (click)="modal.dismiss('Close click')"></button>
-        </div>
-        <div class="modal-body">
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <!-- <h5 class="card-title mb-0">จัดการสิทธิ์ผู้ใช้งาน</h5> -->
-                        </div>
-                        <div class="row g-3">
 
-                            <div class="col-md-3">
-                                <label class="form-label">ปีงบประมาณ</label>
-                                <select class="form-select" >
-                                    <!-- <option *ngFor="let y of yearList" [value]="y">{{y}}</option> -->
-                                </select>
-                            </div>
+    <div class="modal-header">
+        <h5 class="modal-title">ข้อมูลโครงการ</h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss('Close click')"></button>
+    </div>
 
+    <div class="modal-body">
 
-                            <div class="col-md-6">
-                                <label class="form-label">รหัสโครงการ</label>
-                                <!-- <input type="text" class="form-control" [(ngModel)]="Mas_Planes.Plan_Code"> -->
-                            </div>
+        <div class="card border-0">
+            <div class="card-body">
 
-                            <div class="col-md-6">
-                                <label class="form-label">ชื่อย่อ</label>
-                                <!-- <input type="text" class="form-control"
-                                    [(ngModel)]="Mas_Planes.Plan_Short_Name"> -->
-                            </div>
+                <!-- Tabs -->
+                <ul class="nav nav-tabs mb-4">
+                    <li class="nav-item">
+                        <button class="nav-link" [class.active]="currentTab === 1" (click)="goTab(1)">
+                            1. ข้อมูลทั่วไป
+                        </button>
+                    </li>
 
+                    <li class="nav-item">
+                        <button class="nav-link" [class.active]="currentTab === 2" (click)="goTab(2)">
+                            2. ความเชื่อมโยงกับแผนระดับต่างๆ
+                        </button>
+                    </li>
 
-                            <div class="col-12">
-                                <label class="form-label">ชื่อโครงการ</label>
-                                <!-- <textarea rows="3" class="form-control"
-                                    [(ngModel)]="Mas_Planes.Plan_Name"></textarea> -->
-                            </div>
+                    <li class="nav-item">
+                        <button class="nav-link" [class.active]="currentTab === 3" (click)="goTab(3)">
+                            3. รายละเอียดโครงการ
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" [class.active]="currentTab === 4" (click)="goTab(4)">
+                            4. แนวทางในการดำเนินการ
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" [class.active]="currentTab === 5" (click)="goTab(5)">
+                            5. รายละเอียดโครงการ
+                        </button>
+                    </li>
+                </ul>
+                <app-tab-general [hidden]="currentTab !== 1" [model]="project_planing">
+                </app-tab-general>
 
-                        </div>
-                    </div>
-                </div>
+                <app-tab-alignment [hidden]="currentTab !== 2" [model]="project_planing">
+                </app-tab-alignment>
+
+                <app-tab-detail [hidden]="currentTab !== 3" [model]="project_planing">
+                </app-tab-detail>
             </div>
         </div>
-        <div class="modal-footer">
-            <button class="btn btn-primary" (click)="savePlan()">บันทึก</button>
-        </div>
+
     </div>
+
+    <!-- Footer -->
+    <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="modal.dismiss()">
+            ยกเลิก
+        </button>
+
+        <button class="btn btn-primary">
+            ถัดไป
+        </button>
+    </div>
+
 </ng-template>

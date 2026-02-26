@@ -34,6 +34,9 @@ export class ProjectPlanningComponent {
   project_planing: any = {};
   modalRef: any;
   total$!: Observable<number>;
+
+
+
   constructor(private modalService: NgbModal, public service: GridJsService
     , private sortService: PaginationService, public serviceemo: EmonitorService
     , private authService: AuthenticationService,) {
@@ -41,6 +44,7 @@ export class ProjectPlanningComponent {
   ngOnInit(): void {
 
   }
+
   filterSearch() {
 
     const keyword = (this.service.searchTerm || '').toLowerCase().trim();
@@ -58,7 +62,7 @@ export class ProjectPlanningComponent {
     );
   }
   fullModal(modal: any, data: any) {
-
+    this.currentTab = 1
     this.project_planing = { ...data };
 
     if (!this.project_planing.planing_Id) {
@@ -70,8 +74,23 @@ export class ProjectPlanningComponent {
       };
     }
 
-    this.modalRef = this.modalService.open(modal, { size: 'lg', backdrop: 'static' });
+    this.modalRef = this.modalService.open(modal, {
+      backdrop: 'static',
+      windowClass: 'modal-95'
+    });
   }
+
+  currentTab = 1;
+
+  goTab(tab: number) {
+    this.currentTab = tab;
+  }
+
+
+
+
+
+
   deletePlan(data: any) {
 
   }

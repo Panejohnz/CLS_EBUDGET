@@ -1,0 +1,271 @@
+<div class="card mb-4">
+    <div class="card-header fw-bold bg-light">
+        แผนระดับ 1
+    </div>
+    <div class="card-body">
+
+        <h6 class="fw-bold text-primary mb-3">
+            1.1 ยุทธศาสตร์ที่เกี่ยวข้องโดยตรง (Z) *
+        </h6>
+
+        <div class="row g-3">
+
+            <div class="col-md-4">
+                <label class="form-label">ยุทธศาสตร์ด้าน</label>
+                <select class="form-select"></select>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">ประเด็นยุทธศาสตร์</label>
+                <select class="form-select"></select>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">ประเด็นย่อย</label>
+                <select class="form-select"></select>
+            </div>
+
+            <div class="col-md-12">
+                <label class="form-label">เป้าหมาย</label>
+                <input type="text" class="form-control">
+            </div>
+            <hr class="my-4">
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold text-primary">
+                    1.2 ยุทธศาสตร์ชาติที่เกี่ยวข้องในระดับรอง (Z)
+                </h6>
+
+                <button class="btn btn-sm btn-outline-primary" (click)="addSubStrategy()">
+                    + เพิ่มรายการ
+                </button>
+            </div>
+
+            <div *ngFor="let item of subStrategies; let i = index" class="border rounded p-3 mb-3 bg-light">
+
+                <div class="text-end">
+                    <button class="btn btn-sm btn-danger" (click)="removeSubStrategy(i)">
+                        ลบ
+                    </button>
+                </div>
+
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+                        <label class="form-label">ยุทธศาสตร์ด้าน</label>
+                        <select class="form-select"></select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">ประเด็นยุทธศาสตร์</label>
+                        <select class="form-select"></select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">ประเด็นย่อย</label>
+                        <select class="form-select"></select>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label class="form-label">เป้าหมาย</label>
+                        <input type="text" class="form-control">
+                    </div>
+
+                    <div class="col-md-12">
+                        <label class="form-label">
+                            ความสอดคล้องของโครงการกับยุทธศาสตร์ชาติ
+                        </label>
+                        <textarea class="form-control" rows="3"></textarea>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header fw-bold bg-light">
+                    แผนระดับ 2
+                </div>
+                <div class="card-body">
+
+                    <h6 class="fw-bold text-primary mb-3">
+                        2.1 ความสอดคล้องกับแผนแม่บทภายใต้ยุทธศาสตร์ชาติ (Y) *
+                    </h6>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-4">
+                            <label class="form-label">ยุทธศาสตร์ด้าน</label>
+                            <select class="form-select"></select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">เป้าหมายระดับประเด็น (Yz)</label>
+                            <select class="form-select"></select>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label">
+                                ความสอดคล้องกับเป้าหมายของแผนแม่บท
+                            </label>
+                            <textarea class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">แผนย่อยของแผนแม่บท</label>
+                            <select class="form-select"></select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">เป้าหมายแผนแม่บท</label>
+                            <select class="form-select"></select>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label">
+                                ความสอดคล้องกับเป้าหมายของแผนย่อย
+                            </label>
+                            <textarea class="form-control" rows="3"></textarea>
+                        </div>
+
+                    </div>
+                </div>
+                <hr class="my-4">
+
+                <h6 class="fw-bold">ความสอดคล้องห่วงโซ่คุณค่า (Value Chains)</h6>
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label">หลัก</label>
+                        <select class="form-select"></select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">ปัจจัย</label>
+                        <select class="form-select"></select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">ส่วนสนับสนุน (ถ้ามี)</label>
+                        <select class="form-select"></select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">ปัจจัย</label>
+                        <select class="form-select"></select>
+                    </div>
+
+                </div>
+                <hr class="my-4">
+
+                <h6 class="fw-bold">ความสอดคล้องกับเป้าหมาย SDGs</h6>
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label">เป้าหมายหลัก SDGs</label>
+                        <select class="form-select"></select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">เป้าหมายย่อย SDGs</label>
+                        <select class="form-select"></select>
+                    </div>
+
+                </div>
+                <br>
+                <div class="card mb-4">
+                    <div class="card-header fw-bold bg-light">
+                        แผนระดับ 3
+                    </div>
+                    <div class="card-body">
+                        <h6 class="fw-bold mt-4">3.1 ความสอดคล้องกับนโยบายเร่งด่วนของรัฐบาล</h6>
+
+                        <label class="form-label">1.
+                            การผลักดันให้เกิดการปรับโครงสร้างหนี้ทั้งระบบ</label>
+                        <div class="d-flex align-items-center mb-1">
+                            <input type="checkbox" class="form-check-input me-2"> 1.1
+
+                            <input type="text" class="form-control me-2">
+                            <input type="checkbox" class="form-check-input me-2"> 1.2
+
+                            <input type="text" class="form-control me-2">
+                        </div>
+
+                        <h6 class="fw-bold mt-4">3.2 ความสอดคล้องกับนโยบายรัฐบาลระยะกลางและระยะยาว
+                        </h6>
+
+                        <label class="form-label">1.
+                            ________________________</label>
+                        <div class="d-flex align-items-center mb-1">
+                            <input type="checkbox" class="form-check-input me-2"> 1.1
+
+                            <input type="text" class="form-control me-2">
+                            <input type="checkbox" class="form-check-input me-2"> 1.2
+
+                            <input type="text" class="form-control me-2">
+                        </div>
+                        <h6 class="fw-bold">3.3 มติคณะรัฐมนตรีที่เกี่ยวข้อง</h6>
+
+                        <button class="btn btn-sm btn-outline-primary mb-3" (click)="addCabinet()">
+                            + เพิ่มรายการ
+                        </button>
+
+                        <div *ngFor="let item of cabinetList; let i = index" class="input-group mb-2">
+
+                            <input type="text" class="form-control">
+
+                            <button class="btn btn-danger" (click)="removeCabinet(i)">
+                                ลบ
+                            </button>
+
+                        </div>
+                        <h6 class="fw-bold mt-4">
+                            3.4 ความสอดคล้องกับแผนปฏิบัติราชการ ปปท.
+                        </h6>
+
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" id="ppatYes" name="ppatAlign" value="yes">
+                            <label class="form-check-label" for="ppatYes">
+                                เรื่อง ________
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" id="ppatNo" name="ppatAlign" value="no">
+                            <label class="form-check-label" for="ppatNo">
+                                เรื่อง ________
+                            </label>
+                        </div>
+                        <h6 class="fw-bold mt-4">
+                            3.5 ความสอดคล้องกับแผนงาน ปปท.
+                        </h6>
+                        <div class="border rounded p-3 mb-3 bg-light">
+                            <div class="d-flex justify-content-between mb-2">
+                                <input type="text" class="form-control me-2" placeholder="แผนงานที่ 1">
+
+
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">กลยุทธ์ที่</label>
+                                    <select class="form-select"></select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">มาตรการที่</label>
+                                    <select class="form-select"></select>
+                                </div>
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

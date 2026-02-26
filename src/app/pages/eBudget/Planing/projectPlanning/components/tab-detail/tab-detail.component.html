@@ -1,0 +1,145 @@
+<h6 class="fw-bold">1. หลักการและเหตุผล</h6>
+<textarea class="form-control mb-4" rows="4">
+</textarea>
+
+<h6 class="fw-bold">2. วัตถุประสงค์</h6>
+
+<button class="btn btn-sm btn-outline-primary mb-2" (click)="addObjective()">+ เพิ่มรายการ</button>
+
+<div *ngFor="let item of objectives; let i = index" class="input-group mb-2">
+
+    <input type="text" class="form-control" [(ngModel)]="item.title">
+
+    <button class="btn btn-danger" (click)="removeObjective(i)">ลบ</button>
+
+</div>
+
+<h6 class="fw-bold mt-4">
+    3.1 เป้าหมายเชิงผลผลิต (Output) *
+</h6>
+
+<button class="btn btn-sm btn-outline-primary mb-2" (click)="addOutput()">+ เพิ่มรายการ</button>
+
+<div *ngFor="let item of outputs; let i = index" class="border rounded p-3 mb-3 bg-light">
+
+    <div class="row g-2">
+
+        <div class="col-md-4">
+            <input class="form-control" placeholder="รายการ" [(ngModel)]="item.name">
+        </div>
+
+        <div class="col-md-3">
+            <input class="form-control" placeholder="เป้าหมาย" [(ngModel)]="item.target">
+        </div>
+
+        <div class="col-md-3">
+            <select class="form-select" [(ngModel)]="item.unit">
+                <option value="">หน่วยนับ</option>
+                <option>คน</option>
+                <option>แห่ง</option>
+                <option>ครั้ง</option>
+            </select>
+        </div>
+
+        <div class="col-md-2 text-end">
+            <button class="btn btn-danger" (click)="removeOutput(i)">ลบ</button>
+        </div>
+
+    </div>
+
+</div>
+
+<h6 class="fw-bold mt-4">
+    3.2 เป้าหมายเชิงผลลัพธ์ (Outcome) *
+</h6>
+
+<button class="btn btn-sm btn-outline-primary mb-2" (click)="addOutcome()">+ เพิ่มรายการ</button>
+
+<div *ngFor="let item of outcomes; let i = index" class="border rounded p-3 mb-3 bg-light">
+
+    <div class="row g-2">
+
+        <div class="col-md-4">
+            <input class="form-control" placeholder="รายการ" [(ngModel)]="item.name">
+        </div>
+
+        <div class="col-md-3">
+            <input class="form-control" placeholder="เป้าหมาย" [(ngModel)]="item.target">
+        </div>
+
+        <div class="col-md-3">
+            <select class="form-select" [(ngModel)]="item.unit">
+                <option value="">หน่วยนับ</option>
+                <option>คน</option>
+                <option>แห่ง</option>
+                <option>ครั้ง</option>
+            </select>
+        </div>
+
+        <div class="col-md-2 text-end">
+            <button class="btn btn-danger" (click)="removeOutcome(i)">ลบ</button>
+        </div>
+
+    </div>
+
+</div>
+
+<h6 class="fw-bold mt-4">
+    5. กลุ่มเป้าหมาย / ผู้ที่ได้รับผลประโยชน์
+</h6>
+
+<button class="btn btn-sm btn-outline-primary mb-2" (click)="addTargetGroup()">+ เพิ่มรายการ</button>
+
+<div *ngFor="let item of targetGroups; let i = index" class="border rounded p-3 mb-3 bg-light">
+
+    <div class="row g-2">
+
+        <div class="col-md-4">
+            <input class="form-control" placeholder="กลุ่มเป้าหมาย" [(ngModel)]="item.name">
+        </div>
+
+        <div class="col-md-3">
+            <input class="form-control" placeholder="จำนวน" [(ngModel)]="item.amount">
+        </div>
+
+        <div class="col-md-3">
+            <select class="form-select" [(ngModel)]="item.unit">
+                <option value="">หน่วยนับ</option>
+                <option>คน</option>
+                <option>แห่ง</option>
+                <option>ครั้ง</option>
+            </select>
+        </div>
+
+        <div class="col-md-2 text-end">
+            <button class="btn btn-danger" (click)="removeTargetGroup(i)">ลบ</button>
+        </div>
+
+    </div>
+
+</div>
+
+<h6 class="fw-bold mt-4">
+    6. พื้นที่การดำเนินการ *
+</h6>
+
+<textarea class="form-control mb-4" rows="3" [(ngModel)]="projectDetail.area">
+</textarea>
+
+<h6 class="fw-bold">
+    7. ระยะเวลาในการดำเนินโครงการ *
+</h6>
+
+<div class="row g-3">
+
+    <div class="col-md-6">
+        <label>ตั้งแต่</label>
+        <input type="date" class="form-control" [(ngModel)]="projectDetail.startDate">
+    </div>
+
+    <div class="col-md-6">
+        <label>ถึงวันที่</label>
+        <input type="date" class="form-control" [(ngModel)]="projectDetail.endDate">
+    </div>
+
+</div>

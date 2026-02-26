@@ -20,6 +20,9 @@ import lottie from 'lottie-web';
 import { SharedModule } from '../../../shared/shared.module';
 import { ProjectPlanningComponent } from './projectPlanning/projectPlanning.component';
 import { EmonitorMasterRoutingModule } from './Planing-roution.module';
+import { TabGeneralComponent } from './projectPlanning/components/tab-general/tab-general.component';
+import { TabAlignmentComponent } from './projectPlanning/components/tab-alignment/tab-alignment.component';
+import { TabDetailComponent } from './projectPlanning/components/tab-detail/tab-detail.component';
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     url: 'https://httpbin.org/post',
     maxFilesize: 50,
@@ -28,7 +31,10 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
 
 @NgModule({
     declarations: [
-        ProjectPlanningComponent
+        ProjectPlanningComponent,
+        TabGeneralComponent,
+        TabAlignmentComponent,
+        TabDetailComponent
     ],
     imports: [
         CommonModule,

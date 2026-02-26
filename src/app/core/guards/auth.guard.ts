@@ -14,7 +14,7 @@ export class AuthGuard implements CanActivate {
         // Check if user has selected permission stored
         const storedPermission = this.authenticationService.getStoredPermission();
         const storedToken = this.authenticationService.getStoredToken();
-        
+
         if (storedPermission && storedToken) {
             // User has valid permission, allow access
             return true;
