@@ -23,6 +23,7 @@ import { EmonitorMasterRoutingModule } from './Planing-roution.module';
 import { TabGeneralComponent } from './projectPlanning/components/tab-general/tab-general.component';
 import { TabAlignmentComponent } from './projectPlanning/components/tab-alignment/tab-alignment.component';
 import { TabDetailComponent } from './projectPlanning/components/tab-detail/tab-detail.component';
+import { TabGuidelineComponent } from './projectPlanning/components/tab-guideline/tab-guideline.component';
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     url: 'https://httpbin.org/post',
     maxFilesize: 50,
@@ -34,7 +35,8 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
         ProjectPlanningComponent,
         TabGeneralComponent,
         TabAlignmentComponent,
-        TabDetailComponent
+        TabDetailComponent,
+        TabGuidelineComponent
     ],
     imports: [
         CommonModule,
