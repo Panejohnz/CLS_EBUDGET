@@ -163,15 +163,20 @@
 
     </div>
 
-    <!-- Footer -->
     <div class="modal-footer">
+
         <button class="btn btn-secondary" (click)="modal.dismiss()">
             ยกเลิก
         </button>
 
-        <button class="btn btn-primary">
+        <button class="btn btn-outline-primary" (click)="prevTab()" [disabled]="currentTab === 1">
+            ย้อนกลับ
+        </button>
+
+        <button class="btn btn-primary" (click)="nextTab()" [disabled]="currentTab === maxTab">
             ถัดไป
         </button>
+
     </div>
 
 </ng-template>
