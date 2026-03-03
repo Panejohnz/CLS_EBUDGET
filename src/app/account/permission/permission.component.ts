@@ -142,7 +142,11 @@ export class PermissionComponent implements OnInit, OnDestroy {
   private checkTokenAndAuthenticate(): void {
     // Get token from query parameters
     this.route.queryParams.subscribe(params => {
+<<<<<<< HEAD
       this.token = params['Token'] || 'tSAnIGtaoBveCHXo7ATI8gUU';
+=======
+      this.token = params['Token'] || 't1pyu7qfIxZl2FUASu7LvgUU';
+>>>>>>> 2a896183a32283369e4bf6b799b682a8a0d1ee5c
 
       if (!this.token) {
         // No token provided, redirect to FDA website

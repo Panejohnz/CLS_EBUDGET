@@ -97,4 +97,18 @@ export class ProjectPlanningComponent {
   savePlan() {
 
   }
+
+  maxTab = 5;
+
+  nextTab() {
+    if (this.currentTab < this.maxTab) {
+      this.currentTab++;
+    }
+  }
+
+  prevTab() {
+    if (this.currentTab > 1) {
+      this.currentTab--;
+    }
+  }
 }
