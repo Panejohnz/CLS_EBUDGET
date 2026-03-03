@@ -120,10 +120,17 @@
                 <!-- Tabs -->
                 <ul class="nav nav-tabs mb-4">
                     <li class="nav-item">
-                        <button class="nav-link" [class.active]="currentTab === 1" (click)="goTab(1)">
+                        <button class="nav-link" [class.active]="currentTab === 1">
                             1. ข้อมูลทั่วไป
                         </button>
                     </li>
+
+                </ul>
+                <app-tab-general [model]="project_planing">
+                </app-tab-general>
+                <br>
+                <ul class="nav nav-tabs mb-4">
+
 
                     <li class="nav-item">
                         <button class="nav-link" [class.active]="currentTab === 2" (click)="goTab(2)">
@@ -147,9 +154,6 @@
                         </button>
                     </li>
                 </ul>
-                <app-tab-general [hidden]="currentTab !== 1" [model]="project_planing">
-                </app-tab-general>
-
                 <app-tab-alignment [hidden]="currentTab !== 2" [model]="project_planing">
                 </app-tab-alignment>
 
