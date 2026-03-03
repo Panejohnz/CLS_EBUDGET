@@ -42,57 +42,69 @@
 </div>
 
 <!-- ลักษณะโครงการ -->
-<div class="mt-4">
-    <label class="form-label d-block">ลักษณะโครงการ</label>
+<div class="row mt-4">
 
-    <div class="form-check form-check-inline">
-        <input type="radio" class="form-check-input" id="natureBudget" name="projectNature" value="budget" [(ngModel)]="project_planing">
-        <label class="form-check-label" for="natureBudget">
-            ใช้งบ
-        </label>
+    <!-- ลักษณะโครงการ -->
+    <div class="col-md-2">
+        <label class="form-label d-block">ลักษณะโครงการ</label>
+
+        <div class="form-check form-check-inline">
+            <input type="radio" class="form-check-input" id="natureBudget" name="projectNatureType" value="budget">
+            <label class="form-check-label" for="natureBudget">
+                ใช้งบ
+            </label>
+        </div>
+
+        <div class="form-check form-check-inline">
+            <input type="radio" class="form-check-input" id="natureNonBudget" name="projectNatureType"
+                value="nonbudget">
+            <label class="form-check-label" for="natureNonBudget">
+                ไม่ใช้งบ
+            </label>
+        </div>
     </div>
 
-    <div class="form-check form-check-inline">
-        <input type="radio" class="form-check-input" id="natureNonBudget" name="projectNature" value="nonbudget" [(ngModel)]="project_planing">
-        <label class="form-check-label" for="natureNonBudget">
-            ไม่ใช้งบ
-        </label>
+    <!-- การดำเนินการ -->
+    <div class="col-md-2">
+        <label class="form-label d-block">การดำเนินการ</label>
+
+        <div class="form-check form-check-inline">
+            <input type="checkbox" class="form-check-input" id="operateSelf" value="self">
+            <label class="form-check-label" for="operateSelf">
+                ดำเนินการเอง
+            </label>
+        </div>
+
+        <div class="form-check form-check-inline">
+            <input type="checkbox" class="form-check-input" id="operateHire" value="hire">
+            <label class="form-check-label" for="operateHire">
+                จัดจ้าง
+            </label>
+        </div>
     </div>
 
-    <div class="form-check form-check-inline">
-        <input type="radio" class="form-check-input" id="natureNew" name="projectNature" value="new" [(ngModel)]="project_planing">
-        <label class="form-check-label" for="natureNew">
-            โครงการใหม่
-        </label>
+</div>
+<div class="row mt-4">
+    <div class="col-md-2">
+        <label class="form-label d-block">ประเภทโครงการ</label>
+
+        <div class="form-check form-check-inline">
+            <input type="radio" class="form-check-input" id="natureNew" name="projectNature" value="new">
+            <label class="form-check-label" for="natureNew">
+                โครงการใหม่
+            </label>
+        </div>
+
+        <div class="form-check form-check-inline">
+            <input type="radio" class="form-check-input" id="natureContinue" name="projectNature" value="continue">
+            <label class="form-check-label" for="natureContinue">
+                โครงการต่อเนื่อง
+            </label>
+        </div>
     </div>
 
-    <div class="form-check form-check-inline">
-        <input type="radio" class="form-check-input" id="natureContinue" name="projectNature" value="continue"
-            [(ngModel)]="project_planing">
-        <label class="form-check-label" for="natureContinue">
-            โครงการต่อเนื่อง
-        </label>
-    </div>
 </div>
 
-<!-- การดำเนินการ -->
-<div class="mt-3">
-    <label class="form-label d-block">การดำเนินการ</label>
-
-    <div class="form-check form-check-inline">
-        <input type="radio" class="form-check-input" id="operateSelf" name="operationType" value="self">
-        <label class="form-check-label" for="operateSelf">
-            ดำเนินการเอง
-        </label>
-    </div>
-
-    <div class="form-check form-check-inline">
-        <input type="radio" class="form-check-input" id="operateHire" name="operationType" value="hire">
-        <label class="form-check-label" for="operateHire">
-            จัดจ้าง
-        </label>
-    </div>
-</div>
 
 <!-- Continue Project Only -->
 @if (project_planing === 'continue' ) {<div class="row mt-3">

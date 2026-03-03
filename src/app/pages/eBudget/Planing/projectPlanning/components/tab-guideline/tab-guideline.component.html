@@ -35,7 +35,7 @@
 
                             <ng-container *ngFor="let rowIndex of [0,1,2]">
 
-                                <tr [class.table-info]="rowIndex === 0 && i > 0">
+                                <tr>
 
                                     <td *ngIf="rowIndex === 0" rowspan="3">
                                         {{ i + 1 }}
@@ -67,7 +67,7 @@
                                     </ng-container>
 
                                     <td *ngIf="rowIndex === 0" rowspan="3">
-                                        <button class="btn btn-sm btn-danger">
+                                        <button class="btn btn-sm btn-danger" (click)="removeActivity(i)">
                                             🗑
                                         </button>
                                     </td>
@@ -82,22 +82,17 @@
                                     </button>
                                 </td>
                             </tr>
-                            <!-- ===== SUB ACTIVITIES ===== -->
                             <ng-container *ngFor="let sub of act.subActivities; let subIndex = index">
 
                                 <ng-container *ngFor="let rowIndex of [0,1,2]">
 
                                     <tr class="table-info">
-
-                                        <!-- เว้นลำดับ -->
                                         <td *ngIf="rowIndex === 0" rowspan="3"></td>
 
-                                        <!-- ชื่อกิจกรรมย่อย -->
                                         <td *ngIf="rowIndex === 0" rowspan="3" class="text-start ps-5">
                                             <input class="form-control form-control-sm" [(ngModel)]="sub.name">
                                         </td>
 
-                                        <!-- กระจายไตรมาส -->
                                         <ng-container *ngFor="let q of sub.quarters">
 
                                             <td>
@@ -118,7 +113,6 @@
 
                                         </ng-container>
 
-                                        <!-- ปุ่มลบ sub -->
                                         <td *ngIf="rowIndex === 0" rowspan="3">
                                             <button class="btn btn-sm btn-danger" (click)="removeSub(act, subIndex)">
                                                 🗑

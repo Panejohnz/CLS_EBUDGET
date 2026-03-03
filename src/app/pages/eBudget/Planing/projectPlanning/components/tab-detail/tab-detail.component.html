@@ -63,18 +63,7 @@
             <input class="form-control" placeholder="รายการ" [(ngModel)]="item.name">
         </div>
 
-        <div class="col-md-3">
-            <input class="form-control" placeholder="เป้าหมาย" [(ngModel)]="item.target">
-        </div>
 
-        <div class="col-md-3">
-            <select class="form-select" [(ngModel)]="item.unit">
-                <option value="">หน่วยนับ</option>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-            </select>
-        </div>
 
         <div class="col-md-2 text-end">
             <button class="btn btn-danger" (click)="removeOutcome(i)"> <i class="bx bx-trash"></i></button>

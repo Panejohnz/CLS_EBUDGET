@@ -20,7 +20,9 @@ export class TabGuidelineComponent {
       subActivities: []
     });
   }
-
+  removeActivity(index: number) {
+    this.activities.splice(index, 1);
+  }
   addSubActivity(activity: any) {
     activity.subActivities?.push({
       id: Date.now(),
