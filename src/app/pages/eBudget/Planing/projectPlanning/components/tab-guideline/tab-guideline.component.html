@@ -98,7 +98,7 @@
                                 <ng-container *ngFor="let rowIndex of [0,1,2]">
 
                                     <tr class="table-info">
-                                        <td *ngIf="rowIndex === 0" rowspan="3"></td>
+                                        <td *ngIf="rowIndex === 0" rowspan="3">{{ i + 1 }}.{{subIndex + 1}}</td>
 
                                         <td *ngIf="rowIndex === 0" rowspan="3" class="text-start ps-5">
                                             <input class="form-control form-control-sm" [(ngModel)]="sub.name">
