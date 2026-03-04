@@ -9,8 +9,16 @@
 
     <div class="col-md-6">
         <label class="form-label">ประเภทโครงการ</label>
-        <select class="form-select">
-            <option value="">-- เลือกประเภทโครงการ --</option>
+        <select class="form-select" [(ngModel)]="model.projectType">
+
+            <option disabled value="">-- เลือกประเภทโครงการ --</option>
+
+            <option value="1">อบรมสัมนา (งบดำเนินงาน)</option>
+            <option value="2">ประชาสัมพันธ์ (งบดำเนินงาน)</option>
+            <option value="3">งบลงทุน (งบลงทุน)</option>
+            <option value="4">จ้างที่ปรึกษา (งบรายจ่ายอื่น)</option>
+            <option value="5">โครงการลักษณะรายจ่ายอื่น (งบรายจ่ายอื่น)</option>
+
         </select>
     </div>
 

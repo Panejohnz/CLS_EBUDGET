@@ -1,14 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
+
 @Component({
   selector: 'app-tab-guideline',
   templateUrl: './tab-guideline.component.html',
   styleUrl: './tab-guideline.component.scss'
 })
+
 export class TabGuidelineComponent {
   activities: any[] = [];
+  modalRef: any;
+  emptyplan: any = {
+    Plan_Id: 0,
+    Plan_Name: '',
+    Active: 1
+  };
+  project_planing: any = {};
+  @Input() model: any
 
-  constructor() {
+  constructor(private modalService: NgbModal) {
     this.addActivity();
   }
 
@@ -94,4 +105,35 @@ export class TabGuidelineComponent {
   removeSub(activity: any, index: number) {
     activity.subActivities.splice(index, 1);
   }
+  fullModal(modal: any, data: any) {
+
+
+
+    this.modalRef = this.modalService.open(modal, {
+      backdrop: 'static',
+      windowClass: 'modal-95'
+    });
+  }
+
+  type: string = '';
+  formTypeMap: any = {
+    1: 'seminar',
+    2: 'pr',
+    3: 'investment',
+    4: 'consult',
+    5: 'other'
+  }
+  openMultiplierModal(content: any) {
+
+    this.type = this.formTypeMap[this.model.projectType]
+    if (!this.type) {
+      alert('เลือกประเภทโครงการ')
+      return
+    }
+    this.modalService.open(content, {
+      backdrop: 'static',
+      windowClass: 'modal-95'
+    })
+  }
+
 }

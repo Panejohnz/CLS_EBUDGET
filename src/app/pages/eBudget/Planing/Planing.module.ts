@@ -24,6 +24,11 @@ import { TabGeneralComponent } from './projectPlanning/components/tab-general/ta
 import { TabAlignmentComponent } from './projectPlanning/components/tab-alignment/tab-alignment.component';
 import { TabDetailComponent } from './projectPlanning/components/tab-detail/tab-detail.component';
 import { TabGuidelineComponent } from './projectPlanning/components/tab-guideline/tab-guideline.component';
+import { TrainingSeminarComponent } from './projectPlanning/components/tab-guideline/training-seminar/training-seminar.component';
+import { PublicRelationsComponent } from './projectPlanning/components/tab-guideline/public-relations/public-relations.component';
+import { InvestmentBudgetComponent } from './projectPlanning/components/tab-guideline/investment-budget/investment-budget.component';
+import { ConsultantHireComponent } from './projectPlanning/components/tab-guideline/consultant-hire/consultant-hire.component';
+import { OtherExpenseProjectComponent } from './projectPlanning/components/tab-guideline/other-expense-project/other-expense-project.component';
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     url: 'https://httpbin.org/post',
     maxFilesize: 50,
@@ -36,7 +41,12 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
         TabGeneralComponent,
         TabAlignmentComponent,
         TabDetailComponent,
-        TabGuidelineComponent
+        TabGuidelineComponent,
+        TrainingSeminarComponent,
+        PublicRelationsComponent,
+        InvestmentBudgetComponent,
+        ConsultantHireComponent,
+        OtherExpenseProjectComponent
     ],
     imports: [
         CommonModule,

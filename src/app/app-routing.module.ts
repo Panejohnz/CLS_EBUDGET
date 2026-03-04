@@ -7,13 +7,13 @@ import { LayoutComponent } from './layouts/layout.component';
 import { AuthGuard } from './core/guards/auth.guard';
 
 const routes: Routes = [
-  { path: '', loadChildren: () => import('./account/account.module').then(m => m.AccountModule)  },
-  { path: 'auth', loadChildren: () => import('./account/account.module').then(m => m.AccountModule)  },
+  { path: '', loadChildren: () => import('./account/account.module').then(m => m.AccountModule) },
+  { path: 'auth', loadChildren: () => import('./account/account.module').then(m => m.AccountModule) },
   { path: 'pages', component: LayoutComponent, loadChildren: () => import('./pages/pages.module').then(m => m.PagesModule), canActivate: [AuthGuard] },
-  { path: 'landing', loadChildren: () => import('./landing/landing.module').then(m => m.LandingModule)},
+  { path: 'landing', loadChildren: () => import('./landing/landing.module').then(m => m.LandingModule) },
 
   //e_buget
-    { path: 'Planing', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/Planing/Planing.module').then(m => m.EmonitorMasterModule), canActivate: [AuthGuard] },
+  { path: 'Planing', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/Planing/Planing.module').then(m => m.EmonitorMasterModule), },
 
 ];
 

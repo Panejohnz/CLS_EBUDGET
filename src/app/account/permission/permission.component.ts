@@ -142,7 +142,7 @@ export class PermissionComponent implements OnInit, OnDestroy {
   private checkTokenAndAuthenticate(): void {
     // Get token from query parameters
     this.route.queryParams.subscribe(params => {
-      this.token = params['Token'] || 'tSAnIGtaoBveCHXo7ATI8gUU';
+      this.token = params['Token'] || '9VqAJuAsnWN8jiKDKlAQHAUU';
 
 
       if (!this.token) {

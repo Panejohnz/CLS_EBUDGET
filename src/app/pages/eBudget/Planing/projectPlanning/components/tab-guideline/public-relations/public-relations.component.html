@@ -1,0 +1,122 @@
+<div class="container-fluid mt-2">
+
+    <!-- HEADER -->
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-primary text-white fw-bold">
+            แบบฟอร์มค่าประชาสัมพันธ์
+        </div>
+
+        <div class="card-body p-0">
+
+            <table class="table table-bordered align-middle mb-0">
+
+
+                <thead class="table-light text-center">
+
+                    <tr>
+
+                        <th style="width:60px">ลำดับ</th>
+
+                        <th class="text-start">รายการ</th>
+
+                        <th style="width:150px">จำนวน/ช่วงเวลา</th>
+
+                        <th style="width:150px">จำนวน/นาที</th>
+
+                        <th style="width:150px">จำนวน/ครั้ง</th>
+
+                        <th style="width:150px">อัตราที่ใช้</th>
+
+                        <th style="width:120px">รวม (บาท)</th>
+
+                        <th style="width:60px"></th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    <tr *ngFor="let item of prItems; let i = index">
+
+                        <td class="text-center">
+                            {{i+1}}
+                        </td>
+
+                        <td>
+                            <input class="form-control form-control-sm" placeholder="ระบุรายการ"
+                                [(ngModel)]="item.name">
+                        </td>
+
+                        <td>
+                            <input type="number" class="form-control form-control-sm text-center"
+                                [(ngModel)]="item.duration">
+                        </td>
+
+                        <td>
+                            <input type="number" class="form-control form-control-sm text-center"
+                                [(ngModel)]="item.minute">
+                        </td>
+
+                        <td>
+                            <input type="number" class="form-control form-control-sm text-center"
+                                [(ngModel)]="item.times">
+                        </td>
+
+                        <td>
+                            <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.rate">
+                        </td>
+
+                        <td class="text-end fw-bold">
+                            {{item.total || 0 | number:'1.2-2'}}
+                        </td>
+
+                        <td class="text-center">
+
+                            <button class="btn btn-sm btn-outline-danger" (click)="removeItem(i)">
+                                🗑
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+
+            <!-- ADD BUTTON -->
+
+            <div class="p-2">
+
+                <button class="btn btn-sm btn-primary" (click)="addItem()">
+
+                    + เพิ่มรายการ
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- FOOTER BUTTON -->
+
+    <div class="d-flex justify-content-end mt-3 gap-2">
+
+        <button class="btn btn-primary">
+
+            💾 บันทึก
+
+        </button>
+
+
+
+    </div>
+
+</div>
