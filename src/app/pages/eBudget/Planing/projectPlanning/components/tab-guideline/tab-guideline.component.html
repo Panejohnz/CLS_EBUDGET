@@ -43,7 +43,23 @@
                                     <td *ngIf="rowIndex === 0" rowspan="3" class="text-start">
                                         <input class="form-control form-control-sm" [(ngModel)]="act.name">
 
+                                        <div class="d-flex align-items-center gap-3">
 
+                                            <div class="form-check form-check-inline m-0">
+                                                <input class="form-check-input" type="checkbox" id="not_budget"
+                                                    [(ngModel)]="act.noBudget">
+                                                <label class="form-check-label" for="not_budget">ไม่ใช้งบ</label>
+                                            </div>
+
+                                            <div class="form-check form-check-inline m-0">
+                                                <input class="form-check-input" type="checkbox" id="call"
+                                                    [(ngModel)]="act.consult">
+                                                <label class="form-check-label" for="call">จ้างที่ปรึกษา</label>
+                                            </div>
+
+
+
+                                        </div>
                                     </td>
 
                                     <ng-container *ngFor="let q of act.quarters">
@@ -77,35 +93,19 @@
                             </ng-container>
                             <tr>
                                 <td colspan="15" class="bg-light">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div class="d-flex justify-content-end align-items-center mb-2">
 
                                         <!-- ฝั่งซ้าย -->
-                                        <div class="d-flex align-items-center gap-3">
 
-                                            <div class="form-check form-check-inline m-0">
-                                                <input class="form-check-input" type="checkbox"
-                                                    [(ngModel)]="act.noBudget">
-                                                <label class="form-check-label">ไม่ใช้งบ</label>
-                                            </div>
 
-                                            <div class="form-check form-check-inline m-0">
-                                                <input class="form-check-input" type="checkbox"
-                                                    [(ngModel)]="act.consult">
-                                                <label class="form-check-label">จ้างที่ปรึกษา</label>
-                                            </div>
+                                        <div class="d-flex justify-content-end align-items-center gap-2 flex-wrap">
 
-                                            <div class="d-flex align-items-center">
-                                                <label class="me-2 mb-0">ผู้รับผิดชอบ</label>
-                                                <input type="text" class="form-control form-control-sm"
-                                                    style="width:220px" [(ngModel)]="act.owner">
-                                            </div>
+                                            <label class="mb-0">ผู้รับผิดชอบ</label>
 
-                                        </div>
+                                            <input type="text" class="form-control form-control-sm" style="width:220px"
+                                                [(ngModel)]="act.owner">
 
-                                        <!-- ฝั่งขวา -->
-                                        <div>
-
-                                            <button class="btn btn-sm btn-primary me-2" (click)="addSub(act)">
+                                            <button class="btn btn-sm btn-primary" (click)="addSub(act)">
                                                 เพิ่มกิจกรรมย่อย
                                             </button>
 
@@ -113,6 +113,10 @@
                                                 (click)="openMultiplierModal(fullDataModal)">
                                                 แบบฟอร์มตัวคูณ
                                             </button>
+
+                                            <span class="fw-bold ms-2">
+                                                รวม : 0.00
+                                            </span>
 
                                         </div>
 
