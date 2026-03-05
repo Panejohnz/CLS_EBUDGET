@@ -3,15 +3,18 @@
     <div class="col-md-6">
         <label class="form-label">หน่วยงาน</label>
         <select class="form-select">
-            <option value="">-- เลือกหน่วยงาน --</option>
+            <option value="" disabled value="" selected>-- เลือกหน่วยงาน --</option>
+            <option value="">หน่วยงานที่ 1</option>
+            <option value="">หน่วยงานที่ 2</option>
         </select>
     </div>
 
-    <div class="col-md-6">
+    <div class="col-md-6" *ngIf="model">
         <label class="form-label">ประเภทโครงการ</label>
-        <select class="form-select" [(ngModel)]="model.projectType">
 
-            <option disabled value="">-- เลือกประเภทโครงการ --</option>
+        <select (change)="Onchange_type()" class="form-select" name="projectType" [(ngModel)]="projectType">
+
+            <option value="" disabled selected>-- เลือกประเภทโครงการ --</option>
 
             <option value="1">อบรมสัมนา (งบดำเนินงาน)</option>
             <option value="2">ประชาสัมพันธ์ (งบดำเนินงาน)</option>
@@ -24,22 +27,43 @@
 
     <div class="col-md-6">
         <label class="form-label">แผนงาน</label>
-        <select class="form-select"></select>
+        <select class="form-select">
+            <option disabled selected>-- เลือกแผนงาน --</option>
+            <option value="1">แผนงาน 1</option>
+            <option value="2">แผนงาน 2</option>
+        </select>
     </div>
 
     <div class="col-md-6">
         <label class="form-label">ผลผลิต</label>
-        <select class="form-select"></select>
+        <select class="form-select">
+            <option disabled selected>-- เลือกผลผลิต --</option>
+            <option value="1">ผลผลิต 1</option>
+            <option value="2">ผลผลิต 2</option>
+        </select>
     </div>
 
     <div class="col-md-6">
         <label class="form-label">กิจกรรม</label>
-        <select class="form-select"></select>
+        <select class="form-select">
+            <option disabled selected>-- เลือกกิจกรรม --</option>
+            <option value="1">กิจกรรม 1</option>
+            <option value="2">กิจกรรม 2</option>
+        </select>
     </div>
 
     <div class="col-md-6">
         <label class="form-label">หมวดงบ</label>
-        <select class="form-select"></select>
+        <select class="form-select">
+            <option disabled selected>-- เลือกหมวดงบ --</option>
+            <option value="1">งบบุคลากร</option>
+            <option value="2">งบบุคลากร</option>
+            <option value="3">งบดำเนินงาน</option>
+            <option value="4">งบลงทุน</option>
+            <option value="5">งบเงินอุดหนุน</option>
+            <option value="6">งบรายจ่ายอื่น</option>
+        </select>
+
     </div>
 
     <div class="col-md-12">

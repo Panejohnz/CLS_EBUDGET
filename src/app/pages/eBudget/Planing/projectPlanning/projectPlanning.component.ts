@@ -29,9 +29,33 @@ export class ProjectPlanningComponent {
     Plan_Name: '',
     Active: 1
   };
-  griddata: any[] = [];
+  griddata: any[] = [
+    {
+      id: 1,
+      department: 'สำนักบริหาร',
+      plan: 'พัฒนาบุคลากร',
+      output: 'บุคลากรมีศักยภาพเพิ่มขึ้น',
+      activity: 'อบรมการใช้ระบบสารสนเทศ',
+      budgetType: 'งบดำเนินงาน',
+      project: 'โครงการอบรมระบบใหม่',
+      budget: 50000
+    },
+    {
+      id: 2,
+      department: 'ฝ่ายประชาสัมพันธ์',
+      plan: 'สื่อสารองค์กร',
+      output: 'ประชาชนรับรู้ข้อมูลข่าวสาร',
+      activity: 'จัดทำสื่อประชาสัมพันธ์',
+      budgetType: 'งบดำเนินงาน',
+      project: 'โครงการประชาสัมพันธ์หน่วยงาน',
+      budget: 30000
+    }
+  ];
   allData: any[] = [];
-  project_planing: any = {};
+  project_planing = {
+    projectType: '',
+    planing_Id: 0
+  };
   modalRef: any;
   total$!: Observable<number>;
 
@@ -94,10 +118,54 @@ export class ProjectPlanningComponent {
   deletePlan(data: any) {
 
   }
-  savePlan() {
+  async savePlan(modal: any) {
+
+    const userConfirmed = await confirmAlert('info', 'ต้องการบันทึกข้อมูล ?', '');
+
+    if (userConfirmed) {
+
+      this.addRandomRow();   // 👈 เพิ่มทีละแถว
+      basicAlert('success', 'บันทึกข้อมูลแล้ว', '')
+      modal.dismiss();
+
+    }
 
   }
+  randomItem(arr: any[]) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+  addRandomRow() {
 
+    const departments = ['สำนักบริหาร', 'ฝ่ายแผนงาน', 'ฝ่ายประชาสัมพันธ์', 'สำนัก IT'];
+    const plans = ['พัฒนาบุคลากร', 'สื่อสารองค์กร', 'เพิ่มประสิทธิภาพระบบ', 'บริการประชาชน'];
+    const outputs = [
+      'บุคลากรมีศักยภาพเพิ่มขึ้น',
+      'ประชาชนรับรู้ข้อมูลข่าวสาร',
+      'ระบบทำงานเร็วขึ้น',
+      'การให้บริการมีประสิทธิภาพ'
+    ];
+    const activities = [
+      'อบรมการใช้ระบบสารสนเทศ',
+      'จัดทำสื่อประชาสัมพันธ์',
+      'พัฒนาระบบฐานข้อมูล',
+      'จัดประชุมเชิงปฏิบัติการ'
+    ];
+    const budgetTypes = ['งบดำเนินงาน', 'งบลงทุน', 'งบรายจ่ายอื่น'];
+
+    const newRow = {
+      id: this.griddata.length + 1,
+      department: this.randomItem(departments),
+      plan: this.randomItem(plans),
+      output: this.randomItem(outputs),
+      activity: this.randomItem(activities),
+      budgetType: this.randomItem(budgetTypes),
+      project: 'โครงการ ' + Math.floor(Math.random() * 100),
+      budget: Math.floor(Math.random() * 90000) + 10000
+    };
+
+    this.griddata.push(newRow);
+
+  }
   maxTab = 5;
 
   nextTab() {

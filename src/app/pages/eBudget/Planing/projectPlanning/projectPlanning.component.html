@@ -49,22 +49,27 @@
                             @for(data of griddata; track $index){
                             <tr>
                                 <td class="text-center">{{$index + 1}}</td>
-                                <td class="text-center">{{data.BgYear}}</td>
+                                <td class="text-center">{{data.department}}</td>
                                 <td class="text-center">
-                                    <ngb-highlight [result]="data.Plan_Code"
-                                        [term]="service.searchTerm">{{data.Plan_Code}}</ngb-highlight>
+                                    <ngb-highlight [result]="data.plan"
+                                        [term]="service.searchTerm">{{data.plan}}</ngb-highlight>
                                 </td>
 
                                 <td>
-                                    <ngb-highlight [result]="data.Plan_Short_Name"
-                                        [term]="service.searchTerm">{{data.Plan_Short_Name}}</ngb-highlight>
+                                    <ngb-highlight [result]="data.output"
+                                        [term]="service.searchTerm">{{data.output}}</ngb-highlight>
                                 </td>
 
                                 <td>
-                                    <ngb-highlight [result]="data.Plan_Name"
-                                        [term]="service.searchTerm">{{data.Plan_Name}}</ngb-highlight>
+                                    <ngb-highlight [result]="data.activity"
+                                        [term]="service.searchTerm">{{data.activity}}</ngb-highlight>
                                 </td>
+                                <td>{{data.budgetType}}</td>
+                                <td>{{data.project}}</td>
 
+                                <td class="text-end">
+                                    {{data.budget | number:'1.2-2'}}
+                                </td>
 
                                 <td class="text-center">
                                     <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
@@ -168,7 +173,9 @@
     </div>
 
     <div class="modal-footer">
-
+        <button class="btn btn-success" (click)="savePlan(modal)">
+            บันทึก
+        </button>
         <button class="btn btn-secondary" (click)="modal.dismiss()">
             ยกเลิก
         </button>

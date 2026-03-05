@@ -16,7 +16,10 @@ export class TabGuidelineComponent {
     Plan_Name: '',
     Active: 1
   };
-  project_planing: any = {};
+  project_planing = {
+    projectType: ''
+  };
+
   @Input() model: any
 
   constructor(private modalService: NgbModal) {
@@ -135,5 +138,34 @@ export class TabGuidelineComponent {
       windowClass: 'modal-95'
     })
   }
+  getActivityTotal(act: any): number {
 
+    let total = 0;
+
+    act.quarters.forEach((q: any) => {
+      q.months.forEach((m: any) => {
+        total += Number(m.budget || 0);
+      });
+    });
+
+    act.subActivities?.forEach((sub: any) => {
+      sub.quarters.forEach((q: any) => {
+        q.months.forEach((m: any) => {
+          total += Number(m.budget || 0);
+        });
+      });
+    });
+
+    return total;
+
+  }
+  onBudgetChange(month: any) {
+
+    if (month.budget && month.budget > 0) {
+      month.selected = true;
+    } else {
+      month.selected = false;
+    }
+
+  }
 }

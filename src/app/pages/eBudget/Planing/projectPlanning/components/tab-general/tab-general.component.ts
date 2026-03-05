@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
-
+export interface ProjectPlan {
+  projectType: string;
+}
 @Component({
   selector: 'app-tab-general',
 
@@ -8,5 +10,13 @@ import { Component, Input } from '@angular/core';
 })
 export class TabGeneralComponent {
   project_planing: any
-  @Input() model: any
+  @Input() model!: any;
+  projectType: any = ''
+  ngOnInit(): void {
+    console.log('00', this.model);
+
+  }
+  Onchange_type() {
+    this.model.projectType = this.projectType
+  }
 }

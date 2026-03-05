@@ -53,7 +53,8 @@
               "node_modules/slick-carousel/slick/slick.min.js",
               "node_modules/flatpickr/dist/flatpickr.min.js",
               "node_modules/flatpickr/dist/l10n/th.js",
-              "src/app/CLASS/cls.js"
+              "src/app/CLASS/cls.js",
+              "src/assets/js/data.js"
             ],
             "allowedCommonJsDependencies": [
               "ev-emitter/ev-emitter",
@@ -188,7 +189,8 @@
               "src/styles.scss"
             ],
             "scripts": [
-              "src/app/CLASS/cls.js"
+              "src/app/CLASS/cls.js",
+              "src/assets/js/data.js"
             ]
           }
         },

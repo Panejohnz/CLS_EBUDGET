@@ -77,7 +77,8 @@
 
                                         <td>
                                             <input type="number" class="form-control form-control-sm"
-                                                [(ngModel)]="q.months[rowIndex].budget">
+                                                [(ngModel)]="q.months[rowIndex].budget"
+                                                (ngModelChange)="onBudgetChange(q.months[rowIndex])">
                                         </td>
 
                                     </ng-container>
@@ -89,6 +90,67 @@
                                     </td>
 
                                 </tr>
+
+                            </ng-container>
+
+                            <ng-container *ngFor="let sub of act.subActivities; let subIndex = index">
+
+                                <ng-container *ngFor="let rowIndex of [0,1,2]">
+
+                                    <tr class="table-info">
+                                        <td *ngIf="rowIndex === 0" rowspan="3">{{ i + 1 }}.{{subIndex + 1}}</td>
+
+                                        <td *ngIf="rowIndex === 0" rowspan="3" class="text-start ps-5">
+                                            <input class="form-control form-control-sm" [(ngModel)]="sub.name">
+                                            <div class="d-flex align-items-center gap-3">
+
+                                                <div class="form-check form-check-inline m-0">
+                                                    <input class="form-check-input" type="checkbox" id="not_budget_sub"
+                                                        [(ngModel)]="sub.noBudget">
+                                                    <label class="form-check-label" for="not_budget_sub">ไม่ใช้งบ</label>
+                                                </div>
+
+                                                <div class="form-check form-check-inline m-0">
+                                                    <input class="form-check-input" type="checkbox" id="call_sub"
+                                                        [(ngModel)]="sub.consult">
+                                                    <label class="form-check-label" for="call_sub">จ้างที่ปรึกษา</label>
+                                                </div>
+
+
+
+                                            </div>
+                                        </td>
+
+                                        <ng-container *ngFor="let q of sub.quarters">
+
+                                            <td>
+                                                {{ q.months[rowIndex].month }}
+                                            </td>
+
+                                            <td>
+                                                <div class="form-check d-flex justify-content-center">
+                                                    <input type="checkbox" class="form-check-input"
+                                                        [(ngModel)]="q.months[rowIndex].selected">
+                                                </div>
+                                            </td>
+
+                                            <td>
+                                                <input type="number" class="form-control form-control-sm"
+                                                    [(ngModel)]="q.months[rowIndex].budget"
+                                                    (ngModelChange)="onBudgetChange(q.months[rowIndex])">
+                                            </td>
+
+                                        </ng-container>
+
+                                        <td *ngIf="rowIndex === 0" rowspan="3">
+                                            <button class="btn btn-sm btn-danger" (click)="removeSub(act, subIndex)">
+                                                🗑
+                                            </button>
+                                        </td>
+
+                                    </tr>
+
+                                </ng-container>
 
                             </ng-container>
                             <tr>
@@ -115,7 +177,7 @@
                                             </button>
 
                                             <span class="fw-bold ms-2">
-                                                รวม : 0.00
+                                                รวม : {{ getActivityTotal(act) | number:'1.2-2' }}
                                             </span>
 
                                         </div>
@@ -123,48 +185,6 @@
                                     </div>
                                 </td>
                             </tr>
-                            <ng-container *ngFor="let sub of act.subActivities; let subIndex = index">
-
-                                <ng-container *ngFor="let rowIndex of [0,1,2]">
-
-                                    <tr class="table-info">
-                                        <td *ngIf="rowIndex === 0" rowspan="3">{{ i + 1 }}.{{subIndex + 1}}</td>
-
-                                        <td *ngIf="rowIndex === 0" rowspan="3" class="text-start ps-5">
-                                            <input class="form-control form-control-sm" [(ngModel)]="sub.name">
-                                        </td>
-
-                                        <ng-container *ngFor="let q of sub.quarters">
-
-                                            <td>
-                                                {{ q.months[rowIndex].month }}
-                                            </td>
-
-                                            <td>
-                                                <div class="form-check d-flex justify-content-center">
-                                                    <input type="checkbox" class="form-check-input"
-                                                        [(ngModel)]="q.months[rowIndex].selected">
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <input type="number" class="form-control form-control-sm"
-                                                    [(ngModel)]="q.months[rowIndex].budget">
-                                            </td>
-
-                                        </ng-container>
-
-                                        <td *ngIf="rowIndex === 0" rowspan="3">
-                                            <button class="btn btn-sm btn-danger" (click)="removeSub(act, subIndex)">
-                                                🗑
-                                            </button>
-                                        </td>
-
-                                    </tr>
-
-                                </ng-container>
-
-                            </ng-container>
                         </ng-container>
 
                     </tbody>
