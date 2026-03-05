@@ -27,7 +27,7 @@ export const environment = {
 
   // เพิ่ม endpoint สำหรับ menu
   EXPORT_REPORT: 'https://fdaemonitor.fda.moph.go.th/CLS_EMONITOR_KPI_REPORT/Report/Report_R002.aspx',
-
+  //ng build --base-href /CSL_E_BUDGET/ --aot   --configuration production
   // ----------------------------------------------------------------------------
 
   // -------------------------------------------------------------------------------------------------------------------------

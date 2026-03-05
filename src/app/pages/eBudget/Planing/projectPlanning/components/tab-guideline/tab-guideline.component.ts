@@ -130,7 +130,7 @@ export class TabGuidelineComponent {
 
     this.type = this.formTypeMap[this.model.projectType]
     if (!this.type) {
-      alert('เลือกประเภทโครงการ')
+      basicAlert('info','เลือกประเภทโครงการ','')
       return
     }
     this.modalService.open(content, {
