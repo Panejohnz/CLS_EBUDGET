@@ -87,7 +87,8 @@
                                 </td>
 
                                 <td>
-                                    <input type="checkbox" class="form-check-input" [(ngModel)]="item.nonStandard">
+                                    <input type="checkbox" [checked]="item.name == '4'" class="form-check-input"
+                                        [(ngModel)]="item.nonStandard">
                                 </td>
                                 <td>
                                     <input type="radio" class="form-check-input" name="type{{i}}" value="new"
@@ -107,20 +108,12 @@
                                         [(ngModel)]="item.price">
                                 </td>
 
-
-
-
-
                                 <td class="text-end fw-bold">
                                     {{(item.price * item.qty) || 0 | number:'1.2-2'}}
                                 </td>
 
 
                                 <td class="text-start">
-
-
-
-
 
                                     <div class="col-md-9">
 
