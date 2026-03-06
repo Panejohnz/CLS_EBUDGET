@@ -73,10 +73,10 @@
 
                                     <select class="form-select form-select-sm" [(ngModel)]="item.name">
 
-                                        <option>อุปกรณ์คอมพิวเตอร์ - เครื่องคอมพิวเตอร์</option>
-                                        <option>เครื่องพิมพ์</option>
-                                        <option>โน๊ตบุ๊ค</option>
-
+                                        <option value="1">อุปกรณ์คอมพิวเตอร์ - เครื่องคอมพิวเตอร์</option>
+                                        <option value="2">เครื่องพิมพ์</option>
+                                        <option value="3">โน๊ตบุ๊ค</option>
+                                        <option value="4">อื่น ๆ</option>
                                     </select>
 
                                 </td>
@@ -90,11 +90,13 @@
                                     <input type="checkbox" class="form-check-input" [(ngModel)]="item.nonStandard">
                                 </td>
                                 <td>
-                                    <input type="radio" class="form-check-input" [(ngModel)]="item.new">
+                                    <input type="radio" class="form-check-input" name="type{{i}}" value="new"
+                                        [(ngModel)]="item.type">
                                 </td>
 
                                 <td>
-                                    <input type="radio" class="form-check-input" [(ngModel)]="item.replace">
+                                    <input type="radio" class="form-check-input" name="type{{i}}" value="replace"
+                                        [(ngModel)]="item.type">
                                 </td>
                                 <td>
                                     <input type="number" class="form-control form-control-sm text-center"
@@ -116,21 +118,20 @@
 
                                 <td class="text-start">
 
-                                    <div class="row g-1">
 
-                                        <div class="col-md-3">
 
-                                            <input type="number" class="form-control form-control-sm"
-                                                [(ngModel)]="item.requestQty" placeholder="จำนวนที่ขอ">
 
-                                        </div>
 
-                                        <div class="col-md-9">
+                                    <div class="col-md-9">
 
-                                            <textarea class="form-control form-control-sm" rows="2"
-                                                [(ngModel)]="item.reason" placeholder="เหตุผลการขอ"></textarea>
+                                        <textarea class="form-control form-control-sm" rows="2"
+                                            [(ngModel)]="item.reason" placeholder="เหตุผลการขอ"></textarea>
 
-                                        </div>
+                                    </div>
+                                    <div *ngIf="item.type == 'replace'" class="col-md-9">
+
+                                        <input type="text" class="form-control form-control-sm"
+                                            [(ngModel)]="item.requestQty" placeholder="ระบุเลขครุภัณฑ์">
 
                                     </div>
 
