@@ -130,7 +130,7 @@ export class TabGuidelineComponent {
 
     this.type = this.formTypeMap[this.model.projectType]
     if (!this.type) {
-      basicAlert('info','เลือกประเภทโครงการ','')
+      basicAlert('info', 'เลือกประเภทโครงการ', '')
       return
     }
     this.modalService.open(content, {
@@ -142,22 +142,31 @@ export class TabGuidelineComponent {
 
     let total = 0;
 
+    // รวมกิจกรรมหลัก
     act.quarters.forEach((q: any) => {
       q.months.forEach((m: any) => {
-        total += Number(m.budget || 0);
+        total += Number(m.budget) || 0;
       });
     });
 
-    act.subActivities?.forEach((sub: any) => {
+    // รวมกิจกรรมย่อย
+    total += this.getSubActivitiesTotal(act);
+
+    return total;
+  }
+  getSubActivitiesTotal(act: any): number {
+
+    let total = 0;
+
+    act.subActivities.forEach((sub: any) => {
       sub.quarters.forEach((q: any) => {
         q.months.forEach((m: any) => {
-          total += Number(m.budget || 0);
+          total += Number(m.budget) || 0;
         });
       });
     });
 
     return total;
-
   }
   onBudgetChange(month: any) {
 

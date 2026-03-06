@@ -22,6 +22,17 @@ export class TabAlignmentComponent {
   // 3.5 แผนงาน ปปท.
   ppatPlans: any[] = [];
   // 3.1
+
+  ngOnInit(): void {
+    console.log('00', this.model);
+    this.subStrategies.push({
+      strategySide: '',
+      strategyIssue: '',
+      strategySubIssue: '',
+      target: '',
+      alignmentDetail: ''
+    });
+  }
   addUrgentPolicy() {
     this.urgentPolicies.push({
       title: '',
@@ -87,5 +98,28 @@ export class TabAlignmentComponent {
 
   removeSubStrategy(index: number) {
     this.subStrategies.splice(index, 1);
+  }
+
+
+  policyList: any[] = [
+    {
+      title: '',
+      detail: ''
+    }
+  ];
+
+  addPolicy() {
+    this.policyList.push({
+
+      detail: ''
+    });
+  }
+
+
+
+  removePolicy(index: number) {
+    if (this.policyList.length > 1) {
+      this.policyList.splice(index, 1);
+    }
   }
 }

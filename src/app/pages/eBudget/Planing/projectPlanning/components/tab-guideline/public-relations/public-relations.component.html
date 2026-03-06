@@ -11,112 +11,143 @@
 
             <table class="table table-bordered align-middle mb-0">
 
-
                 <thead class="table-light text-center">
 
                     <tr>
-
                         <th style="width:60px">ลำดับ</th>
-
                         <th class="text-start">รายการ</th>
-
                         <th style="width:150px">จำนวน/ช่วงเวลา</th>
-
                         <th style="width:150px">จำนวน/นาที</th>
-
                         <th style="width:150px">จำนวน/ครั้ง</th>
-
                         <th style="width:150px">อัตราที่ใช้</th>
-
                         <th style="width:120px">รวม (บาท)</th>
-
                         <th style="width:60px"></th>
-
                     </tr>
 
                 </thead>
 
-
                 <tbody>
 
-                    <tr *ngFor="let item of prItems; let i = index">
+                    <ng-container *ngFor="let main of mainItems; let i = index">
 
-                        <td class="text-center">
-                            {{i+1}}
-                        </td>
+                        <!-- รายการใหญ่ -->
 
-                        <td>
-                            <input class="form-control form-control-sm" placeholder="ระบุรายการ"
-                                [(ngModel)]="item.name">
-                        </td>
+                        <tr class="table-primary">
 
-                        <td>
-                            <input type="number" class="form-control form-control-sm text-center"
-                                [(ngModel)]="item.duration">
-                        </td>
+                            <td class="text-center">
+                                {{i+1}}
+                            </td>
 
-                        <td>
-                            <input type="number" class="form-control form-control-sm text-center"
-                                [(ngModel)]="item.minute">
-                        </td>
+                            <td colspan="5">
 
-                        <td>
-                            <input type="number" class="form-control form-control-sm text-center"
-                                [(ngModel)]="item.times">
-                        </td>
+                                <input class="form-control form-control-sm" placeholder="ระบุรายการ"
+                                    [(ngModel)]="main.name">
 
-                        <td>
-                            <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.rate">
-                        </td>
+                            </td>
 
-                        <td class="text-end fw-bold">
-                            {{item.total || 0 | number:'1.2-2'}}
-                        </td>
+                            <td class="text-end fw-bold">
+                                {{ getMainTotal(main) | number:'1.2-2' }}
+                            </td>
 
-                        <td class="text-center">
+                            <td class="text-center">
 
-                            <button class="btn btn-sm btn-outline-danger" (click)="removeItem(i)">
-                                🗑
-                            </button>
+                                <button class="btn btn-sm btn-outline-danger" (click)="removeItem(i)">
+                                    🗑
+                                </button>
 
-                        </td>
+                            </td>
 
-                    </tr>
+                        </tr>
+
+
+                        <tr *ngFor="let sub of main.subItems; let j = index">
+
+                            <td></td>
+
+                            <td>
+
+                                <input class="form-control form-control-sm" placeholder="ระบุรายการ"
+                                    [(ngModel)]="sub.name">
+
+                            </td>
+
+                            <td>
+                                <input type="number" class="form-control form-control-sm text-center"
+                                    [(ngModel)]="sub.duration">
+                            </td>
+
+                            <td>
+                                <input type="number" class="form-control form-control-sm text-center"
+                                    [(ngModel)]="sub.minute">
+                            </td>
+
+                            <td>
+                                <input type="number" class="form-control form-control-sm text-center"
+                                    [(ngModel)]="sub.times">
+                            </td>
+
+                            <td>
+                                <input type="number" class="form-control form-control-sm text-end"
+                                    [(ngModel)]="sub.rate">
+                            </td>
+
+                            <td class="text-end fw-bold">
+                                {{sub.total || 0 | number:'1.2-2'}}
+                            </td>
+
+                            <td class="text-center">
+
+                                <button class="btn btn-sm btn-outline-danger" (click)="removeSubItem(main,j)">
+                                    🗑
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                        <!-- ปุ่มเพิ่มรายการย่อย -->
+
+                        <tr>
+
+                            <td colspan="8" class="text-end">
+
+                                <button class="btn btn-sm btn-outline-primary" (click)="addSubItem(main)">
+                                    + เพิ่มรายการย่อย
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                    </ng-container>
 
                 </tbody>
 
             </table>
 
-
-            <!-- ADD BUTTON -->
-
             <div class="p-2">
 
                 <button class="btn btn-sm btn-primary" (click)="addItem()">
-
                     + เพิ่มรายการ
-
                 </button>
 
             </div>
 
         </div>
 
+
+        <!-- FOOTER BUTTON -->
+
+        <div class="d-flex justify-content-end mt-3 gap-2">
+
+            <button class="btn btn-primary">
+
+                💾 บันทึก
+
+            </button>
+
+
+
+        </div>
+
     </div>
-
-
-    <!-- FOOTER BUTTON -->
-
-    <div class="d-flex justify-content-end mt-3 gap-2">
-
-        <button class="btn btn-primary">
-
-            💾 บันทึก
-
-        </button>
-
-
-
-    </div>
-
-</div>

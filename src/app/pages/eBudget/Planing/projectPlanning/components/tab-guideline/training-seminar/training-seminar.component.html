@@ -1,13 +1,13 @@
 <div class="container-fluid mt-3">
     <div class="card shadow-sm">
 
-        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
 
             <span class="fw-bold">
                 แบบฟอร์มค่าใช้จ่ายในการสัมมนาและฝึกอบรม
             </span>
 
-            <button class="btn btn-sm btn-light" (click)="addProject()">
+            <button class="btn btn-primary btn-sm" (click)="addProject()">
                 + เพิ่มโครงการ / หลักสูตร
             </button>
 
@@ -41,7 +41,10 @@
                             <th style="width:15%">
                                 แนบไฟล์
                             </th>
-
+                            <th>
+                                <button class=" btn btn-danger btn-sm" (click)="removeProject(i)"><i
+                                        class="ri-delete-bin-2-line"></i></button>
+                            </th>
                         </tr>
 
                     </thead>
@@ -58,13 +61,9 @@
                                         โครงการ/หลักสูตร
                                     </span>
 
-                                    <a class="text-primary ms-2" (click)="addExpense(project)">
-                                        [คลิก] เพิ่มค่าใช้จ่าย
-                                    </a>
 
-                                    <a class="text-danger ms-2" (click)="removeProject(i)">
-                                        [คลิก] ยกเลิกโครงการ
-                                    </a>
+
+
 
                                 </div>
 
@@ -132,14 +131,14 @@
 
 
                 <!-- TABLE ค่าใช้จ่าย -->
-
+                <br>
                 <div class="table-responsive">
-
-                    <table class="table table-bordered align-middle text-center mb-0">
+                    <button class="btn btn-primary btn-sm" (click)="addExpense(project)">เพิ่มค่าใช้จ่าย</button>
+                    <table class="table table-bordered  bg-light align-middle text-center mb-0">
 
                         <thead class="table-secondary small">
 
-                            <tr>
+                            <tr class="table-light">
 
                                 <th rowspan="2">ค่าใช้จ่าย</th>
                                 <th rowspan="2">ครั้ง/งาน</th>
@@ -156,7 +155,7 @@
 
                             </tr>
 
-                            <tr>
+                            <tr class="table-light">
 
                                 <th>ประเภท ก</th>
                                 <th>ประเภท ข</th>
@@ -237,7 +236,7 @@
                                 <td>
 
                                     <button class="btn btn-sm btn-outline-danger" (click)="removeExpense(project,j)">
-                                        ลบ
+                                        <i class="ri-delete-bin-line"></i>
                                     </button>
 
                                 </td>
@@ -264,7 +263,7 @@
                     </table>
 
                 </div>
-
+                <hr class="my-4">
             </div>
 
         </div>

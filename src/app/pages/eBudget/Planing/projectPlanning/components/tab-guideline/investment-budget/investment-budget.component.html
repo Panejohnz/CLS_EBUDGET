@@ -28,10 +28,9 @@
                             <th class="text-start">รายการ</th>
 
                             <th colspan="2">ราคา/นอกมาตรฐาน</th>
-
+                            <th colspan="2"></th>
+                            <th style="width:120px">จำนวนที่ขอ</th>
                             <th style="width:120px">ราคา/หน่วย</th>
-
-                            <th style="width:120px">จำนวนรวม</th>
 
                             <th style="width:150px">วงเงินค่ารวม</th>
 
@@ -49,6 +48,8 @@
                             <th style="width:70px">ใน</th>
                             <th style="width:70px">นอก</th>
 
+                            <th style="width:70px">ขอใหม่</th>
+                            <th style="width:70px">ทดแทน</th>
                             <th></th>
                             <th></th>
                             <th></th>
@@ -88,18 +89,24 @@
                                 <td>
                                     <input type="checkbox" class="form-check-input" [(ngModel)]="item.nonStandard">
                                 </td>
+                                <td>
+                                    <input type="radio" class="form-check-input" [(ngModel)]="item.new">
+                                </td>
 
-
+                                <td>
+                                    <input type="radio" class="form-check-input" [(ngModel)]="item.replace">
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control form-control-sm text-center"
+                                        [(ngModel)]="item.qty">
+                                </td>
                                 <td>
                                     <input type="number" class="form-control form-control-sm text-end"
                                         [(ngModel)]="item.price">
                                 </td>
 
 
-                                <td>
-                                    <input type="number" class="form-control form-control-sm text-center"
-                                        [(ngModel)]="item.qty">
-                                </td>
+
 
 
                                 <td class="text-end fw-bold">
@@ -179,11 +186,11 @@
                                 </td>
 
                             </tr>
-<br>
+                            <br>
                         </ng-container>
 
 
-                        
+
 
                     </tbody>
 

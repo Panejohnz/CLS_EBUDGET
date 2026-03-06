@@ -13,7 +13,11 @@ export class InvestmentBudgetComponent {
       standard: false,
       nonStandard: false,
       price: 0,
-      qty: 0
+      qty: 0,
+      new: false,
+      replace: false
+
+
     }
   ]
 

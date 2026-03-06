@@ -38,7 +38,9 @@ export class ProjectPlanningComponent {
       activity: 'อบรมการใช้ระบบสารสนเทศ',
       budgetType: 'งบดำเนินงาน',
       project: 'โครงการอบรมระบบใหม่',
-      budget: 50000
+      budget: 50000,
+      status_name: 'อนุมัติ',
+      status_id: 8
     },
     {
       id: 2,
@@ -48,7 +50,9 @@ export class ProjectPlanningComponent {
       activity: 'จัดทำสื่อประชาสัมพันธ์',
       budgetType: 'งบดำเนินงาน',
       project: 'โครงการประชาสัมพันธ์หน่วยงาน',
-      budget: 30000
+      budget: 30000,
+      status_name: 'ไม่อนุมัติ',
+      status_id: 7
     }
   ];
   allData: any[] = [];
@@ -66,7 +70,10 @@ export class ProjectPlanningComponent {
     , private authService: AuthenticationService,) {
   }
   ngOnInit(): void {
-
+    this.allData = Array.isArray(this.griddata)
+      ? this.griddata
+      : [];
+    this.griddata = [...this.allData];
   }
 
   filterSearch() {
@@ -150,6 +157,11 @@ export class ProjectPlanningComponent {
       'พัฒนาระบบฐานข้อมูล',
       'จัดประชุมเชิงปฏิบัติการ'
     ];
+    const status_name = [
+
+      'รออนุมัติ',
+    ]
+
     const budgetTypes = ['งบดำเนินงาน', 'งบลงทุน', 'งบรายจ่ายอื่น'];
 
     const newRow = {
@@ -160,7 +172,9 @@ export class ProjectPlanningComponent {
       activity: this.randomItem(activities),
       budgetType: this.randomItem(budgetTypes),
       project: 'โครงการ ' + Math.floor(Math.random() * 100),
-      budget: Math.floor(Math.random() * 90000) + 10000
+      budget: Math.floor(Math.random() * 90000) + 10000,
+      status_name: this.randomItem(status_name),
+      status_id: 2
     };
 
     this.griddata.push(newRow);
