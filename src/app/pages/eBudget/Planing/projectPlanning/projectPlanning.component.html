@@ -72,19 +72,14 @@
                                     {{data.budget | number:'1.2-2'}}
                                 </td>
                                 <td class="text-center">
-                                    <span style="width:100%; text-align:center;" [ngStyle]="{
-          'padding':'6px 12px',
-          'border-radius':'20px',
-          'font-size':'13px',
-          'font-weight':'500',
-          'border':'1px solid',
-          'display':'inline-block',
-          'color': data.status_id == 8 ? '#198754' : data.status_id == 7 ? '#dc3545' : '#b8860b',
-          'background-color': data.status_id == 8 ? '#e9f7ef' : data.status_id == 7 ? '#fdeaea' : '#fff8e1',
-          'border-color': data.status_id == 8 ? '#198754' : data.status_id == 7 ? '#dc3545' : '#ffc107'
-        }">
+                                    <span class="badge" [ngClass]="
+    data.status_id == 7 ? 'bg-danger' :
+    data.status_id == 2 ? 'bg-warning text-dark' :
+    data.status_id == 8 ? 'bg-success' : 'bg-secondary'
+  ">
                                         {{ data.status_name }}
                                     </span>
+
                                 </td>
                                 <td class="text-center">
                                     <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
