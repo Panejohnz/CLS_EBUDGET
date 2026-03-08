@@ -29,6 +29,7 @@ import { PublicRelationsComponent } from './projectPlanning/components/tab-guide
 import { InvestmentBudgetComponent } from './projectPlanning/components/tab-guideline/investment-budget/investment-budget.component';
 import { ConsultantHireComponent } from './projectPlanning/components/tab-guideline/consultant-hire/consultant-hire.component';
 import { OtherExpenseProjectComponent } from './projectPlanning/components/tab-guideline/other-expense-project/other-expense-project.component';
+import { TabCoordinatorComponent } from './projectPlanning/components/tab-coordinator/tab-coordinator.component';
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     url: 'https://httpbin.org/post',
     maxFilesize: 50,
@@ -46,7 +47,8 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
         PublicRelationsComponent,
         InvestmentBudgetComponent,
         ConsultantHireComponent,
-        OtherExpenseProjectComponent
+        OtherExpenseProjectComponent,
+        TabCoordinatorComponent
     ],
     imports: [
         CommonModule,

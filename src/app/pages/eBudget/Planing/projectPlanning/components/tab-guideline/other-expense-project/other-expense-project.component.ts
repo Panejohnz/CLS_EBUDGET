@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-other-expense-project',
@@ -6,6 +6,11 @@ import { Component } from '@angular/core';
   styleUrl: './other-expense-project.component.scss'
 })
 export class OtherExpenseProjectComponent {
+  @Input() modal: any;
+
+  closeModal() {
+    this.modal.dismiss();
+  }
   meetingCosts: any[] = [
     {
       name: 'ค่าเบื้ยเลี้ยง',
@@ -15,6 +20,12 @@ export class OtherExpenseProjectComponent {
     }
   ]
 
+  getTotal() {
+    return this.meetingCosts.reduce((sum, item) => {
+      const total = (item.times || 0) * (item.people || 0) * (item.rate || 0);
+      return sum + total;
+    }, 0);
+  }
   addCost() {
 
     this.meetingCosts.push({
@@ -30,5 +41,9 @@ export class OtherExpenseProjectComponent {
 
     this.meetingCosts.splice(i, 1)
 
+  }
+  save() {
+    basicAlert('success', 'บันทึกข้อมูลแล้ว', '')
+    this.modal.dismiss();
   }
 }

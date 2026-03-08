@@ -2,7 +2,7 @@
 
     <div class="card shadow-sm">
 
-        <div class="card-header bg-primary text-white fw-bold">
+        <div class="card-header bg-light fw-bold">
             แบบฟอร์มกำหนดตัวคูณของกิจกรรม
         </div>
 
@@ -15,7 +15,7 @@
 
                 <thead class="table-light text-center align-middle">
 
-                    <tr class="table-light text-white">
+                    <tr class="table-light ">
 
                         <th rowspan="2" style="width:60px">
                             ลำดับ
@@ -45,7 +45,7 @@
 
                     <tr *ngFor="let item of meetingCosts; let i=index">
 
-                        <td class="bg-dark text-white fw-bold">
+                        <td class="fw-bold">
                             {{i+1}}
                         </td>
 
@@ -141,7 +141,17 @@
                         </td>
 
                     </tr>
+                    <tr class="table-light fw-bold">
+                        <td colspan="20" class="text-end">
+                            รวมทั้งสิ้น
+                        </td>
 
+                        <td class="text-end">
+                            {{ getTotal() | number:'1.2-2' }}
+                        </td>
+
+                        <td></td>
+                    </tr>
                 </tbody>
 
             </table>
@@ -164,10 +174,12 @@
 
     <div class="d-flex justify-content-end mt-3 gap-2">
 
-        <button class="btn btn-primary">
-            ✔ ตกลง
+        <button class="btn btn-success" (click)="save()">
+            💾 บันทึก
         </button>
-
+        <button class="btn btn-light" (click)="closeModal()">
+            ยกเลิก
+        </button>
 
     </div>
 

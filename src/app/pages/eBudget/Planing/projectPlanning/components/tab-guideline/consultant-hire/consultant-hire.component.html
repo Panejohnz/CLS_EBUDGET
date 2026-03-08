@@ -2,7 +2,7 @@
 
     <div class="card shadow-sm">
 
-        <div class="card-header bg-primary text-white fw-bold">
+        <div class="card-header bg-light fw-bold">
             แบบฟอร์มค่าจ้างที่ปรึกษา
         </div>
 
@@ -20,7 +20,7 @@
 
             <table class="table table-bordered mb-3">
 
-                <thead class="table-secondary">
+                <thead class="table-light ">
                     <tr>
                         <th colspan="2" class="text-start">รายการ</th>
                         <th width="150">รวม</th>
@@ -291,5 +291,15 @@
         </div>
 
     </div>
+    <div class="d-flex justify-content-end mt-3 gap-2">
 
+        <button class="btn btn-success"  (click)="save()">
+            💾 บันทึก
+        </button>
+
+        <button class="btn btn-light" (click)="closeModal()">
+            ยกเลิก
+        </button>
+
+    </div>
 </div>

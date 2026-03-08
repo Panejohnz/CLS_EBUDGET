@@ -165,7 +165,7 @@
                     </li>
                     <li class="nav-item">
                         <button class="nav-link" [class.active]="currentTab === 5" (click)="goTab(5)">
-                            5. รายละเอียดโครงการ
+                            5. ผู้ประสานงาน
                         </button>
                     </li>
                 </ul>
@@ -177,6 +177,8 @@
 
                 <app-tab-guideline [hidden]="currentTab !== 4" [model]="project_planing">
                 </app-tab-guideline>
+                <app-tab-coordinator [hidden]="currentTab !== 5" [model]="project_planing">
+                </app-tab-coordinator>
             </div>
         </div>
 
@@ -184,13 +186,11 @@
 
     <div class="modal-footer">
         <button class="btn btn-success" (click)="savePlan(modal)">
-            บันทึก
+            💾 บันทึก
         </button>
-        <button class="btn btn-secondary" (click)="modal.dismiss()">
+        <button class="btn btn-light" (click)="modal.dismiss()">
             ยกเลิก
         </button>
-
-
     </div>
 
 </ng-template>

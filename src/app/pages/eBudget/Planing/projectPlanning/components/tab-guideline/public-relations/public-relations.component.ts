@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-public-relations',
@@ -6,6 +6,11 @@ import { Component } from '@angular/core';
   styleUrl: './public-relations.component.scss'
 })
 export class PublicRelationsComponent {
+  @Input() modal: any;
+
+  closeModal() {
+    this.modal.dismiss();
+  }
   prItems: any[] = [
     {
       name: '',
@@ -50,10 +55,9 @@ export class PublicRelationsComponent {
   }
 
   removeItem(i: number) {
-
-    this.prItems.splice(i, 1)
-
+    this.mainItems.splice(i, 1)
   }
+
   addSubItem(item: any) {
 
     item.subItems.push({
@@ -72,14 +76,30 @@ export class PublicRelationsComponent {
 
   }
   getMainTotal(main: any) {
+    return main.subItems.reduce((sum: number, sub: any) => {
+      const duration = Number(sub.duration) || 0;
+      const minute = Number(sub.minute) || 0;
+      const times = Number(sub.times) || 0;
+      const rate = Number(sub.rate) || 0;
 
-    let total = 0;
+      return sum + (duration * minute * times * rate);
+    }, 0);
+  }
+  calculateSubTotal(sub: any) {
+    const duration = Number(sub.duration) || 0;
+    const minute = Number(sub.minute) || 0;
+    const times = Number(sub.times) || 0;
+    const rate = Number(sub.rate) || 0;
 
-    main.subItems.forEach((s: any) => {
-      total += Number(s.total) || 0;
-    });
-
-    return total;
-
+    sub.total = duration * minute * times * rate;
+  }
+  getGrandTotal() {
+    return this.mainItems.reduce((sum: number, main: any) => {
+      return sum + this.getMainTotal(main);
+    }, 0);
+  }
+  save() {
+    basicAlert('success', 'บันทึกข้อมูลแล้ว', '')
+    this.modal.dismiss();
   }
 }

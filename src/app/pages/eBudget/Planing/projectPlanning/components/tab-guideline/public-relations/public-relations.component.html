@@ -3,7 +3,7 @@
     <!-- HEADER -->
     <div class="card shadow-sm">
 
-        <div class="card-header bg-primary text-white fw-bold">
+        <div class="card-header bg-light fw-bold">
             แบบฟอร์มค่าประชาสัมพันธ์
         </div>
 
@@ -92,7 +92,7 @@
                             </td>
 
                             <td class="text-end fw-bold">
-                                {{sub.total || 0 | number:'1.2-2'}}
+                                {{ (sub.duration * sub.minute * sub.times * sub.rate) || 0 | number:'1.2-2' }}
                             </td>
 
                             <td class="text-center">
@@ -120,7 +120,17 @@
                         </tr>
 
                     </ng-container>
+                    <tr class="table-light fw-bold">
+                        <td colspan="6" class="text-end">
+                            รวมทั้งสิ้น
+                        </td>
 
+                        <td class="text-end">
+                            {{ getGrandTotal() | number:'1.2-2' }}
+                        </td>
+
+                        <td></td>
+                    </tr>
                 </tbody>
 
             </table>
@@ -140,14 +150,14 @@
 
         <div class="d-flex justify-content-end mt-3 gap-2">
 
-            <button class="btn btn-primary">
+            <button class="btn btn-success" (click)="save()">
 
                 💾 บันทึก
 
             </button>
-
-
-
+            <button class="btn btn-light" (click)="closeModal()">
+                ยกเลิก
+            </button>
         </div>
 
     </div>

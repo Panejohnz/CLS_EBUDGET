@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-investment-budget',
@@ -6,7 +6,11 @@ import { Component } from '@angular/core';
   styleUrl: './investment-budget.component.scss'
 })
 export class InvestmentBudgetComponent {
-  totalBudget: any
+  @Input() modal: any;
+
+  closeModal() {
+    this.modal.dismiss();
+  }
   items: any[] = [
     {
       name: '',
@@ -20,7 +24,13 @@ export class InvestmentBudgetComponent {
 
     }
   ]
-
+  get totalBudget(): number {
+    return this.items.reduce((sum, item) => {
+      const qty = Number(item.qty) || 0;
+      const price = Number(item.price) || 0;
+      return sum + (qty * price);
+    }, 0);
+  }
   addItem() {
 
     this.items.push({
@@ -36,6 +46,22 @@ export class InvestmentBudgetComponent {
     })
 
   }
+  generateReplaceRows(item: any) {
+
+    const qty = Number(item.qty) || 0;
+
+    item.replaceList = [];
+
+    for (let i = 0; i < qty; i++) {
+
+      item.replaceList.push({
+        year: '',
+        assetNumber: ''
+      });
+
+    }
+
+  }
   onFileChange(event: any, index: number) {
 
     const files = event.target.files
@@ -47,5 +73,9 @@ export class InvestmentBudgetComponent {
 
     this.items.splice(i, 1)
 
+  }
+  save() {
+    basicAlert('success', 'บันทึกข้อมูลแล้ว', '')
+    this.modal.dismiss();
   }
 }

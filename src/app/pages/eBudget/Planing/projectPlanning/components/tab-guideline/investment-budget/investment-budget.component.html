@@ -83,7 +83,9 @@
 
 
                                 <td>
-                                    <input type="checkbox" class="form-check-input" [(ngModel)]="item.standard">
+                                    <input type="checkbox"
+                                        [checked]="item.name == '1'||item.name == '2'||item.name == '3'"
+                                        class="form-check-input" [(ngModel)]="item.standard">
                                 </td>
 
                                 <td>
@@ -101,7 +103,7 @@
                                 </td>
                                 <td>
                                     <input type="number" class="form-control form-control-sm text-center"
-                                        [(ngModel)]="item.qty">
+                                        [(ngModel)]="item.qty" (ngModelChange)="generateReplaceRows(item)">
                                 </td>
                                 <td>
                                     <input type="number" class="form-control form-control-sm text-end"
@@ -140,7 +142,51 @@
                                 </td>
 
                             </tr>
+                            <tr *ngIf="item.replaceList?.length > 0">
 
+                                <td colspan="11">
+
+                                    <table class="table table-sm table-bordered">
+
+                                        <thead class="table-light">
+
+                                            <tr>
+
+                                                <th style="width:80px">ลำดับ</th>
+
+                                                <th style="width:150px">ระยะเวลา (ปี)</th>
+
+                                                <th class="text-start">ทะเบียนครุภัณฑ์</th>
+
+                                            </tr>
+
+                                        </thead>
+
+                                        <tbody>
+
+                                            <tr *ngFor="let r of item.replaceList; let k=index">
+
+                                                <td>{{k+1}}</td>
+
+                                                <td>
+                                                    <input type="number" class="form-control form-control-sm"
+                                                        [(ngModel)]="r.year">
+                                                </td>
+
+                                                <td>
+                                                    <input class="form-control form-control-sm"
+                                                        [(ngModel)]="r.assetNumber">
+                                                </td>
+
+                                            </tr>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </td>
+
+                            </tr>
 
 
                             <tr>
@@ -180,6 +226,7 @@
                                 </td>
 
                             </tr>
+
                             <br>
                         </ng-container>
 
@@ -207,10 +254,12 @@
 
     <div class="d-flex justify-content-end mt-3 gap-2">
 
-        <button class="btn btn-primary">
+        <button class="btn btn-success" (click)="save()">
             💾 บันทึก
         </button>
-
+        <button class="btn btn-light" (click)="closeModal()">
+            ยกเลิก
+        </button>
     </div>
 
 </div>

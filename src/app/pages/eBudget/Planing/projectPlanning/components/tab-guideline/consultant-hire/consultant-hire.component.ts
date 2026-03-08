@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-consultant-hire',
@@ -7,6 +7,11 @@ import { Component } from '@angular/core';
   styleUrl: './consultant-hire.component.scss'
 })
 export class ConsultantHireComponent {
+  @Input() modal: any;
+
+  closeModal() {
+    this.modal.dismiss();
+  }
   mainStaff: any[] = []
   supportStaff: any[] = []
   otherCost: any[] = []
@@ -205,5 +210,9 @@ export class ConsultantHireComponent {
       (p.supportTotal || 0) +
       (p.otherTotal || 0)
 
+  }
+  save() {
+    basicAlert('success', 'บันทึกข้อมูลแล้ว', '')
+    this.modal.dismiss();
   }
 }

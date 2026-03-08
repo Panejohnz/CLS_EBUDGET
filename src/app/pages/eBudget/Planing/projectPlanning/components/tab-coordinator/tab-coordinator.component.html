@@ -1,0 +1,108 @@
+<div class="container-fluid mt-3">
+
+    <!-- หัวข้อ -->
+    <div class="mb-2 fw-bold text-primary">
+        ข้อมูลผู้ประสานงาน
+    </div>
+
+    <!-- ปุ่ม -->
+    <button class="btn btn-primary btn-sm" (click)="addContact()">
+        + เพิ่มรายการ
+    </button>
+
+    <!-- CARD -->
+    <div *ngFor="let item of items; let i=index">
+
+        <!-- CARD ผู้ประสานงาน -->
+        <div class="card shadow-sm mb-2">
+
+            <div class="card-header bg-light fw-bold d-flex justify-content-between align-items-center">
+
+                <span>ผู้ประสานงาน </span>
+
+                <button class="btn btn-sm btn-danger" (click)="removeContact(i)">
+                    🗑
+                </button>
+
+            </div>
+            <div class="card-body ">
+
+                <table class="table  table-sm align-middle text-start">
+
+                    <tr>
+                        <td style="width:60px">{{i+1}}</td>
+
+                        <td>
+                            <label>ชื่อ - สกุล</label>
+                            <input class="form-control form-control-sm" [(ngModel)]="item.name">
+                        </td>
+
+                        <td style="width:180px">
+                            <label>โทรศัพท์</label>
+                            <input class="form-control form-control-sm text-start" [(ngModel)]="item.phone">
+                        </td>
+
+                        <td style="width:250px">
+                            <label>Email address</label>
+                            <input class="form-control form-control-sm" [(ngModel)]="item.email">
+                        </td>
+                        <td style="width:180px">
+                            <label>โทรสาร</label>
+                            <input class="form-control form-control-sm text-start" [(ngModel)]="item.fax">
+                        </td>
+
+
+                    </tr>
+
+                </table>
+
+                <label>หน่วยงาน</label>
+
+                <select class="form-select form-select-sm" [(ngModel)]="item.department">
+
+                    <option>สำนักงานคณะกรรมการอาหารและยา</option>
+                    <option>สำนักงานปลัดกระทรวง</option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <!-- CARD ผู้เสนอโครงการ -->
+        <div class="card shadow-sm mb-3">
+
+            <div class="card-header bg-light fw-bold">
+                ผู้เสนอโครงการ
+            </div>
+
+            <div class="card-body ">
+
+                <div class="row g-2">
+
+                    <div class="col-md-9">
+
+                        <label>ชื่อ - สกุล</label>
+
+                        <input class="form-control form-control-sm" [(ngModel)]="item.proposer">
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <label>ตำแหน่ง</label>
+
+                        <input class="form-control form-control-sm" [(ngModel)]="item.position">
+
+                    </div>
+
+                </div>
+
+            </div>
+          
+        </div>
+  <hr class="my-4">
+    </div>
+
+</div>
