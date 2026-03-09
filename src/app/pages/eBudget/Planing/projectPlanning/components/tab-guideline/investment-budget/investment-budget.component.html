@@ -103,7 +103,12 @@
                                 </td>
                                 <td>
                                     <input type="number" class="form-control form-control-sm text-center"
-                                        [(ngModel)]="item.qty" (ngModelChange)="generateReplaceRows(item)">
+                                        [(ngModel)]="item.qty">
+
+                                    <button *ngIf="item.type=='replace'" class="btn btn-sm btn-outline-primary mt-1"
+                                        (click)="openReplacePopup(item)">
+                                        ระบุครุภัณฑ์
+                                    </button>
                                 </td>
                                 <td>
                                     <input type="number" class="form-control form-control-sm text-end"
@@ -142,51 +147,7 @@
                                 </td>
 
                             </tr>
-                            <tr *ngIf="item.replaceList?.length > 0">
 
-                                <td colspan="11">
-
-                                    <table class="table table-sm table-bordered">
-
-                                        <thead class="table-light">
-
-                                            <tr>
-
-                                                <th style="width:80px">ลำดับ</th>
-
-                                                <th style="width:150px">ระยะเวลา (ปี)</th>
-
-                                                <th class="text-start">ทะเบียนครุภัณฑ์</th>
-
-                                            </tr>
-
-                                        </thead>
-
-                                        <tbody>
-
-                                            <tr *ngFor="let r of item.replaceList; let k=index">
-
-                                                <td>{{k+1}}</td>
-
-                                                <td>
-                                                    <input type="number" class="form-control form-control-sm"
-                                                        [(ngModel)]="r.year">
-                                                </td>
-
-                                                <td>
-                                                    <input class="form-control form-control-sm"
-                                                        [(ngModel)]="r.assetNumber">
-                                                </td>
-
-                                            </tr>
-
-                                        </tbody>
-
-                                    </table>
-
-                                </td>
-
-                            </tr>
 
 
                             <tr>
@@ -263,3 +224,57 @@
     </div>
 
 </div>
+
+<ng-template #replaceModal let-modal>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">รายการครุภัณฑ์ที่ทดแทน</h5>
+            </div>
+
+            <div class="modal-body">
+
+                <table class="table table-bordered table-sm">
+
+                    <thead>
+                        <tr>
+                            <th width="80">ลำดับ</th>
+                            <th width="150">อายุการใช้งาน (ปี)</th>
+                            <th>ทะเบียนครุภัณฑ์</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr *ngFor="let r of selectedItem?.replaceList; let i=index">
+
+                            <td>{{i+1}}</td>
+
+                            <td>
+                                <input type="number" class="form-control form-control-sm" [(ngModel)]="r.year">
+                            </td>
+
+                            <td>
+                                <input class="form-control form-control-sm" [(ngModel)]="r.assetNumber">
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button class="btn btn-secondary" (click)="modal.dismiss()">
+                    ปิด
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+</ng-template>

@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-
+import { Component, Input, ViewChild } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'app-investment-budget',
   templateUrl: './investment-budget.component.html',
@@ -8,6 +8,8 @@ import { Component, Input } from '@angular/core';
 export class InvestmentBudgetComponent {
   @Input() modal: any;
 
+  constructor(private modalService: NgbModal) { }
+  @ViewChild('replaceModal') replaceModal: any;
   closeModal() {
     this.modal.dismiss();
   }
@@ -46,22 +48,7 @@ export class InvestmentBudgetComponent {
     })
 
   }
-  generateReplaceRows(item: any) {
 
-    const qty = Number(item.qty) || 0;
-
-    item.replaceList = [];
-
-    for (let i = 0; i < qty; i++) {
-
-      item.replaceList.push({
-        year: '',
-        assetNumber: ''
-      });
-
-    }
-
-  }
   onFileChange(event: any, index: number) {
 
     const files = event.target.files
@@ -74,6 +61,44 @@ export class InvestmentBudgetComponent {
     this.items.splice(i, 1)
 
   }
+  selectedItem: any;
+  generateReplaceRows(item: any) {
+
+    const qty = Number(item.qty) || 0;
+
+    if (!item.replaceList) {
+      item.replaceList = [];
+    }
+
+    while (item.replaceList.length < qty) {
+      item.replaceList.push({
+        year: '',
+        assetNumber: ''
+      });
+    }
+
+    while (item.replaceList.length > qty) {
+      item.replaceList.pop();
+    }
+
+  }
+  openReplacePopup(item: any) {
+
+    this.selectedItem = item;
+
+    const qty = Number(item.qty) || 0;
+    if (qty === 0) {
+      basicAlert('info', 'กรุณาระบุจำนวน', '');
+      return
+    }
+    if (!item.replaceList || item.replaceList.length !== qty) {
+      this.generateReplaceRows(item);
+    }
+
+    this.modalService.open(this.replaceModal, { size: 'lg' });
+
+  }
+
   save() {
     basicAlert('success', 'บันทึกข้อมูลแล้ว', '')
     this.modal.dismiss();

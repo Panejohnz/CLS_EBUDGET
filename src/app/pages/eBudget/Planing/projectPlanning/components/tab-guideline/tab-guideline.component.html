@@ -111,7 +111,8 @@
                                             </button>
 
                                             <button class="btn btn-sm btn-outline-secondary"
-                                                (click)="openMultiplierModal(fullDataModal)">
+                                                (click)="openMultiplierModal(fullDataModal)"
+                                                [disabled]="act.subActivities?.length > 0">
                                                 แบบฟอร์มตัวคูณ
                                             </button>
 

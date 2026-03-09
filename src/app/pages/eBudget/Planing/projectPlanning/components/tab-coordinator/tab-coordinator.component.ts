@@ -22,16 +22,12 @@ export class TabCoordinatorComponent {
   }
 
   addContact() {
-
     this.items.push({
       name: '',
       phone: '',
       email: '',
-      department: '',
-      proposer: '',
-      position: ''
+      fax: ''
     })
-
   }
 
   removeContact(i: number) {

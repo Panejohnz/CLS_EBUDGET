@@ -11,59 +11,73 @@
     </button>
 
     <!-- CARD -->
-    <div *ngFor="let item of items; let i=index">
+    <div>
 
         <!-- CARD ผู้ประสานงาน -->
         <div class="card shadow-sm mb-2">
 
             <div class="card-header bg-light fw-bold d-flex justify-content-between align-items-center">
+                <span>ผู้ประสานงาน</span>
 
-                <span>ผู้ประสานงาน </span>
-
-                <button class="btn btn-sm btn-danger" (click)="removeContact(i)">
-                    🗑
-                </button>
-
+                
             </div>
-            <div class="card-body ">
 
-                <table class="table  table-sm align-middle text-start">
+            <div class="card-body p-2">
 
-                    <tr>
-                        <td style="width:60px">{{i+1}}</td>
+                <div class="table-responsive">
 
-                        <td>
-                            <label>ชื่อ - สกุล</label>
-                            <input class="form-control form-control-sm" [(ngModel)]="item.name">
-                        </td>
+                    <table class="table table-sm table-bordered align-middle mb-0">
 
-                        <td style="width:180px">
-                            <label>โทรศัพท์</label>
-                            <input class="form-control form-control-sm text-start" [(ngModel)]="item.phone">
-                        </td>
+                        <thead class="table-light text-center">
+                            <tr>
+                                <th style="width:60px">ลำดับ</th>
+                                <th>ชื่อ - สกุล</th>
+                                <th style="width:160px">โทรศัพท์</th>
+                                <th style="width:240px">Email</th>
+                                <th style="width:160px">โทรสาร</th>
+                                <th style="width:60px"></th>
+                            </tr>
+                        </thead>
 
-                        <td style="width:250px">
-                            <label>Email address</label>
-                            <input class="form-control form-control-sm" [(ngModel)]="item.email">
-                        </td>
-                        <td style="width:180px">
-                            <label>โทรสาร</label>
-                            <input class="form-control form-control-sm text-start" [(ngModel)]="item.fax">
-                        </td>
+                        <tbody>
 
+                            <tr *ngFor="let item of items; let i=index">
 
-                    </tr>
+                                <td class="text-center">{{i+1}}</td>
 
-                </table>
+                                <td>
+                                    <input class="form-control form-control-sm" placeholder="ชื่อ - สกุล"
+                                        [(ngModel)]="item.name">
+                                </td>
 
-                <label>หน่วยงาน</label>
+                                <td>
+                                    <input class="form-control form-control-sm" placeholder="โทรศัพท์"
+                                        [(ngModel)]="item.phone">
+                                </td>
 
-                <select class="form-select form-select-sm" [(ngModel)]="item.department">
+                                <td>
+                                    <input class="form-control form-control-sm" placeholder="example@email.com"
+                                        [(ngModel)]="item.email">
+                                </td>
 
-                    <option>สำนักงานคณะกรรมการอาหารและยา</option>
-                    <option>สำนักงานปลัดกระทรวง</option>
+                                <td>
+                                    <input class="form-control form-control-sm" placeholder="โทรสาร"
+                                        [(ngModel)]="item.fax">
+                                </td>
 
-                </select>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-outline-danger" (click)="removeContact(i)">
+                                        🗑
+                                    </button>
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
 
             </div>
 
@@ -71,38 +85,38 @@
 
 
         <!-- CARD ผู้เสนอโครงการ -->
-        <div class="card shadow-sm mb-3">
 
-            <div class="card-header bg-light fw-bold">
-                ผู้เสนอโครงการ
-            </div>
+        <hr class="my-4">
+    </div>
+    <div class="card shadow-sm mb-3">
 
-            <div class="card-body ">
+        <div class="card-header bg-light fw-bold">
+            ผู้เสนอโครงการ
+        </div>
 
-                <div class="row g-2">
+        <div class="card-body ">
 
-                    <div class="col-md-9">
+            <div class="row g-2">
 
-                        <label>ชื่อ - สกุล</label>
+                <div class="col-md-9">
 
-                        <input class="form-control form-control-sm" [(ngModel)]="item.proposer">
+                    <label>ชื่อ - สกุล</label>
 
-                    </div>
+                    <input class="form-control form-control-sm">
 
-                    <div class="col-md-3">
+                </div>
 
-                        <label>ตำแหน่ง</label>
+                <div class="col-md-3">
 
-                        <input class="form-control form-control-sm" [(ngModel)]="item.position">
+                    <label>ตำแหน่ง</label>
 
-                    </div>
+                    <input class="form-control form-control-sm">
 
                 </div>
 
             </div>
-          
-        </div>
-  <hr class="my-4">
-    </div>
 
+        </div>
+
+    </div>
 </div>
