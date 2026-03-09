@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 interface Project {
   name: string
   location: string
@@ -23,6 +23,11 @@ export class TrainingSeminarComponent {
       expenses: [{}]
     }
   ]
+  @Input() modal: any;
+
+  closeModal() {
+    this.modal.dismiss();
+  }
   expenseTotal: number = 0;
   addProject() {
 
@@ -91,5 +96,9 @@ export class TrainingSeminarComponent {
       project.expenseTotal += exp.total || 0;
     });
     this.expenseTotal = project.expenseTotal
+  }
+  save() {
+    basicAlert('success', 'บันทึกข้อมูลแล้ว', '')
+    this.modal.dismiss();
   }
 }

@@ -236,14 +236,14 @@
         <button type="button" class="btn-close" (click)="modal.dismiss('Close click')"></button>
     </div>
 
-    <app-training-seminar *ngIf="type === 'seminar'" [model]="project_planing">
+    <app-training-seminar *ngIf="type === 'seminar'" [model]="project_planing" [modal]="modal">
     </app-training-seminar>
-    <app-public-relations *ngIf="type === 'pr'" [model]="project_planing">
+    <app-public-relations *ngIf="type === 'pr'" [model]="project_planing" [modal]="modal">
     </app-public-relations>
-    <app-investment-budget *ngIf="type === 'investment'" [model]="project_planing">
+    <app-investment-budget *ngIf="type === 'investment'" [model]="project_planing" [modal]="modal"> 
     </app-investment-budget>
     <app-consultant-hire *ngIf="type === 'consult'" [model]="project_planing" [modal]="modal">
     </app-consultant-hire>
-    <app-other-expense-project *ngIf="type === 'other'" [model]="project_planing">
+    <app-other-expense-project *ngIf="type === 'other'" [model]="project_planing" [modal]="modal">
     </app-other-expense-project>
 </ng-template>
