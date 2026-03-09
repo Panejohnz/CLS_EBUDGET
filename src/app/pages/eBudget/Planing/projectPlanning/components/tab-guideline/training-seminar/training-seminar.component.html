@@ -177,81 +177,83 @@
                             <tr *ngFor="let exp of project.expenses; let j = index">
 
                                 <td>
-
-                                    <select class="form-select form-select-sm">
+                                    <select class="form-select form-select-sm" [(ngModel)]="exp.name">
                                         <option>--- ค่าใช้จ่าย ---</option>
                                         <option>ค่าอาหาร</option>
                                         <option>ค่าที่พัก</option>
                                         <option>ค่าวิทยากร</option>
                                     </select>
-
                                 </td>
 
                                 <td>
-                                    <input type="number" class="form-control form-control-sm text-center">
+                                    <input type="number" class="form-control form-control-sm text-center"
+                                        [(ngModel)]="exp.times" (input)="calculateExpense(project)">
                                 </td>
 
                                 <td>
-                                    <input type="number" class="form-control form-control-sm text-center">
+                                    <input type="number" class="form-control form-control-sm text-center"
+                                        [(ngModel)]="exp.a" (input)="calculateExpense(project)">
                                 </td>
 
                                 <td>
-                                    <input type="number" class="form-control form-control-sm text-center">
+                                    <input type="number" class="form-control form-control-sm text-center"
+                                        [(ngModel)]="exp.b" (input)="calculateExpense(project)">
                                 </td>
 
                                 <td>
-                                    <input type="number" class="form-control form-control-sm text-center">
+                                    <input type="number" class="form-control form-control-sm text-center"
+                                        [(ngModel)]="exp.external" (input)="calculateExpense(project)">
                                 </td>
 
                                 <td>
-                                    <input type="number" class="form-control form-control-sm text-center">
+                                    <input type="number" class="form-control form-control-sm text-center"
+                                        [(ngModel)]="exp.person" (input)="calculateExpense(project)">
                                 </td>
 
                                 <td>
+                                    <input type="number" class="form-control form-control-sm text-center"
+                                        [(ngModel)]="exp.duration" (input)="calculateExpense(project)">
+                                </td>
 
-                                    <select class="form-select form-select-sm">
+                                <td>
+                                    <select class="form-select form-select-sm" [(ngModel)]="exp.durationUnit">
                                         <option>วัน</option>
                                         <option>มื้อ</option>
                                         <option>ชั่วโมง</option>
                                     </select>
-
                                 </td>
 
                                 <td>
-                                    <input type="number" class="form-control form-control-sm text-end">
+                                    <input type="number" class="form-control form-control-sm text-end"
+                                        [(ngModel)]="exp.rate" (input)="calculateExpense(project)">
                                 </td>
 
                                 <td>
-
                                     <select class="form-select form-select-sm">
                                         <option>บาท</option>
                                     </select>
-
                                 </td>
 
                                 <td class="text-success fw-bold text-end">
-                                    0.00
+                                    {{ exp.total | number:'1.2-2' }}
                                 </td>
 
                                 <td>
-
                                     <button class="btn btn-sm btn-outline-danger" (click)="removeExpense(project,j)">
                                         <i class="ri-delete-bin-line"></i>
                                     </button>
-
                                 </td>
 
                             </tr>
 
-
                             <tr class="table-light fw-bold">
 
-                                <td colspan="9" class="text-end">
+                                <td colspan="10" class="text-end">
                                     รวม
                                 </td>
 
                                 <td class="text-end">
-                                    0.00
+                                    {{ expenseTotal| number:'1.2-2' }}
                                 </td>
 
                                 <td></td>

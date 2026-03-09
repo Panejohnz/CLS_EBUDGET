@@ -23,6 +23,7 @@ export class TrainingSeminarComponent {
       expenses: [{}]
     }
   ]
+  expenseTotal: number = 0;
   addProject() {
 
     this.projects.push({
@@ -60,5 +61,35 @@ export class TrainingSeminarComponent {
       project.file = file
     }
 
+  }
+  calculateExpense(project: any) {
+
+    project.expenses.forEach((exp: any) => {
+
+      const times = exp.times || 0;
+
+      const totalPerson =
+        (exp.a || 0) +
+        (exp.b || 0) +
+        (exp.external || 0) +
+        (exp.person || 0);
+
+      const duration = exp.duration || 0;
+      const rate = exp.rate || 0;
+
+      exp.total = times * totalPerson * duration * rate;
+
+    });
+
+    this.calculateExpenseTotal(project);
+  }
+  calculateExpenseTotal(project: any) {
+
+    project.expenseTotal = 0;
+
+    project.expenses.forEach((exp: any) => {
+      project.expenseTotal += exp.total || 0;
+    });
+    this.expenseTotal = project.expenseTotal
   }
 }
