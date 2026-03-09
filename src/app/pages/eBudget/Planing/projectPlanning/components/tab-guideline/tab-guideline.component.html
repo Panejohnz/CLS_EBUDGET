@@ -48,15 +48,15 @@
                                         <div class="d-flex gap-3 mb-2">
 
                                             <div class="form-check m-0">
-                                                <input class="form-check-input" type="checkbox"
+                                                <input class="form-check-input" type="checkbox" id="not_money"
                                                     [(ngModel)]="act.noBudget">
-                                                <label class="form-check-label">ไม่ใช้งบ</label>
+                                                <label class="form-check-label" for="not_money">ไม่ใช้งบ</label>
                                             </div>
 
                                             <div class="form-check m-0">
-                                                <input class="form-check-input" type="checkbox"
+                                                <input class="form-check-input" type="checkbox" id="call"
                                                     [(ngModel)]="act.consult">
-                                                <label class="form-check-label">จ้างที่ปรึกษา</label>
+                                                <label class="form-check-label" for="call">จ้างที่ปรึกษา</label>
                                             </div>
 
                                         </div>
@@ -139,19 +139,17 @@
                                                 [(ngModel)]="sub.name">    </textarea>
 
                                             <div class="d-flex gap-3 mb-2">
-
                                                 <div class="form-check m-0">
-                                                    <input class="form-check-input" type="checkbox"
+                                                    <input class="form-check-input" type="checkbox" id="not_money_sub"
                                                         [(ngModel)]="sub.noBudget">
-                                                    <label class="form-check-label">ไม่ใช้งบ</label>
+                                                    <label class="form-check-label" for="not_money_sub">ไม่ใช้งบ</label>
                                                 </div>
 
                                                 <div class="form-check m-0">
-                                                    <input class="form-check-input" type="checkbox"
+                                                    <input class="form-check-input" type="checkbox" id="call_sub"
                                                         [(ngModel)]="sub.consult">
-                                                    <label class="form-check-label">จ้างที่ปรึกษา</label>
+                                                    <label class="form-check-label" for="call_sub">จ้างที่ปรึกษา</label>
                                                 </div>
-
                                             </div>
 
                                             <!-- ส่วนล่างกิจกรรมย่อย -->
@@ -240,7 +238,7 @@
     </app-training-seminar>
     <app-public-relations *ngIf="type === 'pr'" [model]="project_planing" [modal]="modal">
     </app-public-relations>
-    <app-investment-budget *ngIf="type === 'investment'" [model]="project_planing" [modal]="modal"> 
+    <app-investment-budget *ngIf="type === 'investment'" [model]="project_planing" [modal]="modal">
     </app-investment-budget>
     <app-consultant-hire *ngIf="type === 'consult'" [model]="project_planing" [modal]="modal">
     </app-consultant-hire>
