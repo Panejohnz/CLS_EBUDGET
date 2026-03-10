@@ -19,46 +19,24 @@ import { AuthenticationService } from 'src/app/core/services/auth.service';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-sing-off-planing',
+  selector: 'app-project-budget-proposal',
   providers: [GridJsService, DecimalPipe, EmonitorService],
-  templateUrl: './singOffPlaning.component.html',
+  templateUrl: './ProjectBudgetProposal.component.html',
   styles: ``
 })
-export class SingOffPlaningComponent {
+export class ProjectBudgetProposalComponent {
   constructor(private modalService: NgbModal, public service: GridJsService
     , private sortService: PaginationService, public serviceemo: EmonitorService
     , private authService: AuthenticationService,) {
   }
   allData: any[] = [];
-  griddata = [
-    {
-      selected: false,
-      department: 'สำนักยุทธศาสตร์',
-      plan: 'แผนพัฒนาระบบสารสนเทศ',
-      output: 'ระบบบริหารจัดการข้อมูล',
-      activity: 'พัฒนาระบบ Dashboard',
-      budgetType: 'งบดำเนินงาน',
-      project: 'ระบบข้อมูลกลาง',
-      budget: 250000,
-      status_id: 2,
-      status_name: 'รออนุมัติ'
-    },
-    {
-      selected: false,
-      department: 'กองแผนงาน',
-      plan: 'แผนพัฒนาบุคลากร',
-      output: 'อบรมเพิ่มทักษะ',
-      activity: 'อบรม Data Analytics',
-      budgetType: 'งบลงทุน',
-      project: 'พัฒนาศักยภาพบุคลากร',
-      budget: 120000,
-      status_id: 8,
-      status_name: 'อนุมัติแล้ว'
-    }
-  ];
+  griddata: any = []
   modalRef: any;
   total$!: Observable<number>;
-
+  project_budget = {
+    projectType: '',
+    Budget_Id: 0
+  };
   emptyplan: any = {
     Plan_Id: 0,
     Plan_Name: '',
@@ -86,13 +64,7 @@ export class SingOffPlaningComponent {
         .includes(keyword)
     );
   }
-  toggleAll(event: any) {
-    const checked = event.target.checked;
 
-    this.griddata.forEach(item => {
-      item.selected = checked;
-    });
-  }
   async CancelSignoff() {
     const userConfirmed = await confirmAlert('info', 'ต้องการ Cancel Singoff โครงการ ?', '');
 
@@ -117,6 +89,10 @@ export class SingOffPlaningComponent {
     });
   }
   deletePlan(data: any) {
+
+  }
+
+  saveTarget() {
 
   }
 }

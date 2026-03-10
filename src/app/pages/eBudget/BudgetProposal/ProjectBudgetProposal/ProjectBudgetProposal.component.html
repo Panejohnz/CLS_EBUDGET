@@ -15,12 +15,10 @@
                     </div>
 
                     <div>
-                        <button class="btn btn-light me-2" (click)="CancelSignoff()">
-                            Cancel Signoff
-                        </button>
 
-                        <button class="btn btn-success text-black" (click)="SignOff()">
-                            Signoff
+
+                        <button class="btn btn-success text-black" (click)="fullModal(fullDataModal,emptyplan)">
+                            เพิ่มคำขอ
                         </button>
                     </div>
 
@@ -29,9 +27,7 @@
                     <table class="table table-gridjs">
                         <thead>
                             <tr class="text-center">
-                                <th style="width:5%">
-                                    <input type="checkbox" (change)="toggleAll($event)">
-                                </th>
+
                                 <th style="width:5%">ลำดับ</th>
                                 <th style="width:10%">หน่วยงาน</th>
                                 <th style="width:15%">แผนงาน</th>
@@ -51,14 +47,12 @@
                             <tr>
 
                                 <!-- checkbox -->
-                                <td class="text-center">
-                                    <input type="checkbox" [(ngModel)]="data.selected">
-                                </td>
+
 
                                 <td class="text-center">{{$index + 1}}</td>
                                 <td class="text-center">{{data.department}}</td>
 
-                                <td >
+                                <td>
                                     {{data.plan }}
                                 </td>
 
@@ -125,7 +119,10 @@
                 </div>
             </div>
         </div>
-    </div><ng-template #fullDataModal let-modal>
+    </div>
+    <ng-template #fullDataModal let-modal>
+        <app-project-budget-proposal-add [model]="modal" [model]="project_budget">
+        </app-project-budget-proposal-add>
 
     </ng-template>
 </div>
