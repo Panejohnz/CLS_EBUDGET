@@ -14,19 +14,19 @@ import { GridJsModel } from '../../../tables/gridjs/gridjs.model';
 import { DecimalPipe } from '@angular/common';
 import { get } from 'lodash';
 import Swal from 'sweetalert2';
-import { EmonitorService } from 'src/app/core/services/emonitor.service';
+import { EbudgetService } from 'src/app/core/services/ebudget.service';
 import { AuthenticationService } from 'src/app/core/services/auth.service';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-sing-off-planing',
-  providers: [GridJsService, DecimalPipe, EmonitorService],
+  providers: [GridJsService, DecimalPipe, EbudgetService],
   templateUrl: './singOffPlaning.component.html',
   styles: ``
 })
 export class SingOffPlaningComponent {
   constructor(private modalService: NgbModal, public service: GridJsService
-    , private sortService: PaginationService, public serviceemo: EmonitorService
+    , private sortService: PaginationService, public serviceebud: EbudgetService
     , private authService: AuthenticationService,) {
   }
   allData: any[] = [];

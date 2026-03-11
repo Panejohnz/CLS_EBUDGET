@@ -26,98 +26,74 @@ export class SidebarComponent implements OnInit, OnDestroy {
   toggle: any = true;
   menuItems: MenuItem[] = [
 
-    // =========================
-    // หน้าหลัก
-    // =========================
     {
       label: 'หน้าหลัก',
       isTitle: true
     },
     {
       label: 'Dashboard',
-      icon: 'bx bx-home-alt',
+      icon: 'bx bx-home-circle',
       link: '/emonitorProject/Admindashboard'
     },
 
-    // =========================
-    // เจ้าหน้าที่
-    // =========================
     {
-      label: 'เจ้าหน้าที่',
+      label: 'ระบบวางแผน',
       isTitle: true
     },
     {
-      label: 'รายงานโครงการ',
-      icon: 'bx bx-check',
+      label: 'วางแผนโครงการ (Planing)',
+      icon: 'bx bx-task',
+      link: '/Planing'
+    },
+    {
+      label: 'Sign off โครงการ',
+      icon: 'bx bx-check-circle',
+      link: '/singOff'
+    },
+
+    {
+      label: 'ระบบจัดทำคำของบประมาณ',
+      isTitle: true
+    },
+    {
+      label: 'จัดทำคำของบประมาณ',
+      icon: 'bx bx-receipt',
+      link: '/ProjectBudgetProposal'
+    },
+    {
+      label: 'Sign off คำของบประมาณ',
+      icon: 'bx bx-check-shield',
       link: '/emonitorProject/admin_main'
     },
 
-    // =========================
-    // เจ้าหน้าที่หน่วยงาน
-    // =========================
     {
-      label: 'เจ้าหน้าที่หน่วยงาน',
+      label: 'ระบบจัดสรรงบประมาณ',
       isTitle: true
     },
     {
-      label: 'โครงการทั้งหมด',
-      icon: 'bx bx-clipboard',
-      link: '/emonitorProject/usermain'
+      label: 'จัดสรรงบประมาณ',
+      icon: 'bx bx-wallet',
+      link: '/ProjectBudgetProposal'
     },
 
-    // =========================
-    // รายงาน
-    // =========================
     {
-      label: 'รายงาน',
+      label: 'ระบบจัดทำแผนที่ปฎิบัติการ',
       isTitle: true
     },
     {
-      label: 'รายงานทั้งหมด',
-      link: '/emonitorProject/ReportMaster'
-    },
-
-    // =========================
-    // ข้อมูลกลาง
-    // =========================
-    {
-      label: 'ข้อมูลกลาง',
-      isTitle: true
-    },
-    {
-      label: 'กำหนดสิทธิ์เมนู',
-      icon: 'bx bx-poll',
+      label: 'งบประมาณที่ได้รับจัดสรร',
+      icon: 'bx bx-money',
       link: '/emonitorMaster/manageMenu'
     },
     {
-      label: 'กำหนดสิทธิ์ผู้ใช้งาน',
-      icon: 'bx bx-user-plus',
+      label: 'จัดทำแผนปฎิบัติการ',
+      icon: 'bx bx-edit-alt',
       link: '/emonitorMaster/managePerson'
     },
     {
-      label: 'ข้อมูลยุทธศาสตร์',
-      icon: 'bx bx-map',
+      label: 'Sign off แผนปฎิบัติการ',
+      icon: 'bx bx-check-double',
       link: '/emonitorMaster/manageStrategy'
-    },
-    {
-      label: 'ข้อมูลหน่วยงาน',
-      icon: 'bx bx-buildings',
-      link: '/emonitorMaster/manageDepartment'
-    },
-    {
-      label: 'หัวข้อเงินรายได้',
-      icon: 'bx bx-wallet',
-      link: '/emonitorMaster/manageBudgetTopic'
-    },
-    {
-      label: 'ประเภทเงินรายได้',
-      icon: 'bx bx-category',
-      link: '/emonitorMaster/manageBudgetOutType'
-    },
-    {
-      label: 'หมวดงบ',
-      icon: 'bx bx-pie-chart-alt-2',
-      link: '/emonitorMaster/manageBudgetType'
     }
 
   ];
@@ -399,6 +375,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
 
   toggleItem(item: any) {
+
     this.menuItems.forEach((menuItem: any) => {
 
       if (menuItem == item) {

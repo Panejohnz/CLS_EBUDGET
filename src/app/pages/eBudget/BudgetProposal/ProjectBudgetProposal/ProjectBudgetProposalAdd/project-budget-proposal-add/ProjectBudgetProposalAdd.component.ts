@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
+import { EbudgetService } from 'src/app/core/services/ebudget.service'
 @Component({
   selector: 'app-project-budget-proposal-add',
   templateUrl: './ProjectBudgetProposalAdd.component.html',
@@ -8,7 +8,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class ProjectBudgetProposalAddComponent {
   @Input() modal: any;
-  constructor(private modalService: NgbModal) { }
+  constructor(private modalService: NgbModal, public serviceebud: EbudgetService) { }
   closeModal() {
     this.modal.dismiss();
   }
@@ -24,7 +24,58 @@ export class ProjectBudgetProposalAddComponent {
       jul: 0, aug: 0, sep: 0
     }
   }
-  targetList: any[] = [];
+
+  unit = ''
+  isIndicator = false
+
+  targetList: any = [
+    {
+      oct: 0, nov: 0, dec: 0,
+      jan: 0, feb: 0, mar: 0,
+      apr: 0, may: 0, jun: 0,
+      jul: 0, aug: 0, sep: 0
+    }
+  ]
+
+
+  planOptions = [
+    { id: 1, name: 'แผนงาน 1' },
+    { id: 2, name: 'แผนงาน 2' }
+  ];
+
+  outputOptions = [
+    { id: 1, name: 'ผลผลิต 1' },
+    { id: 2, name: 'ผลผลิต 2' }
+  ];
+
+  mainDeptActivityOptions = [
+    { id: 1, name: 'กิจกรรมหลักกรม 1' },
+    { id: 2, name: 'กิจกรรมหลักกรม 2' }
+  ];
+
+  mainUnitActivityOptions = [
+    { id: 1, name: 'กิจกรรมหลักหน่วยงาน 1' },
+    { id: 2, name: 'กิจกรรมหลักหน่วยงาน 2' }
+  ];
+
+  subUnitActivityOptions = [
+    { id: 1, name: 'กิจกรรมรองหน่วยงาน 1' },
+    { id: 2, name: 'กิจกรรมรองหน่วยงาน 2' }
+  ];
+
+  subActivityOptions = [
+    { id: 1, name: 'กิจกรรมย่อย 1' },
+    { id: 2, name: 'กิจกรรมย่อย 2' }
+  ];
+  expenseItem: any = null
+  div_modal = false
+  div_list(expenseItem: any) {
+    this.div_modal = true
+  }
+  expenseOptions: any[] = [];
+  ngOnInit(): void {
+    this.Get_Dropdown_list()
+  }
   openTargetModal(content: any) {
 
     // ถ้ายังไม่มีรายการ ให้สร้าง default 1 รายการ
@@ -37,7 +88,27 @@ export class ProjectBudgetProposalAddComponent {
     });
 
   }
+  Get_Dropdown_list() {
+    let model = {
+      FUNC_CODE: "FUNC-GET_Mas_Expense_List"
+    };
 
+    this.serviceebud.GatewayGetData(model)
+      .subscribe((response: any) => {
+
+        if (response.RESULT == null) {
+
+          this.expenseOptions = Array.isArray(response.Mas_Expense_Lists)
+            ? response.Mas_Expense_Lists
+            : [];
+
+
+        } else {
+          basicAlert('warning', 'ผิดพลาด', '');
+        }
+
+      });
+  }
   addTargetRow() {
 
     this.targetList.push({
@@ -60,4 +131,19 @@ export class ProjectBudgetProposalAddComponent {
 
   }
 
+  formTitle: any
+
+  change_expense() {
+
+  }
+
+  modalRef: any
+
+  fullModal(modal: any) {
+    this.formTitle = this.expenseItem.Expense_Name
+    this.modalRef = this.modalService.open(modal, {
+      backdrop: 'static',
+      windowClass: 'modal-95'
+    })
+  }
 }

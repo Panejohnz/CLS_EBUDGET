@@ -21,6 +21,7 @@ import { SharedModule } from '../../../shared/shared.module';
 import { EmonitorMasterRoutingModule } from './BudgetProposal-rountion.module';
 import { ProjectBudgetProposalComponent } from './ProjectBudgetProposal/ProjectBudgetProposal.component';
 import { ProjectBudgetProposalAddComponent } from './ProjectBudgetProposal/ProjectBudgetProposalAdd/project-budget-proposal-add/ProjectBudgetProposalAdd.component';
+import { ExpenseListSalaryComponent } from './ProjectBudgetProposal/ProjectBudgetProposalAdd/expenseListSalary/expenseListSalary.component';
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     url: 'https://httpbin.org/post',
@@ -31,7 +32,8 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
 @NgModule({
     declarations: [
         ProjectBudgetProposalComponent,
-        ProjectBudgetProposalAddComponent
+        ProjectBudgetProposalAddComponent,
+        ExpenseListSalaryComponent
     ],
     imports: [
         CommonModule,

@@ -8,38 +8,77 @@
     <!-- ข้อมูลโครงการ -->
     <div class="row mb-3">
 
-        <div class="col-md-4">
+        <div class="col-md-3">
             <label class="form-label">แผนงาน</label>
-            <input class="form-control" [(ngModel)]="plan.projectName">
+            <select class="form-select" [(ngModel)]="plan.projectName">
+                <option value="">-- เลือกแผนงาน --</option>
+                <option *ngFor="let item of planOptions" [value]="item.id">
+                    {{ item.name }}
+                </option>
+            </select>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-3">
             <label class="form-label">ผลผลิต</label>
-            <input class="form-control" [(ngModel)]="plan.unit">
+            <select class="form-select" [(ngModel)]="plan.unit">
+                <option value="">-- เลือกผลผลิต --</option>
+                <option *ngFor="let item of outputOptions" [value]="item.id">
+                    {{ item.name }}
+                </option>
+            </select>
         </div>
 
-        <div class="col-md-4">
-            <label class="form-label">กิจกรรม</label>
-            <input type="number" class="form-control" [(ngModel)]="plan.totalTarget">
+        <div class="col-md-3">
+            <label class="form-label">กิจกรรมหลักกรม</label>
+            <select class="form-select" [(ngModel)]="plan.mainDeptActivity">
+                <option value="">-- เลือกกิจกรรมหลักกรม --</option>
+                <option *ngFor="let item of mainDeptActivityOptions" [value]="item.id">
+                    {{ item.name }}
+                </option>
+            </select>
         </div>
 
+        <div class="col-md-3">
+            <label class="form-label">กิจกรรมหลักหน่วยงาน</label>
+            <select class="form-select" [(ngModel)]="plan.mainUnitActivity">
+                <option value="">-- เลือกกิจกรรมหลักหน่วยงาน --</option>
+                <option *ngFor="let item of mainUnitActivityOptions" [value]="item.id">
+                    {{ item.name }}
+                </option>
+            </select>
+        </div>
     </div>
 
     <div class="row mb-3">
 
         <div class="col-md-4">
-            <label class="form-label">หมวดงบ</label>
-            <input class="form-control" [(ngModel)]="plan.projectName">
+            <label class="form-label">กิจกรรมรองหน่วยงาน</label>
+            <select class="form-select" [(ngModel)]="plan.subUnitActivity">
+                <option value="">-- เลือกกิจกรรมรองหน่วยงาน --</option>
+                <option *ngFor="let item of subUnitActivityOptions" [value]="item.id">
+                    {{ item.name }}
+                </option>
+            </select>
         </div>
 
         <div class="col-md-4">
-            <label class="form-label">หมวดค่าใช้จ่าย</label>
-            <input class="form-control" [(ngModel)]="plan.unit">
+            <label class="form-label">กิจกรรมย่อย</label>
+            <select class="form-select" [(ngModel)]="plan.subActivity">
+                <option value="">-- เลือกกิจกรรมย่อย --</option>
+                <option *ngFor="let item of subActivityOptions" [value]="item.id">
+                    {{ item.name }}
+                </option>
+            </select>
         </div>
 
         <div class="col-md-4">
-            <label class="form-label">รายการค่าใช้จ่าย</label>
-            <input type="number" class="form-control" [(ngModel)]="plan.totalTarget">
+            <label class="form-label">รายการค่าใช้จ่าย</label> <button (click)="fullModal(fullDataModal)">modal</button>
+            <select class="form-select" [(ngModel)]="expenseItem">
+                <option [ngValue]="null" disabled>-- เลือกรายการค่าใช้จ่าย --</option>
+                <option *ngFor="let item of expenseOptions" [ngValue]="item">
+                    {{ item.Expense_Name }}
+                </option>
+            </select>
         </div>
 
     </div>
@@ -58,140 +97,135 @@
     <ng-template #targetModal let-modal>
 
         <div class="modal-header">
-            <h5 class="modal-title">กำหนดเป้าหมายรายเดือน</h5>
+            <h5 class="modal-title">กำหนดเป้าหมาย</h5>
             <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
         </div>
 
         <div class="modal-body">
 
-            <div class="mb-3 text-start">
-                <button class="btn btn-success btn-sm" (click)="addTargetRow()">
-                    + เพิ่มเป้าหมาย
-                </button>
+            <!-- header -->
+            <div class="row align-items-end mb-3">
+
+                <div class="col-md-1">
+                    <label class="form-label">โปรดระบุ</label>
+
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">หน่วยนับ</label>
+                    <input class="form-control form-control-sm" [(ngModel)]="unit">
+                </div>
+
+                <div class="col-md-4 d-flex align-items-center gap-2 mt-3">
+                    <input type="checkbox" class="form-check-input" [(ngModel)]="isIndicator">
+                    <label class="form-check-label">เป้าหมายสำนักงบ</label>
+                </div>
+
             </div>
 
-            <!-- แสดงทีละรายการ -->
-            <div *ngFor="let item of targetList; let i = index" class="card mb-3">
 
-                <div class="card-header bg-light fw-bold">
-                    รายการ {{i+1}}
-                </div>
+            <!-- table -->
+            <div class="table-responsive">
 
-                <div class="card-body p-2">
+                <table class="table table-bordered text-center align-middle">
 
-                    <table class="table table-bordered text-center align-middle">
+                    <tbody>
 
-                        <thead class="table-light">
-                            <tr>
-                                <th>ไตรมาส</th>
-                                <th>ต.ค.</th>
-                                <th>พ.ย.</th>
-                                <th>ธ.ค.</th>
-                                <th>ม.ค.</th>
-                                <th>ก.พ.</th>
-                                <th>มี.ค.</th>
-                                <th>เม.ย.</th>
-                                <th>พ.ค.</th>
-                                <th>มิ.ย.</th>
-                                <th>ก.ค.</th>
-                                <th>ส.ค.</th>
-                                <th>ก.ย.</th>
-                            </tr>
-                        </thead>
+                        <!-- Q1 -->
+                        <tr>
+                            <td class="fw-bold text-start" style="width:120px">ไตรมาส 1</td>
 
-                        <tbody>
+                            <td>
+                                <small>ต.ค.</small>
+                                <input type="number" class="form-control form-control-sm"
+                                    [(ngModel)]="targetList[0].oct">
+                            </td>
 
-                            <tr>
-                                <td class="fw-bold">ไตรมาส 1</td>
+                            <td>
+                                <small>พ.ย.</small>
+                                <input type="number" class="form-control form-control-sm"
+                                    [(ngModel)]="targetList[0].nov">
+                            </td>
 
-                                <td><input type="number" class="form-control form-control-sm" [(ngModel)]="item.oct">
-                                </td>
-                                <td><input type="number" class="form-control form-control-sm" [(ngModel)]="item.nov">
-                                </td>
-                                <td><input type="number" class="form-control form-control-sm" [(ngModel)]="item.dec">
-                                </td>
+                            <td>
+                                <small>ธ.ค.</small>
+                                <input type="number" class="form-control form-control-sm"
+                                    [(ngModel)]="targetList[0].dec">
+                            </td>
+                        </tr>
 
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
+                        <!-- Q2 -->
+                        <tr>
+                            <td class="fw-bold text-start">ไตรมาส 2</td>
 
-                            <tr>
-                                <td class="fw-bold">ไตรมาส 2</td>
+                            <td>
+                                <small>ม.ค.</small>
+                                <input type="number" class="form-control form-control-sm"
+                                    [(ngModel)]="targetList[0].jan">
+                            </td>
 
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                            <td>
+                                <small>ก.พ.</small>
+                                <input type="number" class="form-control form-control-sm"
+                                    [(ngModel)]="targetList[0].feb">
+                            </td>
 
-                                <td><input type="number" class="form-control form-control-sm" [(ngModel)]="item.jan">
-                                </td>
-                                <td><input type="number" class="form-control form-control-sm" [(ngModel)]="item.feb">
-                                </td>
-                                <td><input type="number" class="form-control form-control-sm" [(ngModel)]="item.mar">
-                                </td>
+                            <td>
+                                <small>มี.ค.</small>
+                                <input type="number" class="form-control form-control-sm"
+                                    [(ngModel)]="targetList[0].mar">
+                            </td>
+                        </tr>
 
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
+                        <!-- Q3 -->
+                        <tr>
+                            <td class="fw-bold text-start">ไตรมาส 3</td>
 
-                            <tr>
-                                <td class="fw-bold">ไตรมาส 3</td>
+                            <td>
+                                <small>เม.ย.</small>
+                                <input type="number" class="form-control form-control-sm"
+                                    [(ngModel)]="targetList[0].apr">
+                            </td>
 
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                            <td>
+                                <small>พ.ค.</small>
+                                <input type="number" class="form-control form-control-sm"
+                                    [(ngModel)]="targetList[0].may">
+                            </td>
 
-                                <td><input type="number" class="form-control form-control-sm" [(ngModel)]="item.apr">
-                                </td>
-                                <td><input type="number" class="form-control form-control-sm" [(ngModel)]="item.may">
-                                </td>
-                                <td><input type="number" class="form-control form-control-sm" [(ngModel)]="item.jun">
-                                </td>
+                            <td>
+                                <small>มิ.ย.</small>
+                                <input type="number" class="form-control form-control-sm"
+                                    [(ngModel)]="targetList[0].jun">
+                            </td>
+                        </tr>
 
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
+                        <!-- Q4 -->
+                        <tr>
+                            <td class="fw-bold text-start">ไตรมาส 4</td>
 
-                            <tr>
-                                <td class="fw-bold">ไตรมาส 4</td>
+                            <td>
+                                <small>ก.ค.</small>
+                                <input type="number" class="form-control form-control-sm"
+                                    [(ngModel)]="targetList[0].jul">
+                            </td>
 
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                            <td>
+                                <small>ส.ค.</small>
+                                <input type="number" class="form-control form-control-sm"
+                                    [(ngModel)]="targetList[0].aug">
+                            </td>
 
-                                <td><input type="number" class="form-control form-control-sm" [(ngModel)]="item.jul">
-                                </td>
-                                <td><input type="number" class="form-control form-control-sm" [(ngModel)]="item.aug">
-                                </td>
-                                <td><input type="number" class="form-control form-control-sm" [(ngModel)]="item.sep">
-                                </td>
-                            </tr>
+                            <td>
+                                <small>ก.ย.</small>
+                                <input type="number" class="form-control form-control-sm"
+                                    [(ngModel)]="targetList[0].sep">
+                            </td>
+                        </tr>
 
-                        </tbody>
+                    </tbody>
 
-                    </table>
-
-                </div>
+                </table>
 
             </div>
 
@@ -224,3 +258,20 @@
     </button>
 
 </div>
+
+
+<ng-template #fullDataModal let-modal>
+    <div class="card shadow-sm bg-light">
+
+
+        <div class="modal-header">
+            <h5 class="card-title">
+                {{ formTitle }}
+            </h5>
+            <button type="button" class="btn-close" (click)="modal.dismiss();"></button>
+        </div>
+        <app-expense-list-salary [modal]="modal" [expenseItem]="expenseItem">
+        </app-expense-list-salary>
+
+    </div>
+</ng-template>

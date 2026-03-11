@@ -18,7 +18,7 @@ const httpOptions = {
 
 @Injectable({ providedIn: 'root' })
 
-export class EmonitorService {
+export class EbudgetService {
 
     user!: User;
     currentUserValue: any;
@@ -37,11 +37,11 @@ export class EmonitorService {
      GatewayGetData(model: any) {
         this.loadingService.show('กำลังดึงข้อมูล...');
   
-        if (!this.currentUserSubject || !this.currentUserSubject.value) {
+        // if (!this.currentUserSubject || !this.currentUserSubject.value) {
            
-            window.location.href = 'https://privus.fda.moph.go.th/';
-            return of(null);
-        }
+        //     window.location.href = 'https://privus.fda.moph.go.th/';
+        //     return of(null);
+        // }
         
        
         

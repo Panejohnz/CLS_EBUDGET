@@ -16,19 +16,19 @@ export const environment = {
     measurementId: ''
   },
 
-  GET_MasterData: 'https://localhost:44387/DataCenter/GET_MasterData',
+  GET_MasterData: 'https://localhost:44331/DataCenter/GET_MasterData',
   //emonitor Api
-  EMO_API: "https://localhost:44387/",
-  DownloadExamUrl: "https://localhost:44387/DownLoad_File/Download_File_TEMPLATE",
-  PreviewExamUrl: "https://localhost:44387/DownLoad_File/Preview_File_Template",
-  GET_AUTHEN: 'https://localhost:44387/GET_DATA/GET_AUTHEN',
+  EMO_API: "https://localhost:44331/",
+  DownloadExamUrl: "https://localhost:44331/DownLoad_File/Download_File_TEMPLATE",
+  PreviewExamUrl: "https://localhost:44331/DownLoad_File/Preview_File_Template",
+  GET_AUTHEN: 'https://localhost:44331/GET_DATA/GET_AUTHEN',
   // เพิ่ม endpoint สำหรับ menu
-  GET_MENU: 'https://localhost:44387/GET_DATA/GetMenu',
+  GET_MENU: 'https://localhost:44331/GET_DATA/GetMenu',
   //รายงาน
   EXPORT_REPORT: 'https://fdaemonitor.fda.moph.go.th/CLS_EMONITOR_KPI_REPORT/Report/Report_R002.aspx',
-// ----------------------------------------------------------------------
+  // ----------------------------------------------------------------------
 
- 
+
   // -----------------------------------------------------------------------------------------------------------------
 
 };
