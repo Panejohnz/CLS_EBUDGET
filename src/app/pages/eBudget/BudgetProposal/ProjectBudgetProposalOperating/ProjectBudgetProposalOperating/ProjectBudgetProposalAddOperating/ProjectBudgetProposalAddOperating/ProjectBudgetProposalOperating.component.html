@@ -233,12 +233,12 @@
 
         <div class="modal-footer">
 
-            <button class="btn btn-secondary" (click)="modal.dismiss()">
+            <button class="btn btn-light" (click)="modal.dismiss()">
                 ยกเลิก
             </button>
 
             <button class="btn btn-success" (click)="modal.close(targetList)">
-                บันทึก
+                💾 บันทึก
             </button>
 
         </div>
@@ -249,12 +249,12 @@
 
 <div class="modal-footer">
 
-    <button class="btn btn-secondary" (click)="modal.dismiss()">
+    <button class="btn btn-light" (click)="modal.dismiss()">
         ยกเลิก
     </button>
 
     <button class="btn btn-success" (click)="saveTarget()">
-        บันทึก
+        💾 บันทึก
     </button>
 
 </div>
@@ -270,8 +270,30 @@
             </h5>
             <button type="button" class="btn-close" (click)="modal.dismiss();"></button>
         </div>
-        <app-expense-list-salary [modal]="modal" [expenseItem]="expenseItem">
-        </app-expense-list-salary>
+        @if(expenseItem.Expense_Id == 9){
+        <app-expense-rent-house [modal]="modal" [expenseItem]="expenseItem">
+        </app-expense-rent-house>
+        }@else if(expenseItem.Expense_Id == 13){
+        <app-expense-ot [modal]="modal" [expenseItem]="expenseItem">
+        </app-expense-ot>
+        }@else if(expenseItem.Expense_Id == 17){
+        <app-expense-meeting-support [modal]="modal" [expenseItem]="expenseItem">
+        </app-expense-meeting-support>
+        }
+        @else if(expenseItem.Expense_Id == 18){
+        <app-expense-meeting-litigation [modal]="modal" [expenseItem]="expenseItem">
+        </app-expense-meeting-litigation>
+        }@else if(expenseItem.Expense_Id == 19){
+        <app-expense-committee [modal]="modal" [expenseItem]="expenseItem">
+        </app-expense-committee>
+        }
+        @else{
+        <app-expense-list-salary-Operating [modal]="modal" [expenseItem]="expenseItem">
+        </app-expense-list-salary-Operating>
+
+        }
+
+
 
     </div>
 </ng-template>

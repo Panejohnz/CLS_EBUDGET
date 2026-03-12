@@ -56,10 +56,31 @@ export class SidebarComponent implements OnInit, OnDestroy {
       isTitle: true
     },
     {
-      label: 'จัดทำคำของบประมาณ',
+      label: 'งบบุคลากร',
+      icon: 'bx bx-user',
+      link: '/ProjectBudgetProposal/Personnel'
+    },
+    {
+      label: 'งบดำเนินงาน',
+      icon: 'bx bx-cog',
+      link: '/ProjectBudgetProposal/Operating'
+    },
+    {
+      label: 'งบลงทุน',
+      icon: 'bx bx-trending-up',
+      link: '/ProjectBudgetProposal'
+    },
+    {
+      label: 'งบอุดหนุน',
+      icon: 'bx bx-donate-heart',
+      link: '/ProjectBudgetProposal'
+    },
+    {
+      label: 'งบรายจ่ายอื่น',
       icon: 'bx bx-receipt',
       link: '/ProjectBudgetProposal'
     },
+
     {
       label: 'Sign off คำของบประมาณ',
       icon: 'bx bx-check-shield',

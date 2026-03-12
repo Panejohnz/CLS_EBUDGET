@@ -1,0 +1,100 @@
+<div class="card bg-light">
+
+    <div class="card-header bg-light  fw-bold">
+        ค่าตอบแทนบุคคลหรือคณะกรรมการ
+    </div>
+
+    <div class="card-body">
+
+        <table class="table table-bordered align-middle text-center">
+
+            <thead class="table-secondary">
+
+                <tr>
+
+                    <th style="width:40%">รายการ</th>
+                    <th style="width:15%">ประเภทการจ้าง</th>
+                    <th style="width:10%">จำนวนคน</th>
+                    <th style="width:10%">จำนวนครั้ง</th>
+                    <th style="width:10%">อัตรา</th>
+                    <th style="width:15%">รวม</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngFor="let item of expenseList">
+
+                    <td class="text-start">
+                        {{item.name}}
+                    </td>
+
+                    <td>
+
+                        <select class="form-select" [(ngModel)]="item.type" (change)="updateRate(item)">
+
+                            <option value="">--เลือกประเภท--</option>
+
+                            <option value="president">
+                                ประธาน
+                            </option>
+
+                            <option value="committee">
+                                กรรมการ
+                            </option>
+
+                            <option value="subcommittee">
+                                คณะกรรม
+                            </option>
+
+                        </select>
+
+                    </td>
+
+                    <td>
+
+                        <input type="number" class="form-control text-center" [(ngModel)]="item.qty"
+                            (ngModelChange)="calculate(item)">
+
+                    </td>
+
+                    <td>
+
+                        <input type="number" class="form-control text-center" [(ngModel)]="item.times"
+                            (ngModelChange)="calculate(item)">
+
+                    </td>
+
+                    <td class="bg-light">
+
+                        {{item.rate | number}}
+
+                    </td>
+
+                    <td class="fw-bold">
+
+                        {{item.total | number:'1.2-2'}}
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+    <div class="card-footer text-end bg-light">
+
+        <button class="btn btn-success" (click)="save()">
+            💾 บันทึก
+        </button>
+        <button class="btn btn-light" (click)="closeModal()">
+            ยกเลิก
+        </button>
+
+    </div>
+
+</div>

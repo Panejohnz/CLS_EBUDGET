@@ -2,11 +2,11 @@ import { Component, Input } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EbudgetService } from 'src/app/core/services/ebudget.service'
 @Component({
-  selector: 'app-project-budget-proposal-add',
-  templateUrl: './ProjectBudgetProposalAdd.component.html',
+  selector: 'app-project-budget-proposal-add-Operating',
+  templateUrl: './ProjectBudgetProposalAddOperating.component.html',
   styles: ``
 })
-export class ProjectBudgetProposalAddComponent {
+export class ProjectBudgetProposalAddOperatingComponent {
   @Input() modal: any;
   constructor(private modalService: NgbModal, public serviceebud: EbudgetService) { }
   closeModal() {
@@ -90,7 +90,10 @@ export class ProjectBudgetProposalAddComponent {
   }
   Get_Dropdown_list() {
     let model = {
-      FUNC_CODE: "FUNC-GET_Mas_Expense_List"
+      FUNC_CODE: "FUNC-GET_Mas_Expense_List",
+      Mas_Expense_List: {
+        Fk_Expense_Type_Id: 2
+      }
     };
 
     this.serviceebud.GatewayGetData(model)

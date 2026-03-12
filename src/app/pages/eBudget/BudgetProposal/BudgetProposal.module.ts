@@ -1,5 +1,5 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbAccordionModule, NgbDropdownModule, NgbNavModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -19,9 +19,17 @@ import { defineElement } from '@lordicon/element';
 import lottie from 'lottie-web';
 import { SharedModule } from '../../../shared/shared.module';
 import { EmonitorMasterRoutingModule } from './BudgetProposal-rountion.module';
-import { ProjectBudgetProposalComponent } from './ProjectBudgetProposal/ProjectBudgetProposal.component';
-import { ProjectBudgetProposalAddComponent } from './ProjectBudgetProposal/ProjectBudgetProposalAdd/project-budget-proposal-add/ProjectBudgetProposalAdd.component';
-import { ExpenseListSalaryComponent } from './ProjectBudgetProposal/ProjectBudgetProposalAdd/expenseListSalary/expenseListSalary.component';
+import { ProjectBudgetProposalComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposal.component';
+import { ProjectBudgetProposalAddPersonnelComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposalAdd/ProjectBudgetProposalAdd/ProjectBudgetProposalAddPersonnel.component';
+import { ExpenseListSalaryComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposalAdd/expenseListSalary/expenseListSalary.component';
+import { ProjectBudgetProposalOperatingComponent } from './ProjectBudgetProposalOperating/ProjectBudgetProposalOperating/ProjectBudgetProposalOperating.component';
+import { ProjectBudgetProposalAddOperatingComponent } from './ProjectBudgetProposalOperating/ProjectBudgetProposalOperating/ProjectBudgetProposalAddOperating/ProjectBudgetProposalAddOperating/ProjectBudgetProposalOperating.component';
+import { ExpenseListSalaryOperatingComponent } from './ProjectBudgetProposalOperating/ProjectBudgetProposalOperating/ProjectBudgetProposalAddOperating/expenseListSalary/expenseListSalaryOperating.component';
+import { ExpenseRentHouseComponent } from './ProjectBudgetProposalOperating/ProjectBudgetProposalOperating/ProjectBudgetProposalAddOperating/expenseRentHouse/expenseRentHouse.component';
+import { ExpenseOTComponent } from './ProjectBudgetProposalOperating/ProjectBudgetProposalOperating/ProjectBudgetProposalAddOperating/expenseOT/expenseOT.component';
+import { ExpenseMeetingSupportComponent } from './ProjectBudgetProposalOperating/ProjectBudgetProposalOperating/ProjectBudgetProposalAddOperating/expenseMeetingSupport/expenseMeetingSupport.component';
+import { ExpenseMeetingLitigationComponent } from './ProjectBudgetProposalOperating/ProjectBudgetProposalOperating/ProjectBudgetProposalAddOperating/expenseMeetingLitigation/expenseMeetingLitigation.component';
+import { ExpenseCommitteeComponent } from './ProjectBudgetProposalOperating/ProjectBudgetProposalOperating/ProjectBudgetProposalAddOperating/expenseCommittee/expenseCommittee.component';
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     url: 'https://httpbin.org/post',
@@ -32,8 +40,16 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
 @NgModule({
     declarations: [
         ProjectBudgetProposalComponent,
-        ProjectBudgetProposalAddComponent,
-        ExpenseListSalaryComponent
+        ProjectBudgetProposalAddPersonnelComponent,
+        ExpenseListSalaryComponent,
+        ProjectBudgetProposalOperatingComponent,
+        ProjectBudgetProposalAddOperatingComponent,
+        ExpenseListSalaryOperatingComponent,
+        ExpenseRentHouseComponent,
+        ExpenseOTComponent,
+        ExpenseMeetingSupportComponent,
+        ExpenseMeetingLitigationComponent,
+        ExpenseCommitteeComponent
     ],
     imports: [
         CommonModule,
@@ -60,6 +76,7 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     ],
     providers: [
         provideNgxMask(),
+        DecimalPipe
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
