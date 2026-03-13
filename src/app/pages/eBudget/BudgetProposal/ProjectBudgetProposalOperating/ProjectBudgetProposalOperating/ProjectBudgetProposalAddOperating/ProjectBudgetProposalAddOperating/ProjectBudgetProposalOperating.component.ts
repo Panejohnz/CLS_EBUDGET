@@ -3,7 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EbudgetService } from 'src/app/core/services/ebudget.service'
 @Component({
   selector: 'app-project-budget-proposal-add-Operating',
-  templateUrl: './ProjectBudgetProposalAddOperating.component.html',
+  templateUrl: './ProjectBudgetProposalOperating.component.html',
   styles: ``
 })
 export class ProjectBudgetProposalAddOperatingComponent {

@@ -261,7 +261,7 @@
 
 
 <ng-template #fullDataModal let-modal>
-    <div class="card shadow-sm bg-light">
+    <div class="card shadow-sm ">
 
 
         <div class="modal-header">
@@ -286,7 +286,27 @@
         }@else if(expenseItem.Expense_Id == 19){
         <app-expense-committee [modal]="modal" [expenseItem]="expenseItem">
         </app-expense-committee>
+        }@else if(expenseItem.Expense_Id == 20){
+        <app-expense-car-allowance [modal]="modal" [expenseItem]="expenseItem">
+        </app-expense-car-allowance>
         }
+        @else if(expenseItem.Expense_Id == 21){
+        <app-expense-travel [modal]="modal" [expenseItem]="expenseItem">
+        </app-expense-travel>
+        }@else if(expenseItem.Expense_Id == 22){
+        <app-expense-training-seminar [modal]="modal" [expenseItem]="expenseItem">
+        </app-expense-training-seminar>
+        }@else if([23,32].includes(expenseItem.Expense_Id)){
+        <app-expense-office-rent [modal]="modal" [expenseItem]="expenseItem">
+        </app-expense-office-rent>
+        }@else if(expenseItem.Expense_Id == 24){
+        <app-expense-copier-rent [modal]="modal" [expenseItem]="expenseItem">
+        </app-expense-copier-rent>
+        }@else if ([25,26,27,28,29,30,31].includes(expenseItem.Expense_Id)) {
+        <app-expense-service-contract [modal]="modal" [expenseItem]="expenseItem">
+        </app-expense-service-contract>
+        }
+
         @else{
         <app-expense-list-salary-Operating [modal]="modal" [expenseItem]="expenseItem">
         </app-expense-list-salary-Operating>

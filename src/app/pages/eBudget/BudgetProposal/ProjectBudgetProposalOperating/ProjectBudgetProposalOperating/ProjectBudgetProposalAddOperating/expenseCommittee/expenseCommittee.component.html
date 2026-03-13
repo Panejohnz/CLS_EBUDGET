@@ -9,74 +9,70 @@
         <table class="table table-bordered align-middle text-center">
 
             <thead class="table-secondary">
-
                 <tr>
-
                     <th style="width:40%">รายการ</th>
-                    <th style="width:15%">ประเภทการจ้าง</th>
+                    <!-- <th style="width:15%">ประเภทการจ้าง</th> -->
                     <th style="width:10%">จำนวนคน</th>
                     <th style="width:10%">จำนวนครั้ง</th>
                     <th style="width:10%">อัตรา</th>
-                    <th style="width:15%">รวม</th>
-
+                    <th style="width:10%">รวม</th>
+                    <th style="width:5%"></th>
                 </tr>
-
             </thead>
 
-            <tbody>
+            <tbody *ngFor="let section of sections">
 
-                <tr *ngFor="let item of expenseList">
+                <!-- หัวข้อใหญ่ -->
+                <tr class="table-light fw-bold">
+                    <td colspan="7" class="text-start">
+                        {{section.title}}
 
-                    <td class="text-start">
-                        {{item.name}}
+                        <button class="btn btn-sm btn-primary float-end" (click)="addItem(section)">
+                            เพิ่มรายการ
+                        </button>
                     </td>
+                </tr>
+
+                <!-- รายการ -->
+                <tr *ngFor="let item of section.items">
+
+                    <!-- <td class="text-start">
+                        <input class="form-control" [(ngModel)]="item.name">
+                    </td> -->
 
                     <td>
-
                         <select class="form-select" [(ngModel)]="item.type" (change)="updateRate(item)">
 
-                            <option value="">--เลือกประเภท--</option>
-
-                            <option value="president">
-                                ประธาน
-                            </option>
-
-                            <option value="committee">
-                                กรรมการ
-                            </option>
-
-                            <option value="subcommittee">
-                                คณะกรรม
-                            </option>
+                            <option value="" selected disabled>--เลือกประเภท--</option>
+                            <option value="president">ประธาน</option>
+                            <option value="committee">กรรมการ</option>
+                            <option value="subcommittee">คณะกรรมการ</option>
 
                         </select>
-
                     </td>
 
                     <td>
-
                         <input type="number" class="form-control text-center" [(ngModel)]="item.qty"
                             (ngModelChange)="calculate(item)">
-
                     </td>
 
                     <td>
-
                         <input type="number" class="form-control text-center" [(ngModel)]="item.times"
                             (ngModelChange)="calculate(item)">
-
                     </td>
 
                     <td class="bg-light">
-
                         {{item.rate | number}}
-
                     </td>
 
                     <td class="fw-bold">
-
                         {{item.total | number:'1.2-2'}}
+                    </td>
 
+                    <td>
+                        <button class="btn btn-danger btn-sm" (click)="removeItem(section,item)">
+                            <i class="bx bx-trash" ></i>
+                        </button>
                     </td>
 
                 </tr>

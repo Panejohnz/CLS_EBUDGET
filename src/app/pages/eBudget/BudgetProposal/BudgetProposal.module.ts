@@ -30,6 +30,12 @@ import { ExpenseOTComponent } from './ProjectBudgetProposalOperating/ProjectBudg
 import { ExpenseMeetingSupportComponent } from './ProjectBudgetProposalOperating/ProjectBudgetProposalOperating/ProjectBudgetProposalAddOperating/expenseMeetingSupport/expenseMeetingSupport.component';
 import { ExpenseMeetingLitigationComponent } from './ProjectBudgetProposalOperating/ProjectBudgetProposalOperating/ProjectBudgetProposalAddOperating/expenseMeetingLitigation/expenseMeetingLitigation.component';
 import { ExpenseCommitteeComponent } from './ProjectBudgetProposalOperating/ProjectBudgetProposalOperating/ProjectBudgetProposalAddOperating/expenseCommittee/expenseCommittee.component';
+import { ExpenseCarAllowanceComponent } from './ProjectBudgetProposalOperating/ProjectBudgetProposalOperating/ProjectBudgetProposalAddOperating/expenseCarAllowance/expenseCarAllowance.component';
+import { ExpenseTravelComponent } from './ProjectBudgetProposalOperating/ProjectBudgetProposalOperating/ProjectBudgetProposalAddOperating/expenseTravel/expenseTravel.component';
+import { ExpenseTrainingSeminarComponent } from './ProjectBudgetProposalOperating/ProjectBudgetProposalOperating/ProjectBudgetProposalAddOperating/expenseTrainingSeminar/expenseTrainingSeminar.component';
+import { ExpenseOfficeRentComponent } from './ProjectBudgetProposalOperating/ProjectBudgetProposalOperating/ProjectBudgetProposalAddOperating/expenseOfficeRent/expenseOfficeRent.component';
+import { ExpenseCopierRentComponent } from './ProjectBudgetProposalOperating/ProjectBudgetProposalOperating/ProjectBudgetProposalAddOperating/expenseCopierRent/expenseCopierRent.component';
+import { ExpenseServiceContractComponent } from './ProjectBudgetProposalOperating/ProjectBudgetProposalOperating/ProjectBudgetProposalAddOperating/expenseServiceContract/expenseServiceContract.component';
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     url: 'https://httpbin.org/post',
@@ -49,7 +55,13 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
         ExpenseOTComponent,
         ExpenseMeetingSupportComponent,
         ExpenseMeetingLitigationComponent,
-        ExpenseCommitteeComponent
+        ExpenseCommitteeComponent,
+        ExpenseCarAllowanceComponent,
+        ExpenseTravelComponent,
+        ExpenseTrainingSeminarComponent,
+        ExpenseOfficeRentComponent,
+        ExpenseCopierRentComponent,
+        ExpenseServiceContractComponent
     ],
     imports: [
         CommonModule,
