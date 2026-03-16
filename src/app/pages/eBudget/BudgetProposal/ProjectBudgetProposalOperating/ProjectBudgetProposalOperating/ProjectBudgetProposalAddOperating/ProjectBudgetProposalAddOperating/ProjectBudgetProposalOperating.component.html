@@ -296,7 +296,7 @@
         }@else if(expenseItem.Expense_Id == 22){
         <app-expense-training-seminar [modal]="modal" [expenseItem]="expenseItem">
         </app-expense-training-seminar>
-        }@else if([23,32].includes(expenseItem.Expense_Id)){
+        }@else if([23].includes(expenseItem.Expense_Id)){
         <app-expense-office-rent [modal]="modal" [expenseItem]="expenseItem">
         </app-expense-office-rent>
         }@else if(expenseItem.Expense_Id == 24){
@@ -305,6 +305,9 @@
         }@else if ([25,26,27,28,29,30,31].includes(expenseItem.Expense_Id)) {
         <app-expense-service-contract [modal]="modal" [expenseItem]="expenseItem">
         </app-expense-service-contract>
+        }@else if ([32].includes(expenseItem.Expense_Id)) {
+        <app-expense-other [modal]="modal" [expenseItem]="expenseItem">
+        </app-expense-other>
         }
 
         @else{

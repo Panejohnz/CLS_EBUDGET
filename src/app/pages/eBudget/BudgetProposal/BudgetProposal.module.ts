@@ -36,6 +36,7 @@ import { ExpenseTrainingSeminarComponent } from './ProjectBudgetProposalOperatin
 import { ExpenseOfficeRentComponent } from './ProjectBudgetProposalOperating/ProjectBudgetProposalOperating/ProjectBudgetProposalAddOperating/expenseOfficeRent/expenseOfficeRent.component';
 import { ExpenseCopierRentComponent } from './ProjectBudgetProposalOperating/ProjectBudgetProposalOperating/ProjectBudgetProposalAddOperating/expenseCopierRent/expenseCopierRent.component';
 import { ExpenseServiceContractComponent } from './ProjectBudgetProposalOperating/ProjectBudgetProposalOperating/ProjectBudgetProposalAddOperating/expenseServiceContract/expenseServiceContract.component';
+import { ExpenseOtherComponent } from './ProjectBudgetProposalOperating/ProjectBudgetProposalOperating/ProjectBudgetProposalAddOperating/expenseOther/expenseOther.component';
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     url: 'https://httpbin.org/post',
@@ -61,7 +62,8 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
         ExpenseTrainingSeminarComponent,
         ExpenseOfficeRentComponent,
         ExpenseCopierRentComponent,
-        ExpenseServiceContractComponent
+        ExpenseServiceContractComponent,
+        ExpenseOtherComponent
     ],
     imports: [
         CommonModule,
