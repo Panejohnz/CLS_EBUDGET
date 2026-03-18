@@ -308,6 +308,9 @@
         }@else if ([32].includes(expenseItem.Expense_Id)) {
         <app-expense-other [modal]="modal" [expenseItem]="expenseItem">
         </app-expense-other>
+        }@else if(expenseItem.Expense_Id == 33){
+        <app-expense-vehicle-repair [modal]="modal" [expenseItem]="expenseItem">
+        </app-expense-vehicle-repair>
         }
 
         @else{
