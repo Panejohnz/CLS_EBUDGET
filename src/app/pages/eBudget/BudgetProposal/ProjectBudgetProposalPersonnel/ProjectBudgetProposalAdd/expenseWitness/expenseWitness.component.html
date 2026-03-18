@@ -1,0 +1,179 @@
+<div class="card shadow-sm">
+
+    <div class="card-body bg-light">
+
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle text-center bg-white mb-0">
+
+                <!-- HEADER -->
+                <thead class="table-secondary">
+                    <tr>
+                        <th rowspan="2" width="20%">รายการ</th>
+
+                        <th colspan="2">ผลการดำเนินงาน ปี 2568</th>
+
+                        <th colspan="3">ประมาณการค่าใช้จ่าย ปี 2570</th>
+
+                        <th rowspan="2" width="15%">
+                            ค่าใช้จ่ายต่อคดี (บาท)
+                        </th>
+
+                        <th rowspan="2" width="15%">
+                            รวมทั้งสิ้น (บาท)
+                        </th>
+                    </tr>
+
+                    <tr>
+                        <th>จำนวนคดี</th>
+                        <th>งบประมาณ</th>
+
+                        <th>คดี**</th>
+                        <th>คน</th>
+                        <th>ค่าตอบแทน (บาท)</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <!-- หัวข้อหลัก -->
+                    <tr>
+                        <td class="text-start fw-semibold">
+                            ค่าตอบแทนและค่าใช้จ่ายแก่พยาน
+                        </td>
+
+                        <td></td>
+                        <td></td>
+
+                        <td>
+                            <input type="number" class="form-control form-control-sm text-end"
+                                [(ngModel)]="main.case">
+                        </td>
+
+                        <td></td>
+                        <td></td>
+
+                        <td class="text-end fw-bold">
+                            {{main.costPerCase | number:'1.2-2'}}
+                        </td>
+
+                        <td class="text-end fw-bold">
+                            {{main.total | number:'1.2-2'}}
+                        </td>
+                    </tr>
+
+                    <!-- ขนาด S -->
+                    <tr>
+                        <td class="text-start ps-4">- ขนาดคดี S</td>
+
+                        <td></td>
+                        <td></td>
+
+                        <td>
+                            <input type="number" class="form-control form-control-sm text-end"
+                                [(ngModel)]="s.case"
+                                (input)="calculate()">
+                        </td>
+
+                        <td>
+                            <input type="number" class="form-control form-control-sm text-end"
+                                [(ngModel)]="s.person"
+                                (input)="calculate()">
+                        </td>
+
+                        <td>
+                            <input type="number" class="form-control form-control-sm text-end"
+                                [(ngModel)]="s.rate"
+                                (input)="calculate()">
+                        </td>
+
+                        <td class="text-end fw-bold">
+                            {{s.cost | number:'1.2-2'}}
+                        </td>
+
+                        <td class="text-end fw-bold">
+                            {{s.total | number:'1.2-2'}}
+                        </td>
+                    </tr>
+
+                    <!-- ขนาด M -->
+                    <tr>
+                        <td class="text-start ps-4">- ขนาดคดี M</td>
+
+                        <td></td>
+                        <td></td>
+
+                        <td>
+                            <input type="number" class="form-control form-control-sm text-end"
+                                [(ngModel)]="m.case"
+                                (input)="calculate()">
+                        </td>
+
+                        <td>
+                            <input type="number" class="form-control form-control-sm text-end"
+                                [(ngModel)]="m.person"
+                                (input)="calculate()">
+                        </td>
+
+                        <td>
+                            <input type="number" class="form-control form-control-sm text-end"
+                                [(ngModel)]="m.rate"
+                                (input)="calculate()">
+                        </td>
+
+                        <td class="text-end fw-bold">
+                            {{m.cost | number:'1.2-2'}}
+                        </td>
+
+                        <td class="text-end fw-bold">
+                            {{m.total | number:'1.2-2'}}
+                        </td>
+                    </tr>
+
+                    <!-- ขนาด L -->
+                    <tr>
+                        <td class="text-start ps-4">- ขนาดคดี L</td>
+
+                        <td></td>
+                        <td></td>
+
+                        <td>
+                            <input type="number" class="form-control form-control-sm text-end"
+                                [(ngModel)]="l.case"
+                                (input)="calculate()">
+                        </td>
+
+                        <td>
+                            <input type="number" class="form-control form-control-sm text-end"
+                                [(ngModel)]="l.person"
+                                (input)="calculate()">
+                        </td>
+
+                        <td>
+                            <input type="number" class="form-control form-control-sm text-end"
+                                [(ngModel)]="l.rate"
+                                (input)="calculate()">
+                        </td>
+
+                        <td class="text-end fw-bold">
+                            {{l.cost | number:'1.2-2'}}
+                        </td>
+
+                        <td class="text-end fw-bold">
+                            {{l.total | number:'1.2-2'}}
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <!-- <div class="card-footer text-end">
+        <button class="btn btn-success" (click)="save()">💾 บันทึก</button>
+        <button class="btn btn-light" (click)="closeModal()">✖ ปิดหน้าต่าง</button>
+    </div> -->
+
+</div>

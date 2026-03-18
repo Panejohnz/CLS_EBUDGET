@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h5 class="modal-title">กำหนดเป้าหมายโครงการ</h5>
+    <h5 class="modal-title">กำหนดเป้าหมาย23โครงการ</h5>
     <button type="button" class="btn-close" (click)="closeModal()"></button>
 </div>
 
@@ -8,7 +8,7 @@
     <!-- ข้อมูลโครงการ -->
     <div class="row mb-3">
 
-        <div class="col-md-3">
+        <div class="col-md-4">
             <label class="form-label">แผนงาน</label>
             <select class="form-select" [(ngModel)]="plan.projectName">
                 <option value="">-- เลือกแผนงาน --</option>
@@ -18,7 +18,7 @@
             </select>
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-4">
             <label class="form-label">ผลผลิต</label>
             <select class="form-select" [(ngModel)]="plan.unit">
                 <option value="">-- เลือกผลผลิต --</option>
@@ -28,8 +28,8 @@
             </select>
         </div>
 
-        <div class="col-md-3">
-            <label class="form-label">กิจกรรมหลักกรม</label>
+        <div class="col-md-4">
+            <label class="form-label">กิจกรรม</label>
             <select class="form-select" [(ngModel)]="plan.mainDeptActivity">
                 <option value="">-- เลือกกิจกรรมหลักกรม --</option>
                 <option *ngFor="let item of mainDeptActivityOptions" [value]="item.id">
@@ -38,23 +38,14 @@
             </select>
         </div>
 
-        <div class="col-md-3">
-            <label class="form-label">กิจกรรมหลักหน่วยงาน</label>
-            <select class="form-select" [(ngModel)]="plan.mainUnitActivity">
-                <option value="">-- เลือกกิจกรรมหลักหน่วยงาน --</option>
-                <option *ngFor="let item of mainUnitActivityOptions" [value]="item.id">
-                    {{ item.name }}
-                </option>
-            </select>
-        </div>
     </div>
 
     <div class="row mb-3">
 
         <div class="col-md-4">
-            <label class="form-label">กิจกรรมรองหน่วยงาน</label>
-            <select class="form-select" [(ngModel)]="plan.subUnitActivity">
-                <option value="">-- เลือกกิจกรรมรองหน่วยงาน --</option>
+            <label class="form-label">หมวดงบ</label>
+            <select disabled class="form-select" [(ngModel)]="plan.subUnitActivity">
+
                 <option *ngFor="let item of subUnitActivityOptions" [value]="item.id">
                     {{ item.name }}
                 </option>
@@ -62,9 +53,8 @@
         </div>
 
         <div class="col-md-4">
-            <label class="form-label">กิจกรรมย่อย</label>
-            <select class="form-select" [(ngModel)]="plan.subActivity">
-                <option value="">-- เลือกกิจกรรมย่อย --</option>
+            <label class="form-label">หมวดค่าใช้จ่าย</label>
+            <select disabled class="form-select" [(ngModel)]="plan.subActivity">
                 <option *ngFor="let item of subActivityOptions" [value]="item.id">
                     {{ item.name }}
                 </option>
@@ -72,13 +62,11 @@
         </div>
 
         <div class="col-md-4">
-            <label class="form-label">รายการค่าใช้จ่าย</label> <button (click)="fullModal(fullDataModal)">modal</button>
-            <select class="form-select" [(ngModel)]="expenseItem">
-                <option [ngValue]="null" disabled>-- เลือกรายการค่าใช้จ่าย --</option>
-                <option *ngFor="let item of expenseOptions" [ngValue]="item">
-                    {{ item.Expense_Name }}
-                </option>
-            </select>
+            <label class="form-label">รายการค่าใช้จ่าย</label>
+            <ng-select [items]="expenseOptions" bindLabel="Expense_Name" [(ngModel)]="expenseItem"
+                (ngModelChange)="onExpenseChange($event)" appendTo="body"
+                placeholder="-- กรุณาเลือกรายการค่าใช้จ่าย --">
+            </ng-select>
         </div>
 
     </div>
@@ -238,7 +226,7 @@
             </button>
 
             <button class="btn btn-success" (click)="modal.close(targetList)">
-               💾 บันทึก
+                💾 บันทึก
             </button>
 
         </div>
@@ -247,31 +235,101 @@
 
 </div>
 
-<div class="modal-footer">
+@if (expenseItem?.Expense_Id) {
 
-    <button class="btn btn-light" (click)="modal.dismiss()">
-        ยกเลิก
-    </button>
-
-    <button class="btn btn-success" (click)="saveTarget()">
-       💾 บันทึก
-    </button>
-
-</div>
+<div class="card shadow-sm bg-light">
 
 
-<ng-template #fullDataModal let-modal>
-    <div class="card shadow-sm bg-light">
+    <div class="modal-header">
+        <h5 class="card-title">
+            {{ formTitle }}
+        </h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss();"></button>
+    </div>
+    @if([1,2,3,4,5,6,8].includes(expenseItem.Expense_Id)){
+    <app-expense-list-salary [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-list-salary>
+    }
+    @else if(expenseItem.Expense_Id == 9){
+    <app-expense-rent-house [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-rent-house>
+    }@else if(expenseItem.Expense_Id == 13){
+    <app-expense-ot [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-ot>
+    }@else if(expenseItem.Expense_Id == 17){
+    <app-expense-meeting-support [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-meeting-support>
+    }
+    @else if(expenseItem.Expense_Id == 18){
+    <app-expense-meeting-litigation [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-meeting-litigation>
+    }@else if(expenseItem.Expense_Id == 19){
+    <app-expense-committee [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-committee>
+    }@else if(expenseItem.Expense_Id == 20){
+    <app-expense-car-allowance [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-car-allowance>
+    }
+    @else if(expenseItem.Expense_Id == 21){
+    <app-expense-travel [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-travel>
+    }@else if(expenseItem.Expense_Id == 22){
+    <app-expense-training-seminar [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-training-seminar>
+    }@else if([23].includes(expenseItem.Expense_Id)){
+    <app-expense-office-rent [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-office-rent>
+    }@else if(expenseItem.Expense_Id == 24){
+    <app-expense-copier-rent [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-copier-rent>
+    }@else if ([25,26,27,28,29,30,31].includes(expenseItem.Expense_Id)) {
+    <app-expense-service-contract [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-service-contract>
+    }@else if ([32].includes(expenseItem.Expense_Id)) {
+    <app-expense-other [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-other>
+    }@else if(expenseItem.Expense_Id == 33){
+    <app-expense-vehicle-repair [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-vehicle-repair>
+    }@else if(expenseItem.Expense_Id == 34){
+    <app-expense-repair-construction [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-repair-construction>
+    }@else if(expenseItem.Expense_Id == 35){
+    <app-expense-equipment-repair [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-equipment-repair>
+    }@else if(expenseItem.Expense_Id == 36){
+    <app-expense-advertising [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-advertising>
+    }@else if(expenseItem.Expense_Id == 37){
+    <app-expense-ceremonial [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-ceremonial>
+    }@else if(expenseItem.Expense_Id == 38){
+    <app-expense-witness [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-witness>
+    }@else if(expenseItem.Expense_Id == 39){
+    <app-expense-section61 [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-section61>
+    }
 
 
-        <div class="modal-header">
-            <h5 class="card-title">
-                {{ formTitle }}
-            </h5>
-            <button type="button" class="btn-close" (click)="modal.dismiss();"></button>
-        </div>
-        <app-expense-list-salary [modal]="modal" [expenseItem]="expenseItem">
-        </app-expense-list-salary>
+    @else{
+    <app-expense-list-salary-Operating [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-list-salary-Operating>
+
+    }
+
+
+    <div class="modal-footer">
+
+        <button class="btn btn-light" (click)="modal.dismiss()">
+            ยกเลิก
+        </button>
+
+        <button class="btn btn-success" (click)="saveTarget()">
+            💾 บันทึก
+        </button>
 
     </div>
-</ng-template>
+
+</div>
+}

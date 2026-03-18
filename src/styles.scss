@@ -194,3 +194,7 @@
     overflow-y: auto;
     flex: 1;
 }
+
+.ng-dropdown-panel {
+    z-index: 9999 !important;
+}

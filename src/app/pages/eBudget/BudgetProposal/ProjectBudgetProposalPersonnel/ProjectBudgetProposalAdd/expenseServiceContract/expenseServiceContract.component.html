@@ -1,0 +1,125 @@
+<div class="card shadow-sm">
+    <div class="card-body bg-light">
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered align-middle text-center bg-white">
+
+                <thead class="table-secondary">
+
+                    <tr>
+                        <th width="5%">ลำดับ</th>
+                        <th width="30%">รายการ</th>
+                        <th width="12%">จำนวน (บาท)</th>
+                        <th width="10%">จำนวน</th>
+                        <th width="10%">หน่วยนับ</th>
+                        <th width="10%">จำนวนเดือน</th>
+                        <th width="10%">รวมทั้งสิ้น</th>
+                        <th width="10%">แนบไฟล์</th>
+                        <th width="3%"></th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let item of items; let i = index">
+
+                        <td>{{i+1}}</td>
+
+                        <td>
+                            <input class="form-control form-control-sm" [(ngModel)]="item.name">
+                        </td>
+
+                        <td>
+                            <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.price"
+                                (input)="calculate(i)">
+                        </td>
+
+                        <td>
+                            <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.qty"
+                                (input)="calculate(i)">
+                        </td>
+
+                        <td>
+
+                            <select class="form-select form-select-sm" [(ngModel)]="item.unit">
+
+                                <option>คน</option>
+                                <option>งาน</option>
+                                <option>ครั้ง</option>
+
+                            </select>
+
+                        </td>
+
+                        <td>
+                            <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.month"
+                                (input)="calculate(i)">
+                        </td>
+
+                        <td class="text-end fw-bold">
+                            {{item.total | number:'1.2-2'}}
+                        </td>
+
+                        <td>
+
+                            <input type="file" class="form-control form-control-sm" (change)="uploadFile($event,i)">
+
+                        </td>
+
+                        <td>
+
+                            <button class="btn btn-danger btn-sm" (click)="removeItem(i)">
+                                🗑
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+                <tfoot class="table-light fw-bold">
+
+                    <tr>
+
+                        <td colspan="6" class="text-end">
+                            รวม
+                        </td>
+
+                        <td class="text-end">
+                            {{grandTotal | number:'1.2-2'}}
+                        </td>
+
+                        <td colspan="2"></td>
+
+                    </tr>
+
+                </tfoot>
+
+            </table>
+
+        </div>
+
+
+        <button class="btn btn-primary btn-sm mt-2" (click)="addItem()">
+            + เพิ่มรายการ
+        </button>
+
+        <span class="ms-2 text-danger">
+            จำนวน {{items.length}} รายการ
+        </span>
+
+    </div>
+    <!-- <div class="card-footer text-end">
+
+        <button class="btn btn-success" (click)="save()">
+            💾 บันทึก
+        </button>
+        <button class="btn btn-danger" (click)="closeModal()">
+            ✖ ปิดหน้าต่าง
+        </button>
+
+    </div> -->
+</div>

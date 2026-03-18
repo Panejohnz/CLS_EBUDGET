@@ -104,13 +104,48 @@ export class ProjectBudgetProposalAddPersonnelComponent {
           this.expenseOptions = Array.isArray(response.Mas_Expense_Lists)
             ? response.Mas_Expense_Lists
             : [];
-
-
+          this.subActivityOptions = response.Mas_Expense_Types.map((x: any) => ({
+            id: x.Expense_Type_Id,
+            name: x.Expense_Type_Name
+          }));
+          this.subUnitActivityOptions = response.Mas_Budget_Type.map((x: any) => ({
+            id: x.Budget_Type_Id,
+            name: x.Budget_Type_Name
+          }));
         } else {
           basicAlert('warning', 'ผิดพลาด', '');
         }
 
       });
+
+  }
+  onExpenseChange(item: any) {
+    if (!item) return;
+    let model = {
+      FUNC_CODE: "FUNC-GET_Mas_Sub_List",
+      Mas_Expense_Type: {
+        Fk_Budget_Type_Id: this.expenseItem.Expense_Id
+      },
+      Mas_Budget_Type: {
+        Budget_Type_Id: this.expenseItem.Expense_Id
+      }
+    };
+    this.serviceebud.GatewayGetData(model)
+      .subscribe((response: any) => {
+        this.subActivityOptions = (response.Mas_Expense_Types || []).map((x: any) => ({
+          id: x.Expense_Type_Id,
+          name: x.Expense_Type_Name
+        }));
+
+        this.subUnitActivityOptions = (response.Mas_Budget_Types || []).map((x: any) => ({
+          id: x.Budget_Type_Id,
+          name: x.Budget_Type_Name
+        }));
+
+        this.plan.subActivity = item.Fk_Expense_Type_Id;
+        this.plan.subUnitActivity = item.Fk_Budget_Type_Id;
+      })
+
   }
   addTargetRow() {
 

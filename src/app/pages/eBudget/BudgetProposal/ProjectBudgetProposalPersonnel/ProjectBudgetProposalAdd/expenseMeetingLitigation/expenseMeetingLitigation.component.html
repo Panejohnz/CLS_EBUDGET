@@ -1,0 +1,123 @@
+<div class="card bg-light">
+
+    <div class="card-header bg-light fw-bold">
+        ประมาณการค่าใช้จ่าย
+    </div>
+
+    <div class="card-body">
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered text-center align-middle bg-white">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th rowspan="2">รายการ</th>
+
+                        <th colspan="2">ผลการดำเนินงาน ปี {{year}}</th>
+
+                        <th rowspan="2">องค์ประชุม</th>
+
+                        <th rowspan="2">คน</th>
+
+                        <th colspan="3">เบี้ยประชุม (บาท)</th>
+
+                        <th rowspan="2">ค่าใช้จ่ายต่อคดี</th>
+
+                        <th rowspan="2">รวมทั้งสิ้น</th>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>จำนวนคดี</th>
+                        <th>งบประมาณ</th>
+
+                        <th>อัตรา</th>
+                        <th>ครั้ง</th>
+                        <th>รวม</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    <tr *ngFor="let row of meetingList">
+
+                        <td class="text-start">
+                            {{row.name}}
+                        </td>
+
+                        <td class="bg-light"> {{row.case}}</td>
+                        <td class="bg-light"> {{row.price}}</td>
+
+                        <!-- องค์ประชุม (กรอก) -->
+
+                        <td class="bg-info-subtle">
+
+                            <input type="number" class="form-control text-center" [(ngModel)]="row.committee"
+                                (ngModelChange)="calculate(row)">
+
+                        </td>
+
+                        <!-- คน (master data) -->
+
+                        <td class="bg-light">
+                            {{row.people}}
+                        </td>
+
+                        <!-- อัตรา -->
+
+                        <td class="bg-light">
+                            {{row.rate | number}}
+                        </td>
+
+                        <!-- ครั้ง -->
+
+                        <td class="bg-light">
+                            {{row.times}}
+                        </td>
+
+                        <!-- รวม -->
+
+                        <td class="bg-light fw-bold">
+                            {{row.meetingTotal | number:'1.2-2'}}
+                        </td>
+
+                        <!-- ค่าใช้จ่ายต่อคดี -->
+
+                        <td class="bg-light">
+                            {{row.caseCost | number:'1.2-2'}}
+                        </td>
+
+                        <!-- รวมทั้งสิ้น -->
+
+                        <td class="fw-bold">
+                            {{row.total | number:'1.2-2'}}
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- <div class="card-footer text-end bg-light">
+
+        <button class="btn btn-success" (click)="save()">
+            💾 บันทึก
+        </button>
+        <button class="btn btn-light" (click)="closeModal()">
+            ✖ ปิดหน้าต่าง
+        </button>
+
+    </div> -->
+</div>

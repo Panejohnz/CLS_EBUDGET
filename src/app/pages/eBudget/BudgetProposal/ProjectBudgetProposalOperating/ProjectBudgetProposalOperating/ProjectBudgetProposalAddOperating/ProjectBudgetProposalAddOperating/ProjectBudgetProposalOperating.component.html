@@ -29,7 +29,7 @@
         </div>
 
         <div class="col-md-3">
-            <label class="form-label">กิจกรรมหลักกรม</label>
+            <label class="form-label">กิจกรรม</label>
             <select class="form-select" [(ngModel)]="plan.mainDeptActivity">
                 <option value="">-- เลือกกิจกรรมหลักกรม --</option>
                 <option *ngFor="let item of mainDeptActivityOptions" [value]="item.id">
@@ -38,22 +38,14 @@
             </select>
         </div>
 
-        <div class="col-md-3">
-            <label class="form-label">กิจกรรมหลักหน่วยงาน</label>
-            <select class="form-select" [(ngModel)]="plan.mainUnitActivity">
-                <option value="">-- เลือกกิจกรรมหลักหน่วยงาน --</option>
-                <option *ngFor="let item of mainUnitActivityOptions" [value]="item.id">
-                    {{ item.name }}
-                </option>
-            </select>
-        </div>
+  
     </div>
 
     <div class="row mb-3">
 
         <div class="col-md-4">
-            <label class="form-label">กิจกรรมรองหน่วยงาน</label>
-            <select class="form-select" [(ngModel)]="plan.subUnitActivity">
+            <label class="form-label">หมวดงบ</label>
+            <select disabled class="form-select" [(ngModel)]="plan.subUnitActivity">
                 <option value="">-- เลือกกิจกรรมรองหน่วยงาน --</option>
                 <option *ngFor="let item of subUnitActivityOptions" [value]="item.id">
                     {{ item.name }}
@@ -62,8 +54,8 @@
         </div>
 
         <div class="col-md-4">
-            <label class="form-label">กิจกรรมย่อย</label>
-            <select class="form-select" [(ngModel)]="plan.subActivity">
+            <label class="form-label">หมวดค่าใช้จ่าย</label>
+            <select disabled class="form-select" [(ngModel)]="plan.subActivity">
                 <option value="">-- เลือกกิจกรรมย่อย --</option>
                 <option *ngFor="let item of subActivityOptions" [value]="item.id">
                     {{ item.name }}
@@ -311,7 +303,26 @@
         }@else if(expenseItem.Expense_Id == 33){
         <app-expense-vehicle-repair [modal]="modal" [expenseItem]="expenseItem">
         </app-expense-vehicle-repair>
+        }@else if(expenseItem.Expense_Id == 34){
+        <app-expense-repair-construction [modal]="modal" [expenseItem]="expenseItem">
+        </app-expense-repair-construction>
+        }@else if(expenseItem.Expense_Id == 35){
+        <app-expense-equipment-repair [modal]="modal" [expenseItem]="expenseItem">
+        </app-expense-equipment-repair>
+        }@else if(expenseItem.Expense_Id == 36){
+        <app-expense-advertising [modal]="modal" [expenseItem]="expenseItem">
+        </app-expense-advertising>
+        }@else if(expenseItem.Expense_Id == 37){
+        <app-expense-ceremonial [modal]="modal" [expenseItem]="expenseItem">
+        </app-expense-ceremonial>
+        }@else if(expenseItem.Expense_Id == 38){
+        <app-expense-witness [modal]="modal" [expenseItem]="expenseItem">
+        </app-expense-witness>
+        }@else if(expenseItem.Expense_Id == 39){
+        <app-expense-section61 [modal]="modal" [expenseItem]="expenseItem">
+        </app-expense-section61>
         }
+
 
         @else{
         <app-expense-list-salary-Operating [modal]="modal" [expenseItem]="expenseItem">
