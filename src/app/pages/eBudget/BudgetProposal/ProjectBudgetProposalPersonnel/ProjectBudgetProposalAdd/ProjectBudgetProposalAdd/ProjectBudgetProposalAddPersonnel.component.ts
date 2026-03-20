@@ -69,6 +69,21 @@ export class ProjectBudgetProposalAddPersonnelComponent {
   ];
   expenseItem: any = null
   div_modal = false
+  mapExpenseType(id: number): string {
+
+    const map: any = {
+      56: 'computer',
+      57: 'vehicle',
+      58: 'media',
+      59: 'household',
+      60: 'electric',
+      61: 'office',
+      62: 'innovation',
+      63: 'other'
+    };
+
+    return map[id] || 'other';
+  }
   div_list(expenseItem: any) {
     this.div_modal = true
   }
@@ -144,6 +159,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
 
         this.plan.subActivity = item.Fk_Expense_Type_Id;
         this.plan.subUnitActivity = item.Fk_Budget_Type_Id;
+        this.formTitle = item.Expense_Name
       })
 
   }
@@ -178,7 +194,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
   modalRef: any
 
   fullModal(modal: any) {
-    this.formTitle = this.expenseItem.Expense_Name
+
     this.modalRef = this.modalService.open(modal, {
       backdrop: 'static',
       windowClass: 'modal-95'

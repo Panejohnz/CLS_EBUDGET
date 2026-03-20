@@ -43,6 +43,15 @@ import { ExpenseAdvertisingComponent } from './ProjectBudgetProposalPersonnel/Pr
 import { ExpenseCeremonialComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposalAdd/expenseCeremonial/expenseCeremonial.component';
 import { ExpenseWitnessComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposalAdd/expenseWitness/expenseWitness.component';
 import { ExpenseSection61Component } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposalAdd/expenseSection61/expenseSection61.component';
+import { ExpenseOtherOperatingCostComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposalAdd/expenseOtherOperatingCost/expenseOtherOperatingCost.component';
+import { ExpenseOfficeSuppliesCostComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposalAdd/expenseOfficeSuppliesCost/expenseOfficeSuppliesCost.component';
+import { ExpenseFuelAndLubricantCostComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposalAdd/expenseFuelAndLubricantCost/expenseFuelAndLubricantCost.component';
+import { ExpenseConstructionMaterialCostComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposalAdd/expenseConstructionMaterialCost/expenseConstructionMaterialCost.component';
+import { ExpenseComputerMaterialCostComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposalAdd/expenseComputerMaterialCost/expenseComputerMaterialCost.component';
+import { ExpenseUtilityAndTelecomCostComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposalAdd/expenseUtilityAndTelecomCost/expenseUtilityAndTelecomCost.component';
+import { ExpenseSystemMaintenanceCostComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposalAdd/expenseSystemMaintenanceCost/expenseSystemMaintenanceCost.component';
+import { ExpenseCarRentalCostComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposalAdd/expenseCarRentalCost/expenseCarRentalCost.component';
+import { ExpenseAssetInvestmentFormComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposalAdd/expenseAssetInvestmentForm/expenseAssetInvestmentForm.component';
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     url: 'https://httpbin.org/post',
@@ -75,7 +84,16 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
         ExpenseAdvertisingComponent,
         ExpenseCeremonialComponent,
         ExpenseWitnessComponent,
-        ExpenseSection61Component
+        ExpenseSection61Component,
+        ExpenseOtherOperatingCostComponent,
+        ExpenseOfficeSuppliesCostComponent,
+        ExpenseFuelAndLubricantCostComponent,
+        ExpenseConstructionMaterialCostComponent,
+        ExpenseComputerMaterialCostComponent,
+        ExpenseUtilityAndTelecomCostComponent,
+        ExpenseSystemMaintenanceCostComponent,
+        ExpenseCarRentalCostComponent,
+        ExpenseAssetInvestmentFormComponent
     ],
     imports: [
         CommonModule,

@@ -309,14 +309,33 @@
     }@else if(expenseItem.Expense_Id == 39){
     <app-expense-section61 [modal]="modal" [expenseItem]="expenseItem">
     </app-expense-section61>
+    }@else if(expenseItem.Expense_Id == 40){
+    <app-expense-other-operating-cost [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-other-operating-cost>
+    }@else if([41,43,44,45,46,47,48].includes(expenseItem.Expense_Id)){
+    <app-expense-office-supplies-cost [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-office-supplies-cost>
+    } @else if([49,50,51,52,53].includes(expenseItem.Expense_Id)){
+    <app-expense-utility-and-telecom-cost [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-utility-and-telecom-cost>
+    }@else if(expenseItem.Expense_Id == 54){
+    <app-expense-system-maintenance-cost [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-system-maintenance-cost>
+    }@else if(expenseItem.Expense_Id == 55){
+    <app-expense-car-rental-cost [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-car-rental-cost>
+    }@else if(expenseItem.Expense_Id == 44){
+    <app-expense-computer-material-cost [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-computer-material-cost>
+    }@else if([56,57,58,59,60,61,62,63].includes(expenseItem.Expense_Id)){
+
+    <app-expense-asset-investment-form [modal]="modal" [expenseItem]="expenseItem"
+        [type]="mapExpenseType(expenseItem.Expense_Id)">
+    </app-expense-asset-investment-form>
+
     }
 
 
-    @else{
-    <app-expense-list-salary-Operating [modal]="modal" [expenseItem]="expenseItem">
-    </app-expense-list-salary-Operating>
-
-    }
 
 
     <div class="modal-footer">
