@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h5 class="modal-title">กำหนดเป้าหมาย23โครงการ</h5>
+    <h5 class="modal-title">กำหนดแผนงาน</h5>
     <button type="button" class="btn-close" (click)="closeModal()"></button>
 </div>
 
@@ -328,13 +328,25 @@
     <app-expense-computer-material-cost [modal]="modal" [expenseItem]="expenseItem">
     </app-expense-computer-material-cost>
     }@else if([56,57,58,59,60,61,62,63].includes(expenseItem.Expense_Id)){
-
     <app-expense-asset-investment-form [modal]="modal" [expenseItem]="expenseItem"
         [type]="mapExpenseType(expenseItem.Expense_Id)">
     </app-expense-asset-investment-form>
-
+    }@else if([65,66].includes(expenseItem.Expense_Id)){
+    <app-expense-construction-form [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-construction-form>
+    }@else if([67].includes(expenseItem.Expense_Id)){
+    <app-expense-foreign-travel [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-foreign-travel>
+    }@else if([68].includes(expenseItem.Expense_Id)){
+    <app-expense-witness-protection [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-witness-protection>
+    }@else if([69,75].includes(expenseItem.Expense_Id)){
+    <app-expense-consultant-hire [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-consultant-hire>
+    } @else if([72,71].includes(expenseItem.Expense_Id)){
+    <app-expense-grant-form [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-grant-form>
     }
-
 
 
 

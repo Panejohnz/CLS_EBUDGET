@@ -10,7 +10,7 @@ import { EbudgetService } from 'src/app/core/services/ebudget.service'
 export class ExpenseCarRentalCostComponent {
   tab: 'old' | 'new' = 'old';
 
-  // 🔥 แยก array
+  //  แยก array
   itemsOld = [this.createItem()];
   itemsNew = [this.createItem()];
 
@@ -34,7 +34,7 @@ export class ExpenseCarRentalCostComponent {
     };
   }
 
-  // 🔥 ใช้แทน items
+  //  ใช้แทน items
   getCurrentItems() {
     return this.tab === 'old' ? this.itemsOld : this.itemsNew;
   }

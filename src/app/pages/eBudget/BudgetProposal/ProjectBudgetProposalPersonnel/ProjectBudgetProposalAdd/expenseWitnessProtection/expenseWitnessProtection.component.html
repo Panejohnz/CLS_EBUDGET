@@ -1,0 +1,169 @@
+<div class="card shadow-sm">
+    <div class="card-body bg-light">
+
+        <div class="table-responsive">
+            <table class="table table-bordered text-center align-middle bg-white">
+
+                <thead class="table-secondary small">
+
+                    <tr>
+                        <th rowspan="3">รายการ</th>
+
+                        <th colspan="2">ผลการดำเนินงาน ปี 2568</th>
+
+                        <th colspan="8">ประมาณการค่าใช้จ่าย ปี 2570</th>
+
+                        <th rowspan="3">ค่าใช้จ่ายต่อคดี (บาท)</th>
+                        <th rowspan="3">รวมทั้งสิ้น (บาท)</th>
+                    </tr>
+
+                    <tr>
+                        <th>จำนวนคดี</th>
+                        <th>งบประมาณ</th>
+
+                        <th>คดี</th>
+                        <th>คน</th>
+
+                        <th colspan="3">ค่าเบี้ยเลี้ยง</th>
+                        <th colspan="3">ที่พัก</th>
+
+                        <th>ค่าใช้จ่ายอื่น</th>
+                    </tr>
+
+                    <tr>
+                        <th></th>
+                        <th></th>
+
+                        <th></th>
+                        <th></th>
+
+                        <th>อัตรา</th>
+                        <th>วัน</th>
+                        <th>จำนวน</th>
+
+                        <th>อัตรา</th>
+                        <th>วัน</th>
+                        <th>จำนวน</th>
+
+                        <th></th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <!-- HEADER -->
+                    <tr class="fw-bold">
+                        <td>ค่าใช้จ่ายในการคุ้มครองพยาน</td>
+                        <td></td>
+                        <td></td>
+                        <td class="bg-light">{{main.case}}</td>
+                        <td></td>
+                        <td colspan="6"></td>
+
+                        <td class="text-end">
+                            {{main.costPerCase | number:'1.2-2'}}
+                        </td>
+
+                        <td class="text-end">
+                            {{main.total | number:'1.2-2'}}
+                        </td>
+                    </tr>
+
+                    <!-- S -->
+                    <tr>
+                        <td class="text-start">- ขนาดคดี S</td>
+                        <td></td>
+                        <td></td>
+
+                        <td><input type="number" [(ngModel)]="s.case" (input)="calculateAll()"
+                                class="form-control form-control-sm text-end"></td>
+                        <td><input type="number" [(ngModel)]="s.person" (input)="calculateAll()"
+                                class="form-control form-control-sm text-end"></td>
+
+                        <td><input type="number" [(ngModel)]="s.allowanceRate" (input)="calculateAll()"
+                                class="form-control form-control-sm text-end"></td>
+                        <td><input type="number" [(ngModel)]="s.allowanceDay" (input)="calculateAll()"
+                                class="form-control form-control-sm text-end"></td>
+                        <td class="text-end">{{s.allowanceTotal | number:'1.2-2'}}</td>
+
+                        <td><input type="number" [(ngModel)]="s.hotelRate" (input)="calculateAll()"
+                                class="form-control form-control-sm text-end"></td>
+                        <td><input type="number" [(ngModel)]="s.hotelDay" (input)="calculateAll()"
+                                class="form-control form-control-sm text-end"></td>
+                        <td class="text-end">{{s.hotelTotal | number:'1.2-2'}}</td>
+
+                        <td><input type="number" [(ngModel)]="s.other" (input)="calculateAll()"
+                                class="form-control form-control-sm text-end"></td>
+
+                        <td class="text-end">{{s.costPerCase | number:'1.2-2'}}</td>
+                        <td class="text-end">{{s.total | number:'1.2-2'}}</td>
+                    </tr>
+
+                    <!-- M -->
+                    <tr>
+                        <td class="text-start">- ขนาดคดี M</td>
+                        <td></td>
+                        <td></td>
+
+                        <td><input type="number" [(ngModel)]="m.case" (input)="calculateAll()"
+                                class="form-control form-control-sm text-end"></td>
+                        <td><input type="number" [(ngModel)]="m.person" (input)="calculateAll()"
+                                class="form-control form-control-sm text-end"></td>
+
+                        <td><input type="number" [(ngModel)]="m.allowanceRate" (input)="calculateAll()"
+                                class="form-control form-control-sm text-end"></td>
+                        <td><input type="number" [(ngModel)]="m.allowanceDay" (input)="calculateAll()"
+                                class="form-control form-control-sm text-end"></td>
+                        <td class="text-end">{{m.allowanceTotal | number:'1.2-2'}}</td>
+
+                        <td><input type="number" [(ngModel)]="m.hotelRate" (input)="calculateAll()"
+                                class="form-control form-control-sm text-end"></td>
+                        <td><input type="number" [(ngModel)]="m.hotelDay" (input)="calculateAll()"
+                                class="form-control form-control-sm text-end"></td>
+                        <td class="text-end">{{m.hotelTotal | number:'1.2-2'}}</td>
+
+                        <td><input type="number" [(ngModel)]="m.other" (input)="calculateAll()"
+                                class="form-control form-control-sm text-end"></td>
+
+                        <td class="text-end">{{m.costPerCase | number:'1.2-2'}}</td>
+                        <td class="text-end">{{m.total | number:'1.2-2'}}</td>
+                    </tr>
+
+                    <!-- L -->
+                    <tr>
+                        <td class="text-start">- ขนาดคดี L</td>
+                        <td></td>
+                        <td></td>
+
+                        <td><input type="number" [(ngModel)]="l.case" (input)="calculateAll()"
+                                class="form-control form-control-sm text-end"></td>
+                        <td><input type="number" [(ngModel)]="l.person" (input)="calculateAll()"
+                                class="form-control form-control-sm text-end"></td>
+
+                        <td><input type="number" [(ngModel)]="l.allowanceRate" (input)="calculateAll()"
+                                class="form-control form-control-sm text-end"></td>
+                        <td><input type="number" [(ngModel)]="l.allowanceDay" (input)="calculateAll()"
+                                class="form-control form-control-sm text-end"></td>
+                        <td class="text-end">{{l.allowanceTotal | number:'1.2-2'}}</td>
+
+                        <td><input type="number" [(ngModel)]="l.hotelRate" (input)="calculateAll()"
+                                class="form-control form-control-sm text-end"></td>
+                        <td><input type="number" [(ngModel)]="l.hotelDay" (input)="calculateAll()"
+                                class="form-control form-control-sm text-end"></td>
+                        <td class="text-end">{{l.hotelTotal | number:'1.2-2'}}</td>
+
+                        <td><input type="number" [(ngModel)]="l.other" (input)="calculateAll()"
+                                class="form-control form-control-sm text-end"></td>
+
+                        <td class="text-end">{{l.costPerCase | number:'1.2-2'}}</td>
+                        <td class="text-end">{{l.total | number:'1.2-2'}}</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+</div>

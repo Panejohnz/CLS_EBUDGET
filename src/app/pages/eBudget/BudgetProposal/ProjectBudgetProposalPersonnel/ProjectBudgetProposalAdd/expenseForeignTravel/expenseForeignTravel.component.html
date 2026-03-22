@@ -1,0 +1,169 @@
+<div class="card shadow-sm">
+
+    <div class="card-body">
+
+        <!-- 🔥 ส่วนบน -->
+        <div class="mb-3">
+            <label class="fw-semibold">รายการ</label>
+            <input class="form-control" [(ngModel)]="main.title">
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label>เหตุผลความจำเป็น</label>
+                <textarea class="form-control" [(ngModel)]="main.reason"></textarea>
+            </div>
+
+            <div class="col-md-4">
+                <label>กลุ่มเป้าหมาย</label>
+                <textarea class="form-control" [(ngModel)]="main.target"></textarea>
+            </div>
+
+            <div class="col-md-4">
+                <label>ผลประโยชน์ที่จะได้รับ</label>
+                <textarea class="form-control" [(ngModel)]="main.benefit"></textarea>
+            </div>
+        </div>
+
+        <!-- 🔥 TABLE -->
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle text-center">
+
+                <thead style="background:#6c757d; color:white;">
+                    <tr>
+                        <th>ลำดับ</th>
+                        <th>รายการ</th>
+                        <th>ครั้ง/รุ่น</th>
+                        <th>จำนวนคน</th>
+                        <th>จำนวนวัน</th>
+                        <th>อัตราที่ตั้ง</th>
+                        <th>รวม (บาท)</th>
+                        <th>ประเภทการประชุม</th>
+                        <th>หนังสือเชิญ</th>
+                        <th>ประเทศ</th>
+                        <th>ระดับ</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let item of items; let i=index">
+
+                        <td>{{i+1}}</td>
+
+                        <!-- รายการ -->
+                        <td>
+                            <input class="form-control form-control-sm" [(ngModel)]="item.name">
+                        </td>
+
+                        <td>
+                            <input type="number" class="form-control form-control-sm" [(ngModel)]="item.times"
+                                (ngModelChange)="calculate(i)">
+                        </td>
+
+                        <td>
+                            <input type="number" class="form-control form-control-sm" [(ngModel)]="item.person"
+                                (ngModelChange)="calculate(i)">
+                        </td>
+
+                        <td>
+                            <input type="number" class="form-control form-control-sm" [(ngModel)]="item.days"
+                                (ngModelChange)="calculate(i)">
+                        </td>
+
+                        <td>
+                            <input type="number" class="form-control form-control-sm" [(ngModel)]="item.rate"
+                                (ngModelChange)="calculate(i)">
+                        </td>
+
+                        <td class="text-end fw-bold">
+                            {{item.total | number:'1.2-2'}}
+                        </td>
+
+                        <!-- 🔥 ประเภทการประชุม -->
+                        <td>
+                            <select class="form-select form-select-sm" [(ngModel)]="item.meetingType">
+                                <option value="">-- โปรดเลือก --</option>
+                                <option value="ประชุม">ประชุม</option>
+                                <option value="ฝึกอบรม">ฝึกอบรม</option>
+                                <option value="เจรจา">เจรจาระหว่างประเทศ</option>
+                            </select>
+                        </td>
+
+                        <!-- หนังสือเชิญ -->
+                        <td>
+                            <input type="checkbox" [(ngModel)]="item.hasInvite">
+                        </td>
+
+                        <!-- ประเทศ -->
+                        <td>
+                            <ng-select [items]="countryOptions" bindLabel="name" bindValue="code"
+                                [(ngModel)]="item.country" appendTo="body" [searchable]="true"
+                                placeholder="-- เลือกประเทศ --">
+                            </ng-select>
+                        </td>
+
+                        <!-- 🔥 ระดับ -->
+                        <td>
+                            <select class="form-select form-select-sm" [(ngModel)]="item.level">
+                                <option value="">-- เลือก --</option>
+                                <option>ระดับ 10 ขึ้นไป</option>
+                                <option>ระดับ 9 ขึ้นไป</option>
+                                <option>ระดับ 8 ลงมา</option>
+                            </select>
+                        </td>
+
+                        <td>
+                            <button class="btn btn-danger btn-sm" (click)="removeItem(i)">🗑</button>
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+                <tfoot style="background:#6c757d; color:white;">
+                    <tr>
+                        <td colspan="6" class="text-end fw-bold">รวม</td>
+                        <td class="text-end fw-bold">
+                            {{grandTotal | number:'1.2-2'}}
+                        </td>
+                        <td colspan="5"></td>
+                    </tr>
+                </tfoot>
+
+            </table>
+        </div>
+
+        <!-- 🔥 แนบไฟล์ -->
+        <div class="mt-3">
+            <label class="fw-semibold">
+                แนบไฟล์ (บังคับ)
+            </label>
+
+            <input type="file" class="form-control form-control-sm" (change)="uploadFile($event)">
+
+            <small class="text-danger" *ngIf="fileError">
+                กรุณาแนบไฟล์
+            </small>
+
+            <div class="text-success mt-1" *ngIf="file">
+                📎 {{file.name}}
+            </div>
+        </div>
+
+        <!-- ปุ่ม -->
+        <div class="mt-3">
+            <button class="btn btn-primary btn-sm" (click)="addItem()">
+                + เพิ่มรายการ
+            </button>
+        </div>
+
+    </div>
+
+    <div class="card-footer text-end">
+        <button class="btn btn-success" (click)="save()">💾 บันทึก</button>
+        <button class="btn btn-danger">✖ ปิดหน้าต่าง</button>
+    </div>
+
+</div>

@@ -19,6 +19,7 @@ export class ExpenseAssetInvestmentFormComponent {
   spec = '';
 
   ngOnInit() {
+    alert(this.type)
     this.config = this.getConfig(this.type);
   }
 
@@ -114,13 +115,13 @@ export class ExpenseAssetInvestmentFormComponent {
 
   save() {
 
-    // 🔥 คอมใช้ได้เฉพาะ IT
+    //  คอมใช้ได้เฉพาะ IT
     if (this.type === 'computer' && this.userDept !== 'IT') {
       alert('เฉพาะหน่วยงานเทคโน');
       return;
     }
 
-    // 🔥 นอกมาตรฐานต้องมี 3 ไฟล์
+    //  นอกมาตรฐานต้องมี 3 ไฟล์
     const hasNon = this.items.some(x => x.standardOut);
 
     if (hasNon && this.files.length < 3) {

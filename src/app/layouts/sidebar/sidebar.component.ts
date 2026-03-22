@@ -63,7 +63,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     {
       label: 'Sign off คำของบประมาณ',
       icon: 'bx bx-check-shield',
-      link: '/emonitorProject/admin_main'
+      link: '/singOffBudgetProposal'
     },
 
     {

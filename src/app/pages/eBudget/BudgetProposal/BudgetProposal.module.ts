@@ -52,6 +52,11 @@ import { ExpenseUtilityAndTelecomCostComponent } from './ProjectBudgetProposalPe
 import { ExpenseSystemMaintenanceCostComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposalAdd/expenseSystemMaintenanceCost/expenseSystemMaintenanceCost.component';
 import { ExpenseCarRentalCostComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposalAdd/expenseCarRentalCost/expenseCarRentalCost.component';
 import { ExpenseAssetInvestmentFormComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposalAdd/expenseAssetInvestmentForm/expenseAssetInvestmentForm.component';
+import { ExpenseConstructionFormComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposalAdd/expenseConstructionForm/expenseConstructionForm.component';
+import { ExpenseForeignTravelComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposalAdd/expenseForeignTravel/expenseForeignTravel.component';
+import { ExpenseWitnessProtectionComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposalAdd/expenseWitnessProtection/expenseWitnessProtection.component';
+import { ExpenseConsultantHireComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposalAdd/expenseConsultantHire/expenseConsultantHire.component';
+import { ExpenseGrantFormComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposalAdd/expenseGrantForm/expenseGrantForm.component';
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     url: 'https://httpbin.org/post',
@@ -93,7 +98,12 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
         ExpenseUtilityAndTelecomCostComponent,
         ExpenseSystemMaintenanceCostComponent,
         ExpenseCarRentalCostComponent,
-        ExpenseAssetInvestmentFormComponent
+        ExpenseAssetInvestmentFormComponent,
+        ExpenseConstructionFormComponent,
+        ExpenseForeignTravelComponent,
+        ExpenseWitnessProtectionComponent,
+        ExpenseConsultantHireComponent,
+        ExpenseGrantFormComponent
     ],
     imports: [
         CommonModule,

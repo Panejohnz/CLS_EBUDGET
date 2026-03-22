@@ -16,6 +16,8 @@ const routes: Routes = [
   { path: 'Planing', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/Planing/Planing.module').then(m => m.EmonitorMasterModule), },
   { path: 'singOff', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/singOff/singOffPlanning.module').then(m => m.EmonitorMasterModule), },
   { path: 'ProjectBudgetProposal', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/BudgetProposal/BudgetProposal.module').then(m => m.EmonitorMasterModule), },
+  { path: 'singOffBudgetProposal', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/singOffBudgetProposal/singOffBudgetProposal.module').then(m => m.EmonitorMasterModule), },
+
 
 ];
 
@@ -24,4 +26,3 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
- 
