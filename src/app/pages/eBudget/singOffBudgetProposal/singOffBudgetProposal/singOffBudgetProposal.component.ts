@@ -20,6 +20,7 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-sing-off-budget-proposal',
+  providers: [GridJsService, DecimalPipe, EbudgetService],
   templateUrl: './singOffBudgetProposal.component.html',
   styles: ``
 })

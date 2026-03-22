@@ -18,7 +18,7 @@ import { AutocompleteLibModule } from 'angular-ng-autocomplete';
 import { defineElement } from '@lordicon/element';
 import lottie from 'lottie-web';
 import { SharedModule } from '../../../shared/shared.module';
-import { EmonitorMasterRoutingModule } from './singOffBudgetProposal-rountion.module';
+import { EbudgetMasterRoutingModule } from './singOffBudgetProposal-rountion.module';
 import { SingOffBudgetProposalComponent } from './singOffBudgetProposal/singOffBudgetProposal.component';
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
@@ -52,7 +52,7 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
         AutocompleteLibModule,
         NgbAccordionModule,
         SharedModule,
-        EmonitorMasterRoutingModule
+        EbudgetMasterRoutingModule
     ],
     providers: [
         provideNgxMask(),
