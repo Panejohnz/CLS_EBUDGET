@@ -88,7 +88,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     {
       label: 'จัดทำแผนปฎิบัติการ',
       icon: 'bx bx-edit-alt',
-      link: '/emonitorMaster/managePerson'
+      link: '/PlanManagement'
     },
     {
       label: 'Sign off แผนปฎิบัติการ',

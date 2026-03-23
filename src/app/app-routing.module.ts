@@ -18,6 +18,7 @@ const routes: Routes = [
   { path: 'ProjectBudgetProposal', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/BudgetProposal/BudgetProposal.module').then(m => m.EmonitorMasterModule), },
   { path: 'singOffBudgetProposal', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/singOffBudgetProposal/singOffBudgetProposal.module').then(m => m.EmonitorMasterModule), },
   { path: 'Allocation', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/Allocation/Allocation.module').then(m => m.EmonitorMasterModule), },
+  { path: 'PlanManagement', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/PlanManagement/PlanManagement.module').then(m => m.EmonitorMasterModule), },
 
 
 ];
