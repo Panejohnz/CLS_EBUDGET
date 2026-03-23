@@ -1,0 +1,76 @@
+<div class="container bg-light p-3 rounded shadow-sm">
+
+    <!-- Header -->
+    <div class="mb-3">
+        <h5 class="fw-bold">4.1 เมนูการจัดสรรงบประมาณ</h5>
+
+        <div class="d-flex align-items-center gap-2 mt-2">
+            <label>หน่วยงาน:</label>
+            <input type="text" class="form-control w-25" [(ngModel)]="department">
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle text-center">
+
+            <thead class="table-secondary small">
+                <tr>
+                    <th style="width:40%">แผนงาน/ผลผลิต/กิจกรรม/หมวดงบ/รายการค่าใช้จ่าย</th>
+                    <th style="width:15%">คำของบประมาณ</th>
+                    <th style="width:15%">จัดสรรครั้งที่ 1</th>
+                    <th style="width:15%">จัดสรรครั้งที่ 2</th>
+                    <th style="width:15%">จัดสรรครั้งที่ 3</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr *ngFor="let item of getFlattenData()">
+
+                    <!-- name + indent -->
+                    <td class="text-start" [style.padding-left.px]="item.level * 20">
+                        {{ item.name }}
+                    </td>
+
+                    <!-- total -->
+                    <td class="text-end">
+                        {{ calculate(item) | number:'1.0-0' }}
+                    </td>
+
+                    <!-- alloc1 -->
+                    <td>
+                        <ng-container *ngIf="!item.children; else showSum1">
+                            <input type="number" class="form-control text-end" [(ngModel)]="item.alloc1">
+                        </ng-container>
+                        <ng-template #showSum1>
+                            {{ calculate(item) | number:'1.0-0' }}
+                        </ng-template>
+                    </td>
+
+                    <!-- alloc2 -->
+                    <td>
+                        <ng-container *ngIf="!item.children; else showSum2">
+                            <input type="number" class="form-control text-end" [(ngModel)]="item.alloc2">
+                        </ng-container>
+                        <ng-template #showSum2>
+                            {{ calculate(item) | number:'1.0-0' }}
+                        </ng-template>
+                    </td>
+
+                    <!-- alloc3 -->
+                    <td>
+                        <ng-container *ngIf="!item.children; else showSum3">
+                            <input type="number" class="form-control text-end" [(ngModel)]="item.alloc3">
+                        </ng-container>
+                        <ng-template #showSum3>
+                            {{ calculate(item) | number:'1.0-0' }}
+                        </ng-template>
+                    </td>
+
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+
+</div>

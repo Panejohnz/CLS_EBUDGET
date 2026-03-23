@@ -73,7 +73,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     {
       label: 'จัดสรรงบประมาณ',
       icon: 'bx bx-wallet',
-      link: '/ProjectBudgetProposal'
+      link: '/Allocation'
     },
 
     {

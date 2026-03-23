@@ -18,13 +18,23 @@ export class ExpenseVehicleRepairComponent {
   closeModal() {
     this.modal.dismiss();
   }
-  items: RepairItem[] = [
-    { name: '', quantity: 1, price: 0 }
+  items = [
+    {
+      name: '',
+      customName: '',
+      quantity: 0,
+      price: 0
+    }
   ];
-
+  onSelectChange(item: any) {
+    // ถ้าไม่ใช่ "อื่นๆ" → ล้างค่า custom
+    if (item.name !== 'อื่นๆ') {
+      item.customName = '';
+    }
+  }
   // เพิ่มรายการ
   addItem() {
-    this.items.push({ name: '', quantity: 1, price: 0 });
+    this.items.push({ name: '', quantity: 1, price: 0, customName: '' });
   }
 
   // ลบรายการ

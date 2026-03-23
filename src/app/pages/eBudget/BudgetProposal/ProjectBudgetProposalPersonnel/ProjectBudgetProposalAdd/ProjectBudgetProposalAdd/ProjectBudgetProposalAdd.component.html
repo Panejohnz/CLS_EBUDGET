@@ -246,7 +246,7 @@
         </h5>
         <button type="button" class="btn-close" (click)="modal.dismiss();"></button>
     </div>
-    @if([1,2,3,4,5,6,8].includes(expenseItem.Expense_Id)){
+    @if([1,2,3,4,5,6,7,8,10,11,12,14,15,16].includes(expenseItem.Expense_Id)){
     <app-expense-list-salary [modal]="modal" [expenseItem]="expenseItem">
     </app-expense-list-salary>
     }
@@ -312,7 +312,10 @@
     }@else if(expenseItem.Expense_Id == 40){
     <app-expense-other-operating-cost [modal]="modal" [expenseItem]="expenseItem">
     </app-expense-other-operating-cost>
-    }@else if([41,43,44,45,46,47,48].includes(expenseItem.Expense_Id)){
+    }@else if(expenseItem.Expense_Id == 42){
+    <app-expense-fuel-lubricant [modal]="modal" [expenseItem]="expenseItem">
+    </app-expense-fuel-lubricant>
+    } @else if([41,43,44,45,46,47,48].includes(expenseItem.Expense_Id)){
     <app-expense-office-supplies-cost [modal]="modal" [expenseItem]="expenseItem">
     </app-expense-office-supplies-cost>
     } @else if([49,50,51,52,53].includes(expenseItem.Expense_Id)){

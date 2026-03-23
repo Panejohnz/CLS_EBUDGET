@@ -8,159 +8,62 @@
                 <!-- HEADER -->
                 <thead class="table-secondary">
                     <tr>
-                        <th rowspan="2" width="20%">รายการ</th>
-
-                        <th colspan="2">ผลการดำเนินงาน ปี 2568</th>
-
+                        <th rowspan="2" width="25%">รายการ</th>
                         <th colspan="3">ประมาณการค่าใช้จ่าย ปี 2570</th>
-
-                        <th rowspan="2" width="15%">
-                            ค่าใช้จ่ายต่อคดี (บาท)
-                        </th>
-
-                        <th rowspan="2" width="15%">
-                            รวมทั้งสิ้น (บาท)
-                        </th>
+                        <th rowspan="2">ค่าใช้จ่ายต่อคดี (บาท)</th>
+                        <th rowspan="2">รวมทั้งสิ้น (บาท)</th>
                     </tr>
-
                     <tr>
-                        <th>จำนวนคดี</th>
-                        <th>งบประมาณ</th>
-
-                        <th>คดี**</th>
+                        <th>คดี</th>
                         <th>คน</th>
-                        <th>ค่าตอบแทน (บาท)</th>
+                        <th>ค่าตอบแทน</th>
                     </tr>
                 </thead>
 
                 <tbody>
 
-                    <!-- หัวข้อหลัก -->
-                    <tr>
-                        <td class="text-start fw-semibold">
-                            ค่าตอบแทนและค่าใช้จ่ายแก่พยาน
+                    <!-- Loop -->
+                    <tr *ngFor="let row of list">
+
+                        <!-- รายการ -->
+                        <td class="text-start">
+                            <span *ngIf="row.level === 0" class="fw-semibold">
+                                {{row.name}}
+                            </span>
+
+                            <span *ngIf="row.level === 1" class="ps-4">
+                                - {{row.name}}
+                            </span>
                         </td>
 
-                        <td></td>
-                        <td></td>
-
+                        <!-- คดี -->
                         <td>
-                            <input type="number" class="form-control form-control-sm text-end"
-                                [(ngModel)]="main.case">
+                            <input *ngIf="!row.children" type="number" class="form-control form-control-sm text-end"
+                                [(ngModel)]="row.case" (input)="calculate()">
                         </td>
 
-                        <td></td>
-                        <td></td>
+                        <!-- คน -->
+                        <td>
+                            <input *ngIf="!row.children" type="number" class="form-control form-control-sm text-end"
+                                [(ngModel)]="row.person" (input)="calculate()">
+                        </td>
 
+                        <!-- rate -->
+                        <td>
+                            <input *ngIf="!row.children" type="number" class="form-control form-control-sm text-end"
+                                [(ngModel)]="row.rate" (input)="calculate()">
+                        </td>
+
+                        <!-- cost ต่อคดี -->
                         <td class="text-end fw-bold">
-                            {{main.costPerCase | number:'1.2-2'}}
+                            {{ getCost(row) | number:'1.2-2' }}
                         </td>
 
-                        <td class="text-end fw-bold">
-                            {{main.total | number:'1.2-2'}}
-                        </td>
-                    </tr>
-
-                    <!-- ขนาด S -->
-                    <tr>
-                        <td class="text-start ps-4">- ขนาดคดี S</td>
-
-                        <td></td>
-                        <td></td>
-
-                        <td>
-                            <input type="number" class="form-control form-control-sm text-end"
-                                [(ngModel)]="s.case"
-                                (input)="calculate()">
+                        <!-- total -->
+                        <td class="text-end fw-bold text-primary">
+                            {{ getTotal(row) | number:'1.2-2' }}
                         </td>
 
-                        <td>
-                            <input type="number" class="form-control form-control-sm text-end"
-                                [(ngModel)]="s.person"
-                                (input)="calculate()">
-                        </td>
-
-                        <td>
-                            <input type="number" class="form-control form-control-sm text-end"
-                                [(ngModel)]="s.rate"
-                                (input)="calculate()">
-                        </td>
-
-                        <td class="text-end fw-bold">
-                            {{s.cost | number:'1.2-2'}}
-                        </td>
-
-                        <td class="text-end fw-bold">
-                            {{s.total | number:'1.2-2'}}
-                        </td>
-                    </tr>
-
-                    <!-- ขนาด M -->
-                    <tr>
-                        <td class="text-start ps-4">- ขนาดคดี M</td>
-
-                        <td></td>
-                        <td></td>
-
-                        <td>
-                            <input type="number" class="form-control form-control-sm text-end"
-                                [(ngModel)]="m.case"
-                                (input)="calculate()">
-                        </td>
-
-                        <td>
-                            <input type="number" class="form-control form-control-sm text-end"
-                                [(ngModel)]="m.person"
-                                (input)="calculate()">
-                        </td>
-
-                        <td>
-                            <input type="number" class="form-control form-control-sm text-end"
-                                [(ngModel)]="m.rate"
-                                (input)="calculate()">
-                        </td>
-
-                        <td class="text-end fw-bold">
-                            {{m.cost | number:'1.2-2'}}
-                        </td>
-
-                        <td class="text-end fw-bold">
-                            {{m.total | number:'1.2-2'}}
-                        </td>
-                    </tr>
-
-                    <!-- ขนาด L -->
-                    <tr>
-                        <td class="text-start ps-4">- ขนาดคดี L</td>
-
-                        <td></td>
-                        <td></td>
-
-                        <td>
-                            <input type="number" class="form-control form-control-sm text-end"
-                                [(ngModel)]="l.case"
-                                (input)="calculate()">
-                        </td>
-
-                        <td>
-                            <input type="number" class="form-control form-control-sm text-end"
-                                [(ngModel)]="l.person"
-                                (input)="calculate()">
-                        </td>
-
-                        <td>
-                            <input type="number" class="form-control form-control-sm text-end"
-                                [(ngModel)]="l.rate"
-                                (input)="calculate()">
-                        </td>
-
-                        <td class="text-end fw-bold">
-                            {{l.cost | number:'1.2-2'}}
-                        </td>
-
-                        <td class="text-end fw-bold">
-                            {{l.total | number:'1.2-2'}}
-                        </td>
                     </tr>
 
                 </tbody>

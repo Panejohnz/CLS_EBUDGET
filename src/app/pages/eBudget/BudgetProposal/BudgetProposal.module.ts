@@ -57,6 +57,7 @@ import { ExpenseForeignTravelComponent } from './ProjectBudgetProposalPersonnel/
 import { ExpenseWitnessProtectionComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposalAdd/expenseWitnessProtection/expenseWitnessProtection.component';
 import { ExpenseConsultantHireComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposalAdd/expenseConsultantHire/expenseConsultantHire.component';
 import { ExpenseGrantFormComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposalAdd/expenseGrantForm/expenseGrantForm.component';
+import { ExpenseFuelLubricantComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposalAdd/expenseFuelLubricant/expenseFuelLubricant.component';
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     url: 'https://httpbin.org/post',
@@ -103,7 +104,8 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
         ExpenseForeignTravelComponent,
         ExpenseWitnessProtectionComponent,
         ExpenseConsultantHireComponent,
-        ExpenseGrantFormComponent
+        ExpenseGrantFormComponent,
+        ExpenseFuelLubricantComponent
     ],
     imports: [
         CommonModule,

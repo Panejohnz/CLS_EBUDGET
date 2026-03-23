@@ -1,0 +1,87 @@
+<div class="card shadow-sm">
+
+
+    <div class="card-body bg-light">
+
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle text-center bg-white">
+
+                <thead class="table-secondary">
+                    <tr>
+                        <th style="width:5%">ลำดับ</th>
+                        <th>ประเภทยานพาหนะ</th>
+                        <th colspan="2">ราคา</th>
+                        <th style="width:5%"></th>
+                    </tr>
+
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th style="width:15%">รวม/เดือน</th>
+                        <th style="width:15%">ต่อปี</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let item of list; let i = index">
+
+                        <!-- index -->
+                        <td>{{ i + 1 }}</td>
+
+                        <!-- dropdown -->
+                        <td>
+                            <select class="form-select" [(ngModel)]="item.type">
+
+                                <option value="">--- ประเภทยานพาหนะ ---</option>
+                                <option *ngFor="let v of vehicleTypes" [value]="v">
+                                    {{ v }}
+                                </option>
+
+                            </select>
+                        </td>
+
+                        <!-- monthly -->
+                        <td>
+                            <input type="number" class="form-control text-end" [(ngModel)]="item.month"
+                                (input)="calculate(item)">
+                        </td>
+
+                        <!-- yearly -->
+                        <td class="fw-bold text-primary">
+                            {{ item.year | number:'1.2-2' }}
+                        </td>
+
+                        <!-- delete -->
+                        <td>
+                            <button class="btn btn-outline-danger btn-sm" (click)="remove(i)">
+                                🗑
+                            </button>
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+                <!-- footer -->
+                <tfoot>
+                    <tr class="bg-light  fw-bold">
+                        <td colspan="2" class="text-end">รวม</td>
+                        <td>{{ getTotal('month') | number:'1.2-2' }}</td>
+                        <td>{{ getTotal('year') | number:'1.2-2' }}</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+
+            </table>
+        </div>
+
+        <!-- add button -->
+        <button class="btn btn-primary mt-3" (click)="add()">
+            + เพิ่มรายการ
+        </button>
+
+
+    </div>
+</div>

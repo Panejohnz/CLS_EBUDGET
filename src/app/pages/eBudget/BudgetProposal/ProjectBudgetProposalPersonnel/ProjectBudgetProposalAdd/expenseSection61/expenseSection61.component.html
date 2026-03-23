@@ -1,225 +1,138 @@
 <div class="card shadow-sm">
 
-    <div class="card-body bg-light">
+        <div class="card-body bg-light">
+
+                <div class="table-responsive">
+                        <table class="table table-bordered align-middle text-center bg-white mb-0">
+
+                                <!-- HEADER -->
+                                <thead class="table-secondary">
+                                        <tr>
+                                                <th rowspan="3" style="width:25%">รายการ</th>
+                                                <th colspan="3">ประมาณการ</th>
+                                                <th rowspan="3">ค่าใช้จ่ายต่อคดี</th>
+                                                <th rowspan="3">รวมทั้งสิ้น</th>
+                                        </tr>
+
+                                        <tr>
+                                                <th rowspan="2">คดี</th>
+                                                <th rowspan="2">คน</th>
+                                                <th rowspan="2">วัน</th>
+                                        </tr>
+                                </thead>
+
+                                <tbody>
+
+                                        <!-- MAIN -->
+                                        <tr class="bg-light fw-bold">
+                                                <td class="text-start">ค่าใช้จ่ายตามมาตรา 61</td>
+                                                <td colspan="3"></td>
+
+                                                <td class="text-end">
+                                                        {{ main.costPerCase | number:'1.2-2' }}
+                                                </td>
+
+                                                <td class="text-end text-primary">
+                                                        {{ main.total | number:'1.2-2' }}
+                                                </td>
+                                        </tr>
+
+                                        <!-- LOOP -->
+                                        <tr *ngFor="let group of caseList">
+
+                                                <!-- 🔥 รายการ -->
+                                                <td class="text-start">
+
+                                                        <div class="fw-semibold">
+                                                                - {{group.name}}
+
+                                                                <button class="btn btn-sm btn-primary ms-2"
+                                                                        (click)="addItem(group)">
+                                                                        ➕
+                                                                </button>
+                                                        </div>
+
+                                                        <!-- รายการย่อย -->
+                                                        <div *ngFor="let item of group.items" class="d-flex gap-2 mt-1">
+
+                                                                <!-- dropdown -->
+                                                                <select class="form-select form-select-sm"
+                                                                        [(ngModel)]="item.type"
+                                                                        (change)="onTypeChange(item, group)">
+
+                                                                        <option value="">-- เลือก --</option>
+                                                                        <option value="allowance">ค่าเบี้ยเลี้ยง
+                                                                        </option>
+                                                                        <option value="hotel">ค่าที่พัก</option>
+                                                                        <option value="travel">ค่าพาหนะ</option>
+                                                                        <option value="other">อื่นๆ</option>
+
+                                                                </select>
+
+                                                                <!-- 🔥 ถ้าอื่นๆ -->
+                                                                <input *ngIf="item.type === 'other'" type="text"
+                                                                        class="form-control form-control-sm"
+                                                                        placeholder="ระบุรายการ"
+                                                                        [(ngModel)]="item.customName">
+
+                                                                <input *ngIf="item.type === 'other'" type="number"
+                                                                        class="form-control form-control-sm text-end"
+                                                                        placeholder="ราคา" [(ngModel)]="item.amount"
+                                                                        (input)="calculate(group)">
+
+                                                                <!-- 🔥 ถ้าไม่ใช่อื่นๆ -->
+                                                                <div *ngIf="item.type !== 'other'"
+                                                                        class="form-control form-control-sm text-end bg-light">
+                                                                        {{ item.amount | number:'1.2-2' }}
+                                                                </div>
+
+                                                                <!-- ลบ -->
+                                                                <button class="btn btn-danger btn-sm"
+                                                                        (click)="removeItem(group, item)">
+                                                                        ✕
+                                                                </button>
+
+                                                        </div>
+
+                                                </td>
+
+                                                <!-- คดี -->
+                                                <td>
+                                                        <input type="number" class="form-control text-end"
+                                                                [(ngModel)]="group.case" (input)="calculate(group)">
+                                                </td>
 
-        <div class="table-responsive">
-            <table class="table table-bordered align-middle text-center bg-white mb-0">
+                                                <!-- คน -->
+                                                <td>
+                                                        <input type="number" class="form-control text-end"
+                                                                [(ngModel)]="group.person" (input)="calculate(group)">
+                                                </td>
 
-                <!-- HEADER -->
-                <thead class="table-secondary">
+                                                <!-- วัน -->
+                                                <td>
+                                                        <input type="number" class="form-control text-end"
+                                                                [(ngModel)]="group.day" (input)="calculate(group)">
+                                                </td>
 
-                    <!-- ชั้น 1 -->
-                    <tr>
-                        <th rowspan="3">รายการ</th>
+                                                <!-- ต่อคดี -->
+                                                <td class="text-end fw-bold">
+                                                        {{ group.costPerCase | number:'1.2-2' }}
+                                                </td>
 
-                        <th colspan="2">ผลการดำเนินงาน ปี 2568</th>
+                                                <!-- รวม -->
+                                                <td class="text-end fw-bold text-primary">
+                                                        {{ group.total | number:'1.2-2' }}
+                                                </td>
 
-                        <th colspan="10">ประมาณการค่าใช้จ่าย ปี 2570</th>
+                                        </tr>
 
-                        <th rowspan="3">ค่าใช้จ่ายต่อคดี (บาท)</th>
-                        <th rowspan="3">รวมทั้งสิ้น (บาท)</th>
-                    </tr>
+                                </tbody>
 
-                    <!-- ชั้น 2 -->
-                    <tr>
-                        <th rowspan="2">จำนวนคดี</th>
-                        <th rowspan="2">งบประมาณ</th>
+                        </table>
+                </div>
 
-                        <th rowspan="2">คดี**</th>
-                        <th rowspan="2">คน</th>
-
-                        <th colspan="3">ค่าเบี้ยเลี้ยง (บาท)</th>
-                        <th colspan="3">ที่พัก (บาท)</th>
-                        <th colspan="2">ค่าพาหนะ (บาท)</th>
-
-                        <th rowspan="2">ค่าพัฒนาสัมพันธ์ (บาท)</th>
-                    </tr>
-
-                    <!-- ชั้น 3 (สำคัญ!) -->
-                    <tr>
-                        <!-- เบี้ยเลี้ยง -->
-                        <th>อัตรา</th>
-                        <th>วัน</th>
-                        <th>จำนวน</th>
-
-                        <!-- ที่พัก -->
-                        <th>อัตรา</th>
-                        <th>วัน</th>
-                        <th>จำนวน</th>
-
-                        <!-- พาหนะ -->
-                        <th>อัตรา</th>
-                        <th>จำนวน</th>
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    <!-- MAIN -->
-                    <tr>
-                        <td class="text-start fw-semibold">
-                            ค่าใช้จ่ายตามมาตรา 61
-                        </td>
-
-                        <td></td>
-                        <td></td>
-
-                        <td>
-                            <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="main.case"
-                                (ngModelChange)="calculateAll()">
-                        </td>
-
-                        <td></td>
-
-                        <!-- 👇 ตรงนี้ต้อง = 8 ช่อง -->
-                        <td colspan="8"></td>
-
-                        <td class="text-end fw-bold">
-                            {{main.costPerCase | number:'1.2-2'}}
-                        </td>
-
-                        <td class="text-end fw-bold">
-                            {{main.total | number:'1.2-2'}}
-                        </td>
-                    </tr>
-                    <!-- S -->
-                    <tr>
-                        <td class="text-start ps-4">- ขนาดคดี S</td>
-
-                        <td></td>
-                        <td></td>
-
-                        <td><input type="number" class="form-control form-control-sm text-end" [(ngModel)]="s.case"
-                                (ngModelChange)="calculateAll()"></td>
-
-                        <td><input type="number" class="form-control form-control-sm text-end" [(ngModel)]="s.person"
-                                (ngModelChange)="calculateAll()"></td>
-
-                        <!-- เบี้ยเลี้ยง -->
-                        <td><input type="number" class="form-control form-control-sm text-end" disabled
-                                [(ngModel)]="s.allowanceRate" (ngModelChange)="calculateAll()"></td>
-
-                        <td><input type="number" class="form-control form-control-sm text-end"
-                                [(ngModel)]="s.allowanceDay" (ngModelChange)="calculateAll()"></td>
-
-                        <td class="text-end fw-bold">{{s.allowanceTotal | number:'1.2-2'}}</td>
-
-                        <!-- ที่พัก -->
-                        <td><input type="number" class="form-control form-control-sm text-end" disabled
-                                [(ngModel)]="s.hotelRate" (ngModelChange)="calculateAll()"></td>
-
-                        <td><input type="number" class="form-control form-control-sm text-end" [(ngModel)]="s.hotelDay"
-                                (ngModelChange)="calculateAll()"></td>
-
-                        <td class="text-end fw-bold">{{s.hotelTotal | number:'1.2-2'}}</td>
-
-                        <!-- พาหนะ -->
-                        <td><input type="number" class="form-control form-control-sm text-end"
-                                [(ngModel)]="s.travelRate" disabled (ngModelChange)="calculateAll()"></td>
-
-                        <td class="text-end fw-bold">{{s.travelTotal | number:'1.2-2'}}</td>
-
-                        <!-- relation -->
-                        <td><input type="number" class="form-control form-control-sm text-end" [(ngModel)]="s.relation"
-                                (ngModelChange)="calculateAll()"></td>
-
-                        <td class="text-end fw-bold">{{s.costPerCase | number:'1.2-2'}}</td>
-
-                        <td class="text-end fw-bold">{{s.total | number:'1.2-2'}}</td>
-                    </tr>
-
-                    <!-- M -->
-                    <tr>
-                        <td class="text-start ps-4">- ขนาดคดี M</td>
-
-                        <td></td>
-                        <td></td>
-
-                        <td><input type="number" class="form-control form-control-sm text-end" [(ngModel)]="m.case"
-                                (ngModelChange)="calculateAll()"></td>
-
-                        <td><input type="number" class="form-control form-control-sm text-end" [(ngModel)]="m.person"
-                                (ngModelChange)="calculateAll()"></td>
-
-                        <td><input type="number" class="form-control form-control-sm text-end" disabled
-                                [(ngModel)]="m.allowanceRate" (ngModelChange)="calculateAll()"></td>
-
-                        <td><input type="number" class="form-control form-control-sm text-end"
-                                [(ngModel)]="m.allowanceDay" (ngModelChange)="calculateAll()"></td>
-
-                        <td class="text-end fw-bold">{{m.allowanceTotal | number:'1.2-2'}}</td>
-
-                        <td><input type="number" class="form-control form-control-sm text-end" disabled
-                                [(ngModel)]="m.hotelRate" (ngModelChange)="calculateAll()"></td>
-
-                        <td><input type="number" class="form-control form-control-sm text-end" [(ngModel)]="m.hotelDay"
-                                (ngModelChange)="calculateAll()"></td>
-
-                        <td class="text-end fw-bold">{{m.hotelTotal | number:'1.2-2'}}</td>
-
-                        <td><input type="number" class="form-control form-control-sm text-end"
-                                [(ngModel)]="m.travelRate" disabled (ngModelChange)="calculateAll()"></td>
-
-                        <td class="text-end fw-bold">{{m.travelTotal | number:'1.2-2'}}</td>
-
-                        <td><input type="number" class="form-control form-control-sm text-end" [(ngModel)]="m.relation"
-                                (ngModelChange)="calculateAll()"></td>
-
-                        <td class="text-end fw-bold">{{m.costPerCase | number:'1.2-2'}}</td>
-
-                        <td class="text-end fw-bold">{{m.total | number:'1.2-2'}}</td>
-                    </tr>
-
-                    <!-- L -->
-                    <tr>
-                        <td class="text-start ps-4">- ขนาดคดี L</td>
-
-                        <td></td>
-                        <td></td>
-
-                        <td><input type="number" class="form-control form-control-sm text-end" [(ngModel)]="l.case"
-                                (ngModelChange)="calculateAll()"></td>
-
-                        <td><input type="number" class="form-control form-control-sm text-end" [(ngModel)]="l.person"
-                                (ngModelChange)="calculateAll()"></td>
-
-                        <td><input type="number" class="form-control form-control-sm text-end" disabled
-                                [(ngModel)]="l.allowanceRate" (ngModelChange)="calculateAll()"></td>
-
-                        <td><input type="number" class="form-control form-control-sm text-end"
-                                [(ngModel)]="l.allowanceDay" (ngModelChange)="calculateAll()"></td>
-
-                        <td class="text-end fw-bold">{{l.allowanceTotal | number:'1.2-2'}}</td>
-
-                        <td><input type="number" class="form-control form-control-sm text-end" disabled
-                                [(ngModel)]="l.hotelRate" (ngModelChange)="calculateAll()"></td>
-
-                        <td><input type="number" class="form-control form-control-sm text-end" [(ngModel)]="l.hotelDay"
-                                (ngModelChange)="calculateAll()"></td>
-
-                        <td class="text-end fw-bold">{{l.hotelTotal | number:'1.2-2'}}</td>
-
-                        <td><input type="number" class="form-control form-control-sm text-end"
-                                [(ngModel)]="l.travelRate" disabled (ngModelChange)="calculateAll()"></td>
-
-                        <td class="text-end fw-bold">{{l.travelTotal | number:'1.2-2'}}</td>
-
-                        <td><input type="number" class="form-control form-control-sm text-end" [(ngModel)]="l.relation"
-                                (ngModelChange)="calculateAll()"></td>
-
-                        <td class="text-end fw-bold">{{l.costPerCase | number:'1.2-2'}}</td>
-
-                        <td class="text-end fw-bold">{{l.total | number:'1.2-2'}}</td>
-                    </tr>
-
-                </tbody>
-
-            </table>
         </div>
-
-    </div>
-    <!-- <div class="card-footer text-end">
+        <!-- <div class="card-footer text-end">
         <button class="btn btn-success" (click)="save()">💾 บันทึก</button>
         <button class="btn btn-light" (click)="closeModal()">✖ ปิดหน้าต่าง</button>
     </div> -->

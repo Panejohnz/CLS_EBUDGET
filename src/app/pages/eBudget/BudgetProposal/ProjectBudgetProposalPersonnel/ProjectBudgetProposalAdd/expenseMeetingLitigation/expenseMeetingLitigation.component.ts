@@ -15,6 +15,9 @@ export class ExpenseMeetingLitigationComponent {
   closeModal() {
     this.modal.dismiss();
   }
+  ngOnInit() {
+    this.meetingList.forEach((row: any) => this.calculate(row));
+  }
   year = 2570
 
   meetingList: any = [
@@ -69,18 +72,19 @@ export class ExpenseMeetingLitigationComponent {
 
 
   calculate(row: any) {
+    const committee = row.committee || 0;
+    const people = row.people || 0;
+    const times = row.times || 0;
+    const rate = row.rate || 0;
 
-    row.meetingTotal =
-      row.people *
-      row.rate *
-      row.times
+    // 🔥 สูตรหลัก
+    row.meetingTotal = committee * people * times * rate;
 
-    row.caseCost = row.meetingTotal
+    // 🔥 ค่าใช้จ่ายต่อคดี (ปรับได้ตาม logic จริง)
+    row.caseCost = row.meetingTotal;
 
-    row.total =
-      row.committee *
-      row.caseCost
-
+    // 🔥 รวมทั้งหมด
+    row.total = row.caseCost;
   }
   async save() {
     const userConfirmed = await confirmAlert('info', 'ต้องการบันทึกข้อมูล ?', '');
