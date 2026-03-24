@@ -33,7 +33,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     {
       label: 'Dashboard',
       icon: 'bx bx-home-circle',
-      link: '/emonitorProject/Admindashboard'
+      link: '/Dashboard/projects'
     },
 
     {
