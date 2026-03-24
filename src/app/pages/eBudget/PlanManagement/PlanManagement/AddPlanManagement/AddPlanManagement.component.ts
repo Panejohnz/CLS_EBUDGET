@@ -302,6 +302,7 @@ export class AddPlanManagementComponent {
   }
   @Input() model: any
   openMultiplierModal(content: any) {
+    alert(this.expenseItem.Expense_Id)
     this.modalService.open(content, {
       backdrop: 'static',
       windowClass: 'modal-95'
