@@ -93,7 +93,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     {
       label: 'Sign off แผนปฎิบัติการ',
       icon: 'bx bx-check-double',
-      link: '/emonitorMaster/manageStrategy'
+      link: '/singOffAction'
     },
     {
       label: 'โอนเปลี่ยนแปลงงบประมาณ',
@@ -110,22 +110,22 @@ export class SidebarComponent implements OnInit, OnDestroy {
     },
     {
       label: 'เมนูกำหนดเป้าหมาย',
-      icon: 'bx bx-target-lock', 
+      icon: 'bx bx-target-lock',
       link: '/Moniter/BudgetTarget'
     },
     {
       label: 'เมนูรายงานผล',
-      icon: 'bx bx-bar-chart-alt-2', 
+      icon: 'bx bx-bar-chart-alt-2',
       link: '/Moniter/ReportResult'
     },
     {
       label: 'รายงานผลกรณีโครงการ',
-      icon: 'bx bx-task', 
+      icon: 'bx bx-task',
       link: '/Moniter/Report'
     },
     {
       label: 'รายงานผลกรณีงบลงทุน',
-      icon: 'bx bx-wallet', 
+      icon: 'bx bx-wallet',
       link: '/Moniter/ReportInvestment'
     },
     {

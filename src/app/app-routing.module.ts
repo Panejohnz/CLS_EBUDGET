@@ -22,7 +22,9 @@ const routes: Routes = [
   { path: 'Transfer', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/Transfer/Transfer.module').then(m => m.EmonitorMasterModule), },
   { path: 'Dashboard', component: LayoutComponent, loadChildren: () => import('./pages/dashboards/dashboards.module').then(m => m.DashboardsModule), },
   { path: 'Moniter', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/Moniter/Moniter.module').then(m => m.EmonitorMasterModule), },
+  { path: 'singOffAction', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/singOffAcion/singOffAcion.module').then(m => m.EmonitorMasterModule), },
 
+  
 ];
 
 @NgModule({

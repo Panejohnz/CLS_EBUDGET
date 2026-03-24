@@ -21,7 +21,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-sing-off-planing',
   providers: [GridJsService, DecimalPipe, EbudgetService],
-  templateUrl: './singOffPlaning.component.html',
+  templateUrl: './singOffAcion.component.html',
   styles: ``
 })
 export class SingOffPlaningComponent {

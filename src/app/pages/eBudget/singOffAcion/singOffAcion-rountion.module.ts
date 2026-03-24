@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { SingOffPlaningComponent } from './singOffPlaning/singOffPlaning.component';
+import { SingOffPlaningComponent } from './singOffAcion/singOffAcion.component';
 
 const routes: Routes = [
     {
