@@ -21,9 +21,9 @@ import { SharedModule } from '../../../shared/shared.module';
 import { EmonitorMasterRoutingModule } from './BudgetProposal-rountion.module';
 import { ProjectBudgetProposalComponent } from './BudgetProposalPersonnel/BudgetProposal.component';
 import { ProjectBudgetProposalAddPersonnelComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/BudgetProposalAdd/BudgetProposalAddPersonnel.component';
-import { ExpenseListSalaryComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseListSalary/expenseListSalary.component';
 import { ProjectBudgetProposalOperatingComponent } from './BudgetProposalOperating/ProjectBudgetProposalOperating/ProjectBudgetProposalOperating.component';
 import { ProjectBudgetProposalAddOperatingComponent } from './BudgetProposalOperating/ProjectBudgetProposalOperating/ProjectBudgetProposalAddOperating/ProjectBudgetProposalAddOperating/ProjectBudgetProposalOperating.component';
+import { ExpenseListSalaryComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseListSalary/expenseListSalary.component';
 import { ExpenseRentHouseComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseRentHouse/expenseRentHouse.component';
 import { ExpenseOTComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseOT/expenseOT.component';
 import { ExpenseMeetingSupportComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseMeetingSupport/expenseMeetingSupport.component';
@@ -69,9 +69,9 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     declarations: [
         ProjectBudgetProposalComponent,
         ProjectBudgetProposalAddPersonnelComponent,
-        ExpenseListSalaryComponent,
         ProjectBudgetProposalOperatingComponent,
         ProjectBudgetProposalAddOperatingComponent,
+        ExpenseListSalaryComponent,
         ExpenseRentHouseComponent,
         ExpenseOTComponent,
         ExpenseMeetingSupportComponent,

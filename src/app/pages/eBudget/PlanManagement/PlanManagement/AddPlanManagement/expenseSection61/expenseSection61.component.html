@@ -1,0 +1,139 @@
+<div class="card shadow-sm">
+
+        <div class="card-body bg-light">
+
+                <div class="table-responsive">
+                        <table class="table table-bordered align-middle text-center bg-white mb-0">
+
+                                <!-- HEADER -->
+                                <thead class="table-secondary">
+                                        <tr>
+                                                <th rowspan="3" style="width:25%">รายการ</th>
+                                                <th colspan="3">ประมาณการ</th>
+                                                <th rowspan="3">ค่าใช้จ่ายต่อคดี</th>
+                                                <th rowspan="3">รวมทั้งสิ้น</th>
+                                        </tr>
+
+                                        <tr>
+                                                <th rowspan="2">คดี</th>
+                                                <th rowspan="2">คน</th>
+                                                <th rowspan="2">วัน</th>
+                                        </tr>
+                                </thead>
+
+                                <tbody>
+
+                                        <!-- MAIN -->
+                                        <tr class="bg-light fw-bold">
+                                                <td class="text-start">ค่าใช้จ่ายตามมาตรา 61</td>
+                                                <td colspan="3"></td>
+
+                                                <td class="text-end">
+                                                        {{ main.costPerCase | number:'1.2-2' }}
+                                                </td>
+
+                                                <td class="text-end text-primary">
+                                                        {{ main.total | number:'1.2-2' }}
+                                                </td>
+                                        </tr>
+
+                                        <!-- LOOP -->
+                                        <tr *ngFor="let group of caseList">
+
+                                                <!-- 🔥 รายการ -->
+                                                <td class="text-start">
+
+                                                        <div class="fw-semibold">
+                                                                - {{group.name}}
+
+                                                                <button class="btn btn-sm btn-primary ms-2"
+                                                                        (click)="addItem(group)">
+                                                                        ➕
+                                                                </button>
+                                                        </div>
+
+                                                        <!-- รายการย่อย -->
+                                                        <div *ngFor="let item of group.items" class="d-flex gap-2 mt-1">
+
+                                                                <!-- dropdown -->
+                                                                <select class="form-select form-select-sm"
+                                                                        [(ngModel)]="item.type"
+                                                                        (change)="onTypeChange(item, group)">
+
+                                                                        <option value="">-- เลือก --</option>
+                                                                        <option value="allowance">ค่าเบี้ยเลี้ยง
+                                                                        </option>
+                                                                        <option value="hotel">ค่าที่พัก</option>
+                                                                        <option value="travel">ค่าพาหนะ</option>
+                                                                        <option value="other">อื่นๆ</option>
+
+                                                                </select>
+
+                                                                <!-- 🔥 ถ้าอื่นๆ -->
+                                                                <input *ngIf="item.type === 'other'" type="text"
+                                                                        class="form-control form-control-sm"
+                                                                        placeholder="ระบุรายการ"
+                                                                        [(ngModel)]="item.customName">
+
+                                                                <input *ngIf="item.type === 'other'" type="number"
+                                                                        class="form-control form-control-sm text-end"
+                                                                        placeholder="ราคา" [(ngModel)]="item.amount"
+                                                                        (input)="calculate(group)">
+
+                                                                <!-- 🔥 ถ้าไม่ใช่อื่นๆ -->
+                                                                <div *ngIf="item.type !== 'other'"
+                                                                        class="form-control form-control-sm text-end bg-light">
+                                                                        {{ item.amount | number:'1.2-2' }}
+                                                                </div>
+
+                                                                <!-- ลบ -->
+                                                                <button class="btn btn-danger btn-sm"
+                                                                        (click)="removeItem(group, item)">
+                                                                        ✕
+                                                                </button>
+
+                                                        </div>
+
+                                                </td>
+
+                                                <!-- คดี -->
+                                                <td>
+                                                        <input type="number" class="form-control text-end"
+                                                                [(ngModel)]="group.case" (input)="calculate(group)">
+                                                </td>
+
+                                                <!-- คน -->
+                                                <td>
+                                                        <input type="number" class="form-control text-end"
+                                                                [(ngModel)]="group.person" (input)="calculate(group)">
+                                                </td>
+
+                                                <!-- วัน -->
+                                                <td>
+                                                        <input type="number" class="form-control text-end"
+                                                                [(ngModel)]="group.day" (input)="calculate(group)">
+                                                </td>
+
+                                                <!-- ต่อคดี -->
+                                                <td class="text-end fw-bold">
+                                                        {{ group.costPerCase | number:'1.2-2' }}
+                                                </td>
+
+                                                <!-- รวม -->
+                                                <td class="text-end fw-bold text-primary">
+                                                        {{ group.total | number:'1.2-2' }}
+                                                </td>
+
+                                        </tr>
+
+                                </tbody>
+
+                        </table>
+                </div>
+
+        </div>
+        <!-- <div class="card-footer text-end">
+        <button class="btn btn-success" (click)="save()">💾 บันทึก</button>
+        <button class="btn btn-light" (click)="closeModal()">✖ ปิดหน้าต่าง</button>
+    </div> -->
+</div>

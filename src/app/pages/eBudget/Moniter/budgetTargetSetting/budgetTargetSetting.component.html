@@ -1,0 +1,97 @@
+<style>
+    .custom-box {
+        background: #fff;
+        border-radius: 12px;
+        padding: 16px 18px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        border: 1px solid #f1f1f1;
+    }
+
+    .box-title {
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 12px;
+        color: #333;
+    }
+
+    .quarter-label {
+        font-size: 13px;
+        color: #555;
+        min-width: 90px;
+    }
+
+    .custom-input input {
+        border-radius: 8px 0 0 8px;
+    }
+
+    .custom-input .input-group-text {
+        border-radius: 0 8px 8px 0;
+        background: #f5f6f8;
+        font-size: 13px;
+    }
+
+    input.form-control {
+        transition: all 0.2s ease;
+    }
+
+    input.form-control:focus {
+        border-color: #4c8bf5;
+        box-shadow: 0 0 0 0.15rem rgba(76, 139, 245, 0.2);
+    }
+</style>
+
+<div class="card shadow-sm border-0 p-4 bg-light">
+
+    <h5 class="fw-bold mb-4">1. เมนูกำหนดเป้าหมาย</h5>
+
+    <ng-container *ngFor="let section of sections">
+
+        <div class="mb-5">
+            <h6 class="fw-semibold mb-3">{{section.title}}</h6>
+
+            <div class="row g-4">
+
+                <!-- ซ้าย -->
+                <div class="col-md-6">
+                    <div class="custom-box">
+                        <div class="box-title">เป้าหมายการใช้จ่าย</div>
+
+                        <div *ngFor="let q of quarters; let i = index"
+                            class="d-flex align-items-center justify-content-between mb-2">
+
+                            <span class="quarter-label">ไตรมาส {{i+1}}</span>
+
+                            <div class="input-group custom-input w-50">
+                                <input type="number" class="form-control text-end" [(ngModel)]="section.pay[i]">
+                                <span class="input-group-text">%</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ขวา -->
+                <div class="col-md-6">
+                    <div class="custom-box">
+                        <div class="box-title">เป้าหมายการเบิกจ่าย</div>
+
+                        <div *ngFor="let q of quarters; let i = index"
+                            class="d-flex align-items-center justify-content-between mb-2">
+
+                            <span class="quarter-label">ไตรมาส {{i+1}}</span>
+
+                            <div class="input-group custom-input w-50">
+                                <input type="number" class="form-control text-end" [(ngModel)]="section.disburse[i]">
+                                <span class="input-group-text">%</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </ng-container>
+
+</div>

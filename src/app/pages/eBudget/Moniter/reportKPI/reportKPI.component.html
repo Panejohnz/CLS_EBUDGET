@@ -1,0 +1,78 @@
+<div class="card p-3 bg-light">
+
+    <h5 class="fw-bold mb-3">รายงานผลตามตัวชี้วัดแผนงาน</h5>
+
+    <!-- 🔷 TABLE -->
+    <table class="table table-bordered text-center">
+        <thead>
+            <tr>
+                <th>ลำดับ</th>
+                <th>ปีงบประมาณ</th>
+                <th>ชื่อตัวชี้วัด</th>
+                <th>รายงานผล</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr *ngFor="let item of kpis; let i = index">
+                <td>{{i+1}}</td>
+                <td>{{item.year}}</td>
+                <td class="text-start">{{item.name}}</td>
+                <td>
+                    <button class="btn btn-primary btn-sm" (click)="openForm(item)">
+                        รายงานผล
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- 🔷 FORM -->
+    <div *ngIf="selectedKpi" class="card mt-4 p-4">
+
+        <h6 class="fw-bold mb-4">
+            ตัวชี้วัดที่ {{selectedKpi.id}}
+            ------------------------------------------------------------
+        </h6>
+
+        <div class="row mb-3">
+            <div class="col-md-3">ความก้าวหน้า</div>
+            <div class="col-md-9">
+                <input class="form-control" [(ngModel)]="selectedKpi.progress">
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-3">ผลการดำเนินงานตามตัวชี้วัด</div>
+            <div class="col-md-9">
+                <textarea class="form-control" [(ngModel)]="selectedKpi.result"></textarea>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-3">ปัญหา/อุปสรรค</div>
+            <div class="col-md-9">
+                <textarea class="form-control" [(ngModel)]="selectedKpi.problem"></textarea>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-3">ข้อเสนอแนะ</div>
+            <div class="col-md-9">
+                <textarea class="form-control" [(ngModel)]="selectedKpi.suggest"></textarea>
+            </div>
+        </div>
+
+        <!-- 🔘 BUTTON -->
+        <div class="text-end">
+            <button class="btn btn-primary me-2" (click)="save()">
+                บันทึก
+            </button>
+            <button class="btn btn-outline-secondary" (click)="close()">
+                ยกเลิก
+            </button>
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,82 @@
+<div class="card shadow-sm">
+
+    <div class="card-body bg-light">
+
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle text-center bg-white mb-0">
+
+                <!-- HEADER -->
+                <thead class="table-secondary">
+                    <tr>
+                        <th rowspan="2" width="25%">รายการ</th>
+                        <th colspan="3">ประมาณการค่าใช้จ่าย ปี 2570</th>
+                        <th rowspan="2">ค่าใช้จ่ายต่อคดี (บาท)</th>
+                        <th rowspan="2">รวมทั้งสิ้น (บาท)</th>
+                    </tr>
+                    <tr>
+                        <th>คดี</th>
+                        <th>คน</th>
+                        <th>ค่าตอบแทน</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <!-- Loop -->
+                    <tr *ngFor="let row of list">
+
+                        <!-- รายการ -->
+                        <td class="text-start">
+                            <span *ngIf="row.level === 0" class="fw-semibold">
+                                {{row.name}}
+                            </span>
+
+                            <span *ngIf="row.level === 1" class="ps-4">
+                                - {{row.name}}
+                            </span>
+                        </td>
+
+                        <!-- คดี -->
+                        <td>
+                            <input *ngIf="!row.children" type="number" class="form-control form-control-sm text-end"
+                                [(ngModel)]="row.case" (input)="calculate()">
+                        </td>
+
+                        <!-- คน -->
+                        <td>
+                            <input *ngIf="!row.children" type="number" class="form-control form-control-sm text-end"
+                                [(ngModel)]="row.person" (input)="calculate()">
+                        </td>
+
+                        <!-- rate -->
+                        <td>
+                            <input *ngIf="!row.children" type="number" class="form-control form-control-sm text-end"
+                                [(ngModel)]="row.rate" (input)="calculate()">
+                        </td>
+
+                        <!-- cost ต่อคดี -->
+                        <td class="text-end fw-bold">
+                            {{ getCost(row) | number:'1.2-2' }}
+                        </td>
+
+                        <!-- total -->
+                        <td class="text-end fw-bold text-primary">
+                            {{ getTotal(row) | number:'1.2-2' }}
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <!-- <div class="card-footer text-end">
+        <button class="btn btn-success" (click)="save()">💾 บันทึก</button>
+        <button class="btn btn-light" (click)="closeModal()">✖ ปิดหน้าต่าง</button>
+    </div> -->
+
+</div>

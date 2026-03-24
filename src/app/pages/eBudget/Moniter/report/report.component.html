@@ -1,0 +1,123 @@
+<div class="card border-0 shadow-sm p-4 bg-light">
+
+    <!-- 🔷 TITLE -->
+    <h5 class="fw-bold mb-4">รายงานผลกรณีโครงการ จะมีรายงานเพิ่มเติม</h5>
+
+    <!-- 🔷 OUTPUT -->
+    <div class="mb-3">
+        <label class="fw-semibold">เป้าหมายผลผลิต (Output)</label>
+        <textarea class="form-control" rows="2" [(ngModel)]="output"></textarea>
+    </div>
+
+    <!-- 🔷 OUTCOME -->
+    <div class="mb-4">
+        <label class="fw-semibold">เป้าหมายผลลัพธ์ (Outcome)</label>
+        <textarea  class="form-control" rows="2" [(ngModel)]="outcome"></textarea>
+    </div>
+
+    <!-- <div class="card p-3 mb-3 border-0 shadow-sm">
+
+        <div class="d-flex align-items-center flex-wrap gap-3">
+
+            <div class="flex-grow-1">
+                อย.สามารถพัฒนาระบบกำกับดูแลผลิตภัณฑ์สุขภาพในแต่ละด้าน
+                ให้เป็นไปตามมาตรฐานสากล
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+                <span>เป้าหมาย</span>
+
+                <input type="number" class="form-control form-control-sm w-75 text-end" [(ngModel)]="target">
+
+                <span>ร้อยละ</span>
+            </div>
+
+            <button class="btn btn-primary btn-sm" (click)="toggleResult()">
+                กรอกผล
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="card p-3 mb-3 border-0 shadow-sm">
+
+        <div class="d-flex align-items-center flex-wrap gap-3">
+
+            <div class="flex-grow-1">
+                อย.สามารถพัฒนาระบบกำกับดูแลผลิตภัณฑ์สุขภาพในแต่ละด้าน
+                ให้เป็นไปตามมาตรฐานสากล
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+                <span>เป้าหมาย</span>
+
+                <input type="number" class="form-control form-control-sm w-75 text-end" [(ngModel)]="target">
+
+                <span>ร้อยละ</span>
+            </div>
+
+            <div class="d-flex align-items-center gap-3 ms-3">
+
+                <label class="d-flex align-items-center gap-1">
+                    <input type="checkbox" [(ngModel)]="isAchieve">
+                    บรรลุเป้าหมาย
+                </label>
+
+                <label class="d-flex align-items-center gap-1">
+                    <input type="checkbox" [(ngModel)]="isNotAchieve">
+                    ไม่บรรลุเป้าหมาย
+                </label>
+
+            </div>
+
+        </div>
+
+    </div> -->
+
+    <!-- 🔷 PROGRESS -->
+    <div class="card p-3 mb-3 border-0 shadow-sm">
+
+        <label class="fw-semibold mb-1">
+            ร้อยละความก้าวหน้าในการดำเนินการเมื่อเทียบกับแผน
+        </label>
+
+        <input type="number" class="form-control mb-2" [(ngModel)]="progress">
+
+        <small class="text-muted">
+            (เป็นตัวเลข)
+        </small>
+
+    </div>
+
+    <!-- 🔷 PROBLEM -->
+    <div class="card p-3 mb-3 border-0 shadow-sm">
+        <label class="fw-semibold">ปัญหาและอุปสรรคในการดำเนินงาน</label>
+        <textarea class="form-control" [(ngModel)]="problem"></textarea>
+    </div>
+
+    <!-- 🔷 SOLUTION -->
+    <div class="card p-3 mb-3 border-0 shadow-sm">
+        <label class="fw-semibold">แนวทางแก้ไขที่ดำเนินการไปแล้ว</label>
+        <textarea class="form-control" [(ngModel)]="solution"></textarea>
+    </div>
+
+    <!-- 🔷 SUMMARY -->
+    <div class="card p-3 mb-3 border-0 shadow-sm">
+        <label class="fw-semibold">สรุปผลการดำเนินงาน</label>
+        <textarea class="form-control" [(ngModel)]="summary"></textarea>
+    </div>
+
+    <!-- 🔷 SUGGEST -->
+    <div class="card p-3 mb-3 border-0 shadow-sm">
+        <label class="fw-semibold">ข้อเสนอแนะเพื่อการพัฒนา</label>
+        <textarea class="form-control" [(ngModel)]="suggest"></textarea>
+    </div>
+
+    <!-- 🔷 FILE -->
+    <div class="card p-3 border-0 shadow-sm">
+        <label class="fw-semibold">ไฟล์แนบ (ถ้ามี)</label>
+        <input type="file" class="form-control">
+    </div>
+
+</div>

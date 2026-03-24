@@ -111,13 +111,30 @@ export class SidebarComponent implements OnInit, OnDestroy {
     {
       label: 'เมนูกำหนดเป้าหมาย',
       icon: 'bx bx-transfer',
-      link: '/Transfer'
+      link: '/Moniter/BudgetTarget'
     },
     {
       label: 'เมนูรายงานผล',
       icon: 'bx bx-transfer',
-      link: '/Transfer'
+      link: '/Moniter/ReportResult'
     },
+    {
+      label: 'รายงานผลกรณีโครงการ',
+      icon: 'bx bx-transfer',
+      link: '/Moniter/Report'
+    },
+    {
+      label: 'รายงานผลกรณีงบลงทุน',
+      icon: 'bx bx-transfer',
+      link: '/Moniter/ReportInvestment'
+    },
+    {
+      label: 'รายงานผลตามตัวชี้วัดแผนงาน',
+      icon: 'bx bx-transfer',
+      link: '/Moniter/ReportKPI'
+    },
+
+
   ];
   environment = environment; // เพิ่ม environment property
   @ViewChild('sideMenu') sideMenu!: ElementRef;
