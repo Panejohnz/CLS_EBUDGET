@@ -18,10 +18,9 @@ import { AutocompleteLibModule } from 'angular-ng-autocomplete';
 import { defineElement } from '@lordicon/element';
 import lottie from 'lottie-web';
 import { SharedModule } from '../../../shared/shared.module';
-import { EmonitorMasterRoutingModule } from './PlanManagement-roution.module';
-import { PlanManagementComponent } from './PlanManagement/PlanManagement.component';
-import { AddPlanManagementComponent } from './PlanManagement/AddPlanManagement/AddPlanManagement.component';
-import { ExamineComponent } from './examine/examine.component';
+import { ProjectTransferComponent } from './ProjectTransfer/ProjectTransfer.component';
+import { EbudgetMasterRoutingModule } from './Transfer-rountion.module';
+
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     url: 'https://httpbin.org/post',
     maxFilesize: 50,
@@ -30,9 +29,7 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
 
 @NgModule({
     declarations: [
-        PlanManagementComponent,
-        AddPlanManagementComponent,
-        ExamineComponent
+        ProjectTransferComponent
     ],
     imports: [
         CommonModule,
@@ -55,7 +52,7 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
         AutocompleteLibModule,
         NgbAccordionModule,
         SharedModule,
-        EmonitorMasterRoutingModule
+        EbudgetMasterRoutingModule
     ],
     providers: [
         provideNgxMask(),

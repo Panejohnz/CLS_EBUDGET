@@ -16,10 +16,9 @@ import { get } from 'lodash';
 import Swal from 'sweetalert2';
 import { EbudgetService } from 'src/app/core/services/ebudget.service';
 import { AuthenticationService } from 'src/app/core/services/auth.service';
-import { FormsModule } from '@angular/forms';
+
 
 type AllocField = 'alloc1' | 'alloc2' | 'alloc3';
-
 interface BudgetNode {
   name: string;
   level: number;
@@ -32,12 +31,11 @@ interface BudgetNode {
   alloc3: number;
 }
 @Component({
-  selector: 'app-project-allocation',
+  selector: 'app-examine',
   providers: [GridJsService, DecimalPipe, EbudgetService],
-  templateUrl: './ProjectAllocation.component.html',
-  styles: ``
+  templateUrl: './examine.component.html',
 })
-export class ProjectAllocationComponent {
+export class ExamineComponent {
   department = '';
   columns: { field: AllocField; label: string }[] = [
     { field: 'alloc1', label: 'จัดสรรครั้งที่ 1' },

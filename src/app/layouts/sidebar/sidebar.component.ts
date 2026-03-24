@@ -83,7 +83,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     {
       label: 'งบประมาณที่ได้รับจัดสรร',
       icon: 'bx bx-money',
-      link: '/emonitorMaster/manageMenu'
+      link: '/PlanManagement/examine'
     },
     {
       label: 'จัดทำแผนปฎิบัติการ',
@@ -94,8 +94,16 @@ export class SidebarComponent implements OnInit, OnDestroy {
       label: 'Sign off แผนปฎิบัติการ',
       icon: 'bx bx-check-double',
       link: '/emonitorMaster/manageStrategy'
-    }
-
+    },
+    {
+      label: 'โอนเปลี่ยนแปลงงบประมาณ',
+      isTitle: true
+    },
+    {
+      label: 'โอนเปลี่ยนแปลงงบประมาณ',
+      icon: 'bx bx-transfer',
+      link: '/Transfer'
+    },
   ];
   environment = environment; // เพิ่ม environment property
   @ViewChild('sideMenu') sideMenu!: ElementRef;
