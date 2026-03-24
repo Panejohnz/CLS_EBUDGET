@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { ProjectBudgetProposalComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposal.component';
-import { ProjectBudgetProposalAddPersonnelComponent } from './ProjectBudgetProposalPersonnel/ProjectBudgetProposalAdd/ProjectBudgetProposalAdd/ProjectBudgetProposalAddPersonnel.component';
-import { ProjectBudgetProposalOperatingComponent } from './ProjectBudgetProposalOperating/ProjectBudgetProposalOperating/ProjectBudgetProposalOperating.component';
+import { ProjectBudgetProposalComponent } from './BudgetProposalPersonnel/BudgetProposal.component';
+import { ProjectBudgetProposalAddPersonnelComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/BudgetProposalAdd/BudgetProposalAddPersonnel.component';
+import { ProjectBudgetProposalOperatingComponent } from './BudgetProposalOperating/ProjectBudgetProposalOperating/ProjectBudgetProposalOperating.component'
 
 const routes: Routes = [
     {

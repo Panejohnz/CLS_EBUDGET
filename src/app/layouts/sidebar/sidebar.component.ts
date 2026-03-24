@@ -104,6 +104,20 @@ export class SidebarComponent implements OnInit, OnDestroy {
       icon: 'bx bx-transfer',
       link: '/Transfer'
     },
+    {
+      label: 'Emonitor',
+      isTitle: true
+    },
+    {
+      label: 'เมนูกำหนดเป้าหมาย',
+      icon: 'bx bx-transfer',
+      link: '/Transfer'
+    },
+    {
+      label: 'เมนูรายงานผล',
+      icon: 'bx bx-transfer',
+      link: '/Transfer'
+    },
   ];
   environment = environment; // เพิ่ม environment property
   @ViewChild('sideMenu') sideMenu!: ElementRef;

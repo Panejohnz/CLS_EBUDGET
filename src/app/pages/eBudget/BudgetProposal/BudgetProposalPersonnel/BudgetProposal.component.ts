@@ -10,7 +10,7 @@ import { AuthenticationService } from 'src/app/core/services/auth.service';
 @Component({
   selector: 'app-project-budget-proposal',
   providers: [GridJsService, DecimalPipe, EbudgetService],
-  templateUrl: './ProjectBudgetProposal.component.html',
+  templateUrl: './BudgetProposal.component.html',
   styles: ``
 })
 export class ProjectBudgetProposalComponent {
