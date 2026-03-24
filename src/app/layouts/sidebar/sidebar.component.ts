@@ -110,30 +110,29 @@ export class SidebarComponent implements OnInit, OnDestroy {
     },
     {
       label: 'เมนูกำหนดเป้าหมาย',
-      icon: 'bx bx-transfer',
+      icon: 'bx bx-target-lock', 
       link: '/Moniter/BudgetTarget'
     },
     {
       label: 'เมนูรายงานผล',
-      icon: 'bx bx-transfer',
+      icon: 'bx bx-bar-chart-alt-2', 
       link: '/Moniter/ReportResult'
     },
     {
       label: 'รายงานผลกรณีโครงการ',
-      icon: 'bx bx-transfer',
+      icon: 'bx bx-task', 
       link: '/Moniter/Report'
     },
     {
       label: 'รายงานผลกรณีงบลงทุน',
-      icon: 'bx bx-transfer',
+      icon: 'bx bx-wallet', 
       link: '/Moniter/ReportInvestment'
     },
     {
       label: 'รายงานผลตามตัวชี้วัดแผนงาน',
-      icon: 'bx bx-transfer',
+      icon: 'bx bx-line-chart',
       link: '/Moniter/ReportKPI'
-    },
-
+    }
 
   ];
   environment = environment; // เพิ่ม environment property
