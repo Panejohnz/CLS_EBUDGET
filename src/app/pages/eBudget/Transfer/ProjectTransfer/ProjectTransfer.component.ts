@@ -111,13 +111,13 @@ export class ProjectTransferComponent {
     this.isEdit = false;
 
     this.form = {
-      toDept: '',
-      expense: '',
-      type: 'increase',
-      amount: null
+      fromDept: '',
+      project: '',
+      projectBudget: null,
+      balance: null
     };
 
-    this.modalService.open(modal, { size: 'xl', backdrop: 'static' });
+    this.modalService.open(modal, { size: 'xl' });
   }
 
   openEdit(modal: any, row: any, index: number) {

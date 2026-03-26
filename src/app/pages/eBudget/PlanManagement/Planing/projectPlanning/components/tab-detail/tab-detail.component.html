@@ -1,0 +1,212 @@
+<div class="border-start border-4 border-primary ps-3 mb-4">
+    <h6 class="fw-bold text-primary mb-3">1. หลักการและเหตุผล <span class="text-danger">*</span></h6>
+</div>
+<div class=" input-group mb-2 border rounded p-3 bg-light">
+    <textarea class="form-control mb-4" rows="4">
+</textarea>
+</div>
+<hr class="my-4">
+<div class="border-start border-4 border-primary ps-3 mb-4">
+    <h6 class="fw-bold text-primary mb-3">2. วัตถุประสงค์ <span class="text-danger">*</span></h6>
+</div>
+<button class=" btn btn-sm btn-outline-primary mb-2" (click)="addObjective()">+ เพิ่มรายการ</button>
+
+<div *ngFor="let item of objectives; let i = index" class="input-group mb-2 border rounded p-3  bg-light">
+
+    <div class="col-md-11">
+        <input class="form-control" placeholder="รายการ" [(ngModel)]="item.name">
+    </div>
+
+
+    <div class="col-md-1 text-end">
+        <button class="btn btn-danger" (click)="removeObjective(i)"> <i class="bx bx-trash"></i></button>
+    </div>
+
+
+</div>
+<hr class="my-4">
+<div class="border-start border-4 border-primary ps-3 mb-4">
+    <h6 class="fw-bold mb-1 text-primary">
+        3. เป้าหมายการดำเนินโครงการ
+        <span class="text-danger">*</span>
+    </h6>
+</div>
+<div class="card mb-4 shadow-sm">
+
+    <div class="card-header bg-light fw-bold">
+        3.1 เป้าหมายเชิงผลผลิต (Output)
+        <span class="text-danger">*</span>
+    </div>
+
+    <div class="card-body">
+
+        <button class="btn btn-sm btn-outline-primary mb-3" (click)="addOutput()">
+            + เพิ่มรายการ
+        </button>
+
+        <div *ngFor="let item of outputs; let i = index" class="border rounded p-3 mb-3 bg-light">
+
+            <div class="row g-2">
+
+                <div class="col-md-7">
+                    <input class="form-control" placeholder="รายการ" [(ngModel)]="item.name">
+                </div>
+
+                <div class="col-md-2">
+                    <input class="form-control" placeholder="เป้าหมาย" [(ngModel)]="item.target">
+                </div>
+
+                <div class="col-md-2">
+                    <select class="form-select" [(ngModel)]="item.unit">
+                        <option value="">หน่วยนับ</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                    </select>
+                </div>
+
+                <div class="col-md-1 text-end">
+                    <button class="btn btn-danger" (click)="removeOutput(i)">
+                        <i class="bx bx-trash"></i>
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="card mb-4 shadow-sm">
+
+    <div class="card-header bg-light fw-bold">
+        3.2 เป้าหมายเชิงผลลัพธ์ (Outcome)
+        <span class="text-danger">*</span>
+    </div>
+
+    <div class="card-body">
+
+        <button class="btn btn-sm btn-outline-primary mb-3" (click)="addOutcome()">
+            + เพิ่มรายการ
+        </button>
+
+        <div *ngFor="let item of outcomes; let i = index" class="border rounded p-3 mb-3 bg-light">
+
+            <div class="row g-2">
+
+                <div class="col-md-11">
+                    <input class="form-control" placeholder="รายการ" [(ngModel)]="item.name">
+                </div>
+
+                <div class="col-md-1 text-end">
+                    <button class="btn btn-danger" (click)="removeOutcome(i)">
+                        <i class="bx bx-trash"></i>
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<hr class="my-4">
+<div class="border-start border-4 border-primary ps-3 mb-4">
+    <h6 class="fw-bold text-primary mb-3 mt-4">
+        4. ผลที่คาดว่าจะได้รับ
+    </h6>
+</div>
+
+
+<button class="btn btn-sm btn-outline-primary mb-2" (click)="addExpectedResult()">+ เพิ่มรายการ</button>
+
+<div *ngFor="let item of expectedResults; let i = index" class="border rounded p-3 mb-3 bg-light">
+
+    <div class="row g-2">
+
+        <div class="col-md-11">
+            <input class="form-control" [(ngModel)]="item.name">
+        </div>
+
+
+
+        <div class="col-md-1 text-end">
+            <button class="btn btn-danger" (click)="removeExpectedResult(i)"> <i class="bx bx-trash"></i></button>
+        </div>
+
+    </div>
+
+</div>
+<hr class="my-4">
+<div class="border-start border-4 border-primary ps-3 mb-4">
+    <h6 class="fw-bold text-primary mb-3 mt-4">
+        5. กลุ่มเป้าหมาย / ผู้ที่ได้รับผลประโยชน์
+    </h6>
+</div>
+
+
+<button class="btn btn-sm btn-outline-primary mb-2" (click)="addTargetGroup()">+ เพิ่มรายการ</button>
+
+<div *ngFor="let item of targetGroups; let i = index" class="border rounded p-3 mb-3 bg-light">
+
+    <div class="row g-2">
+
+        <div class="col-md-7">
+            <input class="form-control" placeholder="กลุ่มเป้าหมาย" [(ngModel)]="item.name">
+        </div>
+
+        <div class="col-md-2">
+            <input class="form-control" placeholder="จำนวน" [(ngModel)]="item.amount">
+        </div>
+
+        <div class="col-md-2">
+            <select class="form-select" [(ngModel)]="item.unit">
+                <option value="">หน่วยนับ</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+            </select>
+        </div>
+
+        <div class="col-md-1 text-end">
+            <button class="btn btn-danger" (click)="removeTargetGroup(i)"> <i class="bx bx-trash"></i></button>
+        </div>
+
+    </div>
+
+</div>
+<hr class="my-4">
+<div class="border-start border-4 border-primary ps-3 mb-4">
+    <h6 class="fw-bold text-primary mb-3 mt-4">
+        6. พื้นที่การดำเนินการ <span class="text-danger">*</span>
+    </h6>
+</div>
+
+<div class=" input-group mb-2 border rounded p-3 bg-light">
+    <textarea class="form-control mb-4" rows="3" [(ngModel)]="projectDetail.area">
+</textarea>
+</div>
+<hr class="my-4">
+<div class="border-start border-4 border-primary ps-3 mb-4">
+    <h6 class="fw-bold text-primary mb-3">
+        7. ระยะเวลาในการดำเนินโครงการ <span class="text-danger">*</span>
+    </h6>
+</div>
+<div class=" input-group mb-2 border rounded p-3 bg-light">
+    <div class="row g-3">
+
+        <div class="col-md-6">
+            <label>ตั้งแต่</label>
+            <input type="date" class="form-control" [(ngModel)]="projectDetail.startDate">
+        </div>
+
+        <div class="col-md-6">
+            <label>ถึงวันที่</label>
+            <input type="date" class="form-control" [(ngModel)]="projectDetail.endDate">
+        </div>
+
+    </div>
+</div>

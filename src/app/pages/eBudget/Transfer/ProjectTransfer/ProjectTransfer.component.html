@@ -66,7 +66,7 @@
         <ng-template #formModal let-modal>
 
             <!-- HEADER BAR -->
-            <div class="modal-header bg-secondary text-white">
+            <div class="modal-header bg-light ">
                 <h5 class="modal-title">
                     {{ isEdit
                     ? 'แก้ไข ข้อมูลการโอนงบประมาณ'
@@ -86,22 +86,50 @@
                         <div class="row mt-2">
                             <div class="col-md-6">
                                 <label>โอนจากหน่วยงาน :</label>
-                                <span class="ms-2">{{ form.fromDept || '-' }}</span>
+
+                                <ng-container *ngIf="!isEdit; else viewFromDept">
+                                    <input class="form-control" [(ngModel)]="form.fromDept">
+                                </ng-container>
+
+                                <ng-template #viewFromDept>
+                                    <span class="ms-2">{{ form.fromDept || '-' }}</span>
+                                </ng-template>
                             </div>
 
                             <div class="col-md-6">
                                 <label>โอนจากโครงการ :</label>
-                                <span class="ms-2">{{ form.project || '-' }}</span>
+
+                                <ng-container *ngIf="!isEdit; else viewProject">
+                                    <input class="form-control" [(ngModel)]="form.project">
+                                </ng-container>
+
+                                <ng-template #viewProject>
+                                    <span class="ms-2">{{ form.project || '-' }}</span>
+                                </ng-template>
                             </div>
 
                             <div class="col-md-6 mt-2">
                                 <label>จำนวนเงินโครงการ :</label>
-                                <span class="ms-2">{{ form.projectBudget || 0 | number }} บาท</span>
+
+                                <ng-container *ngIf="!isEdit; else viewBudget">
+                                    <input type="number" class="form-control" [(ngModel)]="form.projectBudget">
+                                </ng-container>
+
+                                <ng-template #viewBudget>
+                                    <span class="ms-2">{{ form.projectBudget || 0 | number }} บาท</span>
+                                </ng-template>
                             </div>
 
                             <div class="col-md-6 mt-2">
                                 <label>จำนวนเงินคงเหลือ :</label>
-                                <span class="ms-2">{{ form.balance || 0 | number }}</span>
+
+                                <ng-container *ngIf="!isEdit; else viewBalance">
+                                    <input type="number" class="form-control" [(ngModel)]="form.balance">
+                                </ng-container>
+
+                                <ng-template #viewBalance>
+                                    <span class="ms-2">{{ form.balance || 0 | number }}</span>
+                                </ng-template>
                             </div>
                         </div>
                     </div>

@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EbudgetService } from 'src/app/core/services/ebudget.service'
+import { ProjectPlanningComponent } from '../../Planing/projectPlanning/projectPlanning.component';
 
 @Component({
   selector: 'app-add-plan-management',
@@ -172,6 +173,8 @@ export class AddPlanManagementComponent {
         this.plan.subUnitActivity = item.Fk_Budget_Type_Id;
         this.formTitle = item.Expense_Name
         this.dropdown_select = true
+        this.expenseItem = item;
+
       })
 
   }
@@ -320,4 +323,16 @@ export class AddPlanManagementComponent {
       }, 0);
     }, 0) || 0;
   }
+
+  currentTab = 1;
+  project_planing = {
+    projectType: '',
+    planing_Id: 0
+  };
+  goTab(tab: number) {
+    this.currentTab = tab;
+  }
+
+
+
 }
