@@ -308,4 +308,16 @@ export class AddPlanManagementComponent {
       windowClass: 'modal-95'
     })
   }
+  getTotalBudget(item: any): number {
+    return item.quarters?.reduce((sum: number, q: any) => {
+      return sum + q.months.reduce((s: number, m: any) => s + Number(m.budget || 0), 0);
+    }, 0) || 0;
+  }
+  getTotalMultiplier(item: any): number {
+    return item.quarters?.reduce((sum: number, q: any) => {
+      return sum + q.months.reduce((s: number, m: any) => {
+        return s + (Number(m.budget || 0) * (m.multiplier || 1));
+      }, 0);
+    }, 0) || 0;
+  }
 }
