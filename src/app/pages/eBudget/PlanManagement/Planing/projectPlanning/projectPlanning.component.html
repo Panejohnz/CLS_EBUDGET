@@ -1,72 +1,60 @@
 <div class="container-fluid">
 
 
-  
 
-    <div class="modal-body">
+    <div class="card border-0">
+        <div class="card-body">
 
-        <div class="card border-0">
-            <div class="card-body">
+            <!-- Tabs -->
+            <ul class="nav nav-tabs mb-4">
+                <li class="nav-item">
+                    <button class="nav-link" [class.active]="currentTab === 1">
+                        1. ข้อมูลทั่วไป
+                    </button>
+                </li>
 
-                <!-- Tabs -->
-                <ul class="nav nav-tabs mb-4">
-                    <li class="nav-item">
-                        <button class="nav-link" [class.active]="currentTab === 1">
-                            1. ข้อมูลทั่วไป
-                        </button>
-                    </li>
-
-                </ul>
-                <app-tab-general [model]="project_planing">
-                </app-tab-general>
-                <br>
-                <ul class="nav nav-tabs mb-4">
+            </ul>
+            <app-tab-general [model]="project_planing">
+            </app-tab-general>
+            <br>
+            <ul class="nav nav-tabs mb-4">
 
 
-                    <li class="nav-item">
-                        <button class="nav-link" [class.active]="currentTab === 2" (click)="goTab(2)">
-                            2. ความเชื่อมโยงกับแผนระดับต่างๆ
-                        </button>
-                    </li>
+                <li class="nav-item">
+                    <button class="nav-link" [class.active]="currentTab === 2" (click)="goTab(2)">
+                        2. ความเชื่อมโยงกับแผนระดับต่างๆ
+                    </button>
+                </li>
 
-                    <li class="nav-item">
-                        <button class="nav-link" [class.active]="currentTab === 3" (click)="goTab(3)">
-                            3. รายละเอียดโครงการ
-                        </button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link" [class.active]="currentTab === 4" (click)="goTab(4)">
-                            4. แนวทางในการดำเนินการ
-                        </button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link" [class.active]="currentTab === 5" (click)="goTab(5)">
-                            5. ผู้ประสานงาน
-                        </button>
-                    </li>
-                </ul>
-                <app-tab-alignment [hidden]="currentTab !== 2" [model]="project_planing">
-                </app-tab-alignment>
+                <li class="nav-item">
+                    <button class="nav-link" [class.active]="currentTab === 3" (click)="goTab(3)">
+                        3. รายละเอียดโครงการ
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" [class.active]="currentTab === 4" (click)="goTab(4)">
+                        4. แนวทางในการดำเนินการ
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" [class.active]="currentTab === 5" (click)="goTab(5)">
+                        5. ผู้ประสานงาน
+                    </button>
+                </li>
+            </ul>
+            <app-tab-alignment [hidden]="currentTab !== 2" [model]="project_planing">
+            </app-tab-alignment>
 
-                <app-tab-detail [hidden]="currentTab !== 3" [model]="project_planing">
-                </app-tab-detail>
+            <app-tab-detail [hidden]="currentTab !== 3" [model]="project_planing">
+            </app-tab-detail>
 
-                <app-tab-guideline [hidden]="currentTab !== 4" [model]="project_planing">
-                </app-tab-guideline>
-                <app-tab-coordinator [hidden]="currentTab !== 5" [model]="project_planing">
-                </app-tab-coordinator>
-            </div>
+            <app-tab-guideline [hidden]="currentTab !== 4" [model]="project_planing">
+            </app-tab-guideline>
+            <app-tab-coordinator [hidden]="currentTab !== 5" [model]="project_planing">
+            </app-tab-coordinator>
         </div>
-
     </div>
 
-    <div class="modal-footer">
-        <button class="btn btn-success">
-            💾 บันทึก
-        </button>
-        <button class="btn btn-light">
-            ยกเลิก
-        </button>
-    </div>
+
 
 </div>

@@ -349,6 +349,9 @@
     } @else if([72,71].includes(expenseItem.Expense_Id)){
     <app-expense-grant-form [modal]="modal" [expenseItem]="expenseItem">
     </app-expense-grant-form>
+    }@else if ([64,70,73,74,75].includes(expenseItem.Expense_Id)) {
+    <projectPlanning>
+    </projectPlanning>
     }
 
 
