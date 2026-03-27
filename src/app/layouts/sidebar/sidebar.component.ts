@@ -154,7 +154,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     // ตรวจสอบ session expiration ก่อน
-    this.checkSessionExpiration();
+    // this.checkSessionExpiration();
 
     // Initialize with default year (will be updated by topbar event)
     const currentDate = new Date();

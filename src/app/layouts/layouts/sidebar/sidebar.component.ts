@@ -39,13 +39,13 @@ export class SidebarComponent implements OnInit {
 
   ngOnInit(): void {
     // ตรวจสอบ session expiration ก่อน
-    this.checkSessionExpiration();
+    // this.checkSessionExpiration(); 
     
     // โหลด menu จาก session ก่อน
     this.loadMenuFromSession();
     
     // Debug: แสดงข้อมูล menu ที่โหลด
-    console.log('Sidebar ngOnInit - Current menuItems:', this.menuItems);
+    
     
     // ใช้ combineLatest เพื่อรอทั้ง user และ menu
     combineLatest([
