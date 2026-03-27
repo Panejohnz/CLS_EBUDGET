@@ -16,10 +16,10 @@ export class TabGeneralComponent {
   totalYears: number | null = null;
   currentYear: number | null = null;
   ngOnInit(): void {
-    console.log('00', this.project_planing);
+    console.log('00', this.model);
 
   }
   Onchange_type() {
-    this.project_planing.projectType = this.projectType
+    this.model.projectType = this.projectType
   }
 }

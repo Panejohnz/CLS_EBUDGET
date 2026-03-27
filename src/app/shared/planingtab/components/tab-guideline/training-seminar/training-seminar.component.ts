@@ -15,6 +15,7 @@ interface Project {
 
 export class TrainingSeminarComponent {
   @Input() project_planing: any
+  @Input() modal : any
   projects: Project[] = [
     {
       name: '',
@@ -27,7 +28,7 @@ export class TrainingSeminarComponent {
 
 
   closeModal() {
-    this.project_planing.dismiss();
+    this.modal .dismiss();
   }
   expenseTotal: number = 0;
   addProject() {
@@ -100,6 +101,6 @@ export class TrainingSeminarComponent {
   }
   save() {
     basicAlert('success', 'บันทึกข้อมูลแล้ว', '')
-    this.project_planing.dismiss();
+    this.modal .dismiss();
   }
 }

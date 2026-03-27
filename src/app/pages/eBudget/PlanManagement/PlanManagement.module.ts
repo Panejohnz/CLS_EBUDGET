@@ -23,16 +23,6 @@ import { PlanManagementComponent } from './PlanManagement/PlanManagement.compone
 import { AddPlanManagementComponent } from './PlanManagement/AddPlanManagement/AddPlanManagement.component';
 import { ExamineComponent } from './examine/examine.component';
 import { ProjectPlanningComponent } from './Planing/projectPlanning/projectPlanning.component';
-import { TabGeneralComponent } from './Planing/projectPlanning/components/tab-general/tab-general.component';
-import { TabAlignmentComponent } from './Planing/projectPlanning/components/tab-alignment/tab-alignment.component';
-import { TabDetailComponent } from './Planing/projectPlanning/components/tab-detail/tab-detail.component';
-import { TabGuidelineComponent } from './Planing/projectPlanning/components/tab-guideline/tab-guideline.component';
-import { TrainingSeminarComponent } from './Planing/projectPlanning/components/tab-guideline/training-seminar/training-seminar.component';
-import { PublicRelationsComponent } from './Planing/projectPlanning/components/tab-guideline/public-relations/public-relations.component';
-import { InvestmentBudgetComponent } from './Planing/projectPlanning/components/tab-guideline/investment-budget/investment-budget.component';
-import { ConsultantHireComponent } from './Planing/projectPlanning/components/tab-guideline/consultant-hire/consultant-hire.component';
-import { OtherExpenseProjectComponent } from './Planing/projectPlanning/components/tab-guideline/other-expense-project/other-expense-project.component';
-import { TabCoordinatorComponent } from './Planing/projectPlanning/components/tab-coordinator/tab-coordinator.component';
 import { ProjectBudgetProposalAddPersonnelComponent } from './PlanManagement/AddPlanManagement/BudgetProposalAdd/BudgetProposalAddPersonnel.component';
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
@@ -47,16 +37,6 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
         AddPlanManagementComponent,
         ExamineComponent,
         ProjectPlanningComponent,
-        TabGeneralComponent,
-        TabAlignmentComponent,
-        TabDetailComponent,
-        TabGuidelineComponent,
-        TrainingSeminarComponent,
-        PublicRelationsComponent,
-        InvestmentBudgetComponent,
-        ConsultantHireComponent,
-        OtherExpenseProjectComponent,
-        TabCoordinatorComponent,
         ProjectBudgetProposalAddPersonnelComponent
     ],
     imports: [

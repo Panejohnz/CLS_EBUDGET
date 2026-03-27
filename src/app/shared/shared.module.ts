@@ -77,6 +77,16 @@ import { ExpenseWitnessProtectionComponent } from '../shared/expense/expenseWitn
 import { ExpenseConsultantHireComponent } from '../shared/expense/expenseConsultantHire/expenseConsultantHire.component';
 import { ExpenseGrantFormComponent } from '../shared/expense/expenseGrantForm/expenseGrantForm.component';
 import { ExpenseFuelLubricantComponent } from '../shared/expense/expenseFuelLubricant/expenseFuelLubricant.component';
+
+//planing
+import { TabGeneralComponent } from '../shared/planingtab/components/tab-general/tab-general.component';
+import { TabAlignmentComponent } from '../shared/planingtab/components/tab-alignment/tab-alignment.component';
+import { TabDetailComponent } from '../shared/planingtab/components/tab-detail/tab-detail.component';
+import { TabCoordinatorComponent } from '../shared/planingtab/components/tab-coordinator/tab-coordinator.component';
+import { TabGuidelineComponent } from '../shared/planingtab/components/tab-guideline/tab-guideline.component';
+import { OtherExpenseProjectComponent } from '../shared/planingtab/components/tab-guideline/other-expense-project/other-expense-project.component';
+
+
 import { NgSelectModule } from '@ng-select/ng-select';
 @NgModule({
   declarations: [
@@ -143,6 +153,12 @@ import { NgSelectModule } from '@ng-select/ng-select';
     ExpenseConsultantHireComponent,
     ExpenseGrantFormComponent,
     ExpenseFuelLubricantComponent,
+    TabGeneralComponent,
+    TabAlignmentComponent,
+    TabDetailComponent,
+    TabCoordinatorComponent,
+    TabGuidelineComponent,
+    OtherExpenseProjectComponent
   ],
   imports: [
     FormsModule,
@@ -216,6 +232,13 @@ import { NgSelectModule } from '@ng-select/ng-select';
     ExpenseWitnessProtectionComponent,
     ExpenseConsultantHireComponent,
     ExpenseGrantFormComponent,
-    ExpenseFuelLubricantComponent,]
+    ExpenseFuelLubricantComponent,
+    TabGeneralComponent,
+    TabAlignmentComponent,
+    TabDetailComponent,
+    TabCoordinatorComponent,
+    TabGuidelineComponent,
+    OtherExpenseProjectComponent
+  ]
 })
 export class SharedModule { }

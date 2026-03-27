@@ -6,10 +6,10 @@ import { Component, Input } from '@angular/core';
   styleUrl: './other-expense-project.component.scss'
 })
 export class OtherExpenseProjectComponent {
+  @Input() modal: any
   @Input() project_planing: any
-
   closeModal() {
-    this.project_planing.dismiss();
+    this.modal.dismiss();
   }
   meetingCosts: any[] = [
     {
@@ -44,6 +44,6 @@ export class OtherExpenseProjectComponent {
   }
   save() {
     basicAlert('success', 'บันทึกข้อมูลแล้ว', '')
-    this.project_planing.dismiss();
+    this.modal.dismiss();
   }
 }

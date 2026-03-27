@@ -14,7 +14,7 @@
                     </li>
 
                 </ul>
-                <app-tab-general [model]="project_planing">
+                <app-tab-general [project_planing]="project_planing">
                 </app-tab-general>
                 <br>
                 <ul class="nav nav-tabs mb-4">
@@ -42,15 +42,15 @@
                         </button>
                     </li>
                 </ul>
-                <app-tab-alignment [hidden]="currentTab !== 2" [model]="project_planing">
+                <app-tab-alignment [hidden]="currentTab !== 2" [project_planing]="project_planing">
                 </app-tab-alignment>
 
-                <app-tab-detail [hidden]="currentTab !== 3" [model]="project_planing">
+                <app-tab-detail [hidden]="currentTab !== 3" [project_planing]="project_planing">
                 </app-tab-detail>
 
-                <app-tab-guideline [hidden]="currentTab !== 4" [model]="project_planing">
+                <app-tab-guideline [hidden]="currentTab !== 4" [project_planing]="project_planing">
                 </app-tab-guideline>
-                <app-tab-coordinator [hidden]="currentTab !== 5" [model]="project_planing">
+                <app-tab-coordinator [hidden]="currentTab !== 5" [project_planing]="project_planing">
                 </app-tab-coordinator>
             </div>
         </div>
