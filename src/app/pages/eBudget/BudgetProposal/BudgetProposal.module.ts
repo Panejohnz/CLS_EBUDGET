@@ -23,41 +23,6 @@ import { ProjectBudgetProposalComponent } from './BudgetProposalPersonnel/Budget
 import { ProjectBudgetProposalAddPersonnelComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/BudgetProposalAdd/BudgetProposalAddPersonnel.component';
 import { ProjectBudgetProposalOperatingComponent } from './BudgetProposalOperating/ProjectBudgetProposalOperating/ProjectBudgetProposalOperating.component';
 import { ProjectBudgetProposalAddOperatingComponent } from './BudgetProposalOperating/ProjectBudgetProposalOperating/ProjectBudgetProposalAddOperating/ProjectBudgetProposalAddOperating/ProjectBudgetProposalOperating.component';
-import { ExpenseListSalaryComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseListSalary/expenseListSalary.component';
-import { ExpenseRentHouseComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseRentHouse/expenseRentHouse.component';
-import { ExpenseOTComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseOT/expenseOT.component';
-import { ExpenseMeetingSupportComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseMeetingSupport/expenseMeetingSupport.component';
-import { ExpenseMeetingLitigationComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseMeetingLitigation/expenseMeetingLitigation.component';
-import { ExpenseCommitteeComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseCommittee/expenseCommittee.component';
-import { ExpenseCarAllowanceComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseCarAllowance/expenseCarAllowance.component';
-import { ExpenseTravelComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseTravel/expenseTravel.component';
-import { ExpenseTrainingSeminarComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseTrainingSeminar/expenseTrainingSeminar.component';
-import { ExpenseOfficeRentComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseOfficeRent/expenseOfficeRent.component';
-import { ExpenseCopierRentComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseCopierRent/expenseCopierRent.component';
-import { ExpenseServiceContractComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseServiceContract/expenseServiceContract.component';
-import { ExpenseOtherComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseOther/expenseOther.component';
-import { ExpenseVehicleRepairComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseVehicleRepair/expenseVehicleRepair.component';
-import { ExpenseRepairConstructionComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseRepairConstruction/expenseRepairConstruction.component';
-import { ExpenseEquipmentRepairComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseEquipmentRepair/expenseEquipmentRepair.component';
-import { ExpenseAdvertisingComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseAdvertising/expenseAdvertising.component';
-import { ExpenseCeremonialComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseCeremonial/expenseCeremonial.component';
-import { ExpenseWitnessComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseWitness/expenseWitness.component';
-import { ExpenseSection61Component } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseSection61/expenseSection61.component';
-import { ExpenseOtherOperatingCostComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseOtherOperatingCost/expenseOtherOperatingCost.component';
-import { ExpenseOfficeSuppliesCostComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseOfficeSuppliesCost/expenseOfficeSuppliesCost.component';
-import { ExpenseFuelAndLubricantCostComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseFuelAndLubricantCost/expenseFuelAndLubricantCost.component';
-import { ExpenseConstructionMaterialCostComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseConstructionMaterialCost/expenseConstructionMaterialCost.component';
-import { ExpenseComputerMaterialCostComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseComputerMaterialCost/expenseComputerMaterialCost.component';
-import { ExpenseUtilityAndTelecomCostComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseUtilityAndTelecomCost/expenseUtilityAndTelecomCost.component';
-import { ExpenseSystemMaintenanceCostComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseSystemMaintenanceCost/expenseSystemMaintenanceCost.component';
-import { ExpenseCarRentalCostComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseCarRentalCost/expenseCarRentalCost.component';
-import { ExpenseAssetInvestmentFormComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseAssetInvestmentForm/expenseAssetInvestmentForm.component';
-import { ExpenseConstructionFormComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseConstructionForm/expenseConstructionForm.component';
-import { ExpenseForeignTravelComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseForeignTravel/expenseForeignTravel.component';
-import { ExpenseWitnessProtectionComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseWitnessProtection/expenseWitnessProtection.component';
-import { ExpenseConsultantHireComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseConsultantHire/expenseConsultantHire.component';
-import { ExpenseGrantFormComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseGrantForm/expenseGrantForm.component';
-import { ExpenseFuelLubricantComponent } from './BudgetProposalPersonnel/BudgetProposalAdd/expenseFuelLubricant/expenseFuelLubricant.component';
 import { ProjectPlanningComponent } from './Planing/projectPlanning/projectPlanning.component';
 import { TabGeneralComponent } from './Planing/projectPlanning/components/tab-general/tab-general.component';
 import { TabAlignmentComponent } from './Planing/projectPlanning/components/tab-alignment/tab-alignment.component';
@@ -81,41 +46,6 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
         ProjectBudgetProposalAddPersonnelComponent,
         ProjectBudgetProposalOperatingComponent,
         ProjectBudgetProposalAddOperatingComponent,
-        ExpenseListSalaryComponent,
-        ExpenseRentHouseComponent,
-        ExpenseOTComponent,
-        ExpenseMeetingSupportComponent,
-        ExpenseMeetingLitigationComponent,
-        ExpenseCommitteeComponent,
-        ExpenseCarAllowanceComponent,
-        ExpenseTravelComponent,
-        ExpenseTrainingSeminarComponent,
-        ExpenseOfficeRentComponent,
-        ExpenseCopierRentComponent,
-        ExpenseServiceContractComponent,
-        ExpenseOtherComponent,
-        ExpenseVehicleRepairComponent,
-        ExpenseRepairConstructionComponent,
-        ExpenseEquipmentRepairComponent,
-        ExpenseAdvertisingComponent,
-        ExpenseCeremonialComponent,
-        ExpenseWitnessComponent,
-        ExpenseSection61Component,
-        ExpenseOtherOperatingCostComponent,
-        ExpenseOfficeSuppliesCostComponent,
-        ExpenseFuelAndLubricantCostComponent,
-        ExpenseConstructionMaterialCostComponent,
-        ExpenseComputerMaterialCostComponent,
-        ExpenseUtilityAndTelecomCostComponent,
-        ExpenseSystemMaintenanceCostComponent,
-        ExpenseCarRentalCostComponent,
-        ExpenseAssetInvestmentFormComponent,
-        ExpenseConstructionFormComponent,
-        ExpenseForeignTravelComponent,
-        ExpenseWitnessProtectionComponent,
-        ExpenseConsultantHireComponent,
-        ExpenseGrantFormComponent,
-        ExpenseFuelLubricantComponent,
         ProjectPlanningComponent,
         TabGeneralComponent,
         TabAlignmentComponent,

@@ -19,7 +19,6 @@ export class ExpenseAssetInvestmentFormComponent {
   spec = '';
 
   ngOnInit() {
-    alert(this.type)
     this.config = this.getConfig(this.type);
   }
 
