@@ -16,7 +16,6 @@ export class TabGeneralComponent {
   totalYears: number | null = null;
   currentYear: number | null = null;
   ngOnInit(): void {
-    console.log('00', this.model);
 
   }
   Onchange_type() {
