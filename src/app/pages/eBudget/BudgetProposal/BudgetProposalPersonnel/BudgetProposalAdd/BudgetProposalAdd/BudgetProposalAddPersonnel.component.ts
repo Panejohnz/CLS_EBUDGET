@@ -181,10 +181,16 @@ export class ProjectBudgetProposalAddPersonnelComponent {
     });
 
   }
-  saveTarget() {
+  async save() {
+    const userConfirmed = await confirmAlert('info', 'ต้องการบันทึกข้อมูล ?', '');
 
+    if (userConfirmed) {
+
+      basicAlert('success', 'บันทึกข้อมูลแล้ว', '')
+      this.modal.dismiss();
+
+    }
   }
-
   formTitle: any
 
   change_expense() {

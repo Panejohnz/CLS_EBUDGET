@@ -331,7 +331,16 @@ export class AddPlanManagementComponent {
   goTab(tab: number) {
     this.currentTab = tab;
   }
+  async save() {
+    const userConfirmed = await confirmAlert('info', 'ต้องการบันทึกข้อมูล ?', '');
 
+    if (userConfirmed) {
+
+      basicAlert('success', 'บันทึกข้อมูลแล้ว', '')
+      this.modal.dismiss();
+
+    }
+  }
 
 
 }
