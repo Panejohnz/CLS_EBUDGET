@@ -105,7 +105,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       link: '/Transfer'
     },
     {
-      label: 'Emonitor',
+      label: 'ระบบติดตามการดำเนินงาน',
       isTitle: true
     },
     {
