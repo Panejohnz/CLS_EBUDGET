@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EbudgetService } from 'src/app/core/services/ebudget.service'
+import { ProjectPlanningComponent } from '../../Planing/projectPlanning/projectPlanning.component';
 
 @Component({
   selector: 'app-add-plan-management',
@@ -172,6 +173,8 @@ export class AddPlanManagementComponent {
         this.plan.subUnitActivity = item.Fk_Budget_Type_Id;
         this.formTitle = item.Expense_Name
         this.dropdown_select = true
+        this.expenseItem = item;
+
       })
 
   }
@@ -302,10 +305,42 @@ export class AddPlanManagementComponent {
   }
   @Input() model: any
   openMultiplierModal(content: any) {
-    alert(this.expenseItem.Expense_Id)
     this.modalService.open(content, {
       backdrop: 'static',
       windowClass: 'modal-95'
     })
   }
+  getTotalBudget(item: any): number {
+    return item.quarters?.reduce((sum: number, q: any) => {
+      return sum + q.months.reduce((s: number, m: any) => s + Number(m.budget || 0), 0);
+    }, 0) || 0;
+  }
+  getTotalMultiplier(item: any): number {
+    return item.quarters?.reduce((sum: number, q: any) => {
+      return sum + q.months.reduce((s: number, m: any) => {
+        return s + (Number(m.budget || 0) * (m.multiplier || 1));
+      }, 0);
+    }, 0) || 0;
+  }
+
+  currentTab = 1;
+  project_planing = {
+    projectType: '',
+    planing_Id: 0
+  };
+  goTab(tab: number) {
+    this.currentTab = tab;
+  }
+  async save() {
+    const userConfirmed = await confirmAlert('info', 'ต้องการบันทึกข้อมูล ?', '');
+
+    if (userConfirmed) {
+
+      basicAlert('success', 'บันทึกข้อมูลแล้ว', '')
+      this.modal.dismiss();
+
+    }
+  }
+
+
 }

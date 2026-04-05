@@ -1,0 +1,285 @@
+<div class="container-fluid mt-3">
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+
+            <span class="fw-bold">
+                แบบฟอร์มค่าใช้จ่ายในการสัมมนาและฝึกอบรม
+            </span>
+
+            <button class="btn btn-primary btn-sm" (click)="addProject()">
+                + เพิ่มโครงการ / หลักสูตร
+            </button>
+
+        </div>
+
+
+        <div class="card-body p-0">
+
+
+            <div *ngFor="let project of projects; let i = index" class="border-bottom">
+
+
+                <table class="table table-bordered mb-0 align-middle">
+
+                    <thead>
+
+                        <tr class="table-light text-black">
+
+                            <th style="width:40%">
+                                ({{i+1}}) โครงการ/หลักสูตร
+                            </th>
+
+                            <th style="width:15%" class="text-center">
+                                สถานที่ดำเนินการ
+                            </th>
+
+                            <th style="width:30%">
+                                คำชี้แจง (เหตุผลความจำเป็นและผลประโยชน์ที่จะได้รับ)
+                            </th>
+
+                            <th style="width:15%">
+                                แนบไฟล์
+                            </th>
+                            <th>
+                                <button class=" btn btn-danger btn-sm" (click)="removeProject(i)"><i
+                                        class="ri-delete-bin-2-line"></i></button>
+                            </th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+
+                                <div class="small mb-2">
+
+                                    <span class="fw-bold">
+                                        โครงการ/หลักสูตร
+                                    </span>
+
+
+
+
+
+                                </div>
+
+                                <textarea class="form-control form-control-sm" rows="3"
+                                    placeholder="ระบุโครงการ/หลักสูตร" [(ngModel)]="project.name">
+</textarea>
+
+                            </td>
+
+
+                            <td class="text-center">
+
+                                <div class="form-check">
+
+                                    <input class="form-check-input" type="radio" id="gov{{i}}" name="location{{i}}"
+                                        value="gov" [(ngModel)]="project.location">
+
+                                    <label class="form-check-label small" for="gov{{i}}">
+                                        ราชการ
+                                    </label>
+
+                                </div>
+
+                                <div class="form-check">
+
+                                    <input class="form-check-input" type="radio" id="private{{i}}" name="location{{i}}"
+                                        value="private" [(ngModel)]="project.location">
+
+                                    <label class="form-check-label small" for="private{{i}}">
+                                        เอกชน
+                                    </label>
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+
+                                <textarea class="form-control form-control-sm" rows="3" placeholder="ระบุคำชี้แจง"
+                                    [(ngModel)]="project.detail">
+</textarea>
+
+                            </td>
+
+
+                            <td class="text-center">
+
+                                <label class="text-primary small" style="cursor:pointer;">
+                                    คลิกที่นี่เพื่อแนบไฟล์
+                                    <input type="file" hidden (change)="onFileSelected($event, project)">
+                                </label>
+
+                                <div class="small text-success mt-1" *ngIf="project.file">
+                                    {{project.file.name}}
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+
+                <!-- TABLE ค่าใช้จ่าย -->
+                <br>
+                <div class="table-responsive">
+                    <button class="btn btn-primary btn-sm" (click)="addExpense(project)">เพิ่มค่าใช้จ่าย</button>
+                    <table class="table table-bordered  bg-light align-middle text-center mb-0">
+
+                        <thead class="table-secondary small">
+
+                            <tr class="table-light">
+
+                                <th rowspan="2">ค่าใช้จ่าย</th>
+                                <th rowspan="2">ครั้ง/งาน</th>
+
+                                <th colspan="4">จำนวนคน</th>
+
+                                <th colspan="2">ระยะเวลา/หน่วย</th>
+
+                                <th colspan="2">อัตราค่าใช้จ่าย</th>
+
+                                <th rowspan="2">รวมเงิน (บาท)</th>
+
+                                <th rowspan="2"></th>
+
+                            </tr>
+
+                            <tr class="table-light">
+
+                                <th>ประเภท ก</th>
+                                <th>ประเภท ข</th>
+                                <th>บุคคลภายนอก</th>
+                                <th>คน</th>
+
+                                <th>จำนวน</th>
+                                <th>หน่วยนับ</th>
+
+                                <th>อัตราค่าใช้จ่าย</th>
+                                <th>หน่วย</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr *ngFor="let exp of project.expenses; let j = index">
+
+                                <td>
+                                    <select class="form-select form-select-sm" [(ngModel)]="exp.name">
+                                        <option>--- ค่าใช้จ่าย ---</option>
+                                        <option>ค่าอาหาร</option>
+                                        <option>ค่าที่พัก</option>
+                                        <option>ค่าวิทยากร</option>
+                                    </select>
+                                </td>
+
+                                <td>
+                                    <input type="number" class="form-control form-control-sm text-center"
+                                        [(ngModel)]="exp.times" (input)="calculateExpense(project)">
+                                </td>
+
+                                <td>
+                                    <input type="number" class="form-control form-control-sm text-center"
+                                        [(ngModel)]="exp.a" (input)="calculateExpense(project)">
+                                </td>
+
+                                <td>
+                                    <input type="number" class="form-control form-control-sm text-center"
+                                        [(ngModel)]="exp.b" (input)="calculateExpense(project)">
+                                </td>
+
+                                <td>
+                                    <input type="number" class="form-control form-control-sm text-center"
+                                        [(ngModel)]="exp.external" (input)="calculateExpense(project)">
+                                </td>
+
+                                <td>
+                                    <input type="number" class="form-control form-control-sm text-center"
+                                        [(ngModel)]="exp.person" (input)="calculateExpense(project)">
+                                </td>
+
+                                <td>
+                                    <input type="number" class="form-control form-control-sm text-center"
+                                        [(ngModel)]="exp.duration" (input)="calculateExpense(project)">
+                                </td>
+
+                                <td>
+                                    <select class="form-select form-select-sm" [(ngModel)]="exp.durationUnit">
+                                        <option>วัน</option>
+                                        <option>มื้อ</option>
+                                        <option>ชั่วโมง</option>
+                                    </select>
+                                </td>
+
+                                <td>
+                                    <input type="number" class="form-control form-control-sm text-end"
+                                        [(ngModel)]="exp.rate" (input)="calculateExpense(project)">
+                                </td>
+
+                                <td>
+                                    <select class="form-select form-select-sm">
+                                        <option>บาท</option>
+                                    </select>
+                                </td>
+
+                                <td class="text-success fw-bold text-end">
+                                    {{ exp.total | number:'1.2-2' }}
+                                </td>
+
+                                <td>
+                                    <button class="btn btn-sm btn-outline-danger" (click)="removeExpense(project,j)">
+                                        <i class="ri-delete-bin-line"></i>
+                                    </button>
+                                </td>
+
+                            </tr>
+
+                            <tr class="table-light fw-bold">
+
+                                <td colspan="10" class="text-end">
+                                    รวม
+                                </td>
+
+                                <td class="text-end">
+                                    {{ expenseTotal| number:'1.2-2' }}
+                                </td>
+
+                                <td></td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+                <hr class="my-4">
+            </div>
+
+        </div>
+
+    </div>
+    <div class="d-flex justify-content-end mt-3 gap-2">
+
+        <button class="btn btn-success" (click)="save()">
+
+            💾 บันทึก
+
+        </button>
+        <button class="btn btn-light" (click)="closeModal()">
+            ยกเลิก
+        </button>
+    </div>
+</div>

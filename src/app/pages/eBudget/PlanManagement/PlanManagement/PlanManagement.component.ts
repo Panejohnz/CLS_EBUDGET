@@ -117,11 +117,9 @@ export class PlanManagementComponent {
 
 
   fullModal(modal: any, data: any) {
-
-
     this.modalRef = this.modalService.open(modal, {
       backdrop: 'static',
-      windowClass: 'modal-95'
+      windowClass: 'modal-95',
     });
   }
   deletePlan(data: any) {

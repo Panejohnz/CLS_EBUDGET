@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgbNavModule, NgbAccordionModule, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
-
+import { FormsModule } from '@angular/forms';
 // Swiper Slider
 import { SlickCarouselModule } from 'ngx-slick-carousel';
 
@@ -41,6 +41,53 @@ import { FindjobsComponent } from './landing/job/findjobs/findjobs.component';
 import { JobcategoriesComponent } from './landing/job/jobcategories/jobcategories.component';
 import { LandingScrollspyDirective } from './landingscrollspy.directive';
 
+//Expense
+import { ExpenseListSalaryComponent } from '../shared/expense/expenseListSalary/expenseListSalary.component';
+import { ExpenseRentHouseComponent } from '../shared/expense/expenseRentHouse/expenseRentHouse.component';
+import { ExpenseOTComponent } from '../shared/expense/expenseOT/expenseOT.component';
+import { ExpenseMeetingSupportComponent } from '../shared/expense/expenseMeetingSupport/expenseMeetingSupport.component';
+import { ExpenseMeetingLitigationComponent } from '../shared/expense/expenseMeetingLitigation/expenseMeetingLitigation.component';
+import { ExpenseCommitteeComponent } from '../shared/expense/expenseCommittee/expenseCommittee.component';
+import { ExpenseCarAllowanceComponent } from '../shared/expense/expenseCarAllowance/expenseCarAllowance.component';
+import { ExpenseTravelComponent } from '../shared/expense/expenseTravel/expenseTravel.component';
+import { ExpenseTrainingSeminarComponent } from '../shared/expense/expenseTrainingSeminar/expenseTrainingSeminar.component';
+import { ExpenseOfficeRentComponent } from '../shared/expense/expenseOfficeRent/expenseOfficeRent.component';
+import { ExpenseCopierRentComponent } from '../shared/expense/expenseCopierRent/expenseCopierRent.component';
+import { ExpenseServiceContractComponent } from '../shared/expense/expenseServiceContract/expenseServiceContract.component';
+import { ExpenseOtherComponent } from '../shared/expense/expenseOther/expenseOther.component';
+import { ExpenseVehicleRepairComponent } from '../shared/expense/expenseVehicleRepair/expenseVehicleRepair.component';
+import { ExpenseRepairConstructionComponent } from '../shared/expense/expenseRepairConstruction/expenseRepairConstruction.component';
+import { ExpenseEquipmentRepairComponent } from '../shared/expense/expenseEquipmentRepair/expenseEquipmentRepair.component';
+import { ExpenseAdvertisingComponent } from '../shared/expense/expenseAdvertising/expenseAdvertising.component';
+import { ExpenseCeremonialComponent } from '../shared/expense/expenseCeremonial/expenseCeremonial.component';
+import { ExpenseWitnessComponent } from '../shared/expense/expenseWitness/expenseWitness.component';
+import { ExpenseSection61Component } from '../shared/expense/expenseSection61/expenseSection61.component';
+import { ExpenseOtherOperatingCostComponent } from '../shared/expense/expenseOtherOperatingCost/expenseOtherOperatingCost.component';
+import { ExpenseOfficeSuppliesCostComponent } from '../shared/expense/expenseOfficeSuppliesCost/expenseOfficeSuppliesCost.component';
+import { ExpenseFuelAndLubricantCostComponent } from '../shared/expense/expenseFuelAndLubricantCost/expenseFuelAndLubricantCost.component';
+import { ExpenseConstructionMaterialCostComponent } from '../shared/expense/expenseConstructionMaterialCost/expenseConstructionMaterialCost.component';
+import { ExpenseComputerMaterialCostComponent } from '../shared/expense/expenseComputerMaterialCost/expenseComputerMaterialCost.component';
+import { ExpenseUtilityAndTelecomCostComponent } from '../shared/expense/expenseUtilityAndTelecomCost/expenseUtilityAndTelecomCost.component';
+import { ExpenseSystemMaintenanceCostComponent } from '../shared/expense/expenseSystemMaintenanceCost/expenseSystemMaintenanceCost.component';
+import { ExpenseCarRentalCostComponent } from '../shared/expense/expenseCarRentalCost/expenseCarRentalCost.component';
+import { ExpenseAssetInvestmentFormComponent } from '../shared/expense/expenseAssetInvestmentForm/expenseAssetInvestmentForm.component';
+import { ExpenseConstructionFormComponent } from '../shared/expense/expenseConstructionForm/expenseConstructionForm.component';
+import { ExpenseForeignTravelComponent } from '../shared/expense/expenseForeignTravel/expenseForeignTravel.component';
+import { ExpenseWitnessProtectionComponent } from '../shared/expense/expenseWitnessProtection/expenseWitnessProtection.component';
+import { ExpenseConsultantHireComponent } from '../shared/expense/expenseConsultantHire/expenseConsultantHire.component';
+import { ExpenseGrantFormComponent } from '../shared/expense/expenseGrantForm/expenseGrantForm.component';
+import { ExpenseFuelLubricantComponent } from '../shared/expense/expenseFuelLubricant/expenseFuelLubricant.component';
+
+//planing
+import { TabGeneralComponent } from '../shared/planingtab/components/tab-general/tab-general.component';
+import { TabAlignmentComponent } from '../shared/planingtab/components/tab-alignment/tab-alignment.component';
+import { TabDetailComponent } from '../shared/planingtab/components/tab-detail/tab-detail.component';
+import { TabCoordinatorComponent } from '../shared/planingtab/components/tab-coordinator/tab-coordinator.component';
+import { TabGuidelineComponent } from '../shared/planingtab/components/tab-guideline/tab-guideline.component';
+import { OtherExpenseProjectComponent } from '../shared/planingtab/components/tab-guideline/other-expense-project/other-expense-project.component';
+
+
+import { NgSelectModule } from '@ng-select/ng-select';
 @NgModule({
   declarations: [
     BreadcrumbsComponent,
@@ -70,15 +117,58 @@ import { LandingScrollspyDirective } from './landingscrollspy.directive';
     ProcessComponent,
     JobFooterComponent,
     FindjobsComponent,
-    JobcategoriesComponent
+    JobcategoriesComponent,
+    ExpenseListSalaryComponent,
+    ExpenseRentHouseComponent,
+    ExpenseOTComponent,
+    ExpenseMeetingSupportComponent,
+    ExpenseMeetingLitigationComponent,
+    ExpenseCommitteeComponent,
+    ExpenseCarAllowanceComponent,
+    ExpenseTravelComponent,
+    ExpenseTrainingSeminarComponent,
+    ExpenseOfficeRentComponent,
+    ExpenseCopierRentComponent,
+    ExpenseServiceContractComponent,
+    ExpenseOtherComponent,
+    ExpenseVehicleRepairComponent,
+    ExpenseRepairConstructionComponent,
+    ExpenseEquipmentRepairComponent,
+    ExpenseAdvertisingComponent,
+    ExpenseCeremonialComponent,
+    ExpenseWitnessComponent,
+    ExpenseSection61Component,
+    ExpenseOtherOperatingCostComponent,
+    ExpenseOfficeSuppliesCostComponent,
+    ExpenseFuelAndLubricantCostComponent,
+    ExpenseConstructionMaterialCostComponent,
+    ExpenseComputerMaterialCostComponent,
+    ExpenseUtilityAndTelecomCostComponent,
+    ExpenseSystemMaintenanceCostComponent,
+    ExpenseCarRentalCostComponent,
+    ExpenseAssetInvestmentFormComponent,
+    ExpenseConstructionFormComponent,
+    ExpenseForeignTravelComponent,
+    ExpenseWitnessProtectionComponent,
+    ExpenseConsultantHireComponent,
+    ExpenseGrantFormComponent,
+    ExpenseFuelLubricantComponent,
+    TabGeneralComponent,
+    TabAlignmentComponent,
+    TabDetailComponent,
+    TabCoordinatorComponent,
+    TabGuidelineComponent,
+    OtherExpenseProjectComponent
   ],
   imports: [
+    FormsModule,
     CommonModule,
     NgbNavModule,
     NgbAccordionModule,
     NgbDropdownModule,
     SlickCarouselModule,
-    CountUpModule
+    CountUpModule,
+    NgSelectModule
   ],
   exports: [BreadcrumbsComponent,
     ClientLogoComponent,
@@ -107,6 +197,48 @@ import { LandingScrollspyDirective } from './landingscrollspy.directive';
     CandidateComponent,
     BlogComponent,
     JobcategoriesComponent,
-    JobFooterComponent]
+    JobFooterComponent,
+    ExpenseListSalaryComponent,
+    ExpenseRentHouseComponent,
+    ExpenseOTComponent,
+    ExpenseMeetingSupportComponent,
+    ExpenseMeetingLitigationComponent,
+    ExpenseCommitteeComponent,
+    ExpenseCarAllowanceComponent,
+    ExpenseTravelComponent,
+    ExpenseTrainingSeminarComponent,
+    ExpenseOfficeRentComponent,
+    ExpenseCopierRentComponent,
+    ExpenseServiceContractComponent,
+    ExpenseOtherComponent,
+    ExpenseVehicleRepairComponent,
+    ExpenseRepairConstructionComponent,
+    ExpenseEquipmentRepairComponent,
+    ExpenseAdvertisingComponent,
+    ExpenseCeremonialComponent,
+    ExpenseWitnessComponent,
+    ExpenseSection61Component,
+    ExpenseOtherOperatingCostComponent,
+    ExpenseOfficeSuppliesCostComponent,
+    ExpenseFuelAndLubricantCostComponent,
+    ExpenseConstructionMaterialCostComponent,
+    ExpenseComputerMaterialCostComponent,
+    ExpenseUtilityAndTelecomCostComponent,
+    ExpenseSystemMaintenanceCostComponent,
+    ExpenseCarRentalCostComponent,
+    ExpenseAssetInvestmentFormComponent,
+    ExpenseConstructionFormComponent,
+    ExpenseForeignTravelComponent,
+    ExpenseWitnessProtectionComponent,
+    ExpenseConsultantHireComponent,
+    ExpenseGrantFormComponent,
+    ExpenseFuelLubricantComponent,
+    TabGeneralComponent,
+    TabAlignmentComponent,
+    TabDetailComponent,
+    TabCoordinatorComponent,
+    TabGuidelineComponent,
+    OtherExpenseProjectComponent
+  ]
 })
 export class SharedModule { }
