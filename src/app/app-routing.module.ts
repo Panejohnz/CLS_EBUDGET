@@ -23,6 +23,7 @@ const routes: Routes = [
   { path: 'Dashboard', component: LayoutComponent, loadChildren: () => import('./pages/dashboards/dashboards.module').then(m => m.DashboardsModule), },
   { path: 'Moniter', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/Moniter/Moniter.module').then(m => m.EmonitorMasterModule), },
   { path: 'singOffAction', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/singOffAcion/singOffAcion.module').then(m => m.EmonitorMasterModule), },
+  { path: 'MasterData', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/MasterData/MasterData.module').then(m => m.PagesModule), },
 
   
 ];

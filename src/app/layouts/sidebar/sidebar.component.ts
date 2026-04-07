@@ -134,17 +134,23 @@ export class SidebarComponent implements OnInit, OnDestroy {
       link: '/Moniter/ReportKPI'
     },
     {
-      label: 'โอนเปลี่ยนแปลงงบประมาณ',
+      label: 'ข้อมูลกลาง',
       isTitle: true
     },
     {
-      label: 'โอนเปลี่ยนแปลงงบประมาณ',
-      icon: 'bx bx-transfer',
-      link: '/Transfer'
+      label: 'ระดับบุคลากร',
+      icon: 'bx bx-id-card',
+      link: '/MasterData/MasBusinessLevel'
     },
     {
-      label: 'ระบบติดตามการดำเนินงาน',
-      isTitle: true
+      label: 'ค่าที่พักตามระดับ',
+      icon: 'bx bx-hotel',
+      link: '/MasterData/MasExpenseDetail'
+    },
+    {
+      label: 'ความสอดคล้องโครงการ',
+      icon: 'bx bx-check-shield',
+      link: '/MasterData/MasProjectPlan'
     },
   ];
   environment = environment; // เพิ่ม environment property
