@@ -23,17 +23,17 @@ export class BudgetTargetSettingComponent {
   };
   sections = [
     {
-      title: '1.1 เป้าหมายภาพรวม',
+      title: 'เป้าหมายภาพรวม',
       pay: [0, 0, 0, 0],
       disburse: [0, 0, 0, 0]
     },
     {
-      title: '1.2 เป้าหมายรายจ่ายประจำ',
+      title: 'เป้าหมายรายจ่ายประจำ',
       pay: [0, 0, 0, 0],
       disburse: [0, 0, 0, 0]
     },
     {
-      title: '1.3 เป้าหมายรายจ่ายงบลงทุน',
+      title: 'เป้าหมายรายจ่ายงบลงทุน',
       pay: [0, 0, 0, 0],
       disburse: [0, 0, 0, 0]
     }

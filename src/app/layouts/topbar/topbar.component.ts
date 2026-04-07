@@ -381,15 +381,17 @@ export class TopbarComponent implements OnInit {
    */
   onYearChange(): void {
     // บันทึกค่า select_year ไว้ใน sessionStorage
+    // if (this.select_year) {
+    //   sessionStorage.setItem('select_year', this.select_year.toString());
+    //   this.budgetYearService.setYear(this.select_year);
+    // }
+
+    // this.yearChangeSubject.next(this.select_year);
+    // this.eventService.broadcast('yearChanged', this.select_year);
     if (this.select_year) {
       sessionStorage.setItem('select_year', this.select_year.toString());
       this.budgetYearService.setYear(this.select_year);
     }
-
-    // Broadcast year change to all subscribers
-    this.yearChangeSubject.next(this.select_year);
-    // Also broadcast via EventService for backward compatibility
-    this.eventService.broadcast('yearChanged', this.select_year);
   }
 
   /**

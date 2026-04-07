@@ -22,19 +22,23 @@ export class BudgetYearService {
       this.listYearSubject.next(years);
     }
   }
-  private yearChangeSubject = new BehaviorSubject<number | null>(null);
+  private yearChangeSubject = new BehaviorSubject<number>(
+    new Date().getFullYear()
+  );
+
   yearChanged$ = this.yearChangeSubject.asObservable();
 
   setYear(year: number) {
     this.yearChangeSubject.next(year);
   }
 
+  getBgyear(): number {
+    return this.yearChangeSubject.value;
+  }
+
   getListYear(): any[] {
     return this.listYearSubject.value;
   }
 
-  getBgyear(): number {
-    return this.bgyearSubject.value;
-  }
 }
 

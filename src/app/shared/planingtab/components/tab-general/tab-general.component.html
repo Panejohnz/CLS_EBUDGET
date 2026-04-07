@@ -19,11 +19,9 @@
 
                 <option value="" disabled selected>-- เลือกประเภทโครงการ --</option>
 
-                <option value="1">อบรมสัมนา (งบดำเนินงาน)</option>
-                <option value="2">ประชาสัมพันธ์ (งบดำเนินงาน)</option>
-                <option value="3">งบลงทุน (งบลงทุน)</option>
-                <option value="4">จ้างที่ปรึกษา (งบรายจ่ายอื่น)</option>
-                <option value="5">โครงการลักษณะรายจ่ายอื่น (งบรายจ่ายอื่น)</option>
+                <option *ngFor="let item of Mas_Expense_Lists" [value]="item.Expense_Id">
+                    {{ item.Expense_Name }}
+                </option>
 
             </select>
         </div>
@@ -32,8 +30,9 @@
             <label class="form-label">แผนงาน</label>
             <select class="form-select">
                 <option disabled selected>-- เลือกแผนงาน --</option>
-                <option value="1">แผนงาน 1</option>
-                <option value="2">แผนงาน 2</option>
+                <option *ngFor="let item of Mas_Plan_Lists" [value]="item.Plan_Id">
+                    {{ item.Plan_Name }}
+                </option>
             </select>
         </div>
 

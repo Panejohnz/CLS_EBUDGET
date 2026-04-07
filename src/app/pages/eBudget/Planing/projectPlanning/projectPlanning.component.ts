@@ -17,7 +17,7 @@ import Swal from 'sweetalert2';
 import { EbudgetService } from 'src/app/core/services/ebudget.service';
 import { AuthenticationService } from 'src/app/core/services/auth.service';
 import { FormsModule } from '@angular/forms';
-
+import { BudgetYearService } from 'src/app/core/services/budget-year.service';
 @Component({
   selector: 'projectPlanning',
   providers: [GridJsService, DecimalPipe, EbudgetService],
@@ -67,13 +67,20 @@ export class ProjectPlanningComponent {
 
   constructor(private modalService: NgbModal, public service: GridJsService
     , private sortService: PaginationService, public serviceebud: EbudgetService
-    , private authService: AuthenticationService,) {
+    , private authService: AuthenticationService, private budgetYearService: BudgetYearService) {
   }
+  currentYear: any
   ngOnInit(): void {
-    this.allData = Array.isArray(this.griddata)
-      ? this.griddata
-      : [];
-    this.griddata = [...this.allData];
+    this.budgetYearService.yearChanged$.subscribe(year => {
+      if (year) {
+        this.currentYear = year
+        this.allData = Array.isArray(this.griddata)
+          ? this.griddata
+          : [];
+        this.griddata = [...this.allData];
+      }
+    });
+
   }
 
   filterSearch() {
