@@ -118,16 +118,16 @@ export class SidebarComponent implements OnInit, OnDestroy {
       icon: 'bx bx-bar-chart-alt-2',
       link: '/Moniter/ReportResult'
     },
-    {
-      label: 'รายงานผลกรณีโครงการ',
-      icon: 'bx bx-task',
-      link: '/Moniter/Report'
-    },
-    {
-      label: 'รายงานผลกรณีงบลงทุน',
-      icon: 'bx bx-wallet',
-      link: '/Moniter/ReportInvestment'
-    },
+    // {
+    //   label: 'รายงานผลกรณีโครงการ',
+    //   icon: 'bx bx-task',
+    //   link: '/Moniter/Report'
+    // },
+    // {
+    //   label: 'รายงานผลกรณีงบลงทุน',
+    //   icon: 'bx bx-wallet',
+    //   link: '/Moniter/ReportInvestment'
+    // },
     {
       label: 'รายงานผลตามตัวชี้วัดแผนงาน',
       icon: 'bx bx-line-chart',

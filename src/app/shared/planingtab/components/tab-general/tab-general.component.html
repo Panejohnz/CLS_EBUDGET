@@ -17,12 +17,18 @@
 
             <select (change)="Onchange_type()" class="form-select" name="projectType" [(ngModel)]="projectType">
 
-                <option value="" disabled selected>-- เลือกประเภทโครงการ --</option>
+                <!-- <option value="" disabled selected>-- เลือกประเภทโครงการ --</option>
 
                 <option *ngFor="let item of Mas_Expense_Lists" [value]="item.Expense_Id">
                     {{ item.Expense_Name }}
-                </option>
+                </option> -->
+                <option value="" disabled selected>-- เลือกประเภทโครงการ --</option>
 
+                <option value="1">อบรมสัมนา (งบดำเนินงาน)</option>
+                <option value="2">ประชาสัมพันธ์ (งบดำเนินงาน)</option>
+                <option value="3">งบลงทุน (งบลงทุน)</option>
+                <option value="4">จ้างที่ปรึกษา (งบรายจ่ายอื่น)</option>
+                <option value="5">โครงการลักษณะรายจ่ายอื่น (งบรายจ่ายอื่น)</option>
             </select>
         </div>
 
