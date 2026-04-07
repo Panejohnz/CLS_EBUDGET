@@ -132,8 +132,20 @@ export class SidebarComponent implements OnInit, OnDestroy {
       label: 'รายงานผลตามตัวชี้วัดแผนงาน',
       icon: 'bx bx-line-chart',
       link: '/Moniter/ReportKPI'
-    }
-
+    },
+    {
+      label: 'โอนเปลี่ยนแปลงงบประมาณ',
+      isTitle: true
+    },
+    {
+      label: 'โอนเปลี่ยนแปลงงบประมาณ',
+      icon: 'bx bx-transfer',
+      link: '/Transfer'
+    },
+    {
+      label: 'ระบบติดตามการดำเนินงาน',
+      isTitle: true
+    },
   ];
   environment = environment; // เพิ่ม environment property
   @ViewChild('sideMenu') sideMenu!: ElementRef;

@@ -110,7 +110,13 @@
     <div class="d-flex justify-content-between align-items-end mb-3">
         <div style="width: 400px;">
             <label class="fw-semibold">หน่วยงาน</label>
-            <input class="form-control">
+
+            <select class="form-select" [(ngModel)]="selectedDepartment">
+                <option value="">-- เลือกหน่วยงาน --</option>
+                <option *ngFor="let d of departments" [value]="d.id">
+                    {{ d.name }}
+                </option>
+            </select>
         </div>
 
         <div style="width: 250px;">
@@ -173,7 +179,7 @@
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title">รายงานผล</h5>
+                <h5 class="modal-title">รายงานผล{{ selectedItem.name}}</h5>
                 <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
             </div>
 
@@ -190,9 +196,7 @@
                         @if(selectedItem.no == 3){
                         <div class="d-flex justify-content-between align-items-center mb-3">
 
-                            <h6 class="fw-semibold mb-0">
-                                เมนูรายงานผล ทั้ง โครงการ/รายจ่ายประจำ
-                            </h6>
+
 
                             <button class="btn btn-primary" (click)="fullModalreport(reportModal, null)">
                                 รายงานผลลงทุน
@@ -389,13 +393,20 @@
                         </div>
                     </div>
 
-
+  <div class="text-end">
+        <button class="btn btn-primary me-2" (click)="save(modal)">
+            บันทึก
+        </button>
+        <button class="btn btn-outline-secondary" (click)="modal.dismiss()">
+            ยกเลิก
+        </button>
+    </div>
                 </div>
             </div>
 
         </div>
     </div>
-
+  
 </ng-template>
 <ng-template #monthModal let-modal>
 

@@ -81,7 +81,13 @@
 
         </div>
     </div>
-    <div *ngIf="dropdown_select">
+    <div  *ngIf="dropdown_select">
+        <div class="modal-header bg-light">
+            <h5 class="card-title bg-light">
+                {{ formTitle }}
+            </h5>
+            <button type="button" class="btn-close" (click)="modal.dismiss();"></button>
+        </div>
         @if ([64,70,73,74,75].includes(expenseItem.Expense_Id)) {
         <projectPlanning>
         </projectPlanning>
@@ -232,8 +238,19 @@
                 </tbody>
 
             </table>
+            <div class="modal-footer">
 
+                <button class="btn btn-light" (click)="modal.dismiss()">
+                    ยกเลิก
+                </button>
+
+                <button class="btn btn-success" (click)="save()">
+                    💾 บันทึก
+                </button>
+
+            </div>
         </div>
+
         }
 
 

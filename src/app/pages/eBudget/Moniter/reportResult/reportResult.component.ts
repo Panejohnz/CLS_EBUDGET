@@ -16,7 +16,7 @@ export class ReportResultComponent {
       output: 'ผลผลิต A',
       activity: 'กิจกรรม A',
       category: 'งบดำเนินงาน',
-      name: 'รายจ่ายประจำ  ',
+      name: 'ค่าเบี้ยประชุมกรรมการ (งานสนับสนุน)  ',
       planAmount: 100000,
       used: 2000,
       balance: 44000
@@ -36,7 +36,7 @@ export class ReportResultComponent {
       plan: 'แผน C',
       output: 'ผลผลิต C',
       activity: 'กิจกรรม C',
-      category: 'งบดำเนินงาน',
+      category: 'งบลงทุน',
       name: 'ค่าครุภัณฑ์คอมพิวเตอร์',
       planAmount: 890000,
       used: 80500,
@@ -148,7 +148,13 @@ export class ReportResultComponent {
       { plan: 0, actual: 0, resbill: 0 }
     ];
   }
+  selectedDepartment: any = '';
 
+  departments = [
+    { id: 1, name: 'หน่วยงาน 1' },
+    { id: 2, name: 'หน่วยงาน 2' },
+    { id: 3, name: 'หน่วยงาน 3' }
+  ];
   getTotalPlan(item: any) {
     return item.quarters.flat().reduce((s: any, x: any) => s + (+x.plan || 0), 0);
   }
@@ -230,5 +236,18 @@ export class ReportResultComponent {
 
     modal.close(); // 🔥 ปิด modal
   }
+  close() {
 
+  }
+
+  async save(modal: any) {
+    const userConfirmed = await confirmAlert('info', 'ต้องการบันทึกข้อมูล ?', '');
+
+    if (userConfirmed) {
+
+      basicAlert('success', 'บันทึกข้อมูลแล้ว', '')
+      modal.dismiss();
+
+    }
+  }
 }
