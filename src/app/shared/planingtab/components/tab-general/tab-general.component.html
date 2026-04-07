@@ -3,10 +3,12 @@
 
         <div class="col-md-6">
             <label class="form-label">หน่วยงาน</label>
-            <select class="form-select">
-                <option value="" disabled value="" selected>-- เลือกหน่วยงาน --</option>
-                <option value="">หน่วยงานที่ 1</option>
-                <option value="">หน่วยงานที่ 2</option>
+            <select class="form-select" [(ngModel)]="selectedDepartment">
+                <option value="" disabled>-- เลือกหน่วยงาน --</option>
+
+                <option *ngFor="let item of Mas_Department_Lists" [value]="item.Department_Id">
+                    {{ item.Department_Name }}
+                </option>
             </select>
         </div>
 
@@ -79,96 +81,96 @@
 
 <!-- การดำเนินการ -->
 
-    <div class="row mt-4">
+<div class="row mt-4">
 
-        <!-- ลักษณะโครงการ -->
-        <div class="col-md-2">
-            <label class="form-label d-block">ลักษณะโครงการ</label>
+    <!-- ลักษณะโครงการ -->
+    <div class="col-md-2">
+        <label class="form-label d-block">ลักษณะโครงการ</label>
 
-            <div class="form-check form-check-inline">
-                <input type="radio" class="form-check-input" id="natureBudget" name="projectNatureType" value="budget">
-                <label class="form-check-label" for="natureBudget">
-                    ใช้งบ
-                </label>
-            </div>
-
-            <div class="form-check form-check-inline">
-                <input type="radio" class="form-check-input" id="natureNonBudget" name="projectNatureType"
-                    value="nonbudget">
-                <label class="form-check-label" for="natureNonBudget">
-                    ไม่ใช้งบ
-                </label>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <label class="form-label d-block">การดำเนินการ</label>
-
-            <div class="form-check form-check-inline">
-                <input type="checkbox" class="form-check-input" id="operateSelf" value="self">
-                <label class="form-check-label" for="operateSelf">
-                    ดำเนินการเอง
-                </label>
-            </div>
-
-            <div class="form-check form-check-inline">
-                <input type="checkbox" class="form-check-input" id="operateHire" value="hire">
-                <label class="form-check-label" for="operateHire">
-                    จัดจ้าง
-                </label>
-            </div>
+        <div class="form-check form-check-inline">
+            <input type="radio" class="form-check-input" id="natureBudget" name="projectNatureType" value="budget">
+            <label class="form-check-label" for="natureBudget">
+                ใช้งบ
+            </label>
         </div>
 
+        <div class="form-check form-check-inline">
+            <input type="radio" class="form-check-input" id="natureNonBudget" name="projectNatureType"
+                value="nonbudget">
+            <label class="form-check-label" for="natureNonBudget">
+                ไม่ใช้งบ
+            </label>
+        </div>
     </div>
-    <div class="row mt-2">
-        <div class="col-md-2">
-            <label class="form-label d-block">ประเภทโครงการ</label>
+    <div class="col-md-2">
+        <label class="form-label d-block">การดำเนินการ</label>
 
-            <div class="form-check">
-                <input type="radio" class="form-check-input" id="natureNew" name="projectNature" value="new"
-                    [(ngModel)]="projectNature">
-
-                <label class="form-check-label" for="natureNew">
-                    โครงการใหม่
-                </label>
-            </div>
-
-            <div class="form-check">
-                <input type="radio" class="form-check-input" id="natureContinue" name="projectNature" value="continue"
-                    [(ngModel)]="projectNature">
-
-                <label class="form-check-label" for="natureContinue">
-                    โครงการต่อเนื่อง
-                </label>
-            </div>
+        <div class="form-check form-check-inline">
+            <input type="checkbox" class="form-check-input" id="operateSelf" value="self">
+            <label class="form-check-label" for="operateSelf">
+                ดำเนินการเอง
+            </label>
         </div>
 
-        <div class="col-md-3" *ngIf="projectNature === 'continue'">
-            <label class="form-label">จำนวนปีที่ดำเนินการ</label>
-            <input type="number" class="form-control" placeholder="กรอกจำนวนปี" [(ngModel)]="totalYears">
+        <div class="form-check form-check-inline">
+            <input type="checkbox" class="form-check-input" id="operateHire" value="hire">
+            <label class="form-check-label" for="operateHire">
+                จัดจ้าง
+            </label>
         </div>
-
-        <div class="col-md-3" *ngIf="projectNature === 'continue'">
-            <label class="form-label">ปีนี้เป็นปีที่</label>
-            <input type="number" class="form-control" placeholder="กรอกปี" [(ngModel)]="currentYear">
-        </div>
-
     </div>
 
+</div>
+<div class="row mt-2">
+    <div class="col-md-2">
+        <label class="form-label d-block">ประเภทโครงการ</label>
 
+        <div class="form-check">
+            <input type="radio" class="form-check-input" id="natureNew" name="projectNature" value="new"
+                [(ngModel)]="projectNature">
 
-
-    <!-- Continue Project Only -->
-    @if (project_planing === 'continue' ) {<div class="row mt-3">
-
-        <div class="col-md-6">
-            <label class="form-label">จำนวนปีที่ดำเนินการ</label>
-            <input type="number" class="form-control">
+            <label class="form-check-label" for="natureNew">
+                โครงการใหม่
+            </label>
         </div>
 
-        <div class="col-md-6">
-            <label class="form-label">ปีนี้เป็นปีที่</label>
-            <input type="number" class="form-control">
-        </div>
+        <div class="form-check">
+            <input type="radio" class="form-check-input" id="natureContinue" name="projectNature" value="continue"
+                [(ngModel)]="projectNature">
 
+            <label class="form-check-label" for="natureContinue">
+                โครงการต่อเนื่อง
+            </label>
+        </div>
     </div>
-    }
+
+    <div class="col-md-3" *ngIf="projectNature === 'continue'">
+        <label class="form-label">จำนวนปีที่ดำเนินการ</label>
+        <input type="number" class="form-control" placeholder="กรอกจำนวนปี" [(ngModel)]="totalYears">
+    </div>
+
+    <div class="col-md-3" *ngIf="projectNature === 'continue'">
+        <label class="form-label">ปีนี้เป็นปีที่</label>
+        <input type="number" class="form-control" placeholder="กรอกปี" [(ngModel)]="currentYear">
+    </div>
+
+</div>
+
+
+
+
+<!-- Continue Project Only -->
+@if (project_planing === 'continue' ) {<div class="row mt-3">
+
+    <div class="col-md-6">
+        <label class="form-label">จำนวนปีที่ดำเนินการ</label>
+        <input type="number" class="form-control">
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">ปีนี้เป็นปีที่</label>
+        <input type="number" class="form-control">
+    </div>
+
+</div>
+}

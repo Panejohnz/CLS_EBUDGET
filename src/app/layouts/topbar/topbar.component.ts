@@ -8,7 +8,7 @@ import { AuthenticationService } from '../../core/services/auth.service';
 import { AuthfakeauthenticationService } from '../../core/services/authfake.service';
 import { Router } from '@angular/router';
 import { TokenStorageService } from '../../core/services/token-storage.service';
-
+import { BudgetYearService } from '../../core/services/budget-year.service';
 // Language
 import { CookieService } from 'ngx-cookie-service';
 import { LanguageService } from '../../core/services/language.service';
@@ -53,20 +53,20 @@ export class TopbarComponent implements OnInit {
 
   constructor(@Inject(DOCUMENT) private document: any, private eventService: EventService, public languageService: LanguageService, private modalService: NgbModal,
     public _cookiesService: CookieService, public translate: TranslateService, private authService: AuthenticationService, private authFackservice: AuthfakeauthenticationService,
-    private router: Router, private TokenStorageService: TokenStorageService) { }
+    private router: Router, private TokenStorageService: TokenStorageService, private budgetYearService: BudgetYearService) { }
 
   ngOnInit(): void {
     // this.userData = this.TokenStorageService.getUser();
     this.userData = this.authService.getAuthen();
     this.permissionData = this.authService.getStoredPermission();
     this.element = document.documentElement;
-    
+
     // Initialize year selection
     this.list_year = this.generateYearRange();
-    
+
     // ตรวจสอบว่ามีค่า select_year อยู่แล้วหรือไม่ (จาก sessionStorage หรือ localStorage)
     const storedYear = sessionStorage.getItem('select_year') || localStorage.getItem('select_year');
-    
+
     if (storedYear) {
       // ถ้ามีค่าแล้วให้ใช้ค่านั้น
       this.select_year = parseInt(storedYear, 10);
@@ -75,7 +75,7 @@ export class TopbarComponent implements OnInit {
       const currentDate = new Date();
       const currentYear = currentDate.getFullYear() + 543; // แปลงจาก ค.ศ. เป็น พ.ศ.
       const currentMonth = currentDate.getMonth() + 1; // getMonth() เริ่มจาก 0
-      
+
       if (currentMonth > 9) {
         this.select_year = currentYear + 1;
       } else {
@@ -84,7 +84,7 @@ export class TopbarComponent implements OnInit {
       // บันทึกค่าเริ่มต้นไว้ใน sessionStorage
       sessionStorage.setItem('select_year', this.select_year.toString());
     }
-    
+
     // Broadcast initial year through both methods
     this.yearChangeSubject.next(this.select_year);
     // Broadcast via EventService so sidebar can receive it
@@ -218,7 +218,7 @@ export class TopbarComponent implements OnInit {
   logout() {
 
     // window.location.href("https://privus.fda.moph.go.th/");
-    
+
     this.authService.logout();
     window.location.href = "https://privus.fda.moph.go.th/";
     // this.router.navigate(['/auth/permission']);
@@ -383,8 +383,9 @@ export class TopbarComponent implements OnInit {
     // บันทึกค่า select_year ไว้ใน sessionStorage
     if (this.select_year) {
       sessionStorage.setItem('select_year', this.select_year.toString());
+      this.budgetYearService.setYear(this.select_year);
     }
-    
+
     // Broadcast year change to all subscribers
     this.yearChangeSubject.next(this.select_year);
     // Also broadcast via EventService for backward compatibility
