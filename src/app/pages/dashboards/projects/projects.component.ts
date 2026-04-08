@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ApexChart } from 'ng-apexcharts';
 import { ActiveProjects, MyTask, TeamMembers, projectstatData } from 'src/app/core/data';
 import { NgApexchartsModule } from "ng-apexcharts";
-
+import { ApexLegend } from "ng-apexcharts";
 @Component({
   selector: 'app-projects',
   templateUrl: './projects.component.html',
@@ -27,14 +27,15 @@ export class ProjectsComponent implements OnInit {
   barLineChart = {
     series: [
       { name: 'แผน', type: 'column', data: [30, 40, 35, 50, 49] },
-      { name: 'เบิกจ่าย', type: 'line', data: [20, 30, 25, 40, 35] }
+      { name: 'เบิกจ่าย', type: 'column', data: [20, 30, 25, 40, 39] },
+      { name: 'แนวโน้ม', type: 'line', data: [20, 30, 25, 40, 35] }
     ],
     chart: {
       type: 'line' as const,
       height: 300
     },
     stroke: { width: [0, 3] },
-    colors: ['#4e73df', '#e74a3b'],
+    colors: ['#4e73df', '#1cc88a', '#e74a3b'],
     xaxis: { categories: ['งบอุดหนุน', 'งบดำเนินงาน', 'ลงทุน', 'งบรายจ่ายอื่น', 'งบบุคลากร'] }
   };
   pieChart2 = {
@@ -50,14 +51,15 @@ export class ProjectsComponent implements OnInit {
   barLineChart2 = {
     series: [
       { name: 'แผน', type: 'column', data: [30, 40, 35, 50] },
-      { name: 'เบิกจ่าย', type: 'line', data: [20, 30, 25, 40] }
+      { name: 'เบิกจ่าย', type: 'column', data: [20, 30, 25, 40] },
+      { name: 'แนวโน้ม', type: 'line', data: [20, 30, 25, 40] }
     ],
     chart: {
       type: 'line' as const,
       height: 300
     },
     stroke: { width: [0, 3] },
-    colors: ['#4e73df', '#e74a3b'],
+    colors: ['#4e73df', '#1cc88a','#e74a3b'],
     xaxis: { categories: ['ไตรมาส 1', 'ไตรมาส 2', 'ไตรมาส 3', 'ไตรมาส 4'] }
   };
   planChart = {
@@ -119,6 +121,98 @@ export class ProjectsComponent implements OnInit {
       position: 'top'
     }
   };
+  comboChart = {
+    series: [
+      {
+        name: 'แผน',
+        type: 'column',
+        data: [30, 40, 35, 50, 45]
+      },
+      {
+        name: 'เบิกจ่าย',
+        type: 'column',
+        data: [20, 30, 25, 40, 35]
+      },
+      {
+        name: 'แนวโน้ม',
+        type: 'line',
+        data: [20, 30, 25, 40, 35]
+      }
+    ],
+    chart: {
+      height: 350,
+      type: 'line' as const
+    },
+    stroke: {
+      width: [0, 0, 3], // 🔥 เส้นแดงหนา
+      curve: 'smooth' as const
+    },
+    colors: ['#4e73df', '#1cc88a', '#e74a3b'], // 🔵🟢🔴
+    plotOptions: {
+      bar: {
+        columnWidth: '40%',
+        borderRadius: 4
+      }
+    },
+    dataLabels: {
+      enabled: false
+    },
+    xaxis: {
+      categories: ['แผน1', 'แผน2', 'แผน3', 'แผน4', 'แผน5']
+    },
+    legend: {
+      position: 'top' as const
+    }
+  };
+
+  comboChart2 = {
+    series: [
+      {
+        name: 'แผน',
+        type: 'column',
+        data: [20, 30, 25, 40, 35, 50, 30, 45, 40, 55]
+      },
+      {
+        name: 'เบิกจ่าย',
+        type: 'column',
+        data: [10, 20, 15, 30, 25, 40, 20, 35, 30, 45]
+      },
+      {
+        name: 'แนวโน้ม',
+        type: 'line',
+        data: [10, 20, 15, 30, 25, 40, 20, 35, 30, 45]// 🔴 เส้นแดง
+      }
+    ],
+    chart: {
+      height: 350,
+      type: 'line' as const
+    },
+    stroke: {
+      width: [0, 0, 3], // 🔥 เส้นแดงหนา
+      curve: 'smooth' as const
+    },
+    colors: ['#4e73df', '#1cc88a', '#e74a3b'],
+    plotOptions: {
+      bar: {
+        columnWidth: '40%',
+        borderRadius: 4
+      }
+    },
+    dataLabels: {
+      enabled: true
+    },
+    xaxis: {
+      categories: [
+        'ส่วนกลาง', 'เขต 1', 'เขต 2', 'เขต 3', 'เขต 4',
+        'เขต 5', 'เขต 6', 'เขต 7', 'เขต 8', 'เขต 9'
+      ]
+    },
+    legend: {
+      position: 'top' as const
+    }
+  };
+
+
   constructor() {
   }
   totalSummary = {

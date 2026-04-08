@@ -108,8 +108,9 @@
                 <h5 class="mb-0">ภาพรวมงบประมาณแยกตาม พ.ร.บ แผนงานต่าง ๆ</h5>
             </div>
             <div class="card-body">
-                <apx-chart [series]="planChart.series" [chart]="planChart.chart" [xaxis]="planChart.xaxis"
-                    [plotOptions]="planChart.plotOptions">
+                <apx-chart [series]="comboChart.series" [chart]="comboChart.chart" [stroke]="comboChart.stroke"
+                    [colors]="comboChart.colors" [plotOptions]="comboChart.plotOptions" [xaxis]="comboChart.xaxis"
+                    [legend]="comboChart.legend">
                 </apx-chart>
             </div>
         </div>
@@ -122,7 +123,9 @@
                 <h5 class="mb-0">ภาพรวมงบประมาณแยกตามหน่วยงานและเปรียบเทียบกับงบประมาณที่ได้รับจัดสรร</h5>
             </div>
             <div class="card-body">
-                <apx-chart [series]="trendChart.series" [chart]="trendChart.chart" [xaxis]="trendChart.xaxis">
+                <apx-chart [series]="comboChart2.series" [chart]="comboChart2.chart" [stroke]="comboChart2.stroke"
+                    [colors]="comboChart2.colors" [plotOptions]="comboChart2.plotOptions" [xaxis]="comboChart2.xaxis"
+                    [legend]="comboChart2.legend">
                 </apx-chart>
             </div>
         </div>
@@ -130,7 +133,7 @@
     <div class="col-xxl-6">
         <div class="card shadow-sm h-100">
             <div class="card-header">
-                <h5 class="mb-0">ภาพรวมงบประมาณแยกตามไตรมาสเทียบผลเบิกจ่าย</h5>
+                <h5 class="mb-0"> ภาพรวมงบประมาณแยกตามไตรมาส</h5>
             </div>
             <div class="card-body">
 
@@ -144,7 +147,7 @@
     <div class="col-xxl-6">
         <div class="card shadow-sm h-100">
             <div class="card-header">
-                <h5 class="mb-0">ภาพรวมงบประมาณแยกตามไตรมาส</h5>
+                <h5 class="mb-0">ภาพรวมงบประมาณแยกตามไตรมาสเทียบผลเบิกจ่าย</h5>
             </div>
             <div class="card-body">
                 <apx-chart [series]="barLineChart2.series" [chart]="barLineChart2.chart" [xaxis]="barLineChart2.xaxis"
