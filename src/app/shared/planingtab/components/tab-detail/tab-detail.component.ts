@@ -7,7 +7,7 @@ import { Component, Input } from '@angular/core';
   styleUrl: './tab-detail.component.scss'
 })
 export class TabDetailComponent {
-  @Input() project_planing: any
+  @Input() model: any
   // 1
   projectDetail = {
     principle: '',

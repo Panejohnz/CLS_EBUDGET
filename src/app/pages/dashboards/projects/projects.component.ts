@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-
+import { ApexChart } from 'ng-apexcharts';
 import { ActiveProjects, MyTask, TeamMembers, projectstatData } from 'src/app/core/data';
-
+import { NgApexchartsModule } from "ng-apexcharts";
 
 @Component({
   selector: 'app-projects',
@@ -13,43 +13,140 @@ import { ActiveProjects, MyTask, TeamMembers, projectstatData } from 'src/app/co
  * Projects Component
  */
 export class ProjectsComponent implements OnInit {
+  statData: any
+  pieChart = {
+    series: [30, 25, 20, 15, 10],
+    chart: {
+      type: 'pie' as const,
+      height: 300
+    },
+    labels: ['งบอุดหนุน', 'งบดำเนินงาน', 'ลงทุน', 'งบรายจ่ายอื่น', 'งบบุคลากร'],
+    colors: ['#4e73df', '#1cc88a', '#f6c23e', '#ff0000', '#00d9ff']
+  };
 
-  // bread crumb items
-  breadCrumbItems!: Array<{}>;
-  statData!: any;
-  OverviewChart: any;
-  ActiveProjects: any;
-  MyTask: any;
-  TeamMembers: any;
-  status7: any;
+  barLineChart = {
+    series: [
+      { name: 'แผน', type: 'column', data: [30, 40, 35, 50, 49] },
+      { name: 'เบิกจ่าย', type: 'line', data: [20, 30, 25, 40, 35] }
+    ],
+    chart: {
+      type: 'line' as const,
+      height: 300
+    },
+    stroke: { width: [0, 3] },
+    colors: ['#4e73df', '#e74a3b'],
+    xaxis: { categories: ['งบอุดหนุน', 'งบดำเนินงาน', 'ลงทุน', 'งบรายจ่ายอื่น', 'งบบุคลากร'] }
+  };
+  pieChart2 = {
+    series: [25, 25, 25, 25],
+    chart: {
+      type: 'pie' as const,
+      height: 300
+    },
+    labels: ['ไตรมาส 1', 'ไตรมาส 2', 'ไตรมาส 3', 'ไตรมาส 4'],
+    colors: ['#4e73df', '#1cc88a', '#f6c23e', '#ff0000']
+  };
 
-  @ViewChild('scrollRef') scrollRef:any;
+  barLineChart2 = {
+    series: [
+      { name: 'แผน', type: 'column', data: [30, 40, 35, 50] },
+      { name: 'เบิกจ่าย', type: 'line', data: [20, 30, 25, 40] }
+    ],
+    chart: {
+      type: 'line' as const,
+      height: 300
+    },
+    stroke: { width: [0, 3] },
+    colors: ['#4e73df', '#e74a3b'],
+    xaxis: { categories: ['ไตรมาส 1', 'ไตรมาส 2', 'ไตรมาส 3', 'ไตรมาส 4'] }
+  };
+  planChart = {
+    series: [
+      {
+        name: 'แผน',
+        data: [50, 40, 60, 70, 50]
+      },
+      {
+        name: 'เบิกจ่าย',
+        data: [30, 20, 40, 60, 30]
+      }
+    ],
+    chart: {
+      type: 'bar' as const,
+      height: 350
+    },
+    plotOptions: {
+      bar: {
+        horizontal: false,
+        columnWidth: '40%'
+      }
+    },
+    xaxis: {
+      categories: ['แผน1', 'แผน2', 'แผน3', 'แผน4', 'แผน5']
+    }
+  };
 
-  constructor() { 
+  trendChart = {
+    series: [
+      {
+        name: 'แผน',
+        data: [20, 30, 25, 40, 35, 50, 30, 45, 40, 55]
+      },
+      {
+        name: 'เบิกจ่าย',
+        data: [10, 20, 15, 30, 25, 40, 20, 35, 30, 45]
+      }
+    ],
+    chart: {
+      type: 'bar' as const,
+      height: 350
+    },
+    plotOptions: {
+      bar: {
+        horizontal: false,
+        columnWidth: '40%',
+        borderRadius: 4
+      }
+    },
+    colors: ['#4e73df', '#e74a3b'], // 🔥 สีแยกชัด
+    xaxis: {
+      categories: [
+        'ส่วนกลาง', 'เขต 1', 'เขต 2', 'เขต 3', 'เขต 4',
+        'เขต 5', 'เขต 6', 'เขต 7', 'เขต 8', 'เขต 9'
+      ]
+    },
+    legend: {
+      position: 'top'
+    }
+  };
+  constructor() {
   }
+  totalSummary = {
+    plan: 0,
+    reimburse: 0,
+    balance: 0
+  };
 
+  calculateSummary() {
+    const data = this.statData; // หรือ data จาก API
+
+    this.totalSummary.plan = data.reduce((sum: any, i: any) => sum + Number(i.plan || 0), 0);
+    this.totalSummary.reimburse = data.reduce((sum: any, i: any) => sum + Number(i.reimburse || 0), 0);
+    this.totalSummary.balance = data.reduce((sum: any, i: any) => sum + Number(i.balance || 0), 0);
+  }
   ngOnInit(): void {
     /**
      * BreadCrumb
      */
-     this.breadCrumbItems = [
-      { label: 'Dashboards' },
-      { label: 'Projects', active: true }
-    ];
 
     /**
      * Fetches the data
      */
-     this.fetchData();
-
-     // Chart Color Data Get Function
-    this._OverviewChart('["--vz-primary", "--vz-warning", "--vz-success"]');
-    this._status7('["--vz-success", "--vz-primary", "--vz-warning", "--vz-danger"]');
 
   }
 
   ngAfterViewInit() {
-    this.scrollRef.SimpleBar.getScrollElement().scrollTop = 600;
+
   }
 
   num: number = 0;
@@ -59,29 +156,29 @@ export class ProjectsComponent implements OnInit {
     duration: 2,
     decimalPlaces: 2,
   };
-  
-   // Chart Colors Set
-   private getChartColorsArray(colors:any) {
+
+  // Chart Colors Set
+  private getChartColorsArray(colors: any) {
     colors = JSON.parse(colors);
-    return colors.map(function (value:any) {
+    return colors.map(function (value: any) {
       var newValue = value.replace(" ", "");
       if (newValue.indexOf(",") === -1) {
         var color = getComputedStyle(document.documentElement).getPropertyValue(newValue);
-            if (color) {
-            color = color.replace(" ", "");
-            return color;
-            }
-            else return newValue;;
-        } else {
-            var val = value.split(',');
-            if (val.length == 2) {
-                var rgbaColor = getComputedStyle(document.documentElement).getPropertyValue(val[0]);
-                rgbaColor = "rgba(" + rgbaColor + "," + val[1] + ")";
-                return rgbaColor;
-            } else {
-                return newValue;
-            }
+        if (color) {
+          color = color.replace(" ", "");
+          return color;
         }
+        else return newValue;;
+      } else {
+        var val = value.split(',');
+        if (val.length == 2) {
+          var rgbaColor = getComputedStyle(document.documentElement).getPropertyValue(val[0]);
+          rgbaColor = "rgba(" + rgbaColor + "," + val[1] + ")";
+          return rgbaColor;
+        } else {
+          return newValue;
+        }
+      }
     });
   }
 
@@ -89,249 +186,6 @@ export class ProjectsComponent implements OnInit {
   /**
  * Projects Overview
  */
-   setprojectvalue(value: any) {
-    if (value == 'all') {
-      this.OverviewChart.series = [{
-        name: 'Number of Projects',
-        type: 'bar',
-        data: [34, 65, 46, 68, 49, 61, 42, 44, 78, 52, 63, 67]
-      }, {
-        name: 'Revenue',
-        type: 'area',
-        data: [89.25, 98.58, 68.74, 108.87, 77.54, 84.03, 51.24, 28.57, 92.57, 42.36, 88.51, 36.57]
-      }, {
-        name: 'Active Projects',
-        type: 'bar',
-        data: [8, 12, 7, 17, 21, 11, 5, 9, 7, 29, 12, 35]
-      }]
-    }
-    if (value == '1M') {
-      this.OverviewChart.series = [{
-        name: 'Number of Projects',
-        type: 'bar',
-        data: [24, 75, 16, 98, 19, 41, 52, 34, 28, 52, 63, 67]
-      }, {
-        name: 'Revenue',
-        type: 'area',
-        data: [99.25, 28.58, 98.74, 12.87, 107.54, 94.03, 11.24, 48.57, 22.57, 42.36, 88.51, 36.57]
-      }, {
-        name: 'Active Projects',
-        type: 'bar',
-        data: [28, 22, 17, 27, 21, 11, 5, 9, 17, 29, 12, 15]
-      }]
-    }
-    if (value == '6M') {
-      this.OverviewChart.series = [{
-        name: 'Number of Projects',
-        type: 'bar',
-        data: [34, 75, 66, 78, 29, 41, 32, 44, 58, 52, 43, 77]
-      }, {
-        name: 'Revenue',
-        type: 'area',
-        data: [109.25, 48.58, 38.74, 57.87, 77.54, 84.03, 31.24, 18.57, 92.57, 42.36, 48.51, 56.57]
-      }, {
-        name: 'Active Projects',
-        type: 'bar',
-        data: [12, 22, 17, 27, 1, 51, 5, 9, 7, 29, 12, 35]
-      }]
-    }
-    if (value == '1Y') {
-      this.OverviewChart.series = [{
-        name: 'Number of Projects',
-        type: 'bar',
-        data: [34, 65, 46, 68, 49, 61, 42, 44, 78, 52, 63, 67]
-      }, {
-        name: 'Revenue',
-        type: 'area',
-        data: [89.25, 98.58, 68.74, 108.87, 77.54, 84.03, 51.24, 28.57, 92.57, 42.36, 88.51, 36.57]
-      }, {
-        name: 'Active Projects',
-        type: 'bar',
-        data: [8, 12, 7, 17, 21, 11, 5, 9, 7, 29, 12, 35]
-      }]
-    }
-  }
 
-   private _OverviewChart(colors:any) {
-    colors = this.getChartColorsArray(colors);
-    this.OverviewChart = {
-      series: [{
-        name: 'Number of Projects',
-        type: 'bar',
-        data: [34, 65, 46, 68, 49, 61, 42, 44, 78, 52, 63, 67]
-      }, {
-        name: 'Revenue',
-        type: 'area',
-        data: [89.25, 98.58, 68.74, 108.87, 77.54, 84.03, 51.24, 28.57, 92.57, 42.36, 88.51, 36.57]
-      }, {
-        name: 'Active Projects',
-        type: 'bar',
-        data: [8, 12, 7, 17, 21, 11, 5, 9, 7, 29, 12, 35]
-      }],
-      chart: {
-          height: 374,
-          type: 'line',
-          toolbar: {
-              show: false,
-          }
-      },
-      stroke: {
-          curve: 'smooth',
-          dashArray: [0, 3, 0],
-          width: [0,1, 0],
-      },
-      fill: {
-          opacity: [1, 0.1, 1]
-      },
-      markers: {
-          size: [0, 4, 0],
-          strokeWidth: 2,
-          hover: {
-              size: 4,
-          }
-      },
-      xaxis: {
-          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-          axisTicks: {
-              show: false
-          },
-          axisBorder: {
-              show: false
-          }
-      },
-      grid: {
-          show: true,
-          xaxis: {
-              lines: {
-                  show: true,
-              }
-          },
-          yaxis: {
-              lines: {
-                  show: false,
-              }
-          },
-          padding: {
-              top: 0,
-              right: -2,
-              bottom: 15,
-              left: 10
-          },
-      },
-      legend: {
-          show: true,
-          horizontalAlign: 'center',
-          offsetX: 0,
-          offsetY: -5,
-          markers: {
-              width: 9,
-              height: 9,
-              radius: 6,
-          },
-          itemMargin: {
-              horizontal: 10,
-              vertical: 0
-          },
-      },
-      plotOptions: {
-          bar: {
-              columnWidth: '30%',
-              barHeight: '70%'
-          }
-      },
-      colors: colors,
-      tooltip: {
-      shared: true,
-      y: [{
-          formatter: function (y:any) {
-            if(typeof y !== "undefined") {
-              return  y.toFixed(0);
-            }
-            return y;
-            
-          }
-        }, {
-          formatter: function (y:any) {
-            if(typeof y !== "undefined") {
-              return   "$" + y.toFixed(2) + "k";
-            }
-            return y;
-            
-          }
-        }, {
-          formatter: function (y:any) {
-            if(typeof y !== "undefined") {
-              return y.toFixed(0);
-            }
-            return y;
-            
-          }
-        }]
-      }
-    };
-  }
-
-   /**
- *  Status7
- */
-    setstatusvalue(value: any) {
-      if (value == 'all') {
-        this.status7.series = [125, 42, 58, 89]
-      }
-      if (value == '7') {
-        this.status7.series = [25, 52, 158, 99]
-      }
-      if (value == '30') {
-        this.status7.series = [35, 22, 98, 99]
-      }
-      if (value == '90') {
-        this.status7.series = [105, 32, 68, 79]
-      }
-    }
-
-    private _status7(colors:any) {
-      colors = this.getChartColorsArray(colors);
-      this.status7 = {
-        series: [125, 42, 58, 89],
-        labels: ["Completed", "In Progress", "Yet to Start", "Cancelled"],
-        chart: {
-            type: "donut",
-            height: 230,
-        },
-        plotOptions: {
-            pie: {
-                offsetX: 0,
-                offsetY: 0,
-                donut: {
-                    size: "90%",
-                    labels: {
-                        show: false,
-                    }
-                },
-            },
-        },
-        dataLabels: {
-            enabled: false,
-        },
-        legend: {
-            show: false,
-        },
-        stroke: {
-            lineCap: "round",
-            width: 0
-        },
-        colors: colors
-      };
-    }
-
-  /**
-   * Fetches the data
-   */
-  private fetchData() {
-    this.statData = projectstatData;
-    this.ActiveProjects = ActiveProjects;
-    this.MyTask = MyTask;
-    this.TeamMembers = TeamMembers;
-  }
 
 }

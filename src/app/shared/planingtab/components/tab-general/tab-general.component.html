@@ -3,7 +3,7 @@
 
         <div class="col-md-6">
             <label class="form-label">หน่วยงาน</label>
-            <select class="form-select" [(ngModel)]="selectedDepartment">
+            <select (change)="Onchange_type_Department()" class="form-select" [(ngModel)]="model.selectedDepartment">
                 <option value="" disabled>-- เลือกหน่วยงาน --</option>
 
                 <option *ngFor="let item of Mas_Department_Lists" [value]="item.Department_Id">
@@ -15,13 +15,7 @@
         <div class="col-md-6" *ngIf="model">
             <label class="form-label">ประเภทโครงการ</label>
 
-            <select (change)="Onchange_type()" class="form-select" name="projectType" [(ngModel)]="projectType">
-
-                <!-- <option value="" disabled selected>-- เลือกประเภทโครงการ --</option>
-
-                <option *ngFor="let item of Mas_Expense_Lists" [value]="item.Expense_Id">
-                    {{ item.Expense_Name }}
-                </option> -->
+            <select (change)="Onchange_type()" class="form-select" name="projectType" [(ngModel)]="model.projectType">
                 <option value="" disabled selected>-- เลือกประเภทโครงการ --</option>
                 <option *ngFor="let item of Mas_Expense_Lists" [value]="item.Expense_Id">
                     {{ item.Expense_Name }}
@@ -31,7 +25,7 @@
 
         <div class="col-md-6">
             <label class="form-label">แผนงาน</label>
-            <select (change)="Onchange_type_Plan()" class="form-select" [(ngModel)]="selectedPlan">
+            <select (change)="Onchange_type_Plan()" class="form-select" [(ngModel)]="model.selectedPlan">
                 <option value="" disabled selected>-- เลือกแผนงาน --</option>
                 <option *ngFor="let item of Mas_Plan_Lists" [value]="item.Plan_Id">
                     {{ item.Plan_Name }}
@@ -41,7 +35,7 @@
 
         <div class="col-md-6">
             <label class="form-label">ผลผลิต</label>
-            <select (change)="Onchange_type_Product()" class="form-select" [(ngModel)]="selectedProduct">
+            <select (change)="Onchange_type_Product()" class="form-select" [(ngModel)]="model.selectedProduct">
                 <option value="" disabled selected>-- เลือกผลผลิต --</option>
                 <option *ngFor="let item of Mas_Product" [value]="item.Product_Id">
                     {{ item.Product_Name }}
@@ -51,7 +45,7 @@
 
         <div class="col-md-6">
             <label class="form-label">กิจกรรม</label>
-            <select class="form-select" [(ngModel)]="selectedActivity">
+            <select class="form-select" [(ngModel)]="model.selectedActivity">
                 <option value="" disabled selected>-- เลือกกิจกรรม --</option>
                 <option *ngFor="let item of Mas_Activity" [value]="item.Activity_Id">
                     {{ item.Activity_Name }}
@@ -61,7 +55,7 @@
 
         <div class="col-md-6">
             <label class="form-label">หมวดงบ</label>
-            <select class="form-select" [(ngModel)]="selectedBudget">
+            <select class="form-select" [(ngModel)]="model.selectedBudget">
                 <option value="" disabled selected>-- เลือกหมวดงบ --</option>
                 <option *ngFor="let item of Mas_Budget_Types" [value]="item.Budget_Type_Id">
                     {{ item.Budget_Type_Name }}
@@ -72,7 +66,7 @@
 
         <div class="col-md-12">
             <label class="form-label">ชื่อโครงการ</label>
-            <input type="text" class="form-control">
+            <input [(ngModel)]="model.Project_Name" type="text" class="form-control">
         </div>
     </div>
 </div>

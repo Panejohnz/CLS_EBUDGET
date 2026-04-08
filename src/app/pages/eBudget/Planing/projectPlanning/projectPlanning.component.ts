@@ -56,9 +56,15 @@ export class ProjectPlanningComponent {
     }
   ];
   allData: any[] = [];
-  project_planing = {
-    projectType: '',
-    planing_Id: 0
+  project_planing: any = {
+    Department_Id: null,
+    projectType: null,
+    Plan_Id: null,
+    Product_Id: null,
+    Activity_Id: null,
+    Budget_Type_Id: null,
+    Project_Name: '',
+    Project_Plan: {}
   };
   modalRef: any;
   total$!: Observable<number>;
@@ -132,18 +138,33 @@ export class ProjectPlanningComponent {
   deletePlan(data: any) {
 
   }
+  Project_Plan: any
   async savePlan(modal: any) {
+
+    const payload = {
+      BgYear: "2569",
+      Project_Plan: {
+        Department_Id: this.project_planing.selectedDepartment,
+        Expense_Id: this.project_planing.projectType,
+        Plan_Id: this.project_planing.selectedPlan,
+        Product_Id: this.project_planing.selectedProduct,
+        Activity_Id: this.project_planing.selectedActivity,
+        Budget_Type_Id: this.project_planing.selectedBudget,
+        Project_Name: this.project_planing.Project_Name
+      }
+    };
+
+    console.log('payload', payload);
 
     const userConfirmed = await confirmAlert('info', 'ต้องการบันทึกข้อมูล ?', '');
 
     if (userConfirmed) {
+      // 👉 call API ตรงนี้
+      // this.service.save(payload)
 
-      this.addRandomRow();   // 👈 เพิ่มทีละแถว
-      basicAlert('success', 'บันทึกข้อมูลแล้ว', '')
+      basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
       modal.dismiss();
-
     }
-
   }
   randomItem(arr: any[]) {
     return arr[Math.floor(Math.random() * arr.length)];

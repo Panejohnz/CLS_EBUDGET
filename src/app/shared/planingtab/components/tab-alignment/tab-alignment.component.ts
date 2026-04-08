@@ -6,7 +6,7 @@ import { Component, Input } from '@angular/core';
   styleUrl: './tab-alignment.component.scss'
 })
 export class TabAlignmentComponent {
-  @Input() project_planing: any
+  @Input() model: any
   // 3.1 นโยบายเร่งด่วน
   urgentPolicies: any[] = [];
 
@@ -24,7 +24,7 @@ export class TabAlignmentComponent {
   // 3.1
 
   ngOnInit(): void {
-    console.log('00', this.project_planing);
+    console.log('00', this.model);
     this.subStrategies.push({
       strategySide: '',
       strategyIssue: '',

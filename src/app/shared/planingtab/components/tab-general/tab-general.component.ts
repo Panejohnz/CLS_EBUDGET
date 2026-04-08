@@ -54,11 +54,14 @@ export class TabGeneralComponent {
 
     });
   }
+  Onchange_type_Department() {
+    this.model.Department_Id = this.selectedDepartment
+  }
   Onchange_type() {
     let model = {
       FUNC_CODE: "FUNC-GET_Mas_Budget_Type",
       Mas_Expense_List: {
-        Expense_Id: this.projectType
+        Expense_Id: this.model.projectType
       }
 
     };
@@ -68,7 +71,10 @@ export class TabGeneralComponent {
         this.Mas_Budget_Types = Array.isArray(response.Mas_Budget_Types)
           ? response.Mas_Budget_Types
           : [];
-        this.model.projectType = this.projectType
+        this.model.Fk_Expense_List = this.projectType;
+
+        // this.model.Project_Plan = this.model.Project_Plan || {};
+        // this.model.Project_Plan.Department_Id = this.projectType;
       } else {
         basicAlert('warning', 'ผิดพลาด', response.RESULT);
       }
@@ -79,7 +85,7 @@ export class TabGeneralComponent {
     let model = {
       FUNC_CODE: "FUNC-GET_Mas_Product",
       Mas_Plan: {
-        Plan_Id: this.selectedPlan
+        Plan_Id: this.model.selectedPlan
       }
 
     };
@@ -99,7 +105,7 @@ export class TabGeneralComponent {
     let model = {
       FUNC_CODE: "FUNC-GET_Mas_Activity",
       Mas_Product: {
-        Product_Id: this.selectedProduct
+        Product_Id: this.model.selectedProduct
       }
 
     };

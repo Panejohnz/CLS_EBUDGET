@@ -7,7 +7,7 @@ import { Component, Input } from '@angular/core';
   styleUrl: './tab-coordinator.component.scss'
 })
 export class TabCoordinatorComponent {
-  @Input() project_planing: any
+  @Input() model: any
   items: any[] = [
     {
       name: '',
