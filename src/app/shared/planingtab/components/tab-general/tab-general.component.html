@@ -23,19 +23,16 @@
                     {{ item.Expense_Name }}
                 </option> -->
                 <option value="" disabled selected>-- เลือกประเภทโครงการ --</option>
-
-                <option value="1">อบรมสัมนา (งบดำเนินงาน)</option>
-                <option value="2">ประชาสัมพันธ์ (งบดำเนินงาน)</option>
-                <option value="3">งบลงทุน (งบลงทุน)</option>
-                <option value="4">จ้างที่ปรึกษา (งบรายจ่ายอื่น)</option>
-                <option value="5">โครงการลักษณะรายจ่ายอื่น (งบรายจ่ายอื่น)</option>
+                <option *ngFor="let item of Mas_Expense_Lists" [value]="item.Expense_Id">
+                    {{ item.Expense_Name }}
+                </option>
             </select>
         </div>
 
         <div class="col-md-6">
             <label class="form-label">แผนงาน</label>
-            <select class="form-select">
-                <option disabled selected>-- เลือกแผนงาน --</option>
+            <select (change)="Onchange_type_Plan()" class="form-select" [(ngModel)]="selectedPlan">
+                <option value="" disabled selected>-- เลือกแผนงาน --</option>
                 <option *ngFor="let item of Mas_Plan_Lists" [value]="item.Plan_Id">
                     {{ item.Plan_Name }}
                 </option>
@@ -44,31 +41,31 @@
 
         <div class="col-md-6">
             <label class="form-label">ผลผลิต</label>
-            <select class="form-select">
-                <option disabled selected>-- เลือกผลผลิต --</option>
-                <option value="1">ผลผลิต 1</option>
-                <option value="2">ผลผลิต 2</option>
+            <select (change)="Onchange_type_Product()" class="form-select" [(ngModel)]="selectedProduct">
+                <option value="" disabled selected>-- เลือกผลผลิต --</option>
+                <option *ngFor="let item of Mas_Product" [value]="item.Product_Id">
+                    {{ item.Product_Name }}
+                </option>
             </select>
         </div>
 
         <div class="col-md-6">
             <label class="form-label">กิจกรรม</label>
-            <select class="form-select">
-                <option disabled selected>-- เลือกกิจกรรม --</option>
-                <option value="1">กิจกรรม 1</option>
-                <option value="2">กิจกรรม 2</option>
+            <select class="form-select" [(ngModel)]="selectedActivity">
+                <option value="" disabled selected>-- เลือกกิจกรรม --</option>
+                <option *ngFor="let item of Mas_Activity" [value]="item.Activity_Id">
+                    {{ item.Activity_Name }}
+                </option>
             </select>
         </div>
 
         <div class="col-md-6">
             <label class="form-label">หมวดงบ</label>
-            <select class="form-select">
-                <option disabled selected>-- เลือกหมวดงบ --</option>
-                <option value="1">งบบุคลากร</option>
-                <option value="3">งบดำเนินงาน</option>
-                <option value="4">งบลงทุน</option>
-                <option value="5">งบเงินอุดหนุน</option>
-                <option value="6">งบรายจ่ายอื่น</option>
+            <select class="form-select" [(ngModel)]="selectedBudget">
+                <option value="" disabled selected>-- เลือกหมวดงบ --</option>
+                <option *ngFor="let item of Mas_Budget_Types" [value]="item.Budget_Type_Id">
+                    {{ item.Budget_Type_Name }}
+                </option>
             </select>
 
         </div>

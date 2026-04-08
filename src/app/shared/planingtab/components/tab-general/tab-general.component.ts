@@ -21,10 +21,18 @@ export class TabGeneralComponent {
   Mas_Department_Lists: any[] = []
   Mas_Plan_Lists: any[] = []
   Mas_Expense_Lists: any[] = []
-  selectedDepartment : any = ''
+  Mas_Product: any[] = []
+  Mas_Activity: any[] = []
+  Mas_Budget_Types: any[] = []
+  selectedDepartment: any = ''
+  selectedPlan: any = ''
+  selectedProduct: any = ''
+  selectedActivity: any = ''
+  selectedBudget: any = ''
   ngOnInit(): void {
     let model = {
       FUNC_CODE: "FUNC-GET_Mas_General",
+      BgYear: "2569"
     };
     this.ebudgetService.GatewayGetData(model).subscribe((response: any) => {
 
@@ -47,6 +55,65 @@ export class TabGeneralComponent {
     });
   }
   Onchange_type() {
-    this.model.projectType = this.projectType
+    let model = {
+      FUNC_CODE: "FUNC-GET_Mas_Budget_Type",
+      Mas_Expense_List: {
+        Expense_Id: this.projectType
+      }
+
+    };
+    this.ebudgetService.GatewayGetData(model).subscribe((response: any) => {
+
+      if (response.RESULT == null) {
+        this.Mas_Budget_Types = Array.isArray(response.Mas_Budget_Types)
+          ? response.Mas_Budget_Types
+          : [];
+        this.model.projectType = this.projectType
+      } else {
+        basicAlert('warning', 'ผิดพลาด', response.RESULT);
+      }
+    });
   }
+  Onchange_type_Plan() {
+
+    let model = {
+      FUNC_CODE: "FUNC-GET_Mas_Product",
+      Mas_Plan: {
+        Plan_Id: this.selectedPlan
+      }
+
+    };
+    this.ebudgetService.GatewayGetData(model).subscribe((response: any) => {
+
+      if (response.RESULT == null) {
+        this.Mas_Product = Array.isArray(response.Mas_Product_Lists)
+          ? response.Mas_Product_Lists
+          : [];
+
+      } else {
+        basicAlert('warning', 'ผิดพลาด', response.RESULT);
+      }
+    });
+  }
+  Onchange_type_Product() {
+    let model = {
+      FUNC_CODE: "FUNC-GET_Mas_Activity",
+      Mas_Product: {
+        Product_Id: this.selectedProduct
+      }
+
+    };
+    this.ebudgetService.GatewayGetData(model).subscribe((response: any) => {
+
+      if (response.RESULT == null) {
+        this.Mas_Activity = Array.isArray(response.Mas_Activity_Lists)
+          ? response.Mas_Activity_Lists
+          : [];
+
+      } else {
+        basicAlert('warning', 'ผิดพลาด', response.RESULT);
+      }
+    });
+  }
+
 }

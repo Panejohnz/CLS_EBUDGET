@@ -13,6 +13,8 @@ export class ProjectsStatComponent implements OnInit {
 
   @Input() title: string | undefined;
   @Input() value: any | undefined;
+  @Input() Reimburse: any | undefined;
+  @Input() Balance: any | undefined;
   @Input() icon: string | undefined;
   @Input() persantage: string | undefined;
   @Input() profit: string | undefined;
@@ -22,13 +24,13 @@ export class ProjectsStatComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  
+
   num: number = 0;
   option = {
-  startVal: this.num,
-  useEasing: true,
-  duration: 2,
-  decimalPlaces: 2,
+    startVal: this.num,
+    useEasing: true,
+    duration: 2,
+    decimalPlaces: 2,
   };
 
 }

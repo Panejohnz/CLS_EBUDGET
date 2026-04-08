@@ -24,8 +24,8 @@ export class TabGuidelineComponent {
 
   constructor(private modalService: NgbModal) {
     this.addActivity();
-    console.log('as',this.model);
-    
+    console.log('as', this.model);
+
   }
 
   addActivity() {
@@ -122,11 +122,11 @@ export class TabGuidelineComponent {
 
   type: string = '';
   formTypeMap: any = {
-    1: 'seminar',
-    2: 'pr',
-    3: 'investment',
-    4: 'consult',
-    5: 'other'
+    73: 'seminar',
+    74: 'pr',
+    64: 'investment',
+    75: 'consult',
+    70: 'other'
   }
   openMultiplierModal(content: any) {
 

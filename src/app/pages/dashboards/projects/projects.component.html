@@ -7,10 +7,11 @@
         <div class="row">
             @for(stat of statData; track $index){
             <div class="col-lg-4">
-                <app-projects-stat [title]="stat.title" [value]="stat.value" [icon]="stat.icon"
-                    [persantage]="stat.persantage" [profit]="stat.profit" [month]="stat.month"></app-projects-stat>
+                <app-projects-stat [title]="stat.title" [value]="stat.value" [Reimburse]="stat.Reimburse"
+                    [Balance]="stat.Balance" [persantage]="stat.persantage" [profit]="stat.profit"
+                    [month]="stat.month"></app-projects-stat>
             </div>
-        }
+            }
         </div><!-- end row -->
 
         <div class="row">
@@ -39,14 +40,16 @@
                         <div class="row g-0 text-center">
                             <div class="col-6 col-sm-3">
                                 <div class="p-3 border border-dashed border-start-0">
-                                    <h5 class="mb-1"><span [countUp]="9851" class="counter-value" [options]="option"></span></h5>
+                                    <h5 class="mb-1"><span [countUp]="9851" class="counter-value"
+                                            [options]="option"></span></h5>
                                     <p class="text-muted mb-0">Number of Projects</p>
                                 </div>
                             </div>
                             <!--end col-->
                             <div class="col-6 col-sm-3">
                                 <div class="p-3 border border-dashed border-start-0">
-                                    <h5 class="mb-1"><span [countUp]="1026" class="counter-value" [options]="option"></span></h5>
+                                    <h5 class="mb-1"><span [countUp]="1026" class="counter-value"
+                                            [options]="option"></span></h5>
                                     <p class="text-muted mb-0">Active Projects</p>
                                 </div>
                             </div>
