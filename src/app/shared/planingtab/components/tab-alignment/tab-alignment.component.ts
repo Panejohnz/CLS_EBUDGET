@@ -1,4 +1,11 @@
 import { Component, Input } from '@angular/core';
+interface PlanLevel1Main {
+  strategySide: string;
+  strategyIssue: string;
+  strategySubIssue: string;
+  target: string;
+}
+
 
 @Component({
   selector: 'app-tab-alignment',
@@ -7,6 +14,12 @@ import { Component, Input } from '@angular/core';
 })
 export class TabAlignmentComponent {
   @Input() model: any
+  planLevel1Main: PlanLevel1Main = {
+    strategySide: '',
+    strategyIssue: '',
+    strategySubIssue: '',
+    target: ''
+  };
   // 3.1 นโยบายเร่งด่วน
   urgentPolicies: any[] = [];
 

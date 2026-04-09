@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { EbudgetService } from 'src/app/core/services/ebudget.service';
+import { ProjectPlanService } from 'src/app/core/services/ProjectPlan.service'
+
 export interface ProjectPlan {
   projectType: string;
 }
@@ -10,7 +12,7 @@ export interface ProjectPlan {
   styleUrl: './tab-general.component.scss'
 })
 export class TabGeneralComponent {
-  constructor(private ebudgetService: EbudgetService) {
+  constructor(private ebudgetService: EbudgetService, private ProjectPlanService: ProjectPlanService) {
   }
   @Input() project_planing: any
   @Input() model: any
@@ -55,16 +57,21 @@ export class TabGeneralComponent {
     });
   }
   Onchange_type_Department() {
-    this.model.Department_Id = this.selectedDepartment
+    this.ProjectPlanService.setProjectPlan({
+      Department: this.model.selectedDepartment
+    });
   }
   Onchange_type() {
     let model = {
       FUNC_CODE: "FUNC-GET_Mas_Budget_Type",
       Mas_Expense_List: {
-        Expense_Id: this.model.projectType
+        Expense_Id: this.model.projectType.Expense_Id
       }
 
     };
+    this.ProjectPlanService.setProjectPlan({
+      Expense: this.model.projectType
+    });
     this.ebudgetService.GatewayGetData(model).subscribe((response: any) => {
 
       if (response.RESULT == null) {
@@ -85,10 +92,12 @@ export class TabGeneralComponent {
     let model = {
       FUNC_CODE: "FUNC-GET_Mas_Product",
       Mas_Plan: {
-        Plan_Id: this.model.selectedPlan
+        Plan_Id: this.model.selectedPlan.Plan_Id
       }
-
     };
+    this.ProjectPlanService.setProjectPlan({
+      Plan: this.model.selectedPlan
+    });
     this.ebudgetService.GatewayGetData(model).subscribe((response: any) => {
 
       if (response.RESULT == null) {
@@ -105,10 +114,13 @@ export class TabGeneralComponent {
     let model = {
       FUNC_CODE: "FUNC-GET_Mas_Activity",
       Mas_Product: {
-        Product_Id: this.model.selectedProduct
+        Product_Id: this.model.selectedProduct.Product_Id
       }
 
     };
+    this.ProjectPlanService.setProjectPlan({
+      Product: this.model.selectedProduct
+    });
     this.ebudgetService.GatewayGetData(model).subscribe((response: any) => {
 
       if (response.RESULT == null) {
@@ -121,5 +133,15 @@ export class TabGeneralComponent {
       }
     });
   }
+  onActivityChange(activity: any) {
+    this.ProjectPlanService.setProjectPlan({
+      Activity: activity
+    });
+  }
 
+  onBudgetChange(budget: any) {
+    this.ProjectPlanService.setProjectPlan({
+      Budget: budget
+    });
+  }
 }

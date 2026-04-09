@@ -17,6 +17,7 @@ import Swal from 'sweetalert2';
 import { EbudgetService } from 'src/app/core/services/ebudget.service';
 import { AuthenticationService } from 'src/app/core/services/auth.service';
 import { FormsModule } from '@angular/forms';
+import { ProjectPlanService } from 'src/app/core/services/ProjectPlan.service'
 import { BudgetYearService } from 'src/app/core/services/budget-year.service';
 @Component({
   selector: 'projectPlanning',
@@ -73,7 +74,7 @@ export class ProjectPlanningComponent {
 
   constructor(private modalService: NgbModal, public service: GridJsService
     , private sortService: PaginationService, public serviceebud: EbudgetService
-    , private authService: AuthenticationService, private budgetYearService: BudgetYearService) {
+    , private authService: AuthenticationService, private ProjectPlanService: ProjectPlanService, private budgetYearService: BudgetYearService) {
   }
   currentYear: any
   ngOnInit(): void {
@@ -140,19 +141,32 @@ export class ProjectPlanningComponent {
   }
   Project_Plan: any
   async savePlan(modal: any) {
+    let payload: any
+    this.ProjectPlanService.projectPlan$.subscribe(dep => {
+      if (dep) {
 
-    const payload = {
-      BgYear: "2569",
-      Project_Plan: {
-        Department_Id: this.project_planing.selectedDepartment,
-        Expense_Id: this.project_planing.projectType,
-        Plan_Id: this.project_planing.selectedPlan,
-        Product_Id: this.project_planing.selectedProduct,
-        Activity_Id: this.project_planing.selectedActivity,
-        Budget_Type_Id: this.project_planing.selectedBudget,
-        Project_Name: this.project_planing.Project_Name
+        payload = {
+          BgYear: "2569",
+          Department_Id: dep.Department.Department_Id,
+          Department_Name: dep.Department.Department_Name,
+          Fk_Plan_Id: dep.Plan.Plan_Id,
+          Plan_Name: dep.Plan.Plan_Name,
+          Fk_Expense_List: dep.Expense.Expense_Id,
+          Expense_List: dep.Expense.Expense_Name,
+          Fk_Product_Id: dep.Product.Product_Id,
+          Product_Name: dep.Product.Product_Name,
+          Fk_Activity_Id: dep.Activity.Activity_Id,
+          Activity_Name: dep.Activity.Activity_Name,
+          Fk_Budget_Type: dep.Budget.Budget_Type_Id,
+          Budget_Type: dep.Budget.Budget_Type_Name,
+          Project_Name: this.project_planing.Project_Name
+
+        };
       }
-    };
+    });
+
+
+
 
     console.log('payload', payload);
 
@@ -162,8 +176,17 @@ export class ProjectPlanningComponent {
       // 👉 call API ตรงนี้
       // this.service.save(payload)
 
-      basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
-      modal.dismiss();
+      let model = {
+        FUNC_CODE: "FUNC-Insert_Project_Plan",
+        Project_Plan: payload
+      }
+      var getData = this.serviceebud.GatewayGetData(model);
+      getData.subscribe((response: any) => {
+
+
+        basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
+        modal.dismiss();
+      })
     }
   }
   randomItem(arr: any[]) {
