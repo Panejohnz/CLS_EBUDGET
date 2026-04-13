@@ -25,6 +25,7 @@ import { BudgetYearService } from 'src/app/core/services/budget-year.service';
   templateUrl: './projectPlanning.component.html'
 })
 export class ProjectPlanningComponent {
+
   emptyplan: any = {
     Plan_Id: 0,
     Plan_Name: '',
@@ -78,6 +79,9 @@ export class ProjectPlanningComponent {
   }
   currentYear: any
   ngOnInit(): void {
+
+    this.get_data()
+
     this.budgetYearService.yearChanged$.subscribe(year => {
       if (year) {
         this.currentYear = year
@@ -88,6 +92,20 @@ export class ProjectPlanningComponent {
       }
     });
 
+
+  }
+  get_data() {
+    let model = {
+      FUNC_CODE: "FUNC-Get_Project_Plan",
+    }
+    var getData = this.serviceebud.GatewayGetData(model);
+    getData.subscribe((response: any) => {
+      this.allData = Array.isArray(response.List_Project_Plan)
+        ? response.List_Project_Plan
+        : [];
+      this.griddata = [...this.allData];
+
+    })
   }
 
   filterSearch() {
@@ -159,22 +177,22 @@ export class ProjectPlanningComponent {
           Activity_Name: dep.Activity.Activity_Name,
           Fk_Budget_Type: dep.Budget.Budget_Type_Id,
           Budget_Type: dep.Budget.Budget_Type_Name,
-          Project_Name: this.project_planing.Project_Name
-
+          Project_Name: this.project_planing.Project_Name,
+          Used_BG: this.project_planing.projectNatureType,
+          Project_Type_Id: this.project_planing.projectNature,
+          Project_Year_Count: this.project_planing.totalYears,
+          Project_Year_Number: this.project_planing.currentYear,
+          Operation1: this.project_planing.Operation1,
+          Operation2: this.project_planing.Operation2
         };
       }
     });
 
 
 
-
-    console.log('payload', payload);
-
     const userConfirmed = await confirmAlert('info', 'ต้องการบันทึกข้อมูล ?', '');
 
     if (userConfirmed) {
-      // 👉 call API ตรงนี้
-      // this.service.save(payload)
 
       let model = {
         FUNC_CODE: "FUNC-Insert_Project_Plan",
@@ -185,6 +203,7 @@ export class ProjectPlanningComponent {
 
 
         basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
+        this.get_data()
         modal.dismiss();
       })
     }

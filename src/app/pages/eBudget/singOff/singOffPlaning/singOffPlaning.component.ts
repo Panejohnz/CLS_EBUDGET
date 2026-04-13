@@ -30,7 +30,7 @@ export class SingOffPlaningComponent {
     , private authService: AuthenticationService,) {
   }
   allData: any[] = [];
-  griddata = [
+  griddata: any[] = [
     {
       selected: false,
       department: 'สำนักยุทธศาสตร์',
@@ -65,10 +65,20 @@ export class SingOffPlaningComponent {
     Active: 1
   };
   ngOnInit(): void {
-    this.allData = Array.isArray(this.griddata)
-      ? this.griddata
-      : [];
-    this.griddata = [...this.allData];
+    this.get_data()
+  }
+  get_data() {
+    let model = {
+      FUNC_CODE: "FUNC-Get_Project_plan_Sign_Off",
+    }
+    var getData = this.serviceebud.GatewayGetData(model);
+    getData.subscribe((response: any) => {
+      this.allData = Array.isArray(response.List_Project_Plan)
+        ? response.List_Project_Plan
+        : [];
+      this.griddata = [...this.allData];
+
+    })
   }
   filterSearch() {
 
@@ -101,11 +111,33 @@ export class SingOffPlaningComponent {
     }
   }
   async SignOff() {
+
     const userConfirmed = await confirmAlert('info', 'ต้องการ Singoff โครงการ ?', '');
 
-    if (userConfirmed) {
-      basicAlert('success', 'บันทึกข้อมูลแล้ว', '')
+    if (!userConfirmed) return;
+
+    const selectedRows = this.griddata.filter(x => x.selected);
+
+    if (selectedRows.length === 0) {
+      basicAlert('warning', 'กรุณาเลือกรายการ', '');
+      return;
     }
+
+    const payload = selectedRows.map(x => ({
+      Project_Id: x.Project_Id,
+      Status_Id: 8
+    }));
+
+    let model = {
+      FUNC_CODE: "FUNC-SignOff_Project_Plan",
+      List_Project_Plan: payload
+    };
+
+    this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
+      basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
+      this.get_data(); // reload
+    });
+
   }
 
   fullModal(modal: any, data: any) {

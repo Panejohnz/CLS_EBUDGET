@@ -50,34 +50,34 @@
                             @for(data of griddata; track $index){
                             <tr>
                                 <td class="text-center">{{$index + 1}}</td>
-                                <td class="text-center">{{data.department}}</td>
+                                <td class="text-center">{{data.Department_Name}}</td>
                                 <td class="text-center">
-                                    <ngb-highlight [result]="data.plan"
-                                        [term]="service.searchTerm">{{data.plan}}</ngb-highlight>
+                                    <ngb-highlight [result]="data.Plan_Name"
+                                        [term]="service.searchTerm">{{data.Plan_Name}}</ngb-highlight>
                                 </td>
 
                                 <td>
-                                    <ngb-highlight [result]="data.output"
-                                        [term]="service.searchTerm">{{data.output}}</ngb-highlight>
+                                    <ngb-highlight [result]="data.Product_Name"
+                                        [term]="service.searchTerm">{{data.Product_Name}}</ngb-highlight>
                                 </td>
 
                                 <td>
-                                    <ngb-highlight [result]="data.activity"
-                                        [term]="service.searchTerm">{{data.activity}}</ngb-highlight>
+                                    <ngb-highlight [result]="data.Activity_Name"
+                                        [term]="service.searchTerm">{{data.Activity_Name}}</ngb-highlight>
                                 </td>
-                                <td>{{data.budgetType}}</td>
-                                <td>{{data.project}}</td>
+                                <td>{{data.Budget_Type}}</td>
+                                <td>{{data.Expense_Type}}</td>
 
                                 <td class="text-end">
-                                    {{data.budget | number:'1.2-2'}}
+                                    {{data.Po_Qty | number:'1.2-2'}}
                                 </td>
                                 <td class="text-center">
                                     <span class="badge" [ngClass]="
-    data.status_id == 7 ? 'bg-danger' :
-    data.status_id == 2 ? 'bg-warning text-dark' :
-    data.status_id == 8 ? 'bg-success' : 'bg-secondary'
+    data.Status_Id == 7 ? 'bg-danger' :
+    data.Status_Id == 2 ? 'bg-warning text-dark' :
+    data.Status_Id == 8 ? 'bg-success' : 'bg-secondary'
   ">
-                                        {{ data.status_name }}
+                                        {{ data.Status_Name }}
                                     </span>
 
                                 </td>
@@ -132,7 +132,7 @@
         <div class="card border-0">
             <div class="card-body">
 
-             
+
                 <ul class="nav nav-tabs mb-4">
                     <li class="nav-item">
                         <button class="nav-link" [class.active]="currentTab === 1">

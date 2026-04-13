@@ -17,7 +17,7 @@ export class TabGeneralComponent {
   @Input() project_planing: any
   @Input() model: any
   projectType: any = ''
-  projectNature: string = '';
+  projectNature: Number = 0;
   totalYears: number | null = null;
   currentYear: number | null = null;
   Mas_Department_Lists: any[] = []
@@ -31,6 +31,7 @@ export class TabGeneralComponent {
   selectedProduct: any = ''
   selectedActivity: any = ''
   selectedBudget: any = ''
+  projectNatureType: any
   ngOnInit(): void {
     let model = {
       FUNC_CODE: "FUNC-GET_Mas_General",
@@ -143,5 +144,47 @@ export class TabGeneralComponent {
     this.ProjectPlanService.setProjectPlan({
       Budget: budget
     });
+  }
+  onNatureChange(value: number) {
+    this.model.projectNatureType = value;
+  }
+  onNatureChange_project(value: number) {
+    this.model.projectNatureType = value;
+  }
+
+
+
+  onProjectNatureChange(value: number) {
+    this.projectNature = value;
+
+
+    this.model.projectNature = value;
+  }
+  onOperationChange(e: any, type: number) {
+
+    if (type === 1) {
+      this.model.Operation1 = e.target.checked ? 1 : 0;
+    }
+
+    if (type === 2) {
+      this.model.Operation2 = e.target.checked ? 2 : 0;
+    }
+
+  }
+
+  // ใช้ตอน render กลับ
+  isChecked(value: number): boolean {
+    if (!this.model.Operation) return false;
+    return this.model.Operation.split(',').includes(value.toString());
+  }
+  operations: any
+  onChange(e: any) {
+    const val = Number(e.target.value);
+
+    if (e.target.checked) {
+      this.operations.push(val);
+    } else {
+      this.operations = this.operations.filter((x: any) => x !== val);
+    }
   }
 }
