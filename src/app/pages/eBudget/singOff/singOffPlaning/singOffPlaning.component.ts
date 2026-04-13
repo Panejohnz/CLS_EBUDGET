@@ -104,15 +104,36 @@ export class SingOffPlaningComponent {
     });
   }
   async CancelSignoff() {
-    const userConfirmed = await confirmAlert('info', 'ต้องการ Cancel Singoff โครงการ ?', '');
+    const userConfirmed = await confirmAlert('info', 'ต้องการ Cancel Sign off โครงการ ?', '');
+
+    if (!userConfirmed) return;
+
+    const selectedRows = this.griddata.filter(x => x.selected);
+
+    if (selectedRows.length === 0) {
+      basicAlert('warning', 'กรุณาเลือกรายการ', '');
+      return;
+    }
 
     if (userConfirmed) {
-      basicAlert('success', 'บันทึกข้อมูลแล้ว', '')
+      const payload = selectedRows.map(x => ({
+        Project_Id: x.Project_Id,
+        Status_Id: 8
+      }));
+
+      let model = {
+        FUNC_CODE: "FUNC-Cancel_SignOff_Project_Plan",
+        List_Project_Plan: payload
+      };
+      this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
+        basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
+        this.get_data();
+      });
     }
   }
   async SignOff() {
 
-    const userConfirmed = await confirmAlert('info', 'ต้องการ Singoff โครงการ ?', '');
+    const userConfirmed = await confirmAlert('info', 'ต้องการ Sign off โครงการ ?', '');
 
     if (!userConfirmed) return;
 
