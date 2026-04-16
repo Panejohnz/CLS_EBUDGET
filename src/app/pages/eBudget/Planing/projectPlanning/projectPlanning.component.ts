@@ -29,48 +29,44 @@ export class ProjectPlanningComponent {
   emptyplan: any = {
     Plan_Id: 0,
     Plan_Name: '',
-    Active: 1
+    Active: 1,
+
+    // 🔥 เพิ่มทั้งหมดนี้
+    selectedDepartment: null,
+    projectType: null,
+    selectedPlan: null,
+    selectedProduct: null,
+    selectedActivity: null,
+    selectedBudget: null,
+
+    Used_BG: null,
+    Project_Type_Id: null,
+    totalYears: null,
+    currentYear: null,
+    Operation1: 0,
+    Operation2: 0
   };
   griddata: any[] = [
-    {
-      id: 1,
-      department: 'สำนักบริหาร',
-      plan: 'พัฒนาบุคลากร',
-      output: 'บุคลากรมีศักยภาพเพิ่มขึ้น',
-      activity: 'อบรมการใช้ระบบสารสนเทศ',
-      budgetType: 'งบดำเนินงาน',
-      project: 'โครงการอบรมระบบใหม่',
-      budget: 50000,
-      status_name: 'อนุมัติ',
-      status_id: 8
-    },
-    {
-      id: 2,
-      department: 'ฝ่ายประชาสัมพันธ์',
-      plan: 'สื่อสารองค์กร',
-      output: 'ประชาชนรับรู้ข้อมูลข่าวสาร',
-      activity: 'จัดทำสื่อประชาสัมพันธ์',
-      budgetType: 'งบดำเนินงาน',
-      project: 'โครงการประชาสัมพันธ์หน่วยงาน',
-      budget: 30000,
-      status_name: 'ไม่อนุมัติ',
-      status_id: 7
-    }
   ];
   allData: any[] = [];
   project_planing: any = {
     Department_Id: null,
-    projectType: null,
-    Plan_Id: null,
-    Product_Id: null,
-    Activity_Id: null,
-    Budget_Type_Id: null,
+    Fk_Expense_Type: null,
+    Fk_Plan_Id: null,
+    Fk_Product_Id: null,
+    Fk_Activity_Id: null,
+    Fk_Budget_Type: null,
     Project_Name: '',
     Project_Plan: {}
   };
   modalRef: any;
   total$!: Observable<number>;
-
+  Mas_Department_Lists: any[] = []
+  Mas_Plan_Lists: any[] = []
+  Mas_Expense_Lists: any[] = []
+  Mas_Product: any[] = []
+  Mas_Activity: any[] = []
+  Mas_Budget_Types: any[] = []
 
 
   constructor(private modalService: NgbModal, public service: GridJsService
@@ -125,13 +121,22 @@ export class ProjectPlanningComponent {
     );
   }
   fullModal(modal: any, data: any) {
-    this.currentTab = 1
-    this.project_planing = { ...data };
+    this.currentTab = 1;
 
-    if (!this.project_planing.planing_Id) {
+    if (data?.Project_Id) {
+      this.project_planing = {
+        ...data,
 
-      const currentYear = new Date().getFullYear() + 543;
+        selectedDepartment: data.Department_Id,
+        projectType: data.Fk_Expense_Type,
+        selectedPlan: data.Fk_Plan_Id,
+        selectedProduct: data.Fk_Product_Id,
+        selectedActivity: data.Fk_Activity_Id,
+        selectedBudget: data.Fk_Budget_Type,
+      };
+      console.log('ss', this.project_planing);
 
+    } else {
       this.project_planing = {
         ...this.emptyplan
       };
@@ -143,70 +148,92 @@ export class ProjectPlanningComponent {
     });
   }
 
+
   currentTab = 1;
+  firstLoad = true;
 
   goTab(tab: number) {
     this.currentTab = tab;
+    this.firstLoad = false; // 👈 พอกดครั้งแรก จบโหมดเริ่มต้น
   }
 
+  async deletePlan(data: any) {
 
+    const userConfirmed = await confirmAlert('info', 'ต้องการลบข้อมูล ?', '');
 
+    if (userConfirmed) {
+      const payload = {
+        Project_Id: data.Project_Id,
+      }
+      const model = {
+        FUNC_CODE: "FUNC-Delete_Project_Plan",
 
+        Project_Plan: payload
+      };
 
+      this.serviceebud.GatewayGetData(model).subscribe(async () => {
+         basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
+        this.get_data();
 
-  deletePlan(data: any) {
+      });
+    }
 
   }
   Project_Plan: any
   async savePlan(modal: any) {
-    let payload: any
-    this.ProjectPlanService.projectPlan$.subscribe(dep => {
-      if (dep) {
+    console.log(this.project_planing);
+    const getId = (obj: any, key: string) =>
+      typeof obj === 'object' ? obj?.[key] : obj;
 
-        payload = {
-          BgYear: "2569",
-          Department_Id: dep.Department.Department_Id,
-          Department_Name: dep.Department.Department_Name,
-          Fk_Plan_Id: dep.Plan.Plan_Id,
-          Plan_Name: dep.Plan.Plan_Name,
-          Fk_Expense_List: dep.Expense.Expense_Id,
-          Expense_List: dep.Expense.Expense_Name,
-          Fk_Product_Id: dep.Product.Product_Id,
-          Product_Name: dep.Product.Product_Name,
-          Fk_Activity_Id: dep.Activity.Activity_Id,
-          Activity_Name: dep.Activity.Activity_Name,
-          Fk_Budget_Type: dep.Budget.Budget_Type_Id,
-          Budget_Type: dep.Budget.Budget_Type_Name,
-          Project_Name: this.project_planing.Project_Name,
-          Used_BG: this.project_planing.projectNatureType,
-          Project_Type_Id: this.project_planing.projectNature,
-          Project_Year_Count: this.project_planing.totalYears,
-          Project_Year_Number: this.project_planing.currentYear,
-          Operation1: this.project_planing.Operation1,
-          Operation2: this.project_planing.Operation2
-        };
-      }
-    });
+    const payload = {
+      BgYear: "2569",
+      Project_Id: this.project_planing.Project_Id,
 
+      Department_Id: getId(this.project_planing.selectedDepartment, 'Department_Id'),
+      Department_Name: this.project_planing.selectedDepartment?.Department_Name,
 
+      Fk_Plan_Id: getId(this.project_planing.selectedPlan, 'Plan_Id'),
+      Plan_Name: this.project_planing.selectedPlan?.Plan_Name,
+
+      Fk_Expense_List: getId(this.project_planing.projectType, 'Expense_Id'),
+      Expense_List: this.project_planing.projectType?.Expense_Name,
+
+      Fk_Product_Id: getId(this.project_planing.selectedProduct, 'Product_Id'),
+      Product_Name: this.project_planing.selectedProduct?.Product_Name,
+
+      Fk_Activity_Id: getId(this.project_planing.selectedActivity, 'Activity_Id'),
+      Activity_Name: this.project_planing.selectedActivity?.Activity_Name,
+
+      Fk_Budget_Type: getId(this.project_planing.selectedBudget, 'Budget_Type_Id'),
+      Budget_Type: this.project_planing.selectedBudget?.Budget_Type_Name,
+
+      Project_Name: this.project_planing.Project_Name,
+      Used_BG: this.project_planing.Used_BG,
+      Project_Type_Id: this.project_planing.Project_Type_Id,
+
+      Project_Year_Count: this.project_planing.Project_Year_Count,
+      Project_Year_Number: this.project_planing.Project_Year_Number,
+
+      Operation1: this.project_planing.Operation1,
+      Operation2: this.project_planing.Operation2
+    };
 
     const userConfirmed = await confirmAlert('info', 'ต้องการบันทึกข้อมูล ?', '');
 
-    if (userConfirmed) {
+    if (!userConfirmed) return;
 
-      let model = {
-        FUNC_CODE: "FUNC-Insert_Project_Plan",
-        Project_Plan: payload
-      }
-      var getData = this.serviceebud.GatewayGetData(model);
-      getData.subscribe((response: any) => {
+    const model = {
+      FUNC_CODE: this.project_planing.Project_Id > 0
+        ? "FUNC-Update_Project_Plan"
+        : "FUNC-Insert_Project_Plan",
+      Project_Plan: payload
+    };
 
-
-        basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
-        this.get_data()
-        modal.dismiss();
-      })
-    }
+    this.serviceebud.GatewayGetData(model).subscribe(() => {
+      basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
+      this.get_data();
+      modal.dismiss();
+    });
   }
   randomItem(arr: any[]) {
     return arr[Math.floor(Math.random() * arr.length)];

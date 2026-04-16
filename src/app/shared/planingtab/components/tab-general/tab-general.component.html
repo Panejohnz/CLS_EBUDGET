@@ -1,21 +1,26 @@
 <div class="border rounded p-3 bg-light">
-    <div class="row g-3">
+    <div class="row g-3" *ngIf="model">
 
+        <!-- หน่วยงาน -->
         <div class="col-md-6">
             <label class="form-label">หน่วยงาน</label>
-            <select (change)="Onchange_type_Department()" class="form-select" [(ngModel)]="model.selectedDepartment">
-                <option [ngValue]="null" disabled>-- เลือกหน่วยงาน --</option>
+            <select class="form-select" [(ngModel)]="model.selectedDepartment" name="selectedDepartment"
+                [compareWith]="compareById" (ngModelChange)="Onchange_type_Department()">
 
+                <option [ngValue]="null" disabled>-- เลือกหน่วยงาน --</option>
                 <option *ngFor="let item of Mas_Department_Lists" [ngValue]="item">
                     {{ item.Department_Name }}
                 </option>
             </select>
         </div>
 
-        <div class="col-md-6" *ngIf="model">
+        <!-- ประเภทโครงการ -->
+        <div class="col-md-6">
             <label class="form-label">ประเภทโครงการ</label>
 
-            <select (change)="Onchange_type()" class="form-select" name="projectType" [(ngModel)]="model.projectType">
+            <select class="form-select" [(ngModel)]="model.projectType" name="projectType" [compareWith]="compareById"
+                (ngModelChange)="Onchange_type()">
+
                 <option [ngValue]="null" disabled>-- เลือกประเภทโครงการ --</option>
                 <option *ngFor="let item of Mas_Expense_Lists" [ngValue]="item">
                     {{ item.Expense_Name }}
@@ -23,51 +28,65 @@
             </select>
         </div>
 
+        <!-- แผนงาน -->
         <div class="col-md-6">
             <label class="form-label">แผนงาน</label>
-            <select (change)="Onchange_type_Plan()" class="form-select" [(ngModel)]="model.selectedPlan">
-                <option [ngValue]="null" disabled selected>-- เลือกแผนงาน --</option>
+            <select class="form-select" [(ngModel)]="model.selectedPlan" name="selectedPlan" [compareWith]="compareById"
+                (ngModelChange)="Onchange_type_Plan()">
+
+                <option [ngValue]="null" disabled>-- เลือกแผนงาน --</option>
                 <option *ngFor="let item of Mas_Plan_Lists" [ngValue]="item">
                     {{ item.Plan_Name }}
                 </option>
             </select>
         </div>
 
+        <!-- ผลผลิต -->
         <div class="col-md-6">
             <label class="form-label">ผลผลิต</label>
-            <select (change)="Onchange_type_Product()" class="form-select" [(ngModel)]="model.selectedProduct">
-                <option [ngValue]="null" disabled selected>-- เลือกผลผลิต --</option>
+            <select class="form-select" [(ngModel)]="model.selectedProduct" name="selectedProduct"
+                [compareWith]="compareById" (ngModelChange)="Onchange_type_Product()">
+
+                <option [ngValue]="null" disabled>-- เลือกผลผลิต --</option>
                 <option *ngFor="let item of Mas_Product" [ngValue]="item">
                     {{ item.Product_Name }}
                 </option>
             </select>
         </div>
 
+        <!-- กิจกรรม -->
         <div class="col-md-6">
             <label class="form-label">กิจกรรม</label>
-            <select (ngModelChange)="onActivityChange($event)" class="form-select" [(ngModel)]="model.selectedActivity">
-                <option [ngValue]="null" disabled selected>-- เลือกกิจกรรม --</option>
+            <select class="form-select" [(ngModel)]="model.selectedActivity" name="selectedActivity"
+                [compareWith]="compareById" (ngModelChange)="onActivityChange($event)">
+
+                <option [ngValue]="null" disabled>-- เลือกกิจกรรม --</option>
                 <option *ngFor="let item of Mas_Activity" [ngValue]="item">
                     {{ item.Activity_Name }}
                 </option>
             </select>
         </div>
 
+        <!-- หมวดงบ -->
         <div class="col-md-6">
             <label class="form-label">หมวดงบ</label>
-            <select (ngModelChange)="onBudgetChange($event)" class="form-select" [(ngModel)]="model.selectedBudget">
-                <option [ngValue]="null" disabled selected>-- เลือกหมวดงบ --</option>
+            <select class="form-select" [(ngModel)]="model.selectedBudget" name="selectedBudget"
+                [compareWith]="compareById" (ngModelChange)="onBudgetChange($event)"
+                [disabled]="Mas_Budget_Types.length === 1">
+
+                <option [ngValue]="null" disabled>-- เลือกหมวดงบ --</option>
                 <option *ngFor="let item of Mas_Budget_Types" [ngValue]="item">
                     {{ item.Budget_Type_Name }}
                 </option>
             </select>
-
         </div>
 
+        <!-- ชื่อโครงการ -->
         <div class="col-md-12">
             <label class="form-label">ชื่อโครงการ</label>
-            <input [(ngModel)]="model.Project_Name" type="text" class="form-control">
+            <input [(ngModel)]="model.Project_Name" name="Project_Name" type="text" class="form-control">
         </div>
+
     </div>
 </div>
 
@@ -84,32 +103,27 @@
         <label class="form-label d-block">ลักษณะโครงการ</label>
 
         <div class="form-check form-check-inline">
-            <input type="radio" id="nature1" class="form-check-input" name="projectNatureType" [value]="1"
-                [checked]="projectNatureType === 1" (change)="onNatureChange(1)">
-            <label class="form-check-label" for="nature1">
-                ใช้งบ
-            </label>
+            <input type="radio" class="form-check-input" name="Used_BG" [value]="1" [(ngModel)]="model.Used_BG">
+            ใช้งบ
         </div>
 
         <div class="form-check form-check-inline">
-            <input type="radio" id="nature2" class="form-check-input" name="projectNatureType" [value]="2"
-                [checked]="projectNatureType === 2" (change)="onNatureChange(2)">
-            <label class="form-check-label" for="nature2">
-                ไม่ใช้งบ
-            </label>
+            <input type="radio" class="form-check-input" name="Used_BG" [value]="2" [(ngModel)]="model.Used_BG">
+            ไม่ใช้งบ
         </div>
     </div>
     <div class="col-md-2">
         <label class="form-label d-block">การดำเนินการ</label>
+
         <div class="form-check form-check-inline">
-            <input type="checkbox" class="form-check-input" [checked]="model.Operation1 === 1"
-                (change)="onOperationChange($event, 1)">
+            <input type="checkbox" class="form-check-input" [ngModel]="model.Operation1 === 1"
+                (ngModelChange)="model.Operation1 = $event ? 1 : 0">
             ดำเนินการเอง
         </div>
 
         <div class="form-check form-check-inline">
-            <input type="checkbox" class="form-check-input" [checked]="model.Operation2 === 2"
-                (change)="onOperationChange($event, 2)">
+            <input type="checkbox" class="form-check-input" [ngModel]="model.Operation2 === 2"
+                (ngModelChange)="model.Operation2 = $event ? 2 : 0">
             จัดจ้าง
         </div>
     </div>
@@ -119,52 +133,31 @@
     <div class="col-md-2">
         <label class="form-label d-block">ประเภทโครงการ</label>
 
-
-        <div class="form-check">
-            <input type="radio" id="natureNew" class="form-check-input" name="projectNature"
-                [checked]="projectNature === 1" (change)="onProjectNatureChange(1)">
-            <label class="form-check-label" for="natureNew">
+        <div class="d-flex gap-3">
+            <div class="form-check">
+                <input type="radio" class="form-check-input" name="Project_Type_Id" [value]="1"
+                    [(ngModel)]="model.Project_Type_Id">
                 โครงการใหม่
-            </label>
-        </div>
+            </div>
 
-        <div class="form-check">
-            <input type="radio" id="natureContinue" class="form-check-input" name="projectNature"
-                [checked]="projectNature === 2" (change)="onProjectNatureChange(2)">
-            <label class="form-check-label" for="natureContinue">
+            <div class="form-check">
+                <input type="radio" class="form-check-input" name="Project_Type_Id" [value]="2"
+                    [(ngModel)]="model.Project_Type_Id">
                 โครงการต่อเนื่อง
-            </label>
+            </div>
         </div>
-
     </div>
 
-    <div class="col-md-3" *ngIf="projectNature === 2">
+    <div class="col-md-3" *ngIf="model.Project_Type_Id === 2">
         <label class="form-label">จำนวนปีที่ดำเนินการ</label>
-        <input type="number" class="form-control" placeholder="กรอกจำนวนปี" [(ngModel)]="model.totalYears">
+        <input type="number" name="Project_Year_Count" class="form-control" placeholder="กรอกจำนวนปี"
+            [(ngModel)]="model.Project_Year_Count">
     </div>
 
-    <div class="col-md-3" *ngIf="projectNature === 2">
+    <div class="col-md-3" *ngIf="model.Project_Type_Id === 2">
         <label class="form-label">ปีนี้เป็นปีที่</label>
-        <input type="number" class="form-control" placeholder="กรอกปี" [(ngModel)]="model.currentYear">
+        <input type="number" name="Project_Year_Number" class="form-control" placeholder="กรอกปี"
+            [(ngModel)]="model.Project_Year_Number">
     </div>
 
 </div>
-
-
-
-
-<!-- Continue Project Only -->
-@if (project_planing === 'continue' ) {<div class="row mt-3">
-
-    <div class="col-md-6">
-        <label class="form-label">จำนวนปีที่ดำเนินการ</label>
-        <input type="number" class="form-control">
-    </div>
-
-    <div class="col-md-6">
-        <label class="form-label">ปีนี้เป็นปีที่</label>
-        <input type="number" class="form-control">
-    </div>
-
-</div>
-}
