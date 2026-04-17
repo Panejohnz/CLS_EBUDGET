@@ -96,8 +96,10 @@ export class ProjectPlanningComponent {
     }
     var getData = this.serviceebud.GatewayGetData(model);
     getData.subscribe((response: any) => {
-      this.allData = Array.isArray(response.List_Project_Plan)
-        ? response.List_Project_Plan
+      console.log('sa', response);
+
+      this.allData = Array.isArray(response.List_Project_Plan_Data_Table.Data)
+        ? response.List_Project_Plan_Data_Table.Data
         : [];
       this.griddata = [...this.allData];
 
@@ -172,7 +174,7 @@ export class ProjectPlanningComponent {
       };
 
       this.serviceebud.GatewayGetData(model).subscribe(async () => {
-         basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
+        basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
         this.get_data();
 
       });
