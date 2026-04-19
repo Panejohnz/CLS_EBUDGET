@@ -135,7 +135,7 @@
 
                 <ul class="nav nav-tabs mb-4">
                     <li class="nav-item">
-                        <button class="nav-link" [class.active]="currentTab === 1">
+                        <button class="nav-link" [class.active]="currentTab">
                             1. ข้อมูลทั่วไป
                         </button>
                     </li>
@@ -148,7 +148,7 @@
 
 
                     <li class="nav-item">
-                        <button class="nav-link" [class.active]="currentTab === 2" (click)="goTab(2)">
+                        <button class="nav-link" [class.active]="currentTab === 2 || currentTab === 1" (click)="goTab(2)">
                             2. ความเชื่อมโยงกับแผนระดับต่างๆ
                         </button>
                     </li>

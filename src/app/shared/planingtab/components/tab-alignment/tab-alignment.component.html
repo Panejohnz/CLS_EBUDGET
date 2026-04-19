@@ -1,54 +1,59 @@
+<!-- ================= LEVEL 1 ================= -->
+
+
 <div class="card mb-4">
-    <div class="card-header fw-bold bg-light ">
+    <div class="card-header fw-bold bg-light">
         แผนระดับ 1
     </div>
+
     <div class="card-body">
+
+        <!-- 1.1 -->
         <div class="border-start border-4 border-primary ps-3 mb-4">
             <h6 class="fw-bold text-primary mb-3">
-                1.1 ยุทธศาสตร์ที่เกี่ยวข้องโดยตรง (Z) *
+                1.1 ยุทธศาสตร์ที่เกี่ยวข้องโดยตรง (Z)
             </h6>
         </div>
 
-
-
         <div class="border rounded p-3 mb-3 bg-light">
-            <div class="row g-3 ">
+            <div class="row g-3">
 
-                <div class="col-md-4 ">
-                    <label class="form-label">ยุทธศาสตร์ด้าน</label>
-                    <select class="form-select" [(ngModel)]="planLevel1Main.strategySide" name="strategySide">
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
+                <div class="col-md-4">
+                    <label>ยุทธศาสตร์ด้าน</label>
+                    <select class="form-select" [(ngModel)]="planLevel1Main.strategySide" name="l1_side">
+                        <option value="">-- เลือก --</option>
                         <option value="1">ตัวเลือกที่ 1</option>
                         <option value="2">ตัวเลือกที่ 2</option>
                     </select>
                 </div>
 
                 <div class="col-md-4">
-                    <label class="form-label">ประเด็นยุทธศาสตร์</label>
-                    <select class="form-select" [(ngModel)]="planLevel1Main.strategyIssue" name="strategyIssue">
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
+                    <label>ประเด็นยุทธศาสตร์</label>
+                    <select class="form-select" [(ngModel)]="planLevel1Main.strategyIssue" name="l1_issue">
+                        <option value="">-- เลือก --</option>
                         <option value="1">ตัวเลือกที่ 1</option>
                         <option value="2">ตัวเลือกที่ 2</option>
                     </select>
                 </div>
 
                 <div class="col-md-4">
-                    <label class="form-label">ประเด็นย่อย</label>
-                    <select class="form-select" [(ngModel)]="planLevel1Main.strategySubIssue" name="strategySubIssue">
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
+                    <label>ประเด็นย่อย</label>
+                    <select class="form-select" [(ngModel)]="planLevel1Main.strategySubIssue" name="l1_sub">
+                        <option value="">-- เลือก --</option>
                         <option value="1">ตัวเลือกที่ 1</option>
                         <option value="2">ตัวเลือกที่ 2</option>
                     </select>
                 </div>
 
                 <div class="col-md-12">
-                    <label class="form-label">เป้าหมาย</label>
-                    <input type="text" class="form-control" [(ngModel)]="planLevel1Main.target" name="target">
+                    <label>เป้าหมาย</label>
+                    <input class="form-control" [(ngModel)]="planLevel1Main.target" name="l1_target">
                 </div>
 
             </div>
         </div>
-        <hr class="my-4">
+
+        <!-- ================= 1.2 ================= -->
 
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div class="border-start border-4 border-primary ps-3 mb-4">
@@ -56,7 +61,6 @@
                     1.2 ยุทธศาสตร์ชาติที่เกี่ยวข้องในระดับรอง (Z)
                 </h6>
             </div>
-
 
             <button class="btn btn-sm btn-outline-primary" (click)="addSubStrategy()">
                 + เพิ่มรายการ
@@ -73,368 +77,309 @@
 
             <div class="row g-3">
 
+                <!-- 🔥 ยุทธศาสตร์ด้าน -->
                 <div class="col-md-4">
                     <label class="form-label">ยุทธศาสตร์ด้าน</label>
-                    <select class="form-select">
-                        <option selected disabled>-- เลือก --</option>
-                        <option>ตัวเลือกที่ 1</option>
-                        <option>ตัวเลือกที่ 2</option>
+                    <select class="form-select" [(ngModel)]="item.strategySide" name="sub_side_{{i}}">
+                        <option value="" disabled>-- เลือก --</option>
+                        <option value="1">ตัวเลือกที่ 1</option>
+                        <option value="2">ตัวเลือกที่ 2</option>
                     </select>
                 </div>
 
+                <!-- 🔥 ประเด็นยุทธศาสตร์ -->
                 <div class="col-md-4">
                     <label class="form-label">ประเด็นยุทธศาสตร์</label>
-                    <select class="form-select">
-                        <option selected disabled>-- เลือก --</option>
-                        <option>ตัวเลือกที่ 1</option>
-                        <option>ตัวเลือกที่ 2</option>
+                    <select class="form-select" [(ngModel)]="item.strategyIssue" name="sub_issue_{{i}}">
+                        <option value="" disabled>-- เลือก --</option>
+                        <option value="1">ตัวเลือกที่ 1</option>
+                        <option value="2">ตัวเลือกที่ 2</option>
                     </select>
                 </div>
 
+                <!-- 🔥 ประเด็นย่อย -->
                 <div class="col-md-4">
                     <label class="form-label">ประเด็นย่อย</label>
-                    <select class="form-select">
-                        <option selected disabled>-- เลือก --</option>
-                        <option>ตัวเลือกที่ 1</option>
-                        <option>ตัวเลือกที่ 2</option>
+                    <select class="form-select" [(ngModel)]="item.strategySubIssue" name="sub_sub_{{i}}">
+                        <option value="" disabled>-- เลือก --</option>
+                        <option value="1">ตัวเลือกที่ 1</option>
+                        <option value="2">ตัวเลือกที่ 2</option>
                     </select>
                 </div>
 
+                <!-- 🔥 เป้าหมาย -->
                 <div class="col-md-12">
                     <label class="form-label">เป้าหมาย</label>
-                    <input type="text" class="form-control">
+                    <input type="text" class="form-control" [(ngModel)]="item.target" name="sub_target_{{i}}">
                 </div>
 
+                <!-- 🔥 ความสอดคล้อง -->
                 <div class="col-md-12">
                     <label class="form-label">
                         ความสอดคล้องของโครงการกับยุทธศาสตร์ชาติ
                     </label>
-                    <textarea class="form-control" rows="3"></textarea>
+                    <textarea class="form-control" rows="3" [(ngModel)]="item.alignmentDetail" name="sub_desc_{{i}}">
+      </textarea>
                 </div>
 
             </div>
-        </div>
 
+        </div>
+        <!-- ================= LEVEL 2 ================= -->
+
+        <!-- ================= LEVEL 2 ================= -->
         <div class="card mb-4">
 
             <div class="card-header fw-bold bg-light">
                 แผนระดับ 2
             </div>
+
+            <!-- ================= 2.1 ================= -->
             <div class="card-body">
+
                 <div class="border-start border-4 border-primary ps-3 mb-4">
                     <h6 class="fw-bold text-primary mb-3">
-                        2.1 ความสอดคล้องกับแผนแม่บทภายใต้ยุทธศาสตร์ชาติ (Y) *
+                        2.1 ความสอดคล้องกับแผนแม่บทภายใต้ยุทธศาสตร์ชาติ (Y)
                     </h6>
                 </div>
 
-
                 <div class="border rounded p-3 mb-3 bg-light">
-                    <div class="row g-3 ">
+                    <div class="row g-3">
 
                         <div class="col-md-4">
                             <label class="form-label">ยุทธศาสตร์ด้าน</label>
-                            <select class="form-select">
-                                <option selected disabled>-- เลือก --</option>
-                                <option>ตัวเลือกที่ 1</option>
-                                <option>ตัวเลือกที่ 2</option>
+                            <select class="form-select" [(ngModel)]="planLevel2.strategySide" name="l2_side">
+                                <option value="" disabled>-- เลือก --</option>
+                                <option value="1">ตัวเลือกที่ 1</option>
+                                <option value="2">ตัวเลือกที่ 2</option>
                             </select>
                         </div>
 
                         <div class="col-md-4">
                             <label class="form-label">เป้าหมายระดับประเด็น (Yz)</label>
-                            <select class="form-select">
-                                <option selected disabled>-- เลือก --</option>
-                                <option>ตัวเลือกที่ 1</option>
-                                <option>ตัวเลือกที่ 2</option>
+                            <select class="form-select" [(ngModel)]="planLevel2.targetYz" name="l2_yz">
+                                <option value="" disabled>-- เลือก --</option>
+                                <option value="1">ตัวเลือกที่ 1</option>
+                                <option value="2">ตัวเลือกที่ 2</option>
                             </select>
                         </div>
 
                         <div class="col-md-12">
-                            <label class="form-label">
-                                ความสอดคล้องกับเป้าหมายของแผนแม่บท
-                            </label>
-                            <textarea class="form-control" rows="3"></textarea>
+                            <label class="form-label">ความสอดคล้องกับเป้าหมายของแผนแม่บท</label>
+                            <textarea class="form-control" rows="3" [(ngModel)]="planLevel2.description" name="l2_desc">
+          </textarea>
                         </div>
 
                         <div class="col-md-4">
                             <label class="form-label">แผนย่อยของแผนแม่บท</label>
-                            <select class="form-select">
-                                <option selected disabled>-- เลือก --</option>
-                                <option>ตัวเลือกที่ 1</option>
-                                <option>ตัวเลือกที่ 2</option>
+                            <select class="form-select" [(ngModel)]="planLevel2.subplan" name="l2_subplan">
+                                <option value="" disabled>-- เลือก --</option>
+                                <option value="1">ตัวเลือกที่ 1</option>
+                                <option value="2">ตัวเลือกที่ 2</option>
                             </select>
                         </div>
 
                         <div class="col-md-4">
                             <label class="form-label">เป้าหมายแผนแม่บท (Y1)</label>
-                            <select class="form-select">
-                                <option selected disabled>-- เลือก --</option>
-                                <option>ตัวเลือกที่ 1</option>
-                                <option>ตัวเลือกที่ 2</option>
+                            <select class="form-select" [(ngModel)]="planLevel2.targetY1" name="l2_y1">
+                                <option value="" disabled>-- เลือก --</option>
+                                <option value="1">ตัวเลือกที่ 1</option>
+                                <option value="2">ตัวเลือกที่ 2</option>
                             </select>
                         </div>
 
                         <div class="col-md-12">
-                            <label class="form-label">
-                                ความสอดคล้องโครงการกับเป้าหมายของแผนย่อย(อธิบาย)
-                            </label>
-                            <textarea class="form-control" rows="3"></textarea>
+                            <label class="form-label">ความสอดคล้องโครงการกับเป้าหมายของแผนย่อย</label>
+                            <textarea class="form-control" rows="3" [(ngModel)]="planLevel2.subplanDesc"
+                                name="l2_subdesc">
+          </textarea>
                         </div>
+
                         <div class="col-md-4">
                             <label class="form-label">แนวทางการพัฒนาภายใต้แผนย่อย</label>
-                            <select class="form-select">
-                                <option selected disabled>-- เลือก --</option>
-                                <option>ตัวเลือกที่ 1</option>
-                                <option>ตัวเลือกที่ 2</option>
+                            <select class="form-select" [(ngModel)]="planLevel2.devGuideline" name="l2_dev">
+                                <option value="" disabled>-- เลือก --</option>
+                                <option value="1">ตัวเลือกที่ 1</option>
+                                <option value="2">ตัวเลือกที่ 2</option>
                             </select>
                         </div>
+
                     </div>
                 </div>
+
             </div>
+
+            <!-- ================= 2.2 ================= -->
             <div class="card-body">
+
                 <div class="border-start border-4 border-primary ps-3 mb-4">
                     <h6 class="fw-bold text-primary mb-3">
-                        2.2 ความสอดคล้องกับแผนพัฒนาเศรษฐกิจและสังคมแห่งชาติ (ฉบับที่ 13) *
+                        2.2 แผนพัฒนาเศรษฐกิจและสังคมแห่งชาติ
                     </h6>
                 </div>
 
-
                 <div class="border rounded p-3 mb-3 bg-light">
-                    <div class="row g-3 ">
-
+                    <div class="row g-3">
 
                         <div class="col-md-4">
                             <label class="form-label">หมุดหมาย</label>
-                            <select class="form-select">
-                                <option selected disabled>-- เลือก --</option>
-                                <option>ตัวเลือกที่ 1</option>
-                                <option>ตัวเลือกที่ 2</option>
+                            <select class="form-select" [(ngModel)]="planLevel2.milestone" name="l2_milestone">
+                                <option value="" disabled>-- เลือก --</option>
+                                <option value="1">ตัวเลือกที่ 1</option>
+                                <option value="2">ตัวเลือกที่ 2</option>
                             </select>
                         </div>
 
                         <div class="col-md-4">
                             <label class="form-label">เป้าหมาย</label>
-                            <select class="form-select">
-                                <option selected disabled>-- เลือก --</option>
-                                <option>ตัวเลือกที่ 1</option>
-                                <option>ตัวเลือกที่ 2</option>
+                            <select class="form-select" [(ngModel)]="planLevel2.target" name="l2_target">
+                                <option value="" disabled>-- เลือก --</option>
+                                <option value="1">ตัวเลือกที่ 1</option>
+                                <option value="2">ตัวเลือกที่ 2</option>
                             </select>
                         </div>
 
                         <div class="col-md-4">
                             <label class="form-label">ตัวชี้วัดที่</label>
-                            <select class="form-select">
-                                <option selected disabled>-- เลือก --</option>
-                                <option>ตัวเลือกที่ 1</option>
-                                <option>ตัวเลือกที่ 2</option>
+                            <select class="form-select" [(ngModel)]="planLevel2.indicator" name="l2_indicator">
+                                <option value="" disabled>-- เลือก --</option>
+                                <option value="1">ตัวเลือกที่ 1</option>
+                                <option value="2">ตัวเลือกที่ 2</option>
                             </select>
                         </div>
 
                         <div class="col-md-4">
                             <label class="form-label">กลยุทธ์การพัฒนาที่</label>
-                            <select class="form-select">
-                                <option selected disabled>-- เลือก --</option>
-                                <option>ตัวเลือกที่ 1</option>
-                                <option>ตัวเลือกที่ 2</option>
+                            <select class="form-select" [(ngModel)]="planLevel2.strategyMain" name="l2_main">
+                                <option value="" disabled>-- เลือก --</option>
+                                <option value="1">ตัวเลือกที่ 1</option>
+                                <option value="2">ตัวเลือกที่ 2</option>
                             </select>
                         </div>
+
                         <div class="col-md-4">
                             <label class="form-label">กลยุทธ์ย่อยที่</label>
-                            <select class="form-select">
-                                <option selected disabled>-- เลือก --</option>
-                                <option>ตัวเลือกที่ 1</option>
-                                <option>ตัวเลือกที่ 2</option>
+                            <select class="form-select" [(ngModel)]="planLevel2.strategySub" name="l2_sub">
+                                <option value="" disabled>-- เลือก --</option>
+                                <option value="1">ตัวเลือกที่ 1</option>
+                                <option value="2">ตัวเลือกที่ 2</option>
                             </select>
                         </div>
+
                     </div>
                 </div>
-            </div>
-            <div class="card-body">
-                <div class="border-start border-4 border-primary ps-3 mb-4">
-                    <h6 class="fw-bold text-primary mb-3">
-                        2.3 ความสอดคล้องกับแผนความมั่นคงชาติ นโยบายและแผนระดับชาติว่าด้วยความมันคง (พ.ศ. 2566 - 2570)
-                    </h6>
-                </div>
 
-
-                <!-- ปุ่มเพิ่ม -->
-                <div class="mb-3">
-                    <button class="btn btn-primary btn-sm" (click)="addPolicy()">
-                        <i class="ri-add-line"></i> เพิ่มรายการ
-                    </button>
-                </div>
-
-                <div class="row g-3">
-
-                    @for(item of policyList; track $index){
-
-                    <div class="col-12 border rounded p-3 bg-light">
-
-                        <div class="row g-3 align-items-end">
-
-                            <!-- หัวข้อ -->
-
-
-                            <!-- ประเด็นที่สอดคล้อง -->
-                            <div class="col-md-10">
-                                <label class="form-label">ประเด็นที่สอดคล้อง</label>
-                                <input type="text" class="form-control" [(ngModel)]="item.detail">
-                            </div>
-
-                            <!-- ปุ่มลบ -->
-                            <div class="col-md-2 text-end">
-                                <button class="btn btn-danger btn-sm" (click)="removePolicy($index)">
-                                    <i class="ri-delete-bin-line"></i>
-                                </button>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    }
-
-                </div>
-
-            </div>
-            <hr class="my-4">
-            <div class="border-start border-4 border-primary ps-3 mb-4">
-                <h6 class="fw-bold text-primary mb-3">ความสอดคล้องห่วงโซ่คุณค่า (Value Chains)</h6>
-            </div>
-
-
-            <div class="border rounded p-3 mb-3 bg-light">
-                <div class="row g-3 ">
-
-
-                    <div class="col-md-6">
-                        <label class="form-label">หลัก</label>
-                        <select class="form-select">
-                            <option selected disabled>-- เลือก --</option>
-                            <option>ตัวเลือกที่ 1</option>
-                            <option>ตัวเลือกที่ 2</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">ปัจจัย</label>
-                        <select class="form-select">
-                            <option selected disabled>-- เลือก --</option>
-                            <option>ตัวเลือกที่ 1</option>
-                            <option>ตัวเลือกที่ 2</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">ส่วนสนับสนุน (ถ้ามี)</label>
-                        <select class="form-select">
-                            <option selected disabled>-- เลือก --</option>
-                            <option>ตัวเลือกที่ 1</option>
-                            <option>ตัวเลือกที่ 2</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">ปัจจัย</label>
-                        <select class="form-select">
-                            <option selected disabled>-- เลือก --</option>
-                            <option>ตัวเลือกที่ 1</option>
-                            <option>ตัวเลือกที่ 2</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <hr class="my-4">
-            <div class="border-start border-4 border-primary ps-3 mb-4">
-                <h6 class="fw-bold text-primary mb-3">ความสอดคล้องกับเป้าหมาย SDGs</h6>
-            </div>
-
-
-            <div class="border rounded p-3 mb-3 bg-light">
-                <div class="row g-3 ">
-
-                    <div class="col-md-6">
-                        <label class="form-label">เป้าหมายหลัก SDGs</label>
-                        <select class="form-select">
-                            <option selected disabled>-- เลือก --</option>
-                            <option>ตัวเลือกที่ 1</option>
-                            <option>ตัวเลือกที่ 2</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">เป้าหมายย่อย SDGs</label>
-                        <select class="form-select">
-                            <option selected disabled>-- เลือก --</option>
-                            <option>ตัวเลือกที่ 1</option>
-                            <option>ตัวเลือกที่ 2</option>
-                        </select>
-                    </div>
-                </div>
 
             </div>
             <br>
+            <!-- ================= LEVEL 3 ================= -->
+
+            <!-- ================= LEVEL 3 ================= -->
+
             <div class="card mb-4">
                 <div class="card-header fw-bold bg-light">
                     แผนระดับ 3
                 </div>
+
                 <div class="card-body">
+
+                    <!-- ================= 3.1 ================= -->
                     <div class="border-start border-4 border-primary ps-3 mb-4">
-                        <h6 class=" fw-bold text-primary mb-3 mt-4">3.1 ความสอดคล้องกับนโยบายเร่งด่วนของรัฐบาล</h6>
-                    </div>
-
-                    <div class="border rounded p-3 mb-3 bg-light">
-                        <div class="row g-3 ">
-                            <label class="form-label">1.
-                                การผลักดันให้เกิดการปรับโครงสร้างหนี้ทั้งระบบ</label>
-                            <div class="d-flex align-items-center mb-1">
-                                <input type="checkbox" class="form-check-input me-2"> 1.1
-
-                                <input type="text" class="form-control me-2">
-                                <input type="checkbox" class="form-check-input me-2"> 1.2
-
-                                <input type="text" class="form-control me-2">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="border-start border-4 border-primary ps-3 mb-4">
-                        <h6 class=" fw-bold text-primary mb-3 mt-4">3.2 ความสอดคล้องกับนโยบายรัฐบาลระยะกลางและระยะยาว
+                        <h6 class="fw-bold text-primary mb-3 mt-4">
+                            3.1 ความสอดคล้องกับนโยบายเร่งด่วนของรัฐบาล
                         </h6>
                     </div>
 
                     <div class="border rounded p-3 mb-3 bg-light">
-                        <div class="row g-3 ">
-                            <label class="form-label">1.
-                                ________________________</label>
+                        <div class="row g-3">
+
+                            <label class="form-label">
+                                1. การผลักดันให้เกิดการปรับโครงสร้างหนี้ทั้งระบบ
+                            </label>
+
                             <div class="d-flex align-items-center mb-1">
-                                <input type="checkbox" class="form-check-input me-2"> 1.1
 
-                                <input type="text" class="form-control me-2">
-                                <input type="checkbox" class="form-check-input me-2"> 1.2
+                                <input type="checkbox" class="form-check-input me-2"
+                                    [(ngModel)]="alignment.urgentFixed[0].checked" name="urgent1_1">
 
-                                <input type="text" class="form-control me-2">
+                                1.1
+
+                                <input type="text" class="form-control me-2" [(ngModel)]="alignment.urgentFixed[0].name"
+                                    name="urgent1_1_text">
+
+                                <input type="checkbox" class="form-check-input me-2"
+                                    [(ngModel)]="alignment.urgentFixed[1].checked" name="urgent1_2">
+
+                                1.2
+
+                                <input type="text" class="form-control me-2" [(ngModel)]="alignment.urgentFixed[1].name"
+                                    name="urgent1_2_text">
+
                             </div>
+
                         </div>
                     </div>
+
+                    <!-- ================= 3.2 ================= -->
                     <div class="border-start border-4 border-primary ps-3 mb-4">
-                        <h6 class="fw-bold text-primary mb-3">3.3 มติคณะรัฐมนตรีที่เกี่ยวข้อง</h6>
+                        <h6 class="fw-bold text-primary mb-3 mt-4">
+                            3.2 ความสอดคล้องกับนโยบายรัฐบาลระยะกลางและระยะยาว
+                        </h6>
                     </div>
 
+                    <div class="border rounded p-3 mb-3 bg-light">
+                        <div class="row g-3">
+
+                            <label class="form-label">
+                                1. ________________________
+                            </label>
+
+                            <div class="d-flex align-items-center mb-1">
+
+                                <input type="checkbox" class="form-check-input me-2"
+                                    [(ngModel)]="alignment.midLongFixed[0].checked" name="mid1_1">
+
+                                1.1
+
+                                <input type="text" class="form-control me-2"
+                                    [(ngModel)]="alignment.midLongFixed[0].name" name="mid1_1_text">
+
+                                <input type="checkbox" class="form-check-input me-2"
+                                    [(ngModel)]="alignment.midLongFixed[1].checked" name="mid1_2">
+
+                                1.2
+
+                                <input type="text" class="form-control me-2"
+                                    [(ngModel)]="alignment.midLongFixed[1].name" name="mid1_2_text">
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- ================= 3.3 ================= -->
+                    <div class="border-start border-4 border-primary ps-3 mb-4">
+                        <h6 class="fw-bold text-primary mb-3">
+                            3.3 มติคณะรัฐมนตรีที่เกี่ยวข้อง
+                        </h6>
+                    </div>
 
                     <button class="btn btn-sm btn-outline-primary mb-3" (click)="addCabinet()">
                         + เพิ่มรายการ
                     </button>
 
-                    <div *ngFor="let item of cabinetList; let i = index"
-                        class="input-group mb-2 border rounded p-3 mb-3 bg-light">
+                    <div *ngFor="let item of alignment.cabinetList; let i = index"
+                        class="input-group mb-2 border rounded p-3 bg-light">
 
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" [(ngModel)]="item.title" name="cabinet_{{i}}">
 
                         <button class="btn btn-danger" (click)="removeCabinet(i)">
                             <i class="bx bx-trash"></i>
                         </button>
 
                     </div>
+
+                    <!-- ================= 3.4 ================= -->
                     <div class="border-start border-4 border-primary ps-3 mb-4">
                         <h6 class="fw-bold text-primary mb-3 mt-4">
                             3.4 ความสอดคล้องกับแผนปฏิบัติราชการ ปปท.
@@ -442,22 +387,28 @@
                     </div>
 
                     <div class="border rounded p-3 mb-3 bg-light">
-                        <div class="row g-3 ">
+                        <div class="row g-3">
+
                             <div class="form-check">
-                                <input type="radio" class="form-check-input" id="ppatYes" name="ppatAlign" value="yes">
-                                <label class="form-check-label" for="ppatYes">
+                                <input type="radio" class="form-check-input"
+                                    [(ngModel)]="alignment.projectPlaningAlignment" name="ppatAlign" value="yes">
+                                <label class="form-check-label">
                                     เรื่อง ________
                                 </label>
                             </div>
 
                             <div class="form-check">
-                                <input type="radio" class="form-check-input" id="ppatNo" name="ppatAlign" value="no">
-                                <label class="form-check-label" for="ppatNo">
+                                <input type="radio" class="form-check-input"
+                                    [(ngModel)]="alignment.projectPlaningAlignment" name="ppatAlign" value="no">
+                                <label class="form-check-label">
                                     เรื่อง ________
                                 </label>
                             </div>
+
                         </div>
                     </div>
+
+                    <!-- ================= 3.5 ================= -->
                     <div class="border-start border-4 border-primary ps-3 mb-4">
                         <h6 class="fw-bold text-primary mb-3 mt-4">
                             3.5 ความสอดคล้องกับแผนงาน ปปท.
@@ -465,47 +416,48 @@
                     </div>
 
                     <div class="border rounded p-3 mb-3 bg-light">
+
                         <div class="d-flex justify-content-between mb-2">
-                            <input type="text" class="form-control me-2" placeholder="แผนงานที่ 1">
-
-
+                            <input type="text" class="form-control me-2" placeholder="แผนงานที่ 1"
+                                [(ngModel)]="alignment.ppatFixed.planName" name="ppat_name">
                         </div>
 
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label">กลยุทธ์ที่</label>
-                                <select class="form-select">
+                                <select class="form-select" [(ngModel)]="alignment.ppatFixed.strategy"
+                                    name="ppat_strategy">
                                     <option selected disabled>-- เลือก --</option>
-                                    <option>ตัวเลือกที่ 1</option>
-                                    <option>ตัวเลือกที่ 2</option>
+                                    <option value="1">ตัวเลือกที่ 1</option>
+                                    <option value="2">ตัวเลือกที่ 2</option>
                                 </select>
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label">มาตรการที่</label>
-                                <select class="form-select">
+                                <select class="form-select" [(ngModel)]="alignment.ppatFixed.measure"
+                                    name="ppat_measure">
                                     <option selected disabled>-- เลือก --</option>
-                                    <option>ตัวเลือกที่ 1</option>
-                                    <option>ตัวเลือกที่ 2</option>
+                                    <option value="1">ตัวเลือกที่ 1</option>
+                                    <option value="2">ตัวเลือกที่ 2</option>
                                 </select>
                             </div>
                         </div>
+
                         <div class="row g-3">
                             <div class="col-md-12">
                                 <label class="form-label">ตัวชี้วัดแผนงาน</label>
-                                <select class="form-select">
+                                <select class="form-select" [(ngModel)]="alignment.ppatFixed.indicator"
+                                    name="ppat_indicator">
                                     <option selected disabled>-- เลือก --</option>
-                                    <option>ตัวเลือกที่ 1</option>
-                                    <option>ตัวเลือกที่ 2</option>
+                                    <option value="1">ตัวเลือกที่ 1</option>
+                                    <option value="2">ตัวเลือกที่ 2</option>
                                 </select>
                             </div>
-
-
                         </div>
 
-
-
                     </div>
+
                 </div>
             </div>
         </div>

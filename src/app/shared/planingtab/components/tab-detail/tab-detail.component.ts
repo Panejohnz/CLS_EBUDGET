@@ -1,85 +1,113 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-tab-detail',
-
   templateUrl: './tab-detail.component.html',
   styleUrl: './tab-detail.component.scss'
 })
-export class TabDetailComponent {
-  @Input() model: any
-  // 1
-  projectDetail = {
-    principle: '',
-    area: '',
-    startDate: '',
-    endDate: ''
-  };
+export class TabDetailComponent implements OnInit {
 
-  // 2
-  objectives: any[] = [];
+  @Input() model: any;
 
-  // 3.1
-  outputs: any[] = [];
+  // 👉 จะชี้ไปที่ model.Project_Plan.detail
+  projectDetail!: any;
 
-  // 3.2
-  outcomes: any[] = [];
+  // =============================
+  // INIT
+  // =============================
+  ngOnInit(): void {
 
-  // 4
-  expectedResults: any[] = [];
+    // 🔥 กัน null
+    if (!this.model.Project_Plan) {
+      this.model.Project_Plan = {};
+    }
 
-  // 5
-  targetGroups: any[] = [];
+    // 🔥 init detail ถ้ายังไม่มี
+    if (!this.model.Project_Plan.detail) {
+      this.model.Project_Plan.detail = {
+        principle: '',
+        objectives: [],
+        outputs: [],
+        outcomes: [],
+        expectedResults: [],
+        targetGroups: [],
+        area: '',
+        startDate: null,
+        endDate: null
+      };
+    }
 
-  // 2 วัตถุประสงค์
+    // 🔥 bind reference (สำคัญที่สุด)
+    this.projectDetail = this.model.Project_Plan.detail;
+  }
+
+  // =============================
+  // OBJECTIVE
+  // =============================
   addObjective() {
-    this.objectives.push({ title: '' });
+    this.projectDetail.objectives.push({
+      name: ''
+    });
   }
+
   removeObjective(i: number) {
-    this.objectives.splice(i, 1);
+    this.projectDetail.objectives.splice(i, 1);
   }
 
-  // 3.1 Output
+  // =============================
+  // OUTPUT
+  // =============================
   addOutput() {
-    this.outputs.push({
+    this.projectDetail.outputs.push({
       name: '',
       target: '',
       unit: ''
     });
   }
+
   removeOutput(i: number) {
-    this.outputs.splice(i, 1);
+    this.projectDetail.outputs.splice(i, 1);
   }
 
-  // 3.2 Outcome
+  // =============================
+  // OUTCOME
+  // =============================
   addOutcome() {
-    this.outcomes.push({
-      name: '',
-      target: '',
-      unit: ''
+    this.projectDetail.outcomes.push({
+      name: ''
     });
   }
+
   removeOutcome(i: number) {
-    this.outcomes.splice(i, 1);
+    this.projectDetail.outcomes.splice(i, 1);
   }
 
-  // 4 ผลที่คาดว่าจะได้รับ
+  // =============================
+  // EXPECTED RESULT
+  // =============================
   addExpectedResult() {
-    this.expectedResults.push({ title: '' });
-  }
-  removeExpectedResult(i: number) {
-    this.expectedResults.splice(i, 1);
+    this.projectDetail.expectedResults.push({
+      name: ''
+    });
   }
 
-  // 5 กลุ่มเป้าหมาย
+  removeExpectedResult(i: number) {
+    this.projectDetail.expectedResults.splice(i, 1);
+  }
+
+  // =============================
+  // TARGET GROUP
+  // =============================
   addTargetGroup() {
-    this.targetGroups.push({
+    this.projectDetail.targetGroups.push({
       name: '',
       amount: '',
       unit: ''
     });
   }
+
   removeTargetGroup(i: number) {
-    this.targetGroups.splice(i, 1);
+    this.projectDetail.targetGroups.splice(i, 1);
   }
+
 }

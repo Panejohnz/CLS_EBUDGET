@@ -57,7 +57,10 @@ export class ProjectPlanningComponent {
     Fk_Activity_Id: null,
     Fk_Budget_Type: null,
     Project_Name: '',
-    Project_Plan: {}
+    Project_Plan: {
+      detail: {},
+      alignment: {}
+    }
   };
   modalRef: any;
   total$!: Observable<number>;
@@ -183,7 +186,7 @@ export class ProjectPlanningComponent {
   }
   Project_Plan: any
   async savePlan(modal: any) {
-    console.log(this.project_planing);
+    console.log('save', this.project_planing.Project_Plan);
     const getId = (obj: any, key: string) =>
       typeof obj === 'object' ? obj?.[key] : obj;
 
@@ -228,7 +231,16 @@ export class ProjectPlanningComponent {
       FUNC_CODE: this.project_planing.Project_Id > 0
         ? "FUNC-Update_Project_Plan"
         : "FUNC-Insert_Project_Plan",
-      Project_Plan: payload
+      Project_Plan: payload,
+
+      Project_Detail: this.project_planing.Project_Plan?.detail,
+
+      Project_Objective: this.project_planing.Project_Plan?.detail?.objectives,
+
+      Project_SubStrategy: this.project_planing.Project_Plan?.alignment?.subStrategies,
+
+      Project_Cabinet: this.project_planing.Project_Plan?.alignment?.cabinetList
+
     };
 
     this.serviceebud.GatewayGetData(model).subscribe(() => {
