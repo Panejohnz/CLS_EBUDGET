@@ -1,64 +1,88 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+
 
 @Component({
   selector: 'app-tab-detail',
   templateUrl: './tab-detail.component.html',
   styleUrl: './tab-detail.component.scss'
 })
-export class TabDetailComponent implements OnInit {
-
-  @Input() model: any;
-
-  // 👉 จะชี้ไปที่ model.Project_Plan.detail
-  projectDetail!: any;
-
-  // =============================
-  // INIT
-  // =============================
-  ngOnInit(): void {
-
-    // 🔥 กัน null
-    if (!this.model.Project_Plan) {
-      this.model.Project_Plan = {};
+export class TabDetailComponent implements OnInit, OnChanges {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['model'] && this.model) {
+      this.initData();
     }
-
-    // 🔥 init detail ถ้ายังไม่มี
-    if (!this.model.Project_Plan.detail) {
-      this.model.Project_Plan.detail = {
+  }
+  initData() {
+    if (!this.model.Project_Detail || Array.isArray(this.model.Project_Detail)) {
+      this.model.Project_Detail = {
         principle: '',
-        objectives: [],
-        outputs: [],
-        outcomes: [],
-        expectedResults: [],
-        targetGroups: [],
         area: '',
-        startDate: null,
-        endDate: null
+        Start_Date: '',
+        End_Date: ''
       };
     }
 
-    // 🔥 bind reference (สำคัญที่สุด)
-    this.projectDetail = this.model.Project_Plan.detail;
+    this.projectDetail = this.model.Project_Detail;
+
+    if (!this.model.Project_Objective) {
+      this.model.Project_Objective = [];
+    }
+
+    if (this.model.Project_Objective.length === 0) {
+      this.model.Project_Objective.push({ name: '' });
+    }
+
+    this.objectives = this.model.Project_Objective;
+    if (!this.model.Project_Output) {
+      this.model.Project_Output = [];
+    }
+    this.outputs = this.model.Project_Output;
+    if (!this.model.Project_Outcome) {
+      this.model.Project_Outcome = [];
+    }
+    this.outcomes = this.model.Project_Outcome;
+
+    if (!this.model.Project_Expected) {
+      this.model.Project_Expected = [];
+    }
+    this.expectedResults = this.model.Project_Expected;
+
+    if (!this.model.Project_TargetGroup) {
+      this.model.Project_TargetGroup = [];
+    }
+    this.targetGroups = this.model.Project_TargetGroup;
+    console.log('123',this.model);
+    
+  }
+  @Input() model: any;
+
+  projectDetail: any;
+
+  objectives!: any[];
+
+  outputs!: any[];
+  outcomes!: any[];
+  expectedResults!: any[];
+  targetGroups!: any[];
+
+  ngOnInit(): void {
+
+
+
   }
 
-  // =============================
-  // OBJECTIVE
-  // =============================
   addObjective() {
-    this.projectDetail.objectives.push({
-      name: ''
-    });
+    this.objectives.push({ name: '' });
   }
 
   removeObjective(i: number) {
-    this.projectDetail.objectives.splice(i, 1);
+    if (this.objectives.length > 1) {
+      this.objectives.splice(i, 1);
+    }
   }
 
-  // =============================
-  // OUTPUT
-  // =============================
   addOutput() {
-    this.projectDetail.outputs.push({
+    this.outputs.push({
       name: '',
       target: '',
       unit: ''
@@ -66,40 +90,27 @@ export class TabDetailComponent implements OnInit {
   }
 
   removeOutput(i: number) {
-    this.projectDetail.outputs.splice(i, 1);
+    this.outputs.splice(i, 1);
   }
 
-  // =============================
-  // OUTCOME
-  // =============================
   addOutcome() {
-    this.projectDetail.outcomes.push({
-      name: ''
-    });
+    this.outcomes.push({ name: '' });
   }
 
   removeOutcome(i: number) {
-    this.projectDetail.outcomes.splice(i, 1);
+    this.outcomes.splice(i, 1);
   }
 
-  // =============================
-  // EXPECTED RESULT
-  // =============================
   addExpectedResult() {
-    this.projectDetail.expectedResults.push({
-      name: ''
-    });
+    this.expectedResults.push({ name: '' });
   }
 
   removeExpectedResult(i: number) {
-    this.projectDetail.expectedResults.splice(i, 1);
+    this.expectedResults.splice(i, 1);
   }
 
-  // =============================
-  // TARGET GROUP
-  // =============================
   addTargetGroup() {
-    this.projectDetail.targetGroups.push({
+    this.targetGroups.push({
       name: '',
       amount: '',
       unit: ''
@@ -107,7 +118,7 @@ export class TabDetailComponent implements OnInit {
   }
 
   removeTargetGroup(i: number) {
-    this.projectDetail.targetGroups.splice(i, 1);
+    this.targetGroups.splice(i, 1);
   }
 
 }

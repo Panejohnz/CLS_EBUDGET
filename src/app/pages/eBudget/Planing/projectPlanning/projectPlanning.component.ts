@@ -29,9 +29,7 @@ export class ProjectPlanningComponent {
   emptyplan: any = {
     Plan_Id: 0,
     Plan_Name: '',
-    Active: 1,
 
-    // 🔥 เพิ่มทั้งหมดนี้
     selectedDepartment: null,
     projectType: null,
     selectedPlan: null,
@@ -50,17 +48,25 @@ export class ProjectPlanningComponent {
   ];
   allData: any[] = [];
   project_planing: any = {
-    Department_Id: null,
-    Fk_Expense_Type: null,
-    Fk_Plan_Id: null,
-    Fk_Product_Id: null,
-    Fk_Activity_Id: null,
-    Fk_Budget_Type: null,
-    Project_Name: '',
     Project_Plan: {
-      detail: {},
-      alignment: {}
-    }
+      Department_Id: null,
+      Fk_Expense_Type: null,
+      Fk_Plan_Id: null,
+      Fk_Product_Id: null,
+      Fk_Activity_Id: null,
+      Fk_Budget_Type: null,
+      Project_Name: '',
+    },
+
+    Project_Detail: {},
+    Project_Objective: [],
+    Project_Output: [],
+    Project_Outcome: [],
+    Project_Plan_Level1: [],
+    Project_Plan_Level1_Sub: [],
+    Project_Cabinet: [],
+    Project_Plan_Level3: {}
+
   };
   modalRef: any;
   total$!: Observable<number>;
@@ -105,7 +111,7 @@ export class ProjectPlanningComponent {
         ? response.List_Project_Plan_Data_Table.Data
         : [];
       this.griddata = [...this.allData];
-
+      this.currentTab = 1
     })
   }
 
@@ -129,21 +135,86 @@ export class ProjectPlanningComponent {
     this.currentTab = 1;
 
     if (data?.Project_Id) {
-      this.project_planing = {
-        ...data,
 
-        selectedDepartment: data.Department_Id,
-        projectType: data.Fk_Expense_Type,
-        selectedPlan: data.Fk_Plan_Id,
-        selectedProduct: data.Fk_Product_Id,
-        selectedActivity: data.Fk_Activity_Id,
-        selectedBudget: data.Fk_Budget_Type,
+      let model = {
+        FUNC_CODE: "FUNC-GET_PROJECT_PLAN_BY_ID",
+        Project_Id: data.Project_Id
       };
-      console.log('ss', this.project_planing);
+
+      this.serviceebud.GatewayGetData(model)
+        .subscribe((res: any) => {
+          
+          this.project_planing = {
+            ...(res.Project_Plan || {}), // 🔥 กระจายออกมา
+
+            Project_Detail: res.Project_Detail || {},
+            Project_Objective: res.Project_Objective || [],
+
+            Project_Plan_Level1: res.Project_Plan_Level1 || [],
+            Project_Plan_Level1_Sub: res.Project_Plan_Level1_Sub || [],
+            Project_Cabinet: res.Project_Cabinet || [],
+            Project_Plan_Level2: res.Project_Plan_Level2 || {},
+            Project_Plan_Level3: res.Project_Plan_Level3 || {
+              Urgent1_Checked: false,
+              Urgent1_Name: '',
+              Urgent2_Checked: false,
+              Urgent2_Name: '',
+              Mid1_Checked: false,
+              Mid1_Name: '',
+              Mid2_Checked: false,
+              Mid2_Name: '',
+              ProjectPlaningAlignment: '',
+              PpatPlanName: '',
+              PpatStrategy_Id: '',
+              PpatMeasure_Id: '',
+              PpatIndicator_Id: ''
+            },
+            selectedDepartment: res.Project_Plan?.Department_Id,
+            projectType: res.Project_Plan?.Fk_Expense_Type,
+            selectedPlan: res.Project_Plan?.Fk_Plan_Id,
+            selectedProduct: res.Project_Plan?.Fk_Product_Id,
+            selectedActivity: res.Project_Plan?.Fk_Activity_Id,
+            selectedBudget: res.Project_Plan?.Fk_Budget_Type
+          };
+          console.log('EDIT FULL DATA:', this.project_planing);
+        });
 
     } else {
       this.project_planing = {
-        ...this.emptyplan
+        Project_Plan: {},
+
+        Project_Detail: [],
+        Project_Objective: [],
+
+        Project_Plan_Level1: [],
+        Project_Plan_Level1_Sub: [],
+        Project_Cabinet: [],
+        Project_Plan_Level3: {
+          Urgent1_Checked: false,
+          Urgent1_Name: '',
+
+          Urgent2_Checked: false,
+          Urgent2_Name: '',
+
+          Mid1_Checked: false,
+          Mid1_Name: '',
+
+          Mid2_Checked: false,
+          Mid2_Name: '',
+
+          ProjectPlaningAlignment: '',
+
+          PpatPlanName: '',
+          PpatStrategy_Id: '',
+          PpatMeasure_Id: '',
+          PpatIndicator_Id: ''
+        },
+        selectedDepartment: null,
+        projectType: null,
+        selectedPlan: null,
+        selectedProduct: null,
+        selectedActivity: null,
+        selectedBudget: null,
       };
     }
 
@@ -186,7 +257,6 @@ export class ProjectPlanningComponent {
   }
   Project_Plan: any
   async savePlan(modal: any) {
-    console.log('save', this.project_planing.Project_Plan);
     const getId = (obj: any, key: string) =>
       typeof obj === 'object' ? obj?.[key] : obj;
 
@@ -231,17 +301,22 @@ export class ProjectPlanningComponent {
       FUNC_CODE: this.project_planing.Project_Id > 0
         ? "FUNC-Update_Project_Plan"
         : "FUNC-Insert_Project_Plan",
+
       Project_Plan: payload,
 
-      Project_Detail: this.project_planing.Project_Plan?.detail,
+      Project_Detail: this.project_planing.Project_Detail,
+      Project_Objective: this.project_planing.Project_Objective,
 
-      Project_Objective: this.project_planing.Project_Plan?.detail?.objectives,
+      Project_Plan_Level1: this.project_planing.Project_Plan_Level1,
+      Project_Plan_Level2: this.project_planing.Project_Plan_Level2,
+      Project_Plan_Level1_Sub: this.project_planing.Project_Plan_Level1_Sub,
+      Project_Outcome: this.project_planing.Project_Outcome,
+      Project_Output: this.project_planing.Project_Output,
+      Project_Plan_Level3: this.project_planing.Project_Plan_Level3,
 
-      Project_SubStrategy: this.project_planing.Project_Plan?.alignment?.subStrategies,
-
-      Project_Cabinet: this.project_planing.Project_Plan?.alignment?.cabinetList
-
+      Project_Cabinet: this.project_planing.Project_Cabinet
     };
+    console.log('model', model);
 
     this.serviceebud.GatewayGetData(model).subscribe(() => {
       basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
