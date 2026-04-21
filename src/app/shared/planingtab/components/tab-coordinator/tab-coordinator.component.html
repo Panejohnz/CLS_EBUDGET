@@ -1,25 +1,21 @@
 <div class="container-fluid mt-3">
 
-    <!-- หัวข้อ -->
     <div class="mb-2 fw-bold text-primary">
         ข้อมูลผู้ประสานงาน
     </div>
 
-    <!-- ปุ่ม -->
     <button class="btn btn-primary btn-sm" (click)="addContact()">
         + เพิ่มรายการ
     </button>
 
-    <!-- CARD -->
     <div>
 
-        <!-- CARD ผู้ประสานงาน -->
         <div class="card shadow-sm mb-2">
 
             <div class="card-header bg-light fw-bold d-flex justify-content-between align-items-center">
                 <span>ผู้ประสานงาน</span>
 
-                
+
             </div>
 
             <div class="card-body p-2">
@@ -40,29 +36,24 @@
                         </thead>
 
                         <tbody>
-
                             <tr *ngFor="let item of items; let i=index">
 
                                 <td class="text-center">{{i+1}}</td>
 
                                 <td>
-                                    <input class="form-control form-control-sm" placeholder="ชื่อ - สกุล"
-                                        [(ngModel)]="item.name">
+                                    <input class="form-control form-control-sm" [(ngModel)]="item.Full_Name">
                                 </td>
 
                                 <td>
-                                    <input class="form-control form-control-sm" placeholder="โทรศัพท์"
-                                        [(ngModel)]="item.phone">
+                                    <input class="form-control form-control-sm" [(ngModel)]="item.Phone">
                                 </td>
 
                                 <td>
-                                    <input class="form-control form-control-sm" placeholder="example@email.com"
-                                        [(ngModel)]="item.email">
+                                    <input class="form-control form-control-sm" [(ngModel)]="item.Email">
                                 </td>
 
                                 <td>
-                                    <input class="form-control form-control-sm" placeholder="โทรสาร"
-                                        [(ngModel)]="item.fax">
+                                    <input class="form-control form-control-sm" [(ngModel)]="item.Fax">
                                 </td>
 
                                 <td class="text-center">
@@ -84,8 +75,6 @@
         </div>
 
 
-        <!-- CARD ผู้เสนอโครงการ -->
-
         <hr class="my-4">
     </div>
     <div class="card shadow-sm mb-3">
@@ -102,7 +91,7 @@
 
                     <label>ชื่อ - สกุล</label>
 
-                    <input class="form-control form-control-sm">
+                    <input [(ngModel)]="model.Proposer_Name" class="form-control form-control-sm">
 
                 </div>
 
@@ -110,7 +99,7 @@
 
                     <label>ตำแหน่ง</label>
 
-                    <input class="form-control form-control-sm">
+                    <input [(ngModel)]="model.Proposer_Position" class="form-control form-control-sm">
 
                 </div>
 

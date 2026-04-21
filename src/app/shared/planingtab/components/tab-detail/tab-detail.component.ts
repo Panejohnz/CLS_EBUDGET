@@ -13,10 +13,12 @@ export class TabDetailComponent implements OnInit, OnChanges {
     }
   }
   initData() {
+
+    
     if (!this.model.Project_Detail || Array.isArray(this.model.Project_Detail)) {
       this.model.Project_Detail = {
-        principle: '',
-        area: '',
+        Principle: '',
+        Area: '',
         Start_Date: '',
         End_Date: ''
       };
@@ -27,32 +29,51 @@ export class TabDetailComponent implements OnInit, OnChanges {
     if (!this.model.Project_Objective) {
       this.model.Project_Objective = [];
     }
-
     if (this.model.Project_Objective.length === 0) {
-      this.model.Project_Objective.push({ name: '' });
+      this.model.Project_Objective.push({ Name: '' });
     }
-
     this.objectives = this.model.Project_Objective;
+
     if (!this.model.Project_Output) {
       this.model.Project_Output = [];
     }
+    if (this.model.Project_Output.length === 0) {
+      this.model.Project_Output.push({
+        Name: '',
+        Target: '',
+        Unit: ''
+      });
+    }
     this.outputs = this.model.Project_Output;
+
     if (!this.model.Project_Outcome) {
       this.model.Project_Outcome = [];
+    }
+    if (this.model.Project_Outcome.length === 0) {
+      this.model.Project_Outcome.push({ Name: '' });
     }
     this.outcomes = this.model.Project_Outcome;
 
     if (!this.model.Project_Expected) {
       this.model.Project_Expected = [];
     }
+    if (this.model.Project_Expected.length === 0) {
+      this.model.Project_Expected.push({ Name: '' });
+    }
     this.expectedResults = this.model.Project_Expected;
 
     if (!this.model.Project_TargetGroup) {
       this.model.Project_TargetGroup = [];
     }
+    if (this.model.Project_TargetGroup.length === 0) {
+      this.model.Project_TargetGroup.push({
+        Name: '',
+        Amount: '',
+        Unit: ''
+      });
+    }
     this.targetGroups = this.model.Project_TargetGroup;
-    console.log('123',this.model);
-    
+
   }
   @Input() model: any;
 
@@ -72,7 +93,7 @@ export class TabDetailComponent implements OnInit, OnChanges {
   }
 
   addObjective() {
-    this.objectives.push({ name: '' });
+    this.objectives.push({ Name: '' });
   }
 
   removeObjective(i: number) {
@@ -83,7 +104,7 @@ export class TabDetailComponent implements OnInit, OnChanges {
 
   addOutput() {
     this.outputs.push({
-      name: '',
+      Name: '',
       target: '',
       unit: ''
     });
@@ -94,7 +115,7 @@ export class TabDetailComponent implements OnInit, OnChanges {
   }
 
   addOutcome() {
-    this.outcomes.push({ name: '' });
+    this.outcomes.push({ Name: '' });
   }
 
   removeOutcome(i: number) {
@@ -102,7 +123,7 @@ export class TabDetailComponent implements OnInit, OnChanges {
   }
 
   addExpectedResult() {
-    this.expectedResults.push({ name: '' });
+    this.expectedResults.push({ Name: '' });
   }
 
   removeExpectedResult(i: number) {
@@ -111,7 +132,7 @@ export class TabDetailComponent implements OnInit, OnChanges {
 
   addTargetGroup() {
     this.targetGroups.push({
-      name: '',
+      Name: '',
       amount: '',
       unit: ''
     });

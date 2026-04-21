@@ -107,13 +107,13 @@ export class ProjectPlanningComponent {
     }
     var getData = this.serviceebud.GatewayGetData(model);
     getData.subscribe((response: any) => {
-      console.log('sa', response);
 
       this.allData = Array.isArray(response.List_Project_Plan_Data_Table.Data)
         ? response.List_Project_Plan_Data_Table.Data
         : [];
       this.griddata = [...this.allData];
       this.currentTab = 1
+        this.firstLoad = true;
     })
   }
 
@@ -157,13 +157,18 @@ export class ProjectPlanningComponent {
             Project_Cabinet: res.Project_Cabinet || [],
             Project_Plan_Level2: res.Project_Plan_Level2 || {},
             Project_Plan_Level3: res.Project_Plan_Level3 || {},
-
+            Project_Coordinator: res.Project_Coordinator || [],
             selectedDepartment: res.Project_Plan?.Department_Id,
             projectType: res.Project_Plan?.Fk_Expense_Type,
             selectedPlan: res.Project_Plan?.Fk_Plan_Id,
             selectedProduct: res.Project_Plan?.Fk_Product_Id,
             selectedActivity: res.Project_Plan?.Fk_Activity_Id,
-            selectedBudget: res.Project_Plan?.Fk_Budget_Type
+            selectedBudget: res.Project_Plan?.Fk_Budget_Type,
+            Project_Id: data.Project_Id,
+            Project_Output: res.Project_Output || [],
+            Project_Outcome: res.Project_Outcome || [],
+            Project_Expected: res.Project_Expected || [],
+            Project_TargetGroup: res.Project_TargetGroup || [],
           };
 
           const details = res.Project_Plan_Detail || [];
@@ -413,7 +418,11 @@ export class ProjectPlanningComponent {
       Project_Year_Number: this.project_planing.Project_Year_Number,
 
       Operation1: this.project_planing.Operation1,
-      Operation2: this.project_planing.Operation2
+      Operation2: this.project_planing.Operation2,
+      Proposer_Name: this.project_planing.Proposer_Name,
+      Proposer_Position: this.project_planing.Proposer_Position,
+
+
     };
     this.project_planing.Project_Plan_Detail = this.mapActivities();
 
@@ -438,8 +447,10 @@ export class ProjectPlanningComponent {
       Project_Outcome: this.project_planing.Project_Outcome,
       Project_Output: this.project_planing.Project_Output,
       Project_Plan_Level3: this.project_planing.Project_Plan_Level3,
-
-      Project_Cabinet: this.project_planing.Project_Cabinet
+      Project_Coordinator: this.project_planing.Project_Coordinator,
+      Project_Cabinet: this.project_planing.Project_Cabinet,
+      Project_Expected: this.project_planing.Project_Expected,
+      Project_TargetGroup: this.project_planing.Project_TargetGroup,
     };
 
     this.serviceebud.GatewayGetData(model).subscribe(() => {

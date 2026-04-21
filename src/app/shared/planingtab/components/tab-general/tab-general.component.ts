@@ -52,15 +52,17 @@ export class TabGeneralComponent {
       this.Mas_Plan_Lists = res.Mas_Plan_Lists || [];
       this.Mas_Expense_Lists = res.Mas_Expense_Lists || [];
 
-      // 👉 map เฉพาะตอน EDIT
-      if (this.model?.Project_Id) {
-        this.mapInitialData();
-      }
+
     });
   }
+  ngOnChanges() {
 
+    if (this.model?.Project_Id) {
+      this.mapInitialData();
+    }
+  }
   mapInitialData() {
-
+    debugger
     const find = (list: any[], key: string, value: any) =>
       list.find(x => x[key] == value);
 
