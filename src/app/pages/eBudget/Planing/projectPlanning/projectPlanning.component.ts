@@ -113,7 +113,7 @@ export class ProjectPlanningComponent {
         : [];
       this.griddata = [...this.allData];
       this.currentTab = 1
-        this.firstLoad = true;
+      this.firstLoad = true;
     })
   }
 
@@ -135,7 +135,7 @@ export class ProjectPlanningComponent {
   }
   fullModal(modal: any, data: any) {
     this.currentTab = 1;
-
+    this.firstLoad = true;
     if (data?.Project_Id) {
 
       let model = {
