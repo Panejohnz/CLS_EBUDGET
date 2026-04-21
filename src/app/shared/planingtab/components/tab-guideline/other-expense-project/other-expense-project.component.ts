@@ -8,8 +8,14 @@ import { Component, Input } from '@angular/core';
 export class OtherExpenseProjectComponent {
   @Input() modal: any
   @Input() project_planing: any
+  @Input() activity: any;
   closeModal() {
     this.modal.dismiss();
+  }
+  ngOnInit() {
+    if (this.activity?.otherExpenses?.length) {
+      this.meetingCosts = this.activity.otherExpenses.map((x: any) => ({ ...x }));
+    }
   }
   meetingCosts: any[] = [
     {
@@ -43,7 +49,14 @@ export class OtherExpenseProjectComponent {
 
   }
   save() {
-    basicAlert('success', 'บันทึกข้อมูลแล้ว', '')
+    this.activity.otherExpenses = this.meetingCosts.map(x => ({
+      id: x.id || 0,
+      name: x.name,
+      times: x.times,
+      people: x.people,
+      rate: x.rate
+    }));
+    basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
     this.modal.dismiss();
   }
 }

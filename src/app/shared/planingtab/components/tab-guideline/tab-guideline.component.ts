@@ -10,7 +10,7 @@ import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 })
 
 export class TabGuidelineComponent {
-  activities: any[] = [];
+
   modalRef: any;
   emptyplan: any = {
     Plan_Id: 0,
@@ -22,23 +22,40 @@ export class TabGuidelineComponent {
   };
 
   @Input() model: any
+  get activities() {
+    return this.model?.activities || [];
+  }
 
+  ngOnChanges() {
+    console.log('this.model?.activities ',this.model?.activities );
+    
+    if (this.model?.activities && this.model.activities.length > 0) {
+
+      return;
+    }
+
+    if (!this.model.activities) {
+      this.model.activities = [];
+      this.addActivity();
+    }
+  }
   constructor(private modalService: NgbModal) {
-    this.addActivity();
-    console.log('as', this.model);
+
 
   }
+  selectedActivity: any;
 
   addActivity() {
-    this.activities.push({
-      id: Date.now(),
+    this.model.activities.push({
       name: '',
+      owner: '',
       quarters: this.generateYear(),
-      subActivities: []
+      subActivities: [],
+      otherExpenses: [] // 👈 ต้องมี
     });
   }
-  removeActivity(index: number) {
-    this.activities.splice(index, 1);
+  removeActivity(i: number) {
+    this.activities.splice(i, 1);
   }
   addSubActivity(activity: any) {
     activity.subActivities?.push({
@@ -55,36 +72,32 @@ export class TabGuidelineComponent {
       .reduce((sum: any, m: any) => sum + (m.budget || 0), 0);
   }
 
-  generateYear(): any[] {
-    const MONTHS = [
-      'ต.ค.', 'พ.ย.', 'ธ.ค.',
-      'ม.ค.', 'ก.พ.', 'มี.ค.',
-      'เม.ย.', 'พ.ค.', 'มิ.ย.',
-      'ก.ค.', 'ส.ค.', 'ก.ย.'
-    ];
+  generateYear() {
+    const MONTHS = ['ต.ค.', 'พ.ย.', 'ธ.ค.', 'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.'];
 
-    const quarters = [];
-
-    for (let q = 0; q < 4; q++) {
-      quarters.push({
-        quarter: q + 1,
-        months: MONTHS.slice(q * 3, q * 3 + 3).map(m => ({
+    const q = [];
+    for (let i = 0; i < 4; i++) {
+      q.push({
+        quarter: i + 1,
+        months: MONTHS.slice(i * 3, i * 3 + 3).map(m => ({
           month: m,
           selected: false,
           budget: null
         }))
       });
     }
-
-    return quarters;
+    return q;
   }
-  addSub(activity: any) {
-    activity.subActivities.push({
-      id: Date.now(),
-      name: 'กิจกรรมย่อย',
-      quarters: this.generateQuarters(),
+  addSub(act: any) {
+    act.subActivities.push({
+      name: '',
+      owner: '',
+      quarters: this.generateYear(),
       subActivities: []
     });
+  }
+  removeSub(act: any, i: number) {
+    act.subActivities.splice(i, 1);
   }
   months = [
     'ต.ค.', 'พ.ย.', 'ธ.ค.',
@@ -108,9 +121,7 @@ export class TabGuidelineComponent {
 
     return quarters;
   }
-  removeSub(activity: any, index: number) {
-    activity.subActivities.splice(index, 1);
-  }
+
   fullModal(modal: any, data: any) {
 
 
@@ -129,17 +140,28 @@ export class TabGuidelineComponent {
     75: 'consult',
     70: 'other'
   }
-  openMultiplierModal(content: any) {
+  openMultiplierModal(content: any, act: any) {
 
-    this.type = this.formTypeMap[this.model.projectType]
-    if (!this.type) {
-      basicAlert('info', 'เลือกประเภทโครงการ', '')
-      return
+    this.selectedActivity = act;
+
+    if (!this.selectedActivity.otherExpenses) {
+      this.selectedActivity.otherExpenses = [];
     }
+
+    this.type = this.formTypeMap[this.model.projectType?.Expense_Id];
+    if (!this.type) {
+      basicAlert('info', 'เลือกประเภทโครงการ', '');
+      return;
+    }
+
+    if (!this.selectedActivity.otherExpenses) {
+      this.selectedActivity.otherExpenses = [];
+    }
+
     this.modalService.open(content, {
       backdrop: 'static',
       windowClass: 'modal-95'
-    })
+    });
   }
   getActivityTotal(act: any): number {
 

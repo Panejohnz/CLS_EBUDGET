@@ -19,13 +19,15 @@ import { AuthenticationService } from 'src/app/core/services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { ProjectPlanService } from 'src/app/core/services/ProjectPlan.service'
 import { BudgetYearService } from 'src/app/core/services/budget-year.service';
+import { TabGuidelineComponent } from 'src/app/shared/planingtab/components/tab-guideline/tab-guideline.component';
 @Component({
   selector: 'projectPlanning',
   providers: [GridJsService, DecimalPipe, EbudgetService],
   templateUrl: './projectPlanning.component.html'
 })
 export class ProjectPlanningComponent {
-
+  @ViewChild(TabGuidelineComponent)
+  guidelineComp!: TabGuidelineComponent;
   emptyplan: any = {
     Plan_Id: 0,
     Plan_Name: '',
@@ -143,9 +145,9 @@ export class ProjectPlanningComponent {
 
       this.serviceebud.GatewayGetData(model)
         .subscribe((res: any) => {
-          
+
           this.project_planing = {
-            ...(res.Project_Plan || {}), // 🔥 กระจายออกมา
+            ...(res.Project_Plan || {}),
 
             Project_Detail: res.Project_Detail || {},
             Project_Objective: res.Project_Objective || [],
@@ -154,21 +156,8 @@ export class ProjectPlanningComponent {
             Project_Plan_Level1_Sub: res.Project_Plan_Level1_Sub || [],
             Project_Cabinet: res.Project_Cabinet || [],
             Project_Plan_Level2: res.Project_Plan_Level2 || {},
-            Project_Plan_Level3: res.Project_Plan_Level3 || {
-              Urgent1_Checked: false,
-              Urgent1_Name: '',
-              Urgent2_Checked: false,
-              Urgent2_Name: '',
-              Mid1_Checked: false,
-              Mid1_Name: '',
-              Mid2_Checked: false,
-              Mid2_Name: '',
-              ProjectPlaningAlignment: '',
-              PpatPlanName: '',
-              PpatStrategy_Id: '',
-              PpatMeasure_Id: '',
-              PpatIndicator_Id: ''
-            },
+            Project_Plan_Level3: res.Project_Plan_Level3 || {},
+
             selectedDepartment: res.Project_Plan?.Department_Id,
             projectType: res.Project_Plan?.Fk_Expense_Type,
             selectedPlan: res.Project_Plan?.Fk_Plan_Id,
@@ -176,7 +165,17 @@ export class ProjectPlanningComponent {
             selectedActivity: res.Project_Plan?.Fk_Activity_Id,
             selectedBudget: res.Project_Plan?.Fk_Budget_Type
           };
-          console.log('EDIT FULL DATA:', this.project_planing);
+
+          const details = res.Project_Plan_Detail || [];
+          const items = res.Project_Plan_Detail_Item || [];
+
+          const activities = this.mapPlanDetail(details);
+
+          this.mapItems(items, activities);
+
+          this.project_planing.activities = activities;
+
+          console.log('activities', activities);
         });
 
     } else {
@@ -223,8 +222,132 @@ export class ProjectPlanningComponent {
       windowClass: 'modal-95'
     });
   }
+  mapPlanDetail(data: any[]) {
 
+    if (!data || data.length === 0) return [];
 
+    return data.map(x => ({
+
+      // 🔥 main
+      id: x.Project_Detail_Id,
+      name: x.Activity_Name,
+      owner: x.Responsible,
+
+      noBudget: x.Used_BG === 0,
+      consult: x.Is_Consult === 1,
+
+      quarters: this.convertMonths(x.Months),
+
+      // 🔥 item ของ main
+      otherExpenses: (x.OtherExpenses || []).map((i: any) => ({
+        id: i.Project_Item_Id,
+        name: i.Expense_Name,
+        times: i.Times,
+        people: i.People,
+        rate: i.Rate
+      })),
+
+      // 🔥 sub
+      subActivities: (x.SubActivities || []).map((s: any) => ({
+
+        id: s.Project_Detail_Id,
+        name: s.Activity_Name,
+        owner: s.Responsible,
+
+        noBudget: s.Used_BG === 0,
+        consult: s.Is_Consult === 1,
+
+        quarters: this.convertMonths(s.Months),
+
+        otherExpenses: (s.OtherExpenses || []).map((i: any) => ({
+          id: i.Project_Item_Id,
+          name: i.Expense_Name,
+          times: i.Times,
+          people: i.People,
+          rate: i.Rate
+        }))
+
+      }))
+
+    }));
+
+  }
+  mapMonths(x: any) {
+
+    const months = [
+      { selected: x.Oct_Target === 1, budget: x.Oct_Amount },
+      { selected: x.Nov_Target === 1, budget: x.Nov_Amount },
+      { selected: x.Dec_Target === 1, budget: x.Dec_Amount },
+      { selected: x.Jan_Target === 1, budget: x.Jan_Amount },
+      { selected: x.Feb_Target === 1, budget: x.Feb_Amount },
+      { selected: x.Mar_Target === 1, budget: x.Mar_Amount },
+      { selected: x.Apr_Target === 1, budget: x.Apr_Amount },
+      { selected: x.May_Target === 1, budget: x.May_Amount },
+      { selected: x.Jun_Target === 1, budget: x.Jun_Amount },
+      { selected: x.Jul_Target === 1, budget: x.Jul_Amount },
+      { selected: x.Aug_Target === 1, budget: x.Aug_Amount },
+      { selected: x.Sep_Target === 1, budget: x.Sep_Amount }
+    ];
+
+    return [
+      { quarter: 1, months: months.slice(0, 3) },
+      { quarter: 2, months: months.slice(3, 6) },
+      { quarter: 3, months: months.slice(6, 9) },
+      { quarter: 4, months: months.slice(9, 12) }
+    ];
+  }
+  convertMonths(months: any[]) {
+
+    const MONTHS = [
+      'ต.ค.', 'พ.ย.', 'ธ.ค.',
+      'ม.ค.', 'ก.พ.', 'มี.ค.',
+      'เม.ย.', 'พ.ค.', 'มิ.ย.',
+      'ก.ค.', 'ส.ค.', 'ก.ย.'
+    ];
+
+    const mapped = months.map((m, i) => ({
+      month: MONTHS[i],
+      selected: m.Selected,
+      budget: m.Budget
+    }));
+
+    return [
+      { quarter: 1, months: mapped.slice(0, 3) },
+      { quarter: 2, months: mapped.slice(3, 6) },
+      { quarter: 3, months: mapped.slice(6, 9) },
+      { quarter: 4, months: mapped.slice(9, 12) }
+    ];
+  }
+  mapItems(items: any[], activities: any[]) {
+
+    const map: any = {};
+
+    activities.forEach(a => {
+      map[Number(a.id)] = a;
+
+      a.subActivities.forEach((s: any) => {
+        map[Number(s.id)] = s;
+      });
+    });
+
+    items.forEach(i => {
+
+      const key = Number(i.Fk_Project_Detail_Id); // 🔥 แปลงตรงนี้
+
+      const target = map[key];
+
+      if (target) {
+        target.otherExpenses.push({
+          id: i.Project_Item_Id,
+          name: i.Expense_Name,
+          times: i.Times,
+          people: i.People,
+          rate: i.Rate
+        });
+      }
+
+    });
+  }
   currentTab = 1;
   firstLoad = true;
 
@@ -292,6 +415,8 @@ export class ProjectPlanningComponent {
       Operation1: this.project_planing.Operation1,
       Operation2: this.project_planing.Operation2
     };
+    this.project_planing.Project_Plan_Detail = this.mapActivities();
+
 
     const userConfirmed = await confirmAlert('info', 'ต้องการบันทึกข้อมูล ?', '');
 
@@ -306,7 +431,7 @@ export class ProjectPlanningComponent {
 
       Project_Detail: this.project_planing.Project_Detail,
       Project_Objective: this.project_planing.Project_Objective,
-
+      Project_Plan_Detail: this.project_planing.Project_Plan_Detail,
       Project_Plan_Level1: this.project_planing.Project_Plan_Level1,
       Project_Plan_Level2: this.project_planing.Project_Plan_Level2,
       Project_Plan_Level1_Sub: this.project_planing.Project_Plan_Level1_Sub,
@@ -316,13 +441,58 @@ export class ProjectPlanningComponent {
 
       Project_Cabinet: this.project_planing.Project_Cabinet
     };
-    console.log('model', model);
 
     this.serviceebud.GatewayGetData(model).subscribe(() => {
       basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
       this.get_data();
       modal.dismiss();
     });
+  }
+  activities: any
+  mapActivities() {
+
+    const activities = this.project_planing.activities || [];
+
+    return activities.map((act: any) => ({
+      Project_Detail_Id: act.id || 0,
+
+      Activity_Name: act.name,
+      Responsible: act.owner,
+
+      Used_BG: act.noBudget ? 0 : 1,
+      Is_Consult: act.consult ? 1 : 0,
+
+      Months: act.quarters.flatMap((q: any) => q.months),
+
+      // 🔥🔥🔥 ตรงนี้คือ OtherExpenses ที่ VB จะรับ
+      OtherExpenses: (act.otherExpenses || []).map((item: any) => ({
+        Project_Item_Id: item.id || 0,
+        Expense_Name: item.name,
+        Times: item.times,
+        People: item.people,
+        Rate: item.rate
+      })),
+
+      SubActivities: (act.subActivities || []).map((sub: any) => ({
+        Project_Detail_Id: sub.id || 0,
+
+        Activity_Name: sub.name,
+        Responsible: sub.owner,
+
+        Used_BG: sub.noBudget ? 0 : 1,
+        Is_Consult: sub.consult ? 1 : 0,
+
+        Months: sub.quarters.flatMap((q: any) => q.months),
+
+        OtherExpenses: (sub.otherExpenses || []).map((item: any) => ({
+          Project_Item_Id: item.id || 0,
+          Expense_Name: item.name,
+          Times: item.times,
+          People: item.people,
+          Rate: item.rate
+        }))
+      }))
+    }));
   }
   randomItem(arr: any[]) {
     return arr[Math.floor(Math.random() * arr.length)];
