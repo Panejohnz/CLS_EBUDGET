@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { EbudgetService } from 'src/app/core/services/ebudget.service';
 
 interface PlanLevel1Main {
   Strategy_Side_Id: string;
@@ -13,15 +14,18 @@ interface PlanLevel1Main {
   styleUrl: './tab-alignment.component.scss'
 })
 export class TabAlignmentComponent implements OnInit, OnChanges {
+
+  constructor(
+    public serviceebud: EbudgetService) { }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['model'] && this.model) {
       this.initData();
+      this.loadStrategic();
     }
   }
   initData() {
 
 
-    // LEVEL 1
     if (!this.model.Project_Plan_Level1) {
       this.model.Project_Plan_Level1 = [];
     }
@@ -37,7 +41,6 @@ export class TabAlignmentComponent implements OnInit, OnChanges {
 
     this.planLevel1Main = this.model.Project_Plan_Level1[0];
 
-    // SUB
     if (!this.model.Project_Plan_Level1_Sub) {
       this.model.Project_Plan_Level1_Sub = [];
     }
@@ -93,6 +96,52 @@ export class TabAlignmentComponent implements OnInit, OnChanges {
     console.log('this.model.Project_Plan_Level3', this.model.Project_Plan_Level3);
 
     this.alignment = this.model.Project_Plan_Level3;
+  }
+  listStrategic: any[] = [];
+  listIssue: any[] = [];
+  listSubIssue: any[] = [];
+  loadStrategic() {
+    const model = {
+      FUNC_CODE: "FUNC-GET_List_Mas_Strategic"
+    };
+
+    this.serviceebud.GatewayGetData(model)
+      .subscribe((res: any) => {
+        this.listStrategic = res.List_Mas_Strategic || [];
+      });
+  }
+  onChangeStrategic(id: any) {
+
+    // reset ลูก
+    this.planLevel1Main.Strategy_Issue_Id = ""
+    this.planLevel1Main.Strategy_SubIssue_Id = "";
+    this.listIssue = [];
+    this.listSubIssue = [];
+
+    const model = {
+      FUNC_CODE: "FUNC-GET_List_Mas_Strategic_Issue_By_FK",
+      FK_Strategic_Id: id
+    };
+
+    this.serviceebud.GatewayGetData(model)
+      .subscribe((res: any) => {
+        this.listIssue = res.List_Mas_Strategic_Issue || [];
+      });
+  }
+  onChangeIssue(id: any) {
+
+    this.planLevel1Main.Strategy_SubIssue_Id = '';
+    this.listSubIssue = [];
+
+    const model = {
+      FUNC_CODE: "FUNC-GET_List_Mas_Strategic_Sub_Issue_By_FK",
+      FK_Strategic_Issue_Id: id
+    };
+
+    this.serviceebud.GatewayGetData(model)
+      .subscribe((res: any) => {
+        this.listSubIssue = res.List_Mas_Strategic_Sub_Issue || [];
+      });
   }
   @Input() model: any;
   planLevel1Main: PlanLevel1Main = {

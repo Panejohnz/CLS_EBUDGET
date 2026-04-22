@@ -20,28 +20,36 @@
 
                 <div class="col-md-4">
                     <label>ยุทธศาสตร์ด้าน</label>
-                    <select class="form-select" [(ngModel)]="planLevel1Main.Strategy_Side_Id" name="l1_side">
+                    <select class="form-select" [(ngModel)]="planLevel1Main.Strategy_Side_Id"
+                        (change)="onChangeStrategic(planLevel1Main.Strategy_Side_Id)">
                         <option value="">-- เลือก --</option>
-                        <option value="1">ตัวเลือกที่ 1</option>
-                        <option value="2">ตัวเลือกที่ 2</option>
+
+                        <option *ngFor="let item of listStrategic" [value]="item.Strategic_Id">
+                            {{ item.Strategic_Name }}
+                        </option>
                     </select>
                 </div>
 
                 <div class="col-md-4">
                     <label>ประเด็นยุทธศาสตร์</label>
-                    <select class="form-select" [(ngModel)]="planLevel1Main.Strategy_Issue_Id" name="l1_issue">
+                    <select class="form-select" [(ngModel)]="planLevel1Main.Strategy_Issue_Id"
+                        (change)="onChangeIssue(planLevel1Main.Strategy_Issue_Id)">
                         <option value="">-- เลือก --</option>
-                        <option value="1">ตัวเลือกที่ 1</option>
-                        <option value="2">ตัวเลือกที่ 2</option>
+
+                        <option *ngFor="let item of listIssue" [value]="item.Strategic_Issue_Id">
+                            {{ item.Strategic_Issue_Name }}
+                        </option>
                     </select>
                 </div>
 
                 <div class="col-md-4">
                     <label>ประเด็นย่อย</label>
-                    <select class="form-select" [(ngModel)]="planLevel1Main.Strategy_SubIssue_Id" name="l1_sub">
+                    <select class="form-select" [(ngModel)]="planLevel1Main.Strategy_SubIssue_Id">
                         <option value="">-- เลือก --</option>
-                        <option value="1">ตัวเลือกที่ 1</option>
-                        <option value="2">ตัวเลือกที่ 2</option>
+
+                        <option *ngFor="let item of listSubIssue" [value]="item.Strategic_Sub_Issue_Id">
+                            {{ item.Strategic_Sub_Issue_Name }}
+                        </option>
                     </select>
                 </div>
 
@@ -81,7 +89,7 @@
                 <div class="col-md-4">
                     <label class="form-label">ยุทธศาสตร์ด้าน</label>
                     <select class="form-select" [(ngModel)]="item.Strategy_Side_Id" name="sub_side_{{i}}">
-                        <option value="" >-- เลือก --</option>
+                        <option value="">-- เลือก --</option>
                         <option value="1">ตัวเลือกที่ 1</option>
                         <option value="2">ตัวเลือกที่ 2</option>
                     </select>
@@ -91,7 +99,7 @@
                 <div class="col-md-4">
                     <label class="form-label">ประเด็นยุทธศาสตร์</label>
                     <select class="form-select" [(ngModel)]="item.Strategy_Issue_Id" name="sub_issue_{{i}}">
-                        <option value="" >-- เลือก --</option>
+                        <option value="">-- เลือก --</option>
                         <option value="1">ตัวเลือกที่ 1</option>
                         <option value="2">ตัวเลือกที่ 2</option>
                     </select>
@@ -101,7 +109,7 @@
                 <div class="col-md-4">
                     <label class="form-label">ประเด็นย่อย</label>
                     <select class="form-select" [(ngModel)]="item.Strategy_SubIssue_Id" name="sub_sub_{{i}}">
-                        <option value="" >-- เลือก --</option>
+                        <option value="">-- เลือก --</option>
                         <option value="1">ตัวเลือกที่ 1</option>
                         <option value="2">ตัวเลือกที่ 2</option>
                     </select>
@@ -149,7 +157,7 @@
                         <div class="col-md-4">
                             <label class="form-label">ยุทธศาสตร์ด้าน</label>
                             <select class="form-select" [(ngModel)]="planLevel2.Strategy_Side_Id" name="l2_side">
-                                <option value="" >-- เลือก --</option>
+                                <option value="">-- เลือก --</option>
                                 <option value="1">ตัวเลือกที่ 1</option>
                                 <option value="2">ตัวเลือกที่ 2</option>
                             </select>
@@ -158,7 +166,7 @@
                         <div class="col-md-4">
                             <label class="form-label">เป้าหมายระดับประเด็น (Yz)</label>
                             <select class="form-select" [(ngModel)]="planLevel2.Target_Yz_Id" name="l2_yz">
-                                <option value="" >-- เลือก --</option>
+                                <option value="">-- เลือก --</option>
                                 <option value="1">ตัวเลือกที่ 1</option>
                                 <option value="2">ตัวเลือกที่ 2</option>
                             </select>
@@ -173,7 +181,7 @@
                         <div class="col-md-4">
                             <label class="form-label">แผนย่อยของแผนแม่บท</label>
                             <select class="form-select" [(ngModel)]="planLevel2.Subplan_Id" name="l2_subplan">
-                                <option value="" >-- เลือก --</option>
+                                <option value="">-- เลือก --</option>
                                 <option value="1">ตัวเลือกที่ 1</option>
                                 <option value="2">ตัวเลือกที่ 2</option>
                             </select>
@@ -182,7 +190,7 @@
                         <div class="col-md-4">
                             <label class="form-label">เป้าหมายแผนแม่บท (Y1)</label>
                             <select class="form-select" [(ngModel)]="planLevel2.Target_Y1_Id" name="l2_y1">
-                                <option value="" >-- เลือก --</option>
+                                <option value="">-- เลือก --</option>
                                 <option value="1">ตัวเลือกที่ 1</option>
                                 <option value="2">ตัวเลือกที่ 2</option>
                             </select>
@@ -198,7 +206,7 @@
                         <div class="col-md-4">
                             <label class="form-label">แนวทางการพัฒนาภายใต้แผนย่อย</label>
                             <select class="form-select" [(ngModel)]="planLevel2.DevGuideline_Id" name="l2_dev">
-                                <option value="" >-- เลือก --</option>
+                                <option value="">-- เลือก --</option>
                                 <option value="1">ตัวเลือกที่ 1</option>
                                 <option value="2">ตัวเลือกที่ 2</option>
                             </select>
@@ -224,7 +232,7 @@
                         <div class="col-md-4">
                             <label class="form-label">หมุดหมาย</label>
                             <select class="form-select" [(ngModel)]="planLevel2.Milestone_Id" name="l2_milestone">
-                                <option value="" >-- เลือก --</option>
+                                <option value="">-- เลือก --</option>
                                 <option value="1">ตัวเลือกที่ 1</option>
                                 <option value="2">ตัวเลือกที่ 2</option>
                             </select>
@@ -233,7 +241,7 @@
                         <div class="col-md-4">
                             <label class="form-label">เป้าหมาย</label>
                             <select class="form-select" [(ngModel)]="planLevel2.Target_Id" name="l2_target">
-                                <option value="" >-- เลือก --</option>
+                                <option value="">-- เลือก --</option>
                                 <option value="1">ตัวเลือกที่ 1</option>
                                 <option value="2">ตัวเลือกที่ 2</option>
                             </select>
@@ -242,7 +250,7 @@
                         <div class="col-md-4">
                             <label class="form-label">ตัวชี้วัดที่</label>
                             <select class="form-select" [(ngModel)]="planLevel2.Indicator_Id" name="l2_indicator">
-                                <option value="" >-- เลือก --</option>
+                                <option value="">-- เลือก --</option>
                                 <option value="1">ตัวเลือกที่ 1</option>
                                 <option value="2">ตัวเลือกที่ 2</option>
                             </select>
@@ -251,7 +259,7 @@
                         <div class="col-md-4">
                             <label class="form-label">กลยุทธ์การพัฒนาที่</label>
                             <select class="form-select" [(ngModel)]="planLevel2.Strategy_Main_Id" name="l2_main">
-                                <option value="" >-- เลือก --</option>
+                                <option value="">-- เลือก --</option>
                                 <option value="1">ตัวเลือกที่ 1</option>
                                 <option value="2">ตัวเลือกที่ 2</option>
                             </select>
@@ -260,7 +268,7 @@
                         <div class="col-md-4">
                             <label class="form-label">กลยุทธ์ย่อยที่</label>
                             <select class="form-select" [(ngModel)]="planLevel2.Strategy_Sub_Id" name="l2_sub">
-                                <option value="" >-- เลือก --</option>
+                                <option value="">-- เลือก --</option>
                                 <option value="1">ตัวเลือกที่ 1</option>
                                 <option value="2">ตัวเลือกที่ 2</option>
                             </select>
@@ -423,7 +431,7 @@
                                 <label class="form-label">กลยุทธ์ที่</label>
                                 <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.PpatStrategy_Id"
                                     name="ppat_strategy">
-                                    <option selected >-- เลือก --</option>
+                                    <option selected>-- เลือก --</option>
                                     <option value="1">ตัวเลือกที่ 1</option>
                                     <option value="2">ตัวเลือกที่ 2</option>
                                 </select>
@@ -433,7 +441,7 @@
                                 <label class="form-label">มาตรการที่</label>
                                 <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.PpatMeasure_Id"
                                     name="ppat_measure">
-                                    <option selected >-- เลือก --</option>
+                                    <option selected>-- เลือก --</option>
                                     <option value="1">ตัวเลือกที่ 1</option>
                                     <option value="2">ตัวเลือกที่ 2</option>
                                 </select>
@@ -445,7 +453,7 @@
                                 <label class="form-label">ตัวชี้วัดแผนงาน</label>
                                 <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.PpatIndicator_Id"
                                     name="ppat_indicator">
-                                    <option selected >-- เลือก --</option>
+                                    <option selected>-- เลือก --</option>
                                     <option value="1">ตัวเลือกที่ 1</option>
                                     <option value="2">ตัวเลือกที่ 2</option>
                                 </select>
