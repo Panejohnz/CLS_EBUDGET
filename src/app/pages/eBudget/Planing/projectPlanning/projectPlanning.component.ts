@@ -424,6 +424,7 @@ export class ProjectPlanningComponent {
 
 
     };
+
     this.project_planing.Project_Plan_Detail = this.mapActivities();
 
     console.log('ก่อน 2', this.project_planing.Project_Plan_Level2);
@@ -465,46 +466,50 @@ export class ProjectPlanningComponent {
 
     const activities = this.project_planing.activities || [];
 
-    return activities.map((act: any) => ({
-      Project_Detail_Id: act.id || 0,
+    return activities.flatMap((act: any) => {
 
-      Activity_Name: act.name,
-      Responsible: act.owner,
+      const mainId = act.id || 0;
 
-      Used_BG: act.noBudget ? 0 : 1,
-      Is_Consult: act.consult ? 1 : 0,
+      return [
 
-      Months: act.quarters.flatMap((q: any) => q.months),
+        // 🔥 MAIN
+        {
+          Project_Detail_Id: mainId,
+          Parent_Id: null, // 🔥 เพิ่ม
+          Level: 1,
 
-      // 🔥🔥🔥 ตรงนี้คือ OtherExpenses ที่ VB จะรับ
-      OtherExpenses: (act.otherExpenses || []).map((item: any) => ({
-        Project_Item_Id: item.id || 0,
-        Expense_Name: item.name,
-        Times: item.times,
-        People: item.people,
-        Rate: item.rate
-      })),
+          Activity_Name: act.name,
+          Responsible: act.owner,
 
-      SubActivities: (act.subActivities || []).map((sub: any) => ({
-        Project_Detail_Id: sub.id || 0,
+          Used_BG: act.noBudget ? 0 : 1,
+          Is_Consult: act.consult ? 1 : 0,
 
-        Activity_Name: sub.name,
-        Responsible: sub.owner,
+          Months: act.quarters.flatMap((q: any) => q.months),
 
-        Used_BG: sub.noBudget ? 0 : 1,
-        Is_Consult: sub.consult ? 1 : 0,
+          OtherExpenses: act.otherExpenses || []
+        },
 
-        Months: sub.quarters.flatMap((q: any) => q.months),
+        // 🔥 SUB
+        ...(act.subActivities || []).map((sub: any) => ({
 
-        OtherExpenses: (sub.otherExpenses || []).map((item: any) => ({
-          Project_Item_Id: item.id || 0,
-          Expense_Name: item.name,
-          Times: item.times,
-          People: item.people,
-          Rate: item.rate
+          Project_Detail_Id: sub.id || 0,
+          Parent_Id: mainId, // 🔥 สำคัญ
+          Level: 2,
+
+          Activity_Name: sub.name,
+          Responsible: sub.owner,
+
+          Used_BG: sub.noBudget ? 0 : 1,
+          Is_Consult: sub.consult ? 1 : 0,
+
+          Months: sub.quarters.flatMap((q: any) => q.months),
+
+          OtherExpenses: sub.otherExpenses || []
         }))
-      }))
-    }));
+
+      ];
+
+    });
   }
   randomItem(arr: any[]) {
     return arr[Math.floor(Math.random() * arr.length)];

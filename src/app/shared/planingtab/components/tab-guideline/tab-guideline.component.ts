@@ -22,16 +22,13 @@ export class TabGuidelineComponent {
   };
 
   @Input() model: any
-  get activities() {
-    return this.model?.activities || [];
-  }
+  activities: any[] = [];
 
   ngOnChanges() {
-    console.log('this.model?.activities ',this.model?.activities );
-    
-    if (this.model?.activities && this.model.activities.length > 0) {
+    console.log('this.model?.activities ', this.model?.activities);
 
-      return;
+    if (this.model) {
+      this.activities = this.model.activities || [];
     }
 
     if (!this.model.activities) {
