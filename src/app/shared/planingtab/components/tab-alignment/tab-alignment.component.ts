@@ -82,7 +82,7 @@ export class TabAlignmentComponent implements OnChanges {
       };
     }
 
-    this.planLevel2 =this.model.Project_Plan_Level2 ;
+    this.planLevel2 = this.model.Project_Plan_Level2;
 
 
     // CABINET
@@ -161,6 +161,7 @@ export class TabAlignmentComponent implements OnChanges {
       this.afterLoad();
     });
   }
+
   listStrategic: any[] = [];
   listIssue: any[] = [];
   listSubIssue: any[] = [];
@@ -416,6 +417,32 @@ export class TabAlignmentComponent implements OnChanges {
     this.serviceebud.GatewayGetData(model)
       .subscribe((res: any) => {
         this.listIndicator = res.List_Mas_Indicator || [];
+      });
+
+  }
+  onChangeTargetY1() {
+
+    const id = this.planLevel2.Target_Y1_Id;
+
+    this.planLevel2.ValueChain_Main_Id = null;
+    this.planLevel2.ValueChain_Factor_Main_Id = null;
+    this.planLevel2.ValueChain_Support_Id = null;
+    this.planLevel2.ValueChain_Factor_Support_Id = null;
+
+    this.listValueChain = [];
+    this.listValueChainFactorMain = [];
+    this.listValueChainFactorSupport = [];
+
+    if (!id) return;
+
+
+    const model = {
+      FUNC_CODE: "FUNC-GET_List_Mas_Value_Chain_By_FK",
+      Target_Y1_Id: this.planLevel2.Target_Y1_Id
+    };
+    this.serviceebud.GatewayGetData(model)
+      .subscribe((res: any) => {
+        this.listValueChain = res.List_Mas_Value_Chain || [];
       });
 
   }

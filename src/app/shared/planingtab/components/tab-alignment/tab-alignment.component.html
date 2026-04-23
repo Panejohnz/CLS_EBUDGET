@@ -181,7 +181,7 @@
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label">เป้าหมายระดับประเด็น (Yz)</label>
+                            <label class="form-label">เป้าหมายระดับประเด็น (Y2)</label>
                             <select class="form-select" [(ngModel)]="planLevel2.Target_Yz_Id">
 
                                 <option [ngValue]="null" disabled>-- เลือก --</option>
@@ -216,7 +216,8 @@
 
                         <div class="col-md-4">
                             <label class="form-label">เป้าหมายแผนแม่บท (Y1)</label>
-                            <select class="form-select" [(ngModel)]="planLevel2.Target_Y1_Id">
+                            <select (change)="onChangeTargetY1()" class="form-select"
+                                [(ngModel)]="planLevel2.Target_Y1_Id">
 
                                 <option [ngValue]="null" disabled>-- เลือก --</option>
 
