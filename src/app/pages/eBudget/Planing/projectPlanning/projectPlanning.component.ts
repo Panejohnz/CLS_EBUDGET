@@ -155,7 +155,7 @@ export class ProjectPlanningComponent {
             Project_Plan_Level1: res.Project_Plan_Level1 || [],
             Project_Plan_Level1_Sub: res.Project_Plan_Level1_Sub || [],
             Project_Cabinet: res.Project_Cabinet || [],
-            Project_Plan_Level2: res.Project_Plan_Level2 || {},
+            Project_Plan_Level2: res.Project_Plan_Level2 || [],
             Project_Plan_Level3: res.Project_Plan_Level3 || {},
             Project_Coordinator: res.Project_Coordinator || [],
             selectedDepartment: res.Project_Plan?.Department_Id,
@@ -180,7 +180,6 @@ export class ProjectPlanningComponent {
 
           this.project_planing.activities = activities;
 
-          console.log('activities', activities);
         });
 
     } else {
@@ -192,6 +191,7 @@ export class ProjectPlanningComponent {
 
         Project_Plan_Level1: [],
         Project_Plan_Level1_Sub: [],
+        Project_Plan_Level2: {},
         Project_Cabinet: [],
         Project_Plan_Level3: {
           Urgent1_Checked: false,
@@ -426,6 +426,7 @@ export class ProjectPlanningComponent {
     };
     this.project_planing.Project_Plan_Detail = this.mapActivities();
 
+    console.log('ก่อน 2', this.project_planing.Project_Plan_Level2);
 
     const userConfirmed = await confirmAlert('info', 'ต้องการบันทึกข้อมูล ?', '');
 
