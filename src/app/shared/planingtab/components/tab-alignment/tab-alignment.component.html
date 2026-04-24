@@ -357,13 +357,13 @@
 
                         <div class="col-md-4">
                             <label class="form-label">หมุดหมาย</label>
-                            <select class="form-select" [(ngModel)]="planLevel2.Milestone_Id"
-                                (change)="onChangeMilestone()">
+                            <select class="form-select" [(ngModel)]="planLevel2.Landmark_Id"
+                                (change)="onChangeLandmark()">
 
                                 <option [ngValue]="null" disabled>-- เลือก --</option>
 
-                                <option *ngFor="let item of listMilestone" [ngValue]="item.Milestone_Id">
-                                    {{ item.Milestone_Name }}
+                                <option *ngFor="let item of listLandmark" [ngValue]="item.Landmark_Id">
+                                    {{ item.Landmark_Name }}
                                 </option>
 
                             </select>
@@ -371,12 +371,12 @@
 
                         <div class="col-md-4">
                             <label class="form-label">เป้าหมาย</label>
-                            <select class="form-select" [(ngModel)]="planLevel2.Target_Id" (change)="onChangeTarget()">
+                            <select class="form-select" [(ngModel)]="planLevel2.Landmark_Gloals_Id">
 
                                 <option [ngValue]="null" disabled>-- เลือก --</option>
 
-                                <option *ngFor="let item of listTarget" [ngValue]="item.Target_Id">
-                                    {{ item.Target_Name }}
+                                <option *ngFor="let item of listLandmark_Gloals" [ngValue]="item.Landmark_Gloals_Id">
+                                    {{ item.Landmark_Gloals_Name }}
                                 </option>
 
                             </select>
@@ -385,12 +385,12 @@
 
                         <div class="col-md-4">
                             <label class="form-label">ตัวชี้วัดที่</label>
-                            <select class="form-select" [(ngModel)]="planLevel2.Indicator_Id">
+                            <select class="form-select" [(ngModel)]="planLevel2.Landmark_Tacticts_Id">
 
                                 <option [ngValue]="null" disabled>-- เลือก --</option>
 
-                                <option *ngFor="let item of listIndicator" [ngValue]="item.Indicator_Id">
-                                    {{ item.Indicator_Name }}
+                                <option *ngFor="let item of listLandmark_Tactic" [ngValue]="item.Landmark_Tacticts_Id">
+                                    {{ item.Landmark_Tacticts_Name }}
                                 </option>
 
                             </select>
@@ -398,13 +398,14 @@
 
                         <div class="col-md-4">
                             <label class="form-label">กลยุทธ์การพัฒนาที่</label>
-                            <select class="form-select" [(ngModel)]="planLevel2.Strategy_Main_Id"
+                            <select class="form-select" [(ngModel)]="planLevel2.Landmark_Guidelines_Id"
                                 (change)="onChangeStrategyMain()">
 
                                 <option [ngValue]="null" disabled>-- เลือก --</option>
 
-                                <option *ngFor="let item of listStrategyMain" [ngValue]="item.Strategy_Main_Id">
-                                    {{ item.Strategy_Main_Name }}
+                                <option *ngFor="let item of listMas_Landmark_Guideline"
+                                    [ngValue]="item.Landmark_Guidelines_Id">
+                                    {{ item.Landmark_Guidelines_Name }}
                                 </option>
 
                             </select>
@@ -412,12 +413,13 @@
 
                         <div class="col-md-4">
                             <label class="form-label">กลยุทธ์ย่อยที่</label>
-                            <select class="form-select" [(ngModel)]="planLevel2.Strategy_Sub_Id">
+                            <select class="form-select" [(ngModel)]="planLevel2.Landmark_Guidelines_Id">
 
                                 <option [ngValue]="null" disabled>-- เลือก --</option>
 
-                                <option *ngFor="let item of listStrategySub" [ngValue]="item.Strategy_Sub_Id">
-                                    {{ item.Strategy_Sub_Name }}
+                                <option *ngFor="let item of listMas_Landmark_Sub_Guideline"
+                                    [ngValue]="item.Sub_Guidelines_Id">
+                                    {{ item.Sub_Guidelines_Name }}
                                 </option>
 
                             </select>

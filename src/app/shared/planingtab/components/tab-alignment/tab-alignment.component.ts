@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { NonNullableFormBuilder } from '@angular/forms';
 import { switchMap, tap } from 'rxjs';
 import { EbudgetService } from 'src/app/core/services/ebudget.service';
 
@@ -22,6 +23,7 @@ export class TabAlignmentComponent implements OnChanges {
     if (changes['model'] && this.model) {
       this.initData();
       this.loadAllMasterData();
+      this.loadLandmark()
     }
   }
   initData() {
@@ -66,7 +68,7 @@ export class TabAlignmentComponent implements OnChanges {
         Target_Y1_Id: null,
         SubplanDesc: '',
         DevGuideline_Id: null,
-        Milestone_Id: null,
+        Landmark_Id: null,
         Target_Id: null,
         Indicator_Id: null,
         Strategy_Main_Id: null,
@@ -136,10 +138,10 @@ export class TabAlignmentComponent implements OnChanges {
       }),
 
       switchMap(() =>
-        this.callAPI("FUNC-GET_List_Mas_Milestone")
+        this.callAPI("FUNC-GET_List_Mas_Landmark")
       ),
       tap((res: any) => {
-        this.listMilestone = res.List_Mas_Milestone || [];
+        this.listLandmark = res.List_Mas_Landmark || [];
       }),
 
       switchMap(() =>
@@ -157,7 +159,6 @@ export class TabAlignmentComponent implements OnChanges {
       })
 
     ).subscribe(() => {
-      // 🔥 ทุก list โหลดเสร็จแล้ว
       this.afterLoad();
     });
   }
@@ -170,11 +171,11 @@ export class TabAlignmentComponent implements OnChanges {
   listSubMasterPlan: any[] = [];
   listSubMasterPlanGoal: any[] = [];
   listGuideline: any[] = [];
-  listMilestone: any[] = [];
-  listTarget: any[] = [];
-  listIndicator: any[] = [];
-  listStrategyMain: any[] = [];
-  listStrategySub: any[] = [];
+  listLandmark: any[] = [];
+  listLandmark_Gloals: any[] = [];
+  listLandmark_Tactic: any[] = [];
+  listMas_Landmark_Guideline: any[] = [];
+  listMas_Landmark_Sub_Guideline: any[] = [];
   listValueChain: any[] = [];
   listValueChainFactorMain: any[] = [];
   listValueChainFactorSupport: any[] = [];
@@ -188,19 +189,17 @@ export class TabAlignmentComponent implements OnChanges {
     this.serviceebud.GatewayGetData(model)
       .subscribe((res: any) => {
         this.listStrategic = res.List_Mas_Strategic || [];
-        console.log('  this.listStrategic ', this.listStrategic);
-
       });
   }
-  loadMilestone() {
+  loadLandmark() {
 
     const model = {
-      FUNC_CODE: "FUNC-GET_List_Mas_Milestone"
+      FUNC_CODE: "FUNC-GET_List_Mas_Landmark"
     };
 
     this.serviceebud.GatewayGetData(model)
       .subscribe((res: any) => {
-        this.listMilestone = res.List_Mas_Milestone || [];
+        this.listLandmark = res.List_Mas_Landmark || [];
       });
   }
   loadMasterPlan() {
@@ -384,41 +383,49 @@ export class TabAlignmentComponent implements OnChanges {
         this.listGuideline = res2.List_Mas_Sub_Plan_Guideline || [];
       });
   }
-  onChangeMilestone() {
-    if (!this.planLevel2.Target_Id) {
-      this.planLevel2.Target_Id = null;
-      this.planLevel2.Indicator_Id = null;
+  onChangeLandmark() {
 
-      this.listTarget = [];
-      this.listIndicator = [];
-    }
+    const id = this.planLevel2.Landmark_Id;
 
+    // 🔥 reset ลูกทั้งหมด
+    this.planLevel2.Target_Id = null;
+    this.planLevel2.Indicator_Id = null;
+
+    this.listLandmark_Gloals = [];
+    this.listLandmark_Tactic = [];
+
+    if (!id) return;
 
     const model = {
-      FUNC_CODE: "FUNC-GET_List_Mas_Target_By_FK",
-      FK_Milestone_Id: this.planLevel2.Milestone_Id
+      FUNC_CODE: "FUNC-GET_List_Mas_Landmark_Gloals_By_Mas_Landmark_FK",
+      FK_Landmark_Id: id
     };
+
     this.serviceebud.GatewayGetData(model)
       .subscribe((res: any) => {
-        this.listTarget = res.List_Mas_Target || [];
+        this.listLandmark_Gloals = res.List_Mas_Landmark_Gloals || [];
+        this.listLandmark_Tactic = res.List_Mas_Landmark_Tactic || [];
+        this.listMas_Landmark_Guideline = res.List_Mas_Landmark_Guideline || [];
       });
   }
   onChangeTarget() {
-    if (!this.planLevel2.Indicator_Id) {
-      this.planLevel2.Indicator_Id = null;
-      this.listIndicator = [];
-    }
 
+    const id = this.planLevel2.Target_Id;
+
+    this.planLevel2.Indicator_Id = null;
+    this.listLandmark_Tactic = [];
+
+    if (!id) return;
 
     const model = {
       FUNC_CODE: "FUNC-GET_List_Mas_Indicator_By_FK",
-      FK_Target_Id: this.planLevel2.Target_Id
+      FK_Target_Id: id
     };
+
     this.serviceebud.GatewayGetData(model)
       .subscribe((res: any) => {
-        this.listIndicator = res.List_Mas_Indicator || [];
+        this.listLandmark_Tactic = res.List_Mas_Indicator || [];
       });
-
   }
   onChangeTargetY1() {
 
@@ -453,23 +460,24 @@ export class TabAlignmentComponent implements OnChanges {
     };
     this.serviceebud.GatewayGetData(model)
       .subscribe((res: any) => {
-        this.listStrategyMain = res.List_Mas_Strategy_Main || [];
+        this.listMas_Landmark_Guideline = res.List_Mas_Strategy_Main || [];
       });
   }
 
   onChangeStrategyMain() {
-    if (!this.planLevel2.Strategy_Sub_Id) {
-      this.planLevel2.Strategy_Sub_Id = null;
-      this.listStrategySub = [];
+    if (!this.planLevel2.Landmark_Guidelines_Id) {
+      this.planLevel2.Landmark_Guidelines_Id = null;
+      this.listMas_Landmark_Sub_Guideline = [];
     }
 
 
     const model = {
-      FUNC_CODE: "FUNC-GET_List_Mas_Strategy_Sub_By_FK"
+      FUNC_CODE: "FUNC-GET_List_Mas_Landmark_Sub_Guideline_By_FK",
+      FK_Guidelines_Id: this.planLevel2.Landmark_Guidelines_Id
     };
     this.serviceebud.GatewayGetData(model)
       .subscribe((res: any) => {
-        this.listStrategySub = res.List_Mas_Strategy_Sub || [];
+        this.listMas_Landmark_Sub_Guideline = res.List_Mas_Landmark_Sub_Guideline || [];
       });
   }
 
@@ -537,7 +545,7 @@ export class TabAlignmentComponent implements OnChanges {
     if (l2.Strategy_Side_Id) this.onChangeMasterPlan(l2.Strategy_Side_Id);
     if (l2.Subplan_Id) this.onChangeSubMasterPlan(l2.Subplan_Id);
 
-    if (l2.Milestone_Id) this.onChangeMilestone();
+    if (l2.Landmark_Id) this.onChangeLandmark();
     if (l2.Target_Id) this.onChangeTarget();
 
     if (l2.Strategy_Main_Id) this.onChangeStrategyMain();
@@ -574,12 +582,14 @@ export class TabAlignmentComponent implements OnChanges {
     Target_Y1_Id: null,
     SubplanDesc: '',
     DevGuideline_Id: null,
-    Milestone_Id: null,
+    Landmark_Id: null,
+    Landmark_Gloals_Id: null,
+    Landmark_Tacticts_Id: null,
+    Landmark_Guidelines_Id: null,
     Target_Id: null,
     Indicator_Id: null,
     Strategy_Main_Id: null,
     Strategy_Sub_Id: null,
-
     ValueChain_Main_Id: null,
     ValueChain_Factor_Main_Id: null,
     ValueChain_Support_Id: null,
@@ -635,7 +645,7 @@ export class TabAlignmentComponent implements OnChanges {
   //       targetY1: '',
   //       subplanDesc: '',
   //       devGuideline: '',
-  //       milestone: '',
+  //       Landmark: '',
   //       target: '',
   //       indicator: '',
   //       strategyMain: '',

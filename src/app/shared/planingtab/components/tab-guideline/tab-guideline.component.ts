@@ -199,4 +199,76 @@ export class TabGuidelineComponent {
     }
 
   }
+  onToggleNoBudget(act: any) {
+    if (act.noBudget) {
+      act.quarters.forEach((q: any) => {
+        q.months.forEach((m: any) => {
+          m.budget = 0;
+        });
+      });
+    }
+  }
+  formatNumber(value: any): string {
+    if (value === null || value === undefined || value === '') return '';
+
+    return Number(value).toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  displayValue(value: any): string {
+    if (!value && value !== 0) return '';
+
+    const parts = value.toString().split('.');
+
+    const intPart = Number(parts[0]).toLocaleString('en-US');
+
+    return parts.length > 1
+      ? intPart + '.' + parts[1]
+      : intPart;
+  }
+  onInputFormat(value: any, obj: any) {
+
+    if (value === null || value === undefined) {
+      obj.budget = '';
+      obj.selected = false;
+      return;
+    }
+
+    // 👉 1. เอา comma ออกก่อน
+    let clean = value.toString().replace(/,/g, '');
+
+    // 👉 2. อนุญาตเฉพาะเลข + .
+    clean = clean.replace(/[^0-9.]/g, '');
+
+    // 👉 3. กัน . ซ้ำ
+    const parts = clean.split('.');
+    if (parts.length > 2) {
+      clean = parts[0] + '.' + parts[1];
+    }
+
+    // 👉 4. แยก integer / decimal
+    let [intPart, decimalPart] = clean.split('.');
+
+    // 👉 5. กันกรณีว่าง
+    if (!intPart) intPart = '';
+
+    // 👉 6. แปลง integer เป็น number แล้วใส่ comma
+    let formattedInt = intPart
+      ? Number(intPart).toLocaleString('en-US')
+      : '';
+
+    // 👉 7. รวมกลับ
+    let display = decimalPart !== undefined
+      ? formattedInt + '.' + decimalPart
+      : formattedInt;
+
+    // 👉 8. เก็บค่า "จริง" (ไม่มี comma)
+    obj.budget = clean;
+
+    // 👉 9. auto check checkbox
+    const num = parseFloat(clean);
+    obj.selected = !isNaN(num) && num > 0;
+  }
 }

@@ -49,7 +49,7 @@
 
                                             <div class="form-check m-0">
                                                 <input class="form-check-input" type="checkbox" id="not_money"
-                                                    [(ngModel)]="act.noBudget">
+                                                    [(ngModel)]="act.noBudget" (change)="onToggleNoBudget(act)">
                                                 <label class="form-check-label" for="not_money">ไม่ใช้งบ</label>
                                             </div>
 
@@ -76,9 +76,10 @@
                                         </td>
 
                                         <td>
-                                            <input type="number" class="form-control form-control-sm"
-                                                [(ngModel)]="q.months[rowIndex].budget"
-                                                (ngModelChange)="onBudgetChange(q.months[rowIndex])">
+                                            <input type="text" class="form-control form-control-sm"
+                                                [ngModel]="displayValue(q.months[rowIndex].budget)"
+                                                (ngModelChange)="onInputFormat($event, q.months[rowIndex])"
+                                                [disabled]="act.noBudget">
                                         </td>
 
                                     </ng-container>
@@ -143,13 +144,13 @@
                                                 <div class="form-check m-0">
                                                     <input class="form-check-input" type="checkbox" id="not_money_sub"
                                                         [(ngModel)]="sub.noBudget">
-                                                    <label class="form-check-label" for="not_money_sub">ไม่ใช้งบ</label>
+                                                    <label class="form-check-label">ไม่ใช้งบ</label>
                                                 </div>
 
                                                 <div class="form-check m-0">
                                                     <input class="form-check-input" type="checkbox" id="call_sub"
                                                         [(ngModel)]="sub.consult">
-                                                    <label class="form-check-label" for="call_sub">จ้างที่ปรึกษา</label>
+                                                    <label class="form-check-label">จ้างที่ปรึกษา</label>
                                                 </div>
                                             </div>
 
@@ -173,7 +174,8 @@
                                             <td>
                                                 <input type="number" class="form-control form-control-sm"
                                                     [(ngModel)]="q.months[rowIndex].budget"
-                                                    (ngModelChange)="onBudgetChange(q.months[rowIndex])">
+                                                    (ngModelChange)="onBudgetChange(q.months[rowIndex])"
+                                                    [disabled]="sub.noBudget">
                                             </td>
 
                                         </ng-container>
