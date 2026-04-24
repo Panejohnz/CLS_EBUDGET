@@ -52,7 +52,6 @@ export class TabGeneralComponent {
       this.Mas_Plan_Lists = res.Mas_Plan_Lists || [];
       this.Mas_Expense_Lists = res.Mas_Expense_Lists || [];
 
-
     });
   }
   ngOnChanges() {

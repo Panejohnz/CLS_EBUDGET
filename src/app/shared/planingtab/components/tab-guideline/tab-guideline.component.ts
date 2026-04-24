@@ -61,6 +61,7 @@ export class TabGuidelineComponent {
       quarters: this.generateYear(),
       subActivities: []
     });
+    this.clearMainIfHasSub(activity);
   }
 
   getTotal(activity: any): number {
@@ -261,5 +262,21 @@ export class TabGuidelineComponent {
 
     const num = parseFloat(clean);
     obj.selected = !isNaN(num) && num > 0;
+  }
+  hasSubActivities(act: any): boolean {
+    return act?.subActivities && act.subActivities.length > 0;
+  }
+  clearMainIfHasSub(act: any) {
+
+    if (this.hasSubActivities(act)) {
+
+      act.quarters?.forEach((q: any) => {
+        q.months?.forEach((m: any) => {
+          m.budget = '';
+          m.selected = false;
+        });
+      });
+
+    }
   }
 }
