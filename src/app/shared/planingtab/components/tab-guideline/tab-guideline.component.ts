@@ -236,38 +236,29 @@ export class TabGuidelineComponent {
       return;
     }
 
-    // 👉 1. เอา comma ออกก่อน
     let clean = value.toString().replace(/,/g, '');
 
-    // 👉 2. อนุญาตเฉพาะเลข + .
     clean = clean.replace(/[^0-9.]/g, '');
 
-    // 👉 3. กัน . ซ้ำ
     const parts = clean.split('.');
     if (parts.length > 2) {
       clean = parts[0] + '.' + parts[1];
     }
 
-    // 👉 4. แยก integer / decimal
     let [intPart, decimalPart] = clean.split('.');
 
-    // 👉 5. กันกรณีว่าง
     if (!intPart) intPart = '';
 
-    // 👉 6. แปลง integer เป็น number แล้วใส่ comma
     let formattedInt = intPart
       ? Number(intPart).toLocaleString('en-US')
       : '';
 
-    // 👉 7. รวมกลับ
     let display = decimalPart !== undefined
       ? formattedInt + '.' + decimalPart
       : formattedInt;
 
-    // 👉 8. เก็บค่า "จริง" (ไม่มี comma)
     obj.budget = clean;
 
-    // 👉 9. auto check checkbox
     const num = parseFloat(clean);
     obj.selected = !isNaN(num) && num > 0;
   }
