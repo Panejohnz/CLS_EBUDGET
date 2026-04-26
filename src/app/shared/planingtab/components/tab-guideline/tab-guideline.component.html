@@ -70,13 +70,14 @@
 
                                         <td>
                                             <div class="form-check d-flex justify-content-center">
-                                                <input type="checkbox" class="form-check-input"
-                                                    [(ngModel)]="q.months[rowIndex].selected" [disabled]="act.noBudget ||hasSubActivities(act) ">
+                                                <input type="checkbox" class="form-check-input text-end"
+                                                    [(ngModel)]="q.months[rowIndex].selected"
+                                                    [disabled]="act.noBudget ||hasSubActivities(act) ">
                                             </div>
                                         </td>
 
                                         <td>
-                                            <input type="text" class="form-control form-control-sm"
+                                            <input type="text" class="form-control form-control-sm text-end" 
                                                 [ngModel]="displayValue(q.months[rowIndex].budget)"
                                                 (ngModelChange)="onInputFormat($event, q.months[rowIndex])"
                                                 [disabled]="act.noBudget || hasSubActivities(act)">
@@ -119,8 +120,7 @@
 
                                             <span class="fw-bold text-success">
                                                 รวมผลคูณ :
-                                                {{ 0 | number:'1.2-2' }}
-                                            </span>
+                                                {{ act.multiplierTotal | number:'1.2-2' }} </span>
                                             <span class="fw-bold text-primary">
                                                 รวมวางแผน :
                                                 {{ getActivityTotal(act) | number:'1.2-2' }}

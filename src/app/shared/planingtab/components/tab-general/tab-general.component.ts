@@ -41,6 +41,7 @@ export class TabGeneralComponent {
   }
 
   ngOnInit(): void {
+    this.setDefault()
     let model = {
       FUNC_CODE: "FUNC-GET_Mas_General",
       BgYear: "2569"
@@ -51,14 +52,41 @@ export class TabGeneralComponent {
       this.Mas_Department_Lists = res.Mas_Department_Lists || [];
       this.Mas_Plan_Lists = res.Mas_Plan_Lists || [];
       this.Mas_Expense_Lists = res.Mas_Expense_Lists || [];
-
+   
     });
   }
   ngOnChanges() {
 
-    if (this.model?.Project_Id) {
-      this.mapInitialData();
+      if (this.model) {
+    this.setDefault(); // 🔥 สำคัญมาก
+  }
+
+  if (this.model?.Project_Id) {
+    this.mapInitialData();
+  }
+  }
+  setDefault() {
+
+    if (!this.model) {
+      this.model = {};
     }
+
+    if (this.model.Used_BG == null) {
+      this.model.Used_BG = 1;
+    }
+
+    if (this.model.Project_Type_Id == null) {
+      this.model.Project_Type_Id = 1;
+    }
+
+    if (this.model.Operation1 == null) {
+      this.model.Operation1 = 1;
+    }
+
+    if (this.model.Operation2 == null) {
+      this.model.Operation2 = 0;
+    }
+
   }
   mapInitialData() {
     debugger

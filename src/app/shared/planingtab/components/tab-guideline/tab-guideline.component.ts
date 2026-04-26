@@ -25,13 +25,26 @@ export class TabGuidelineComponent {
   activities: any[] = [];
 
   ngOnChanges() {
-    console.log('this.model?.activities ', this.model?.activities);
 
-    if (this.model) {
-      this.activities = this.model.activities || [];
+    if (this.model?.activities?.length) {
+
+      this.activities = this.model.activities;
+
+      // 🔥 loop ทีละ activity
+      this.activities.forEach((act: any) => {
+
+        // รวมจาก otherExpenses (DB Total)
+        const multiplier = (act.otherExpenses || []).reduce((sum: number, item: any) => {
+          return sum + (item.total || item.Total || 0);
+        }, 0);
+
+        act.multiplierTotal = multiplier;
+      });
+
     }
 
-    if (!this.model.activities) {
+    // init กรณีไม่มี
+    if (!this.model?.activities) {
       this.model.activities = [];
       this.addActivity();
     }
@@ -278,5 +291,44 @@ export class TabGuidelineComponent {
       });
 
     }
+  }
+  calcTotal(list: any[]): number {
+
+    if (!list?.length) return 0;
+
+    return list.reduce((sum, item) => {
+
+      const times = item.Times ?? item.times ?? 0;
+      const people = item.People ?? item.people ?? 0;
+      const rate = item.Rate ?? item.rate ?? 0;
+
+      return sum + (times * people * rate);
+
+    }, 0);
+
+  }
+  calcMultiplierTotal(act: any): number {
+    if (!act?.otherExpenses?.length) return 0;
+
+    return act.otherExpenses.reduce((sum: number, item: any) => {
+      const times = item.Times ?? item.times ?? 0;
+      const people = item.People ?? item.people ?? 0;
+      const rate = item.Rate ?? item.rate ?? 0;
+      return sum + (times * people * rate);
+    }, 0);
+  }
+  updateMultiplierTotal(act: any) {
+
+    const list = act.otherExpenses || [];
+
+    act.multiplierTotal = list.reduce((sum: number, item: any) => {
+
+      const times = item.times ?? item.Times ?? 0;
+      const people = item.people ?? item.People ?? 0;
+      const rate = item.rate ?? item.Rate ?? 0;
+
+      return sum + (times * people * rate);
+
+    }, 0);
   }
 }

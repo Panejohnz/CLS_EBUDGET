@@ -66,7 +66,7 @@
                                 [(ngModel)]="item.times">
                         </td>
 
-                        <td><input type="number" class="form-control form-control-sm text-center" placeholder="ครั้ง">
+                        <td><input type="number" readonly class="form-control form-control-sm text-center" placeholder="ครั้ง">
                         </td>
 
 
@@ -79,7 +79,7 @@
                                 [(ngModel)]="item.people">
                         </td>
 
-                        <td><input type="number" class="form-control form-control-sm text-center" placeholder="คน"></td>
+                        <td><input type="number" readonly class="form-control form-control-sm text-center" placeholder="คน"></td>
 
 
                         <!-- ตัวคูณ 3 -->
@@ -90,7 +90,7 @@
                             <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.rate">
                         </td>
 
-                        <td><input type="number" class="form-control form-control-sm text-center" placeholder="บาท">
+                        <td><input type="number" readonly class="form-control form-control-sm text-center" placeholder="บาท">
                         </td>
 
 
@@ -99,10 +99,14 @@
                         <td class="bg-light fw-bold">4</td>
 
                         <td>
-                            <input class="form-control form-control-sm" placeholder="ระบุจำนวน">
+                            <input type="number" class="form-control form-control-sm" [(ngModel)]="item.People_Type_A"
+                                placeholder="ระบุจำนวน">
                         </td>
 
-                        <td> <input class="form-control form-control-sm" placeholder="พิมพ์ชื่อหน่วย"></td>
+                        <td>
+                            <input class="form-control form-control-sm" [(ngModel)]="item.Unit_Name"
+                                placeholder="พิมพ์ชื่อหน่วย">
+                        </td>
 
 
                         <!-- ตัวคูณ 5 -->
@@ -110,22 +114,24 @@
                         <td class="bg-light fw-bold">5</td>
 
                         <td>
-                            <input class="form-control form-control-sm" placeholder="ระบุจำนวน">
+                            <input type="number" class="form-control form-control-sm" [(ngModel)]="item.People_Type_B">
                         </td>
 
-                        <td><input class="form-control form-control-sm" placeholder="พิมพ์ชื่อหน่วย"></td>
-
+                        <td>
+                            <input class="form-control form-control-sm" [(ngModel)]="item.Unit_Name">
+                        </td>
 
                         <!-- ตัวคูณ 6 -->
 
                         <td class="bg-light fw-bold">6</td>
 
                         <td>
-                            <input class="form-control form-control-sm" placeholder="ระบุจำนวน">
+                            <input type="number" class="form-control form-control-sm" [(ngModel)]="item.People_Type_C">
                         </td>
 
-                        <td><input class="form-control form-control-sm" placeholder="พิมพ์ชื่อหน่วย"></td>
-
+                        <td>
+                            <input class="form-control form-control-sm" [(ngModel)]="item.Unit_Name">
+                        </td>
 
                         <td class="text-end fw-bold">
                             {{item.times * item.people * item.rate | number:'1.2-2'}}

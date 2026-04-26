@@ -101,6 +101,9 @@ export class TabAlignmentComponent implements OnChanges {
     // LEVEL 3
     if (!this.model.Project_Plan_Level3) {
       this.model.Project_Plan_Level3 = {
+        Government_Policy_Id1: null,
+        Government_Policy_Id2: null,
+        Action_Plan_Id: null,
         Urgent1_Checked: false,
         Urgent1_Name: '',
         Urgent2_Checked: false,
@@ -156,13 +159,42 @@ export class TabAlignmentComponent implements OnChanges {
       ),
       tap((res: any) => {
         this.listSDGsGoal = res.List_Mas_SDGs_Gloal || [];
-      })
-
+      }),
+      switchMap(() =>
+        this.callAPI("FUNC-Get_List_Mas_Government_Policy")
+      ),
+      tap((res: any) => {
+        this.listGovernment_Policy1 = res.List_Mas_Government_Policy1 || [];
+        this.listGovernment_Policy2 = res.List_Mas_Government_Policy2 || [];
+      }),
+      switchMap(() =>
+        this.callAPI("FUNC-GET_List_Mas_Action_Plan")
+      ),
+      tap((res: any) => {
+        this.listActionPlan = res.List_Mas_Action_Plan || [];
+      }),
+      switchMap(() =>
+        this.callAPI("FUNC-GET_List_Mas_Project_Plan")
+      ),
+      tap((res: any) => {
+        this.listProjectPlan = res.List_Mas_Project_Plan || [];
+      }),
+      switchMap(() =>
+        this.callAPI("FUNC-GET_List_Mas_Tactics")
+      ),
+      tap((res: any) => {
+        this.listMasTactic = res.List_Mas_Tactic || [];
+      }),
     ).subscribe(() => {
       this.afterLoad();
     });
   }
-
+  listMasIndicator: any[] = []
+  listMasTactic: any[] = []
+  listProjectPlan: any[] = []
+  listActionPlan: any[] = []
+  listGovernment_Policy1: any[] = []
+  listGovernment_Policy2: any[] = []
   listStrategic: any[] = [];
   listIssue: any[] = [];
   listSubIssue: any[] = [];
@@ -514,6 +546,58 @@ export class TabAlignmentComponent implements OnChanges {
       SDGs_Gloals_Id: this.planLevel2.SDGs_Gloals_Id
     }).subscribe(res => {
       this.listSDGsTarget = res.List_Mas_SDGs_Target || [];
+    });
+  }
+  listGovernment_Policy_Sub1: any
+  listGovernment_Policy_Sub2: any
+  onChangenGovernment_Policy1() {
+    if (!this.model.Project_Plan_Level3.Government_Policy_Id1) {
+      this.model.Project_Plan_Level3.Government_Policy_Id1 = null;
+      this.listGovernment_Policy1 = [];
+    }
+
+    this.callAPI("FUNC-Get_List_Mas_Government_Policy_Sub_By_fk1", {
+      Government_Policy_Id: this.model.Project_Plan_Level3.Government_Policy_Id1
+    }).subscribe(res => {
+      this.listGovernment_Policy_Sub1 = res.List_Mas_Government_Policy_Sub1 || [];
+    });
+  }
+  onChangenGovernment_Policy2() {
+    if (!this.model.Project_Plan_Level3.Government_Policy_Id2) {
+      this.model.Project_Plan_Level3.Government_Policy_Id2 = null;
+      this.listGovernment_Policy2 = [];
+    }
+
+    this.callAPI("FUNC-Get_List_Mas_Government_Policy_Sub_By_fk2", {
+      Government_Policy_Id: this.model.Project_Plan_Level3.Government_Policy_Id2
+    }).subscribe(res => {
+      this.listGovernment_Policy_Sub2 = res.List_Mas_Government_Policy_Sub2 || [];
+    });
+  }
+  onChangenTactic() {
+    if (!this.model.Project_Plan_Level3.Project_Plan_Id) {
+      this.model.Project_Plan_Level3.Project_Plan_Id = null;
+      this.listMasTactic = [];
+      this.listMasIndicator = [];
+    }
+    this.callAPI("FUNC-GET_List_Mas_Tactic_By_FK_Project_Plan", {
+      Project_Id: this.model.Project_Plan_Level3.Project_Plan_Id
+    }).subscribe(res => {
+      this.listMasTactic = res.List_Mas_Tactic || [];
+      this.listMasIndicator = res.List_Mas_Indicator || [];
+    });
+  }
+  listMasMeasure: any[] = []
+  onChangenMeasure() {
+    if (!this.model.Project_Plan_Level3.Tactics_Id) {
+      this.model.Project_Plan_Level3.Tactics_Id = null;
+      this.listMasMeasure = [];
+    }
+    this.callAPI("FUNC-GET_List_Mas_Measure_By_FK_Tactic", {
+      Tactics_Id: this.model.Project_Plan_Level3.Tactics_Id
+    }).subscribe(res => {
+      this.listMasMeasure = res.List_Mas_Measure || [];
+
     });
   }
   afterLoad() {

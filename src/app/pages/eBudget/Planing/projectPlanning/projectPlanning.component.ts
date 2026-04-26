@@ -337,7 +337,7 @@ export class ProjectPlanningComponent {
 
     items.forEach(i => {
 
-      const key = Number(i.Fk_Project_Detail_Id); // 🔥 แปลงตรงนี้
+      const key = Number(i.Fk_Project_Detail_Id);
 
       const target = map[key];
 
@@ -347,9 +347,12 @@ export class ProjectPlanningComponent {
           name: i.Expense_Name,
           times: i.Times,
           people: i.People,
-          rate: i.Rate
+          rate: i.Rate,
+          total: i.Total
         });
+        target.multiplierTotal = (target.multiplierTotal || 0) + (i.Total || 0);
       }
+      console.log('target.otherExpenses', target.otherExpenses);
 
     });
   }
@@ -427,7 +430,9 @@ export class ProjectPlanningComponent {
 
     this.project_planing.Project_Plan_Detail = this.mapActivities();
 
-    console.log('ก่อน 2', this.project_planing.Project_Plan_Level2);
+    if (!this.validateBeforeSave(this.project_planing.activities)) {
+      return;
+    }
 
     const userConfirmed = await confirmAlert('info', 'ต้องการบันทึกข้อมูล ?', '');
 
@@ -440,7 +445,12 @@ export class ProjectPlanningComponent {
 
       Project_Plan: payload,
 
-      Project_Detail: this.project_planing.Project_Detail,
+      Project_Detail: {
+        ...this.project_planing.Project_Detail,
+
+        Start_Date: this.toDotNetDate(this.project_planing.Project_Detail.Start_Date),
+        End_Date: this.toDotNetDate(this.project_planing.Project_Detail.End_Date)
+      },
       Project_Objective: this.project_planing.Project_Objective,
       Project_Plan_Detail: this.project_planing.Project_Plan_Detail,
       Project_Plan_Level1: this.project_planing.Project_Plan_Level1,
@@ -461,55 +471,48 @@ export class ProjectPlanningComponent {
       modal.dismiss();
     });
   }
+  toDotNetDate(dateStr: string): string | null {
+    if (!dateStr) return null;
+
+    const timestamp = new Date(dateStr).getTime();
+    return `/Date(${timestamp})/`;
+  }
   activities: any
   mapActivities() {
 
     const activities = this.project_planing.activities || [];
 
-    return activities.flatMap((act: any) => {
+    return activities.map((act: any) => ({
 
-      const mainId = act.id || 0;
+      // 🔥 MAIN
+      Project_Detail_Id: act.id,
+      Activity_Name: act.name,
+      Responsible: act.owner,
 
-      return [
+      Used_BG: act.noBudget ? 0 : 1,
+      Is_Consult: act.consult ? 1 : 0,
 
-        // 🔥 MAIN
-        {
-          Project_Detail_Id: mainId,
-          Parent_Id: null, // 🔥 เพิ่ม
-          Level: 1,
+      Months: act.quarters.flatMap((q: any) => q.months),
 
-          Activity_Name: act.name,
-          Responsible: act.owner,
+      OtherExpenses: act.otherExpenses || [],
 
-          Used_BG: act.noBudget ? 0 : 1,
-          Is_Consult: act.consult ? 1 : 0,
+      // 🔥 สำคัญสุด
+      SubActivities: (act.subActivities || []).map((sub: any) => ({
 
-          Months: act.quarters.flatMap((q: any) => q.months),
+        Activity_Name: sub.name,
+        Responsible: sub.owner,
 
-          OtherExpenses: act.otherExpenses || []
-        },
+        Used_BG: sub.noBudget ? 0 : 1,
+        Is_Consult: sub.consult ? 1 : 0,
 
-        // 🔥 SUB
-        ...(act.subActivities || []).map((sub: any) => ({
+        Months: sub.quarters.flatMap((q: any) => q.months),
 
-          Project_Detail_Id: sub.id || 0,
-          Parent_Id: mainId, // 🔥 สำคัญ
-          Level: 2,
+        OtherExpenses: sub.otherExpenses || []
 
-          Activity_Name: sub.name,
-          Responsible: sub.owner,
+      }))
 
-          Used_BG: sub.noBudget ? 0 : 1,
-          Is_Consult: sub.consult ? 1 : 0,
+    }));
 
-          Months: sub.quarters.flatMap((q: any) => q.months),
-
-          OtherExpenses: sub.otherExpenses || []
-        }))
-
-      ];
-
-    });
   }
   randomItem(arr: any[]) {
     return arr[Math.floor(Math.random() * arr.length)];
@@ -565,5 +568,74 @@ export class ProjectPlanningComponent {
     if (this.currentTab > 1) {
       this.currentTab--;
     }
+  }
+  getActivityTotal(act: any): number {
+
+    let total = 0;
+
+    // รวมกิจกรรมหลัก
+    act.quarters.forEach((q: any) => {
+      q.months.forEach((m: any) => {
+        total += Number(m.budget) || 0;
+      });
+    });
+
+    // รวมกิจกรรมย่อย
+    total += this.getSubActivitiesTotal(act);
+
+    return total;
+  }
+  getSubActivitiesTotal(act: any): number {
+
+    let total = 0;
+
+    (act.subActivities || []).forEach((sub: any) => {
+
+      sub.quarters?.forEach((q: any) => {
+        q.months?.forEach((m: any) => {
+          total += Number(m.budget) || 0;
+        });
+      });
+
+    });
+
+    return total;
+  }
+  calcMultiplierTotalFromModel(act: any): number {
+
+    const list = act.otherExpenses || act.OtherExpenses || [];
+
+    if (!list.length) return 0;
+
+    return list.reduce((sum: number, item: any) => {
+
+      const times = item.times ?? item.Times ?? 0;
+      const people = item.people ?? item.People ?? 0;
+      const rate = item.rate ?? item.Rate ?? 0;
+
+      return sum + (times * people * rate);
+
+    }, 0);
+  }
+  validateBeforeSave(activities: any[]): boolean {
+
+    for (let i = 0; i < activities.length; i++) {
+
+      const act = activities[i];
+
+      const m = Number(this.calcMultiplierTotalFromModel(act).toFixed(2));
+      const p = Number(this.getActivityTotal(act).toFixed(2));
+
+      if (m !== p) {
+        basicAlert(
+          'warning',
+          `กิจกรรมที่ ${i + 1} ยอดไม่เท่ากัน`,
+          `ผลคูณ = ${m.toLocaleString()} | วางแผน = ${p.toLocaleString()}`
+        );
+        return false;
+      }
+    }
+
+    return true;
   }
 }

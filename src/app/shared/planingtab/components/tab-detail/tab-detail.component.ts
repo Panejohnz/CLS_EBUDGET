@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { EbudgetService } from 'src/app/core/services/ebudget.service';
 
 
 @Component({
@@ -7,6 +8,26 @@ import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/cor
   styleUrl: './tab-detail.component.scss'
 })
 export class TabDetailComponent implements OnInit, OnChanges {
+  constructor(public serviceebud: EbudgetService) {
+    this.get_data()
+  }
+  allData: any
+  Mas_Unit_Lists: any
+  get_data() {
+    let model = {
+      FUNC_CODE: "FUNC-Get_List_Mas_Unit",
+    }
+    var getData = this.serviceebud.GatewayGetData(model);
+    getData.subscribe((response: any) => {
+
+      this.allData = Array.isArray(response.List_Mas_Unit)
+        ? response.List_Mas_Unit
+        : [];
+      this.Mas_Unit_Lists = [...this.allData];
+
+    })
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['model'] && this.model) {
       this.initData();
@@ -14,7 +35,7 @@ export class TabDetailComponent implements OnInit, OnChanges {
   }
   initData() {
 
-    
+
     if (!this.model.Project_Detail || Array.isArray(this.model.Project_Detail)) {
       this.model.Project_Detail = {
         Principle: '',
@@ -25,7 +46,11 @@ export class TabDetailComponent implements OnInit, OnChanges {
     }
 
     this.projectDetail = this.model.Project_Detail;
+    this.projectDetail.Start_Date =
+      this.convertJsonDateToInput(this.projectDetail.Start_Date);
 
+    this.projectDetail.End_Date =
+      this.convertJsonDateToInput(this.projectDetail.End_Date);
     if (!this.model.Project_Objective) {
       this.model.Project_Objective = [];
     }
@@ -91,7 +116,19 @@ export class TabDetailComponent implements OnInit, OnChanges {
 
 
   }
+  convertJsonDateToInput(dateStr: string): string {
 
+    if (!dateStr) return '';
+
+    const timestamp = Number(dateStr.replace(/[^0-9]/g, ''));
+    const date = new Date(timestamp);
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  }
   addObjective() {
     this.objectives.push({ Name: '' });
   }

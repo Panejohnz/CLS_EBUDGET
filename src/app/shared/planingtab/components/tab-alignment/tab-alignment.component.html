@@ -452,26 +452,38 @@
                     <div class="border rounded p-3 mb-3 bg-light">
                         <div class="row g-3">
 
-                            <label class="form-label">
+                            <!-- <label class="form-label">
                                 1. การผลักดันให้เกิดการปรับโครงสร้างหนี้ทั้งระบบ
-                            </label>
+                            </label> -->
 
-                            <div class="d-flex align-items-center mb-1">
+                            <div class="col-md-4">
 
-                                <input type="checkbox" class="form-check-input me-2"
-                                    [(ngModel)]="model.Project_Plan_Level3.Urgent1_Checked" name="urgent1">
-                                1.1
+                                <label class="form-label">1.2</label>
 
-                                <input type="text" class="form-control me-2"
-                                    [(ngModel)]="model.Project_Plan_Level3.Urgent1_Name " name="urgent1_name">
+                                <select class="form-select"
+                                    [(ngModel)]="model.Project_Plan_Level3.Government_Policy_Id1"
+                                    (change)="onChangenGovernment_Policy1()">
 
-                                <input type="checkbox" class="form-check-input me-2"
-                                    [(ngModel)]="model.Project_Plan_Level3.Urgent2_Checked" name="urgent2">
+                                    <option [ngValue]="null" disabled>-- เลือก --</option>
 
-                                1.2
+                                    <option *ngFor="let item of listGovernment_Policy1"
+                                        [ngValue]="item.Government_Policy_Id">
+                                        {{ item.Policy_Type_Name }}
+                                    </option>
 
-                                <input type="text" class="form-control me-2"
-                                    [(ngModel)]="model.Project_Plan_Level3.Urgent2_Name" name="urgent2_name">
+                                </select>
+                                <br>
+                                <select class="form-select"
+                                    [(ngModel)]="model.Project_Plan_Level3.Government_Policy_Sub_Id1">
+
+                                    <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                                    <option *ngFor="let item of listGovernment_Policy_Sub1"
+                                        [ngValue]="item.Government_Policy_Sub_Id">
+                                        {{ item.Government_Policy_Sub_Name }}
+                                    </option>
+
+                                </select>
                             </div>
 
                         </div>
@@ -487,28 +499,35 @@
                     <div class="border rounded p-3 mb-3 bg-light">
                         <div class="row g-3">
 
-                            <label class="form-label">
-                                1. ________________________
-                            </label>
+                            <div class="col-md-4">
 
-                            <div class="d-flex align-items-center mb-1">
 
-                                <input type="checkbox" class="form-check-input me-2"
-                                    [(ngModel)]="model.Project_Plan_Level3.Mid1_Checked">
+                                <select class="form-select"
+                                    [(ngModel)]="model.Project_Plan_Level3.Government_Policy_Id2"
+                                    (change)="onChangenGovernment_Policy2()">
 
-                                1.1
+                                    <option [ngValue]="null" disabled>-- เลือก --</option>
 
-                                <input type="text" class="form-control me-2"
-                                    [(ngModel)]="model.Project_Plan_Level3.Mid1_Name">
+                                    <option *ngFor="let item of listGovernment_Policy2"
+                                        [ngValue]="item.Government_Policy_Id">
+                                        {{ item.Policy_Type_Name }}
+                                    </option>
 
-                                <input type="checkbox" class="form-check-input me-2"
-                                    [(ngModel)]="model.Project_Plan_Level3.Mid2_Checked">
-                                1.2
+                                </select>
+                                <br>
+                                <select class="form-select"
+                                    [(ngModel)]="model.Project_Plan_Level3.Government_Policy_Sub_Id2">
 
-                                <input type="text" class="form-control me-2"
-                                    [(ngModel)]="model.Project_Plan_Level3.Mid2_Name">
+                                    <option [ngValue]="null" disabled>-- เลือก --</option>
 
+                                    <option *ngFor="let item of listGovernment_Policy_Sub2"
+                                        [ngValue]="item.Government_Policy_Sub_Id">
+                                        {{ item.Government_Policy_Sub_Name }}
+                                    </option>
+
+                                </select>
                             </div>
+
 
                         </div>
                     </div>
@@ -545,19 +564,16 @@
                     <div class="border rounded p-3 mb-3 bg-light">
                         <div class="row g-3">
 
-                            <div class="form-check">
-                                <input type="radio" [(ngModel)]="model.Project_Plan_Level3.ProjectPlaningAlignment"
-                                    value="yes">
-                                <label class="form-check-label">
-                                    เรื่อง ________
-                                </label>
-                            </div>
+                            <div *ngFor="let item of listActionPlan; let i = index" class="form-check">
 
-                            <div class="form-check">
-                                <input type="radio" [(ngModel)]="model.Project_Plan_Level3.ProjectPlaningAlignment"
-                                    value="no"> <label class="form-check-label">
-                                    เรื่อง ________
+                                <input class="form-check-input" type="radio" [name]="'actionPlanGroup'"
+                                    [(ngModel)]="model.Project_Plan_Level3.Action_Plan_Id" [value]="item.Action_Plan_Id"
+                                    id="action_{{i}}">
+
+                                <label class="form-check-label" for="action_{{i}}">
+                                    {{ item.Action_Plan_Name }}
                                 </label>
+
                             </div>
 
                         </div>
@@ -573,28 +589,40 @@
                     <div class="border rounded p-3 mb-3 bg-light">
 
                         <div class="d-flex justify-content-between mb-2">
-                            <input type="text" class="form-control me-2" placeholder="แผนงานที่ 1"
-                                [(ngModel)]="model.Project_Plan_Level3.PpatPlanName" name="ppat_name">
+                            <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Project_Plan_Id"
+                                (change)="onChangenTactic()">
+
+                                <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                                <option *ngFor="let item of listProjectPlan" [ngValue]="item.Project_Plan_Id">
+                                    {{ item.Project_Plan_Name }}
+                                </option>
+
+                            </select>
                         </div>
 
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label">กลยุทธ์ที่</label>
-                                <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.PpatStrategy_Id"
+                                <select (change)="onChangenMeasure()" class="form-select" [(ngModel)]="model.Project_Plan_Level3.Tactics_Id"
                                     name="ppat_strategy">
-                                    <option selected>-- เลือก --</option>
-                                    <option value="1">ตัวเลือกที่ 1</option>
-                                    <option value="2">ตัวเลือกที่ 2</option>
+                                    <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                                    <option *ngFor="let item of listMasTactic" [ngValue]="item.Tactics_Id">
+                                        {{ item.Tactics_Name }}
+                                    </option>
                                 </select>
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label">มาตรการที่</label>
-                                <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.PpatMeasure_Id"
-                                    name="ppat_measure">
-                                    <option selected>-- เลือก --</option>
-                                    <option value="1">ตัวเลือกที่ 1</option>
-                                    <option value="2">ตัวเลือกที่ 2</option>
+                                <select  class="form-select" [(ngModel)]="model.Project_Plan_Level3.Measure_Id"
+                                    name="ppat_strategy">
+                                    <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                                    <option *ngFor="let item of listMasMeasure" [ngValue]="item.Measure_Id">
+                                        {{ item.Measure_Name }}
+                                    </option>
                                 </select>
                             </div>
                         </div>
@@ -602,11 +630,13 @@
                         <div class="row g-3">
                             <div class="col-md-12">
                                 <label class="form-label">ตัวชี้วัดแผนงาน</label>
-                                <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.PpatIndicator_Id"
-                                    name="ppat_indicator">
-                                    <option selected>-- เลือก --</option>
-                                    <option value="1">ตัวเลือกที่ 1</option>
-                                    <option value="2">ตัวเลือกที่ 2</option>
+                                <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Indicators_Id"
+                                    name="ppat_strategy">
+                                    <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                                    <option *ngFor="let item of listMasIndicator" [ngValue]="item.Indicators_Id">
+                                        {{ item.Indicators_Name }}
+                                    </option>
                                 </select>
                             </div>
                         </div>
