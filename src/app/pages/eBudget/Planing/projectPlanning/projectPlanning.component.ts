@@ -462,7 +462,7 @@ export class ProjectPlanningComponent {
 
 
     };
-    this.guidelineComp.updateAllMultiplier();
+
     this.project_planing.Project_Plan_Detail = this.mapActivities();
     console.log('this.project_planing.activities', this.project_planing.activities);
 

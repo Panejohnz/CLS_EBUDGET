@@ -121,9 +121,9 @@ export class TabAlignmentComponent implements OnChanges {
         PpatMeasure_Id: '',
         PpatIndicator_Id: '',
         Project_Plan_Id: null,
-        Tactics_Id : null,
-        Measure_Id :null,
-        Indicators_Id : null,
+        Tactics_Id: null,
+        Measure_Id: null,
+        Indicators_Id: null,
       };
     }
 
@@ -134,67 +134,89 @@ export class TabAlignmentComponent implements OnChanges {
   }
   loadAllMasterData() {
 
-    this.callAPI("FUNC-GET_List_Mas_Strategic").pipe(
+    let model = {
+      FUNC_CODE: "FUNC-GET_Master_Data",
+    };
 
-      tap((res: any) => {
-        this.listStrategic = res.List_Mas_Strategic || [];
-      }),
+    this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
 
-      switchMap(() =>
-        this.callAPI("FUNC-GET_List_Mas_Master_Plan")
-      ),
-      tap((res: any) => {
-        this.listMasterPlan = res.List_Mas_Master_Plan || [];
-      }),
-
-      switchMap(() =>
-        this.callAPI("FUNC-GET_List_Mas_Landmark")
-      ),
-      tap((res: any) => {
-        this.listLandmark = res.List_Mas_Landmark || [];
-      }),
-
-      switchMap(() =>
-        this.callAPI("FUNC-GET_List_Mas_Value_Chain")
-      ),
-      tap((res: any) => {
-        this.listValueChain = res.List_Mas_Value_Chain || [];
-      }),
-
-      switchMap(() =>
-        this.callAPI("FUNC-GET_List_Mas_SDGs_Gloal")
-      ),
-      tap((res: any) => {
-        this.listSDGsGoal = res.List_Mas_SDGs_Gloal || [];
-      }),
-      switchMap(() =>
-        this.callAPI("FUNC-Get_List_Mas_Government_Policy")
-      ),
-      tap((res: any) => {
-        this.listGovernment_Policy1 = res.List_Mas_Government_Policy1 || [];
-        this.listGovernment_Policy2 = res.List_Mas_Government_Policy2 || [];
-      }),
-      switchMap(() =>
-        this.callAPI("FUNC-GET_List_Mas_Action_Plan")
-      ),
-      tap((res: any) => {
-        this.listActionPlan = res.List_Mas_Action_Plan || [];
-      }),
-      switchMap(() =>
-        this.callAPI("FUNC-GET_List_Mas_Project_Plan")
-      ),
-      tap((res: any) => {
-        this.listProjectPlan = res.List_Mas_Project_Plan || [];
-      }),
-      switchMap(() =>
-        this.callAPI("FUNC-GET_List_Mas_Tactics")
-      ),
-      tap((res: any) => {
-        this.listMasTactic = res.List_Mas_Tactic || [];
-      }),
-    ).subscribe(() => {
+      this.listStrategic = res.List_Mas_Strategic || [];
+      this.listMasterPlan = res.List_Mas_Master_Plan || [];
+      this.listLandmark = res.List_Mas_Landmark || [];
+      this.listValueChain = res.List_Mas_Value_Chain || [];
+      this.listSDGsGoal = res.List_Mas_SDGs_Gloal || [];
+      this.listGovernment_Policy1 = res.List_Mas_Government_Policy1 || [];
+      this.listGovernment_Policy2 = res.List_Mas_Government_Policy2 || [];
+      this.listActionPlan = res.List_Mas_Action_Plan || [];
+      this.listProjectPlan = res.List_Mas_Project_Plan || [];
+      this.listMasTactic = res.List_Mas_Tactic || [];
       this.afterLoad();
-    });
+    })
+
+
+
+    // this.callAPI("FUNC-GET_List_Mas_Strategic").pipe(
+
+    //   tap((res: any) => {
+    //     this.listStrategic = res.List_Mas_Strategic || [];
+    //   }),
+
+    //   switchMap(() =>
+    //     this.callAPI("FUNC-GET_List_Mas_Master_Plan")
+    //   ),
+    //   tap((res: any) => {
+    //     this.listMasterPlan = res.List_Mas_Master_Plan || [];
+    //   }),
+
+    //   switchMap(() =>
+    //     this.callAPI("FUNC-GET_List_Mas_Landmark")
+    //   ),
+    //   tap((res: any) => {
+    //     this.listLandmark = res.List_Mas_Landmark || [];
+    //   }),
+
+    //   switchMap(() =>
+    //     this.callAPI("FUNC-GET_List_Mas_Value_Chain")
+    //   ),
+    //   tap((res: any) => {
+    //     this.listValueChain = res.List_Mas_Value_Chain || [];
+    //   }),
+
+    //   switchMap(() =>
+    //     this.callAPI("FUNC-GET_List_Mas_SDGs_Gloal")
+    //   ),
+    //   tap((res: any) => {
+    //     this.listSDGsGoal = res.List_Mas_SDGs_Gloal || [];
+    //   }),
+    //   switchMap(() =>
+    //     this.callAPI("FUNC-Get_List_Mas_Government_Policy")
+    //   ),
+    //   tap((res: any) => {
+    //     this.listGovernment_Policy1 = res.List_Mas_Government_Policy1 || [];
+    //     this.listGovernment_Policy2 = res.List_Mas_Government_Policy2 || [];
+    //   }),
+    //   switchMap(() =>
+    //     this.callAPI("FUNC-GET_List_Mas_Action_Plan")
+    //   ),
+    //   tap((res: any) => {
+    //     this.listActionPlan = res.List_Mas_Action_Plan || [];
+    //   }),
+    //   switchMap(() =>
+    //     this.callAPI("FUNC-GET_List_Mas_Project_Plan")
+    //   ),
+    //   tap((res: any) => {
+
+    //   }),
+    //   switchMap(() =>
+    //     this.callAPI("FUNC-GET_List_Mas_Tactics")
+    //   ),
+    //   tap((res: any) => {
+    //     this.listProjectPlan = res.List_Mas_Project_Plan || [];
+    //     this.listMasTactic = res.List_Mas_Tactic || [];
+    //   }),
+    // ).subscribe(() => {
+    //   this.afterLoad();
+    // });
   }
   listMasIndicator: any[] = []
   listMasTactic: any[] = []
@@ -608,7 +630,7 @@ export class TabAlignmentComponent implements OnChanges {
     });
   }
   afterLoad() {
-    debugger
+  
     const l2 = this.planLevel2;
     if (!l2 || Object.keys(l2).length === 0) return;
 
