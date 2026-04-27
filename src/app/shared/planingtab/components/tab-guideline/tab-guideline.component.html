@@ -48,26 +48,22 @@
                                         <div class="d-flex gap-3 mb-2">
 
                                             <div class="form-check m-0">
-                                                <input disabled type="radio" name="budget_{{i}}" [value]="false"
+                                                <input type="radio" name="budget_{{i}}" [value]="false"
                                                     [(ngModel)]="act.noBudget">
                                                 <label class="form-check-label">ใช้งบ</label>
                                             </div>
 
                                             <div class="form-check m-0">
-                                                <input disabled (ngModelChange)="onBudgetChange(act)" type="radio"
+                                                <input (ngModelChange)="onBudgetChange(act)" type="radio"
                                                     name="budget_{{i}}" [value]="true" [(ngModel)]="act.noBudget">
                                                 <label class="form-check-label">ไม่ใช้งบ</label>
                                             </div>
                                             <div class="form-check m-0">
-                                                <input type="checkbox" class="form-check-input"
-                                                    [ngModel]="act.consult === 1"
-                                                    (ngModelChange)="act.consult = $event ? 1 : 0">
+                                                <input type="checkbox" [(ngModel)]="act.consultSelf">
                                                 ดำเนินการเอง
                                             </div>
                                             <div class="form-check m-0">
-                                                <input type="checkbox" class="form-check-input"
-                                                    [ngModel]="act.consult === 2"
-                                                    (ngModelChange)="act.consult = $event ? 2 : 0">
+                                                <input type="checkbox" [(ngModel)]="act.consultHire">
                                                 จ้างที่ปรึกษา
                                             </div>
                                         </div>
@@ -81,10 +77,9 @@
 
                                         <td>
                                             <div class="form-check d-flex justify-content-center">
-                                                <input type="checkbox" class="form-check-input text-end"
+                                                <input type="checkbox" class="form-check-input"
                                                     [(ngModel)]="q.months[rowIndex].selected"
-                                                    [disabled]="hasSubActivities(act)">
-                                                <!-- ถ้าไม่ใช่งบอันนี้ยังติ๊กได้อยู่ -->
+                                                    (ngModelChange)="syncMainFromSub(act)">
                                             </div>
                                         </td>
 
@@ -92,7 +87,7 @@
                                             <input type="text" class="form-control form-control-sm text-end"
                                                 [ngModel]="displayValue(q.months[rowIndex].budget)"
                                                 (ngModelChange)="onInputFormat($event, q.months[rowIndex])"
-                                                [disabled]="act.noBudget">
+                                                [disabled]="act.noBudget || act.SubActivities?.length > 0">
                                             <!-- ถ้าไม่ใช้งบ เคลียร์ค่า -->
                                         </td>
 
@@ -111,7 +106,7 @@
                                 <td colspan="15" class="bg-light">
                                     <div class="d-flex justify-content-end align-items-center mb-2">
 
-                                        <!-- ฝั่งซ้าย -->
+
 
 
                                         <div class="d-flex justify-content-end align-items-center gap-2 flex-wrap">
@@ -127,13 +122,13 @@
 
                                             <button (click)="openMultiplierModal(fullDataModal, act, 'act')"
                                                 class="btn btn-sm btn-outline-secondary"
-                                                [disabled]="act.subActivities?.length > 0">
+                                                [disabled]="act.SubActivities?.length > 0">
                                                 แบบฟอร์มตัวคูณ
                                             </button>
 
                                             <span class="fw-bold text-success">
                                                 รวมผลคูณ :
-                                                {{ act.multiplierTotal | number:'1.2-2' }} </span>
+                                                {{ getMultiplierTotal(act) | number:'1.2-2' }} </span>
                                             <span class="fw-bold text-primary">
                                                 รวมวางแผน :
                                                 {{ getActivityTotal(act) | number:'1.2-2' }}
@@ -144,7 +139,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            <ng-container *ngFor="let sub of act.subActivities; let subIndex = index">
+                            <ng-container *ngFor="let sub of act.SubActivities; let subIndex = index">
 
                                 <ng-container *ngFor="let rowIndex of [0,1,2]">
 
@@ -158,36 +153,22 @@
 
                                             <div class="d-flex gap-3 mb-2">
                                                 <div class="form-check m-0">
-                                                    <input type="radio" [checked]="!sub.noBudget" disabled>
+                                                    <input type="radio" [value]="false" [(ngModel)]="sub.noBudget">
                                                     <label class="form-check-label">ใช้งบ</label>
                                                 </div>
 
                                                 <div class="form-check m-0">
-                                                    <input type="radio" [checked]="sub.noBudget" disabled>
+                                                    <input type="radio" [value]="true" [(ngModel)]="sub.noBudget">
                                                     <label class="form-check-label">ไม่ใช้งบ</label>
                                                 </div>
-                                                <!-- <div class="form-check m-0">
-                                                    <input class="form-check-input" type="checkbox" id="call"
-                                                        [(ngModel)]="act.consult">
-                                                    <label class="form-check-label">ดำเนินการเอง</label>
-                                                </div>
-                                                <div class="form-check m-0">
-                                                    <input class="form-check-input" type="checkbox" id="call"
-                                                        [(ngModel)]="act.consult">
-                                                    <label class="form-check-label">จ้างที่ปร๊กษา</label>
-                                                </div> -->
 
 
                                                 <div class="form-check m-0">
-                                                    <input type="checkbox" class="form-check-input"
-                                                        [ngModel]="sub.consult === 1"
-                                                        (ngModelChange)="sub.consult = $event ? 1 : 0">
+                                                    <input type="checkbox" [(ngModel)]="sub.consultSelf">
                                                     ดำเนินการเอง
                                                 </div>
                                                 <div class="form-check m-0">
-                                                    <input type="checkbox" class="form-check-input"
-                                                        [ngModel]="sub.consult === 2"
-                                                        (ngModelChange)="sub.consult = $event ? 2 : 0">
+                                                    <input type="checkbox" [(ngModel)]="sub.consultHire">
                                                     จ้างที่ปรึกษา
                                                 </div>
                                             </div>
@@ -196,7 +177,7 @@
 
 
                                         </td>
-                                        <ng-container *ngFor="let q of sub.quarters">
+                                        <ng-container *ngFor="let q of sub.quarters; let qIndex = index">
 
                                             <td>
                                                 {{ q.months[rowIndex].month }}
@@ -205,14 +186,15 @@
                                             <td>
                                                 <div class="form-check d-flex justify-content-center">
                                                     <input type="checkbox" class="form-check-input"
-                                                        [(ngModel)]="q.months[rowIndex].selected">
+                                                        [(ngModel)]="q.months[rowIndex].selected"
+                                                        (ngModelChange)="syncMainFromSub(act)">
                                                 </div>
                                             </td>
 
                                             <td>
                                                 <input type="number" class="form-control form-control-sm"
                                                     [(ngModel)]="q.months[rowIndex].budget"
-                                                    (ngModelChange)="onBudgetChange(q.months[rowIndex])"
+                                                    (ngModelChange)="onSubBudgetChange(act, qIndex, rowIndex)"
                                                     [disabled]="sub.noBudget">
                                             </td>
 
@@ -234,7 +216,7 @@
 
                                             <button (click)="openMultiplierModal(fullDataModal, sub, 'sub')"
                                                 class="btn btn-sm btn-outline-secondary"
-                                                [disabled]="sub.subActivities?.length > 0">
+                                                [disabled]="sub.SubActivities?.length > 0">
                                                 แบบฟอร์มตัวคูณ
                                             </button>
 
@@ -253,26 +235,7 @@
                                     </td>
                                 </tr>
                             </ng-container>
-                            <!-- @if(act.subActivities.length > 0){
-                            <tr>
-                                <td colspan="15" class="bg-light">
 
-                                    <div class="d-flex justify-content-end align-items-center gap-2">
-
-                                        <button (click)="openMultiplierModal(fullDataModal, act)"
-                                            class="btn btn-sm btn-outline-secondary">
-                                            แบบฟอร์มตัวคูณ
-                                        </button>
-
-                                        <span class="fw-bold text-primary">
-                                            รวม : {{ getSubActivitiesTotal(act) | number:'1.2-2' }}
-                                        </span>
-
-                                    </div>
-
-                                </td>
-                            </tr>
-                            } -->
                         </ng-container>
                     </tbody>
                 </table>

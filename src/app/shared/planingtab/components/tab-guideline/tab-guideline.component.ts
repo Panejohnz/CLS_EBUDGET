@@ -29,17 +29,34 @@ export class TabGuidelineComponent {
     if (this.model?.activities?.length) {
 
       this.activities = this.model.activities;
-      console.log('aa', this.activities);
 
-      // 🔥 loop ทีละ activity
+
       this.activities.forEach((act: any) => {
 
-        // รวมจาก otherExpenses (DB Total)
-        const multiplier = (act.otherExpenses || []).reduce((sum: number, item: any) => {
+        // 🔥 คำนวณ sub ก่อน
+        let subSum = 0;
+
+        if (act.SubActivities?.length) {
+          act.SubActivities.forEach((sub: any) => {
+
+            const subTotal = (sub.otherExpenses || []).reduce((sum: number, item: any) => {
+              return sum + (item.total || item.Total || 0);
+            }, 0);
+
+            sub.multiplierTotal = subTotal;
+
+            subSum += subTotal;
+          });
+        }
+
+        // 🔥 main
+        const mainTotal = (act.otherExpenses || []).reduce((sum: number, item: any) => {
           return sum + (item.total || item.Total || 0);
         }, 0);
 
-        act.multiplierTotal = multiplier;
+        // 🔥 ถ้ามี sub → ใช้ sub
+        act.multiplierTotal = act.SubActivities?.length ? subSum : mainTotal;
+        console.log('SubActivities', act.SubActivities);
       });
 
     }
@@ -49,6 +66,8 @@ export class TabGuidelineComponent {
       this.model.activities = [];
       this.addActivity();
     }
+
+
   }
   constructor(private modalService: NgbModal) {
 
@@ -70,7 +89,7 @@ export class TabGuidelineComponent {
       name: '',
       owner: '',
       quarters: this.generateYear(),
-      subActivities: [],
+      SubActivities: [],
       otherExpenses: [] // 👈 ต้องมี
     });
   }
@@ -78,11 +97,11 @@ export class TabGuidelineComponent {
     this.activities.splice(i, 1);
   }
   addSubActivity(activity: any) {
-    activity.subActivities?.push({
+    activity.SubActivities?.push({
       id: Date.now(),
       name: '',
       quarters: this.generateYear(),
-      subActivities: []
+      SubActivities: []
     });
     this.clearMainIfHasSub(activity);
   }
@@ -110,9 +129,10 @@ export class TabGuidelineComponent {
     return q;
   }
   addSub(act: any) {
-    act.subActivities = act.subActivities || [];
+    act.SubActivities = act.SubActivities || [];
 
-    act.subActivities.push({
+    act.SubActivities.push({
+      Project_Detail_Id: 0,
       name: '',
       owner: '',
       noBudget: act.noBudget,
@@ -122,11 +142,11 @@ export class TabGuidelineComponent {
       // 🔥 เพิ่มให้เหมือน act
       multiplierTotal: 0,
       multiplierList: [], // ถ้ามีใน act
-      subActivities: [] // เผื่อ nested ต่อ
+      SubActivities: [] // เผื่อ nested ต่อ
     });
   }
   removeSub(act: any, i: number) {
-    act.subActivities.splice(i, 1);
+    act.SubActivities.splice(i, 1);
   }
   months = [
     'ต.ค.', 'พ.ย.', 'ธ.ค.',
@@ -175,10 +195,15 @@ export class TabGuidelineComponent {
 
 
     this.selectedActivity = item; // 🔥 อันนี้ต้องมี
+    item._useMultiplier = true;
     this.selectedActivityId = item.Project_Detail_Id || item.id;
 
     this.type = this.formTypeMap[this.model.projectType?.Expense_Id];
-
+    if (item.SubActivities?.length) {
+      item.SubActivities.forEach((sub: any) => {
+        sub._useMultiplier = true;
+      });
+    }
     if (!this.type) {
       basicAlert('info', 'เลือกประเภทโครงการ', '');
       return;
@@ -187,21 +212,51 @@ export class TabGuidelineComponent {
     this.modalService.open(content, {
       backdrop: 'static',
       windowClass: 'modal-95'
-    });
+    }).result.then(() => {
+      item._useMultiplier = true;
+      item.multiplierTotal = (item.otherExpenses || []).reduce((sum: number, i: any) => {
+        return sum + (i.total || i.Total || 0);
+      }, 0);
+
+    }).catch(() => { });
+  }
+  calcMultiplier(act: any): number {
+
+    // 🔥 ถ้ามี sub → รวม sub
+    if (act.SubActivities?.length) {
+      return act.SubActivities.reduce((sum: number, sub: any) => {
+        return sum + this.calcMultiplier(sub);
+      }, 0);
+    }
+
+    const list = act.otherExpenses || [];
+
+    return list.reduce((sum: number, item: any) => {
+      return sum + (item.total || item.Total || 0);
+    }, 0);
   }
   getActivityTotal(act: any): number {
 
+    // 🔥 ถ้ามี sub → รวม sub
+    if (act.SubActivities?.length) {
+      return act.SubActivities.reduce((sum: number, sub: any) => {
+        return sum + this.getActivityTotal(sub);
+      }, 0);
+    }
+
+    // 🔥 ถ้ายังไม่แก้ → ใช้ DB
+    if (!act._edited && act.sumAmount != null) {
+      return Number(act.sumAmount);
+    }
+
+    // 🔥 ถ้ามีการแก้ → คำนวณใหม่
     let total = 0;
 
-    // รวมกิจกรรมหลัก
-    act.quarters.forEach((q: any) => {
-      q.months.forEach((m: any) => {
+    (act.quarters || []).forEach((q: any) => {
+      (q.months || []).forEach((m: any) => {
         total += Number(m.budget) || 0;
       });
     });
-
-    // รวมกิจกรรมย่อย
-    total += this.getSubActivitiesTotal(act);
 
     return total;
   }
@@ -209,13 +264,13 @@ export class TabGuidelineComponent {
 
     let total = 0;
 
-    act.subActivities.forEach((sub: any) => {
-      sub.quarters.forEach((q: any) => {
-        q.months.forEach((m: any) => {
-          total += Number(m.budget) || 0;
-        });
-      });
-    });
+    // act.SubActivities.forEach((sub: any) => {
+    //   sub.quarters.forEach((q: any) => {
+    //     q.months.forEach((m: any) => {
+    //       total += Number(m.budget) || 0;
+    //     });
+    //   });
+    // });
 
     return total;
   }
@@ -258,7 +313,7 @@ export class TabGuidelineComponent {
       : intPart;
   }
   onInputFormat(value: any, obj: any) {
-
+    obj._edited = true;
     if (value === null || value === undefined) {
       obj.budget = '';
       obj.selected = false;
@@ -292,7 +347,7 @@ export class TabGuidelineComponent {
     obj.selected = !isNaN(num) && num > 0;
   }
   hasSubActivities(act: any): boolean {
-    return act?.subActivities && act.subActivities.length > 0;
+    return act?.SubActivities && act.SubActivities.length > 0;
   }
   clearMainIfHasSub(act: any) {
 
@@ -338,7 +393,7 @@ export class TabGuidelineComponent {
     }, 0);
   }
   updateMultiplierTotal(act: any) {
-
+    act._edited = true;
     const list = act.otherExpenses || [];
 
     act.multiplierTotal = list.reduce((sum: number, item: any) => {
@@ -352,5 +407,78 @@ export class TabGuidelineComponent {
       return sum + (times * people * rate * input3 * input4 * input5);
 
     }, 0);
+  }
+  updateAllMultiplier() {
+
+    this.activities.forEach((act: any) => {
+
+      act.multiplierTotal = this.getMultiplierTotal(act);
+
+      if (act.SubActivities?.length) {
+        act.SubActivities.forEach((sub: any) => {
+          sub.multiplierTotal = this.getMultiplierTotal(sub);
+        });
+      }
+
+    });
+
+  }
+  getMultiplierTotal(act: any): number {
+
+    // 🔥 มี sub → รวม sub
+    if (act.SubActivities?.length) {
+      return act.SubActivities.reduce((sum: number, sub: any) => {
+        return sum + this.getMultiplierTotal(sub);
+      }, 0);
+    }
+
+    // 🔥 ถ้ายังไม่เคยกด modal → ใช้ค่าจาก DB
+    if (!act._useMultiplier) {
+      return act.multiplierTotal || 0;
+    }
+
+    // 🔥 กด modal แล้ว → ใช้ค่าปัจจุบัน
+    return (act.otherExpenses || []).reduce((sum: number, item: any) => {
+      return sum + (item.total || item.Total || 0);
+    }, 0);
+  }
+  syncMainFromSub(act: any) {
+
+    if (!act.SubActivities?.length) return;
+
+    act.quarters.forEach((q: any, qIndex: number) => {
+
+      q.months.forEach((m: any, mIndex: number) => {
+
+        // 🔥 ถ้ามี sub ตัวไหนติ๊ก → main ติ๊ก
+        const hasSelected = act.SubActivities.some((sub: any) => {
+          return sub.quarters?.[qIndex]?.months?.[mIndex]?.selected;
+        });
+
+        m.selected = hasSelected;
+      });
+
+    });
+
+  }
+  onSubBudgetChange(act: any, qIndex: number, mIndex: number) {
+
+    const sub = act.SubActivities;
+
+    sub.forEach((s: any) => {
+      const m = s.quarters?.[qIndex]?.months?.[mIndex];
+
+      if (m?.budget && m.budget > 0) {
+        m.selected = true;
+      } else {
+        m.selected = false;
+      }
+    });
+
+    const hasSelected = sub.some((s: any) => {
+      return s.quarters?.[qIndex]?.months?.[mIndex]?.selected;
+    });
+
+    act.quarters[qIndex].months[mIndex].selected = hasSelected;
   }
 }

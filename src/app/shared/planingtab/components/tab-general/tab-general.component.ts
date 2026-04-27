@@ -80,7 +80,7 @@ export class TabGeneralComponent {
         });
       }
 
-      act.subActivities?.forEach((sub: any) => {
+      act.SubActivities?.forEach((sub: any) => {
         sub.noBudget = isNoBudget;
       });
     });

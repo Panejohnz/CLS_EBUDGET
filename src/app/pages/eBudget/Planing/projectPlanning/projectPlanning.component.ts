@@ -173,13 +173,23 @@ export class ProjectPlanningComponent {
 
           const details = res.Project_Plan_Detail || [];
           const items = res.Project_Plan_Detail_Item || [];
+          console.log('details1', details);
 
+          details.forEach((d: any) => {
+            d.Project_Detail_Id = Number(d.Project_Detail_Id);
+            d.Parent_Id = d.Parent_Id ? Number(d.Parent_Id) : null;
+          });
+
+          // 🔥 map tree
           const activities = this.mapPlanDetail(details);
 
+
+          // 🔥 map items ลงทั้ง main + sub
           this.mapItems(items, activities);
 
-          this.project_planing.activities = activities;
+          this.recalculateAll(activities);
 
+          this.project_planing.activities = activities;
         });
 
     } else {
@@ -230,11 +240,10 @@ export class ProjectPlanningComponent {
   mapPlanDetail(data: any[]) {
 
     if (!data || data.length === 0) return [];
-
+    debugger
     return data.map(x => ({
 
-      // 🔥 main
-      id: x.Project_Detail_Id,
+      id: Number(x.Project_Detail_Id),
       name: x.Activity_Name,
       owner: x.Responsible,
 
@@ -242,28 +251,15 @@ export class ProjectPlanningComponent {
       consult: x.Is_Consult === 1,
 
       quarters: this.convertMonths(x.Months),
+      _useMultiplier: false,
+      otherExpenses: [],
+      multiplierTotal: 0,
 
-      // 🔥 item ของ main
-      otherExpenses: (x.OtherExpenses || []).map((i: any) => ({
-        id: i.Project_Item_Id,
-        name: i.Expense_Name,
-        times: i.Times,
-        people: i.People,
-        rate: i.Rate,
-        input3: i.input3,
-        input4: i.input4,
-        input5: i.input5,
-        Unit_Name_Times: i.Unit_Name_Times,
-        Unit_Name_People: i.Unit_Name_People,
-        Unit_Name_input3: i.Unit_Name_input3,
-        Unit_Name_input4: i.Unit_Name_input4,
-        Unit_Name_input5: i.Unit_Name_input5
-      })),
+      // 🔥 ใช้ SubActivities จาก backend ตรงๆ
+      SubActivities: (x.SubActivities || []).map((s: any) => ({
 
-      // 🔥 sub
-      subActivities: (x.SubActivities || []).map((s: any) => ({
-
-        id: s.Project_Detail_Id,
+        id: Number(s.Project_Detail_Id),
+        Project_Detail_Id: Number(s.Project_Detail_Id),
         name: s.Activity_Name,
         owner: s.Responsible,
 
@@ -271,22 +267,9 @@ export class ProjectPlanningComponent {
         consult: s.Is_Consult === 1,
 
         quarters: this.convertMonths(s.Months),
-
-        otherExpenses: (s.OtherExpenses || []).map((i: any) => ({
-          id: i.Project_Item_Id,
-          name: i.Expense_Name,
-          times: i.Times,
-          people: i.People,
-          rate: i.Rate,
-          input3: i.input3,
-          input4: i.input4,
-          input5: i.input5,
-          Unit_Name_Times: i.Unit_Name_Times,
-          Unit_Name_People: i.Unit_Name_People,
-          Unit_Name_input3: i.Unit_Name_input3,
-          Unit_Name_input4: i.Unit_Name_input4,
-          Unit_Name_input5: i.Unit_Name_input5
-        }))
+        _useMultiplier: false,
+        otherExpenses: [],
+        multiplierTotal: 0
 
       }))
 
@@ -343,21 +326,32 @@ export class ProjectPlanningComponent {
 
     const map: any = {};
 
-    activities.forEach(a => {
-      map[Number(a.id)] = a;
+    // 🔥 flatten main + sub
+    const walk = (list: any[]) => {
+      list.forEach(a => {
+        map[Number(a.id)] = a;
 
-      a.subActivities.forEach((s: any) => {
-        map[Number(s.id)] = s;
+        if (a.SubActivities?.length) {
+          walk(a.SubActivities);
+        }
       });
+    };
+
+    walk(activities);
+
+    // 🔥 reset ก่อนกันค่าทับ
+    Object.values(map).forEach((a: any) => {
+      a.otherExpenses = [];
+      a.multiplierTotal = 0;
     });
 
     items.forEach(i => {
 
       const key = Number(i.Fk_Project_Detail_Id);
-
       const target = map[key];
 
       if (target) {
+
         target.otherExpenses.push({
           id: i.Project_Item_Id,
           name: i.Expense_Name,
@@ -367,18 +361,34 @@ export class ProjectPlanningComponent {
           total: i.Total,
           input3: i.input3,
           input4: i.input4,
-          input5: i.input5,
-          Unit_Name_Times: i.Unit_Name_Times,
-          Unit_Name_People: i.Unit_Name_People,
-          Unit_Name_input3: i.Unit_Name_input3,
-          Unit_Name_input4: i.Unit_Name_input4,
-          Unit_Name_input5: i.Unit_Name_input5
+          input5: i.input5
         });
-        target.multiplierTotal = (target.multiplierTotal || 0) + (i.Total || 0);
+
+        // 🔥 สำคัญ: set multiplierTotal ให้ทุก node (รวม sub)
+        target.multiplierTotal += (i.Total || 0);
       }
-      console.log('target.otherExpenses', target.otherExpenses);
 
     });
+
+  }
+  recalculateAll(activities: any[]) {
+
+    activities.forEach(act => {
+
+      // 🔥 sub ก่อน
+      if (act.SubActivities?.length) {
+        act.SubActivities.forEach((sub: any) => {
+
+          sub.multiplierTotal = this.calcMultiplierTotalFromModel(sub);
+
+        });
+      }
+
+      // 🔥 main
+      act.multiplierTotal = this.calcMultiplierTotalFromModel(act);
+
+    });
+
   }
   currentTab = 1;
   firstLoad = true;
@@ -412,6 +422,7 @@ export class ProjectPlanningComponent {
   }
   Project_Plan: any
   async savePlan(modal: any) {
+
     const getId = (obj: any, key: string) =>
       typeof obj === 'object' ? obj?.[key] : obj;
 
@@ -451,8 +462,9 @@ export class ProjectPlanningComponent {
 
 
     };
-
+    this.guidelineComp.updateAllMultiplier();
     this.project_planing.Project_Plan_Detail = this.mapActivities();
+    console.log('this.project_planing.activities', this.project_planing.activities);
 
     if (!this.validateBeforeSave(this.project_planing.activities)) {
       return;
@@ -521,8 +533,8 @@ export class ProjectPlanningComponent {
       OtherExpenses: act.otherExpenses || [],
 
       // 🔥 สำคัญสุด
-      SubActivities: (act.subActivities || []).map((sub: any) => ({
-
+      SubActivities: (act.SubActivities || []).map((sub: any) => ({
+        Project_Detail_Id: sub.Project_Detail_Id,
         Activity_Name: sub.name,
         Responsible: sub.owner,
 
@@ -613,7 +625,7 @@ export class ProjectPlanningComponent {
 
     let total = 0;
 
-    (act.subActivities || []).forEach((sub: any) => {
+    (act.SubActivities || []).forEach((sub: any) => {
 
       sub.quarters?.forEach((q: any) => {
         q.months?.forEach((m: any) => {
@@ -627,25 +639,58 @@ export class ProjectPlanningComponent {
   }
   calcMultiplierTotalFromModel(act: any): number {
 
-    const list = act.otherExpenses || act.OtherExpenses || [];
+    // 🔥 sub ก่อน
+    if (act.SubActivities?.length) {
+      return act.SubActivities.reduce((sum: number, sub: any) => {
+        return sum + this.calcMultiplierTotalFromModel(sub);
+      }, 0);
+    }
+
+    const list = act.otherExpenses || [];
 
     if (!list.length) return 0;
 
     return list.reduce((sum: number, item: any) => {
 
+      // 🔥 ถ้ามี total จาก DB → ใช้เลย
+      if (item.total != null) {
+        return sum + Number(item.total);
+      }
+
+      // 🔥 fallback คำนวณ
       const times = item.times ?? item.Times ?? 0;
       const people = item.people ?? item.People ?? 0;
       const rate = item.rate ?? item.Rate ?? 0;
-      const input3 = item.input3 ?? item.input3 ?? 0;
-      const input4 = item.input4 ?? item.input4 ?? 0;
-      const input5 = item.input5 ?? item.input5 ?? 0;
+      const input3 = item.input3 ?? 1;
+      const input4 = item.input4 ?? 1;
+      const input5 = item.input5 ?? 1;
 
       return sum + (times * people * rate * input3 * input4 * input5);
 
     }, 0);
   }
+  prepareBeforeSave(activities: any[]) {
+
+    activities.forEach(act => {
+
+      // 🔥 คำนวณ main
+      act.multiplierTotal = this.calcMultiplierTotalFromModel(act);
+
+      // 🔥 ถ้ามี sub → คำนวณ sub ด้วย
+      if (act.SubActivities?.length) {
+        act.SubActivities.forEach((sub: any) => {
+          sub.multiplierTotal = this.calcMultiplierTotalFromModel(sub);
+        });
+      }
+
+    });
+
+  }
   validateBeforeSave(activities: any[]): boolean {
 
+    if (this.project_planing.Project_Id) {
+      return true;
+    }
     for (let i = 0; i < activities.length; i++) {
 
       const act = activities[i];

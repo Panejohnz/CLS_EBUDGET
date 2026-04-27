@@ -36,11 +36,16 @@ export class OtherExpenseProjectComponent {
         people: x.People,
         rate: x.Rate,
 
-        People_Type_A: x.People_Type_A,
+        input3: x.input3,
         input4: x.input4,
         input5: x.input5,
 
-        Unit_Name: x.Unit_Name
+        Unit_Name_Times: x.Unit_Name_Times,
+        Unit_Name_People: x.Unit_Name_People,
+        Unit_Name_Rate: x.Unit_Name_Rate,
+        Unit_Name_input3: x.Unit_Name_input3,
+        Unit_Name_input4: x.Unit_Name_input4,
+        Unit_Name_input5: x.Unit_Name_input5,
       }));
     } else {
       this.meetingCosts = [this.getDefaultItem()];
@@ -82,7 +87,12 @@ export class OtherExpenseProjectComponent {
         input4: x.input4,
         input5: x.input5,
 
-        Unit_Name: x.Unit_Name
+        Unit_Name_Times: x.Unit_Name_Times,
+        Unit_Name_People: x.Unit_Name_People,
+        Unit_Name_Rate: x.Unit_Name_Rate,
+        Unit_Name_input3: x.Unit_Name_input3,
+        Unit_Name_input4: x.Unit_Name_input4,
+        Unit_Name_input5: x.Unit_Name_input5,
       }));
 
       if (this.meetingCosts.length === 0) {
@@ -156,12 +166,40 @@ export class OtherExpenseProjectComponent {
   }
   getTotal() {
     return this.meetingCosts.reduce((sum, item) => {
-      const total = (item.times || 0) * (item.people || 0) * (item.rate || 0) * (item.input3 || 0) * (item.input4 || 0) * (item.input5 || 0);
-      return sum + total;
+
+      const values = [
+        item.times,
+        item.people,
+        item.rate,
+        item.input3,
+        item.input4,
+        item.input5
+      ];
+
+      // 🔥 คำนวณโดย ignore ช่องว่าง (ใช้ 1 แทน)
+      const total = values.reduce((acc, val) => {
+        const num = Number(val);
+        return num > 0 ? acc * num : acc;
+      }, 1);
+
+      // 🔥 ถ้าไม่มีค่าเลย → ไม่เอามาคิด
+      return total === 1 ? sum : sum + total;
+
     }, 0);
   }
   addCost() {
-    this.meetingCosts.push(this.getDefaultItem());
+
+    const newItem = this.getDefaultItem();
+
+    // 🔥 ถ้ามีแถวก่อนหน้า → copy ค่า
+    if (this.meetingCosts.length > 0) {
+      const last = this.meetingCosts[this.meetingCosts.length - 1];
+
+      newItem.isStandard = last.isStandard;
+      newItem.isNonStandard = last.isNonStandard;
+    }
+
+    this.meetingCosts.push(newItem);
   }
 
   removeCost(i: number) {
@@ -188,11 +226,13 @@ export class OtherExpenseProjectComponent {
       input5: x.input5,
       Unit_Name_Times: x.Unit_Name_Times,
       Unit_Name_People: x.Unit_Name_People,
+      Unit_Name_Rate: x.Unit_Name_Rate,
       Unit_Name_input3: x.Unit_Name_input3,
       Unit_Name_input4: x.Unit_Name_input4,
       Unit_Name_input5: x.Unit_Name_input5
     }));
     const total = this.getTotal();
+
     this.activity.multiplierTotal = total;
     basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
     this.modal.dismiss();

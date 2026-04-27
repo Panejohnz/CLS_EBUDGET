@@ -180,12 +180,23 @@ export class TabDetailComponent implements OnInit, OnChanges {
     this.targetGroups.push({
       Name: '',
       amount: '',
-      unit: ''
+      Unit: null
     });
   }
 
-  removeTargetGroup(i: number) {
-    this.targetGroups.splice(i, 1);
+  removeTargetGroup(i: number, item: any) {
+    if (item.TargetGroup_Id) {
+      let model = {
+        FUNC_CODE: "FUNC-Delete_TargetGroup",
+        TargetGroup_Id: item.TargetGroup_Id
+      }
+      var getData = this.serviceebud.GatewayGetData(model);
+      getData.subscribe((response: any) => {
+        this.targetGroups.splice(i, 1);
+
+      })
+    }
+
   }
 
 }
