@@ -51,7 +51,21 @@
 
 
                         <td class="text-start">
+                            <div class="d-flex gap-3 mb-1">
 
+                                <div class="form-check m-0">
+                                    <input type="checkbox" class="form-check-input" [(ngModel)]="item.isStandard"
+                                        name="standard_{{i}}">
+                                    <label class="form-check-label">ในมาตรฐาน</label>
+                                </div>
+
+                                <div class="form-check m-0">
+                                    <input type="checkbox" class="form-check-input" [(ngModel)]="item.isNonStandard"
+                                        name="nonstandard_{{i}}">
+                                    <label class="form-check-label">นอกมาตรฐาน</label>
+                                </div>
+
+                            </div>
                             <input class="form-control form-control-sm" [(ngModel)]="item.name">
 
                         </td>
@@ -66,7 +80,8 @@
                                 [(ngModel)]="item.times">
                         </td>
 
-                        <td><input type="number" readonly class="form-control form-control-sm text-center" placeholder="ครั้ง">
+                        <td><input type="number" class="form-control form-control-sm text-center"
+                                placeholder="ระบุหน่วยนับ">
                         </td>
 
 
@@ -79,7 +94,8 @@
                                 [(ngModel)]="item.people">
                         </td>
 
-                        <td><input type="number" readonly class="form-control form-control-sm text-center" placeholder="คน"></td>
+                        <td><input type="number" class="form-control form-control-sm text-center"
+                                placeholder="ระบุหน่วยนับ"></td>
 
 
                         <!-- ตัวคูณ 3 -->
@@ -90,7 +106,8 @@
                             <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.rate">
                         </td>
 
-                        <td><input type="number" readonly class="form-control form-control-sm text-center" placeholder="บาท">
+                        <td><input type="number" class="form-control form-control-sm text-center"
+                                placeholder="ระบุหน่วยนับ">
                         </td>
 
 
@@ -105,7 +122,7 @@
 
                         <td>
                             <input class="form-control form-control-sm" [(ngModel)]="item.Unit_Name"
-                                placeholder="พิมพ์ชื่อหน่วย">
+                                placeholder="ระบุหน่วยนับ">
                         </td>
 
 
@@ -118,7 +135,8 @@
                         </td>
 
                         <td>
-                            <input class="form-control form-control-sm" [(ngModel)]="item.Unit_Name">
+                            <input placeholder="ระบุหน่วยนับ" class="form-control form-control-sm"
+                                [(ngModel)]="item.Unit_Name">
                         </td>
 
                         <!-- ตัวคูณ 6 -->
@@ -130,11 +148,12 @@
                         </td>
 
                         <td>
-                            <input class="form-control form-control-sm" [(ngModel)]="item.Unit_Name">
+                            <input placeholder="ระบุหน่วยนับ" class="form-control form-control-sm"
+                                [(ngModel)]="item.Unit_Name">
                         </td>
 
                         <td class="text-end fw-bold">
-                            {{item.times * item.people * item.rate | number:'1.2-2'}}
+                            {{ calcItemTotal(item) ? (calcItemTotal(item) | number:'1.2-2') : '' }}
                         </td>
 
 

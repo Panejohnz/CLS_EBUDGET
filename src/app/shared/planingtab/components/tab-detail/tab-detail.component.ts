@@ -66,9 +66,14 @@ export class TabDetailComponent implements OnInit, OnChanges {
       this.model.Project_Output.push({
         Name: '',
         Target: '',
-        Unit: ''
+        Unit: null
       });
     }
+
+    this.model.Project_Output.forEach((x: any) => {
+      x.Unit = x.Unit ? Number(x.Unit) : null;
+    });
+
     this.outputs = this.model.Project_Output;
 
     if (!this.model.Project_Outcome) {
@@ -94,11 +99,15 @@ export class TabDetailComponent implements OnInit, OnChanges {
       this.model.Project_TargetGroup.push({
         Name: '',
         Amount: '',
-        Unit: ''
+        Unit: null
       });
     }
-    this.targetGroups = this.model.Project_TargetGroup;
 
+    this.model.Project_TargetGroup = this.model.Project_TargetGroup.map((x: any) => ({
+      ...x,
+      Unit: x.Unit ? Number(x.Unit) : null
+    }));
+    this.targetGroups = this.model.Project_TargetGroup;
   }
   @Input() model: any;
 
@@ -143,7 +152,7 @@ export class TabDetailComponent implements OnInit, OnChanges {
     this.outputs.push({
       Name: '',
       target: '',
-      unit: ''
+      Unit: null
     });
   }
 

@@ -612,8 +612,11 @@ export class ProjectPlanningComponent {
       const times = item.times ?? item.Times ?? 0;
       const people = item.people ?? item.People ?? 0;
       const rate = item.rate ?? item.Rate ?? 0;
+      const People_Type_A = item.People_Type_A ?? item.People_Type_A ?? 0;
+      const People_Type_B = item.People_Type_B ?? item.People_Type_B ?? 0;
+      const People_Type_C = item.People_Type_C ?? item.People_Type_C ?? 0;
 
-      return sum + (times * people * rate);
+      return sum + (times * people * rate * People_Type_A *People_Type_B*People_Type_C);
 
     }, 0);
   }

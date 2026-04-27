@@ -29,7 +29,8 @@ export class TabGuidelineComponent {
     if (this.model?.activities?.length) {
 
       this.activities = this.model.activities;
-
+      console.log('aa',this.activities);
+      
       // 🔥 loop ทีละ activity
       this.activities.forEach((act: any) => {
 
@@ -52,6 +53,15 @@ export class TabGuidelineComponent {
   constructor(private modalService: NgbModal) {
 
 
+  }
+  onBudgetChangeNew(act: any) {
+    if (act.noBudget) {
+      act.quarters?.forEach((q: any) => {
+        q.months?.forEach((m: any) => {
+          m.budget = null;
+        });
+      });
+    }
   }
   selectedActivity: any;
 
@@ -100,11 +110,19 @@ export class TabGuidelineComponent {
     return q;
   }
   addSub(act: any) {
+    act.subActivities = act.subActivities || [];
+
     act.subActivities.push({
       name: '',
       owner: '',
+      noBudget: act.noBudget,
+      consult: 0,
       quarters: this.generateYear(),
-      subActivities: []
+
+      // 🔥 เพิ่มให้เหมือน act
+      multiplierTotal: 0,
+      multiplierList: [], // ถ้ามีใน act
+      subActivities: [] // เผื่อ nested ต่อ
     });
   }
   removeSub(act: any, i: number) {
@@ -151,22 +169,18 @@ export class TabGuidelineComponent {
     75: 'consult',
     70: 'other'
   }
-  openMultiplierModal(content: any, act: any) {
+  selectedActivityId: number | null = null;
+  selectedLevel: 'act' | 'sub' | null = null;
+  openMultiplierModal(content: any, item: any, level: 'act' | 'sub' = 'act') {
 
-    this.selectedActivity = act;
-
-    if (!this.selectedActivity.otherExpenses) {
-      this.selectedActivity.otherExpenses = [];
-    }
+    this.selectedActivity = item; // 🔥 อันนี้ต้องมี
+    this.selectedActivityId = item.Project_Detail_Id || item.id;
 
     this.type = this.formTypeMap[this.model.projectType?.Expense_Id];
+
     if (!this.type) {
       basicAlert('info', 'เลือกประเภทโครงการ', '');
       return;
-    }
-
-    if (!this.selectedActivity.otherExpenses) {
-      this.selectedActivity.otherExpenses = [];
     }
 
     this.modalService.open(content, {

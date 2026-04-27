@@ -52,18 +52,38 @@ export class TabGeneralComponent {
       this.Mas_Department_Lists = res.Mas_Department_Lists || [];
       this.Mas_Plan_Lists = res.Mas_Plan_Lists || [];
       this.Mas_Expense_Lists = res.Mas_Expense_Lists || [];
-   
+
     });
   }
   ngOnChanges() {
 
-      if (this.model) {
-    this.setDefault(); // 🔥 สำคัญมาก
-  }
+    if (this.model) {
+      this.setDefault(); 
+    }
 
-  if (this.model?.Project_Id) {
-    this.mapInitialData();
+    if (this.model?.Project_Id) {
+      this.mapInitialData();
+    }
   }
+  onBudgetChangebox() {
+    const isNoBudget = this.model.Used_BG == 1;
+
+    this.model.activities?.forEach((act: any) => {
+      act.noBudget = isNoBudget;
+
+      if (isNoBudget) {
+        act.quarters?.forEach((q: any) => {
+          q.months?.forEach((m: any) => {
+            m.budget = null;
+            m.selected = false;
+          });
+        });
+      }
+
+      act.subActivities?.forEach((sub: any) => {
+        sub.noBudget = isNoBudget;
+      });
+    });
   }
   setDefault() {
 

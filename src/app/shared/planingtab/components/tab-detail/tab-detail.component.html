@@ -65,7 +65,7 @@
                     </select> -->
                     <select class="form-select" [(ngModel)]="item.Unit" name="output_unit_{{i}}">
 
-                        <option [ngValue]="null">-- เลือกหน่วยนับ --</option>
+                        <option [ngValue]="null" disabled>-- เลือกหน่วยนับ --</option>
                         <option *ngFor="let item of Mas_Unit_Lists" [ngValue]="item.Unit_Id">
                             {{ item.Unit_Name }}
                         </option>
@@ -166,7 +166,7 @@
             </select> -->
             <select class="form-select" [(ngModel)]="item.Unit" name="tg_unit_{{i}}">
 
-                <option [ngValue]="null">-- เลือกหน่วยนับ --</option>
+                <option [ngValue]="null" disabled>-- เลือกหน่วยนับ --</option>
                 <option *ngFor="let u of Mas_Unit_Lists" [ngValue]="u.Unit_Id">
                     {{ u.Unit_Name }}
                 </option>

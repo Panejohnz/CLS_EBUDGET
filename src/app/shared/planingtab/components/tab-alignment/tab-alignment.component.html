@@ -604,8 +604,8 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label">กลยุทธ์ที่</label>
-                                <select (change)="onChangenMeasure()" class="form-select" [(ngModel)]="model.Project_Plan_Level3.Tactics_Id"
-                                    name="ppat_strategy">
+                                <select (change)="onChangenMeasure()" class="form-select"
+                                    [(ngModel)]="model.Project_Plan_Level3.Tactics_Id" name="ppat_strategy">
                                     <option [ngValue]="null" disabled>-- เลือก --</option>
 
                                     <option *ngFor="let item of listMasTactic" [ngValue]="item.Tactics_Id">
@@ -616,7 +616,7 @@
 
                             <div class="col-md-6">
                                 <label class="form-label">มาตรการที่</label>
-                                <select  class="form-select" [(ngModel)]="model.Project_Plan_Level3.Measure_Id"
+                                <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Measure_Id"
                                     name="ppat_strategy">
                                     <option [ngValue]="null" disabled>-- เลือก --</option>
 

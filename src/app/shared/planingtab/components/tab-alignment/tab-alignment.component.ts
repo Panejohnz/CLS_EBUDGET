@@ -678,7 +678,7 @@ export class TabAlignmentComponent implements OnChanges {
     ValueChain_Factor_Main_Id: null,
     ValueChain_Support_Id: null,
     ValueChain_Factor_Support_Id: null,
-
+    SDGs_Gloals_Id: null,
     SDGs_Goal_Id: null,
     SDGs_Target_Id: null
   };

@@ -102,12 +102,14 @@
         <label class="form-label d-block">ลักษณะโครงการ</label>
 
         <div class="form-check form-check-inline">
-            <input  type="radio" class="form-check-input" name="Used_BG" [value]="1" [(ngModel)]="model.Used_BG">
+            <input (ngModelChange)="onBudgetChangebox()" type="radio" class="form-check-input" name="Used_BG"
+                [value]="1" [(ngModel)]="model.Used_BG">
             ใช้งบ
         </div>
 
         <div class="form-check form-check-inline">
-            <input type="radio" class="form-check-input" name="Used_BG" [value]="2" [(ngModel)]="model.Used_BG">
+            <input (ngModelChange)="onBudgetChangebox()" type="radio" class="form-check-input" name="Used_BG"
+                [value]="2" [(ngModel)]="model.Used_BG">
             ไม่ใช้งบ
         </div>
     </div>
