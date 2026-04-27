@@ -69,6 +69,9 @@ export class TabAlignmentComponent implements OnChanges {
         SubplanDesc: '',
         DevGuideline_Id: null,
         Landmark_Id: null,
+        Landmark_Gloals_Id: null,
+        Landmark_Tacticts_Id: null,
+        Landmark_Guidelines_Id: null,
         Target_Id: null,
         Indicator_Id: null,
         Strategy_Main_Id: null,
@@ -79,8 +82,8 @@ export class TabAlignmentComponent implements OnChanges {
         ValueChain_Support_Id: null,
         ValueChain_Factor_Support_Id: null,
 
-        SDGs_Goal_Id: null,
-        SDGs_Target_Id: null
+        SDGs_Gloals_Id: null,
+        SDGs_Targets_Id: null
       };
     }
 
@@ -116,7 +119,11 @@ export class TabAlignmentComponent implements OnChanges {
         PpatPlanName: '',
         PpatStrategy_Id: '',
         PpatMeasure_Id: '',
-        PpatIndicator_Id: ''
+        PpatIndicator_Id: '',
+        Project_Plan_Id: null,
+        Tactics_Id : null,
+        Measure_Id :null,
+        Indicators_Id : null,
       };
     }
 
