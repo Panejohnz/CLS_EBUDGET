@@ -85,10 +85,10 @@
 
                                         <td>
                                             <input type="text" class="form-control form-control-sm text-end"
-                                                [ngModel]="displayValue(q.months[rowIndex].budget)"
+                                                [(ngModel)]="q.months[rowIndex].budget"
                                                 (ngModelChange)="onInputFormat($event, q.months[rowIndex])"
                                                 [disabled]="act.noBudget || act.SubActivities?.length > 0">
-                                            <!-- ถ้าไม่ใช้งบ เคลียร์ค่า -->
+
                                         </td>
 
                                     </ng-container>

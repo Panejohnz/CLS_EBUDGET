@@ -340,9 +340,13 @@ export class TabGuidelineComponent {
       : intPart;
   }
   onInputFormat(value: any, month: any) {
-    month.budget = value;
 
-    // 🔥 หา act แล้ว set
+    const num = Number(value?.toString().replace(/,/g, '')) || 0;
+
+    month.budget = num;
+
+    month.selected = num > 0;
+
     this.model.activities.forEach((act: any) => {
       act._edited = true;
 
