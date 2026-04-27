@@ -20,16 +20,17 @@ export class OtherExpenseProjectComponent {
   }
   ngOnChanges() {
 
-    // 🔥 1. ถ้ามี id → ไป DB
     if (this.activityId) {
       this.loadData();
       return;
     }
 
-    // 🔥 2. ไม่มี id → ใช้ local (activity)
     if (this.activity?.otherExpenses?.length) {
       this.meetingCosts = this.activity.otherExpenses.map((x: any) => ({
         id: x.Project_Item_Id || x.id || 0,
+
+        // 🔥 เพิ่มบรรทัดนี้
+        Project_Item_Id: x.Project_Item_Id || x.id || 0,
 
         name: x.Expense_Name,
         times: x.Times,
@@ -51,7 +52,7 @@ export class OtherExpenseProjectComponent {
       this.meetingCosts = [this.getDefaultItem()];
     }
 
-    this.applyTypeDefault(); // 🔥 แยก logic ไปอีกฟังก์ชัน
+    this.applyTypeDefault();
   }
   applyTypeDefault() {
     if (!this.meetingCosts) return;
@@ -73,10 +74,12 @@ export class OtherExpenseProjectComponent {
     };
 
     this.serviceebud.GatewayGetData(payload).subscribe((res: any) => {
-      console.log(res);
 
       this.meetingCosts = (res.Project_Plan_Detail_Item).map((x: any) => ({
         id: x.Project_Item_Id,
+
+        // 🔥 เพิ่ม
+        Project_Item_Id: x.Project_Item_Id,
 
         name: x.Expense_Name,
         times: x.Times,
@@ -114,6 +117,7 @@ export class OtherExpenseProjectComponent {
       input3: null,
       input4: null,
       input5: null,
+      Project_Item_Id: 0,
 
       Unit_Name_Times: '',
       Unit_Name_People: '',
@@ -122,7 +126,6 @@ export class OtherExpenseProjectComponent {
       Unit_Name_input4: '',
       Unit_Name_input5: '',
       Unit_Name_input6: '',
-      // 🔥 เพิ่มตรงนี้
       isStandard: false,
       isNonStandard: false
     };
@@ -138,6 +141,7 @@ export class OtherExpenseProjectComponent {
       input3: null,
       input4: null,
       input5: null,
+      Project_Item_Id: 0,
 
       Unit_Name_Times: '',
       Unit_Name_People: '',
@@ -214,8 +218,7 @@ export class OtherExpenseProjectComponent {
     }
 
     this.activity.otherExpenses = this.meetingCosts.map(x => ({
-      Project_Item_Id: x.id || 0,
-
+      Project_Item_Id: x.Project_Item_Id || 0,
       Expense_Name: x.name,
       Times: x.times,
       People: x.people,
@@ -224,16 +227,23 @@ export class OtherExpenseProjectComponent {
       input3: x.input3,
       input4: x.input4,
       input5: x.input5,
+
       Unit_Name_Times: x.Unit_Name_Times,
       Unit_Name_People: x.Unit_Name_People,
       Unit_Name_Rate: x.Unit_Name_Rate,
       Unit_Name_input3: x.Unit_Name_input3,
       Unit_Name_input4: x.Unit_Name_input4,
-      Unit_Name_input5: x.Unit_Name_input5
-    }));
-    const total = this.getTotal();
+      Unit_Name_input5: x.Unit_Name_input5,
 
+      isStandard: x.isStandard,
+      isNonStandard: x.isNonStandard,
+
+      Total: this.calcItemTotal(x)
+    }));
+
+    const total = this.getTotal();
     this.activity.multiplierTotal = total;
+
     basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
     this.modal.dismiss();
   }

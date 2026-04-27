@@ -142,10 +142,19 @@ export class TabDetailComponent implements OnInit, OnChanges {
     this.objectives.push({ Name: '' });
   }
 
-  removeObjective(i: number) {
-    if (this.objectives.length > 1) {
+  removeObjective(i: number, item: any) {
+    if (!item.Project_Objectives_Id) {
       this.objectives.splice(i, 1);
     }
+    let model = {
+      FUNC_CODE: "FUNC-Delete_Project_Objectives",
+      Project_Detail_Id: item.Project_Objectives_Id
+    }
+    var getData = this.serviceebud.GatewayGetData(model);
+    getData.subscribe((response: any) => {
+      this.objectives.splice(i, 1);
+    })
+
   }
 
   addOutput() {
@@ -156,16 +165,38 @@ export class TabDetailComponent implements OnInit, OnChanges {
     });
   }
 
-  removeOutput(i: number) {
-    this.outputs.splice(i, 1);
+  removeOutput(i: number, item: any) {
+
+    if (!item.Project_Outpu_Id) {
+      this.outputs.splice(i, 1);
+    }
+    let model = {
+      FUNC_CODE: "FUNC-Delete_Project_Output",
+      Project_Detail_Id: item.Project_Outpu_Id
+    }
+    var getData = this.serviceebud.GatewayGetData(model);
+    getData.subscribe((response: any) => {
+      this.outputs.splice(i, 1);
+    })
   }
 
   addOutcome() {
     this.outcomes.push({ Name: '' });
   }
 
-  removeOutcome(i: number) {
-    this.outcomes.splice(i, 1);
+  removeOutcome(i: number, item: any) {
+
+    if (!item.Project_Outpu_Id) {
+      this.outcomes.splice(i, 1);
+    }
+    let model = {
+      FUNC_CODE: "FUNC-Delete_Project_Outcome",
+      Project_Detail_Id: item.Project_Outcome_Id
+    }
+    var getData = this.serviceebud.GatewayGetData(model);
+    getData.subscribe((response: any) => {
+      this.outcomes.splice(i, 1);
+    })
   }
 
   addExpectedResult() {

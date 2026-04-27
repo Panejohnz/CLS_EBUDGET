@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { EbudgetService } from 'src/app/core/services/ebudget.service';
 
 
 @Component({
@@ -10,7 +11,10 @@ import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 })
 
 export class TabGuidelineComponent {
+  constructor(private modalService: NgbModal, public serviceebud: EbudgetService) {
 
+
+  }
   modalRef: any;
   emptyplan: any = {
     Plan_Id: 0,
@@ -30,49 +34,52 @@ export class TabGuidelineComponent {
 
       this.activities = this.model.activities;
 
-
       this.activities.forEach((act: any) => {
 
-        // 🔥 คำนวณ sub ก่อน
-        let subSum = 0;
-
         if (act.SubActivities?.length) {
+
+          let subSum = 0;
+
           act.SubActivities.forEach((sub: any) => {
 
             const subTotal = (sub.otherExpenses || []).reduce((sum: number, item: any) => {
               return sum + (item.total || item.Total || 0);
             }, 0);
 
-            sub.multiplierTotal = subTotal;
+            if (!subTotal) {
+              sub.multiplierTotal = this.getActivityTotal(sub);
+            } else {
+              sub.multiplierTotal = subTotal;
+            }
 
-            subSum += subTotal;
+            subSum += sub.multiplierTotal;
           });
+
+          act.multiplierTotal = subSum;
+
+        } else {
+
+          const mainTotal = (act.otherExpenses || []).reduce((sum: number, item: any) => {
+            return sum + (item.total || item.Total || 0);
+          }, 0);
+
+          // 👉 fallback เป็น plan
+          if (!mainTotal) {
+            act.multiplierTotal = this.getActivityTotal(act);
+          } else {
+            act.multiplierTotal = mainTotal;
+          }
         }
 
-        // 🔥 main
-        const mainTotal = (act.otherExpenses || []).reduce((sum: number, item: any) => {
-          return sum + (item.total || item.Total || 0);
-        }, 0);
-
-        // 🔥 ถ้ามี sub → ใช้ sub
-        act.multiplierTotal = act.SubActivities?.length ? subSum : mainTotal;
-        console.log('SubActivities', act.SubActivities);
       });
-
     }
 
-    // init กรณีไม่มี
     if (!this.model?.activities) {
       this.model.activities = [];
       this.addActivity();
     }
-
-
   }
-  constructor(private modalService: NgbModal) {
 
-
-  }
   onBudgetChangeNew(act: any) {
     if (act.noBudget) {
       act.quarters?.forEach((q: any) => {
@@ -90,7 +97,7 @@ export class TabGuidelineComponent {
       owner: '',
       quarters: this.generateYear(),
       SubActivities: [],
-      otherExpenses: [] // 👈 ต้องมี
+      otherExpenses: []
     });
   }
   removeActivity(i: number) {
@@ -129,24 +136,46 @@ export class TabGuidelineComponent {
     return q;
   }
   addSub(act: any) {
-    act.SubActivities = act.SubActivities || [];
+
+    act.quarters?.forEach((q: any) => {
+      q.months?.forEach((m: any) => {
+        m.budget = null;
+        m.selected = false;
+      });
+    });
+
+    act.otherExpenses = [];
+    act.multiplierTotal = 0;
 
     act.SubActivities.push({
-      Project_Detail_Id: 0,
       name: '',
       owner: '',
-      noBudget: act.noBudget,
-      consult: 0,
       quarters: this.generateYear(),
-
-      // 🔥 เพิ่มให้เหมือน act
+      SubActivities: [],
+      otherExpenses: [],
       multiplierTotal: 0,
-      multiplierList: [], // ถ้ามีใน act
-      SubActivities: [] // เผื่อ nested ต่อ
+      noBudget: act.noBudget,
+      consultSelf: false,
+      consultHire: false
     });
+
   }
   removeSub(act: any, i: number) {
-    act.SubActivities.splice(i, 1);
+
+    const sub = act.SubActivities[i];
+    if (!sub.Project_Detail_Id) {
+      act.SubActivities.splice(i, 1);
+      return
+    }
+    let model = {
+      FUNC_CODE: "FUNC-Delete_Project_Plan_Detail",
+      Project_Detail_Id: sub.Project_Detail_Id
+    }
+    var getData = this.serviceebud.GatewayGetData(model);
+    getData.subscribe((response: any) => {
+      act.SubActivities.splice(i, 1);
+    })
+
   }
   months = [
     'ต.ค.', 'พ.ย.', 'ธ.ค.',
@@ -193,8 +222,7 @@ export class TabGuidelineComponent {
   selectedLevel: 'act' | 'sub' | null = null;
   openMultiplierModal(content: any, item: any, level: 'act' | 'sub' = 'act') {
 
-
-    this.selectedActivity = item; // 🔥 อันนี้ต้องมี
+    this.selectedActivity = item;
     item._useMultiplier = true;
     this.selectedActivityId = item.Project_Detail_Id || item.id;
 
@@ -222,7 +250,6 @@ export class TabGuidelineComponent {
   }
   calcMultiplier(act: any): number {
 
-    // 🔥 ถ้ามี sub → รวม sub
     if (act.SubActivities?.length) {
       return act.SubActivities.reduce((sum: number, sub: any) => {
         return sum + this.calcMultiplier(sub);
@@ -237,19 +264,19 @@ export class TabGuidelineComponent {
   }
   getActivityTotal(act: any): number {
 
-    // 🔥 ถ้ามี sub → รวม sub
+    // 🔥 มี sub → รวม sub
     if (act.SubActivities?.length) {
       return act.SubActivities.reduce((sum: number, sub: any) => {
         return sum + this.getActivityTotal(sub);
       }, 0);
     }
 
-    // 🔥 ถ้ายังไม่แก้ → ใช้ DB
+    // 🔥 ตอน GET ใช้ DB
     if (!act._edited && act.sumAmount != null) {
       return Number(act.sumAmount);
     }
 
-    // 🔥 ถ้ามีการแก้ → คำนวณใหม่
+    // 🔥 คำนวณใหม่
     let total = 0;
 
     (act.quarters || []).forEach((q: any) => {
@@ -312,39 +339,17 @@ export class TabGuidelineComponent {
       ? intPart + '.' + parts[1]
       : intPart;
   }
-  onInputFormat(value: any, obj: any) {
-    obj._edited = true;
-    if (value === null || value === undefined) {
-      obj.budget = '';
-      obj.selected = false;
-      return;
-    }
+  onInputFormat(value: any, month: any) {
+    month.budget = value;
 
-    let clean = value.toString().replace(/,/g, '');
+    // 🔥 หา act แล้ว set
+    this.model.activities.forEach((act: any) => {
+      act._edited = true;
 
-    clean = clean.replace(/[^0-9.]/g, '');
-
-    const parts = clean.split('.');
-    if (parts.length > 2) {
-      clean = parts[0] + '.' + parts[1];
-    }
-
-    let [intPart, decimalPart] = clean.split('.');
-
-    if (!intPart) intPart = '';
-
-    let formattedInt = intPart
-      ? Number(intPart).toLocaleString('en-US')
-      : '';
-
-    let display = decimalPart !== undefined
-      ? formattedInt + '.' + decimalPart
-      : formattedInt;
-
-    obj.budget = clean;
-
-    const num = parseFloat(clean);
-    obj.selected = !isNaN(num) && num > 0;
+      act.SubActivities?.forEach((sub: any) => {
+        sub._edited = true;
+      });
+    });
   }
   hasSubActivities(act: any): boolean {
     return act?.SubActivities && act.SubActivities.length > 0;

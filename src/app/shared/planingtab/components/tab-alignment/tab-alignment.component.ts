@@ -630,7 +630,7 @@ export class TabAlignmentComponent implements OnChanges {
     });
   }
   afterLoad() {
-  
+
     const l2 = this.planLevel2;
     if (!l2 || Object.keys(l2).length === 0) return;
 
@@ -812,8 +812,19 @@ export class TabAlignmentComponent implements OnChanges {
     });
   }
 
-  removeSubStrategy(i: number) {
-    this.subStrategies.splice(i, 1);
+  removeSubStrategy(i: number, item: any) {
+    if (!item.Project_Plan_Level1_Sub_Id) {
+      this.subStrategies.splice(i, 1);
+    }
+    let model = {
+      FUNC_CODE: "FUNC-Delete_Project_Plan_Level1_Sub",
+      Project_Detail_Id: item.Project_Plan_Level1_Sub_Id
+    }
+    var getData = this.serviceebud.GatewayGetData(model);
+    getData.subscribe((response: any) => {
+      this.subStrategies.splice(i, 1);
+    })
+
   }
 
   addPolicy() {
@@ -876,8 +887,19 @@ export class TabAlignmentComponent implements OnChanges {
     });
   }
 
-  removeCabinet(i: number) {
-    this.model.Project_Cabinet.splice(i, 1);
+  removeCabinet(i: number, item: any) {
+    if (!item.Project_Cabinet_Id) {
+      this.model.Project_Cabinet.splice(i, 1);
+      return
+    }
+    let model = {
+      FUNC_CODE: "FUNC-Delete_Project_Cabinet",
+      Project_Detail_Id: item.Project_Cabinet_Id
+    }
+    var getData = this.serviceebud.GatewayGetData(model);
+    getData.subscribe((response: any) => {
+      this.model.Project_Cabinet.splice(i, 1);
+    })
   }
   addPpatPlan() {
     this.ppatPlans.push({

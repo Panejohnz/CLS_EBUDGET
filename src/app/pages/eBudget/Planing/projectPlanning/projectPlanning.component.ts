@@ -148,10 +148,8 @@ export class ProjectPlanningComponent {
 
           this.project_planing = {
             ...(res.Project_Plan || {}),
-
             Project_Detail: res.Project_Detail || {},
             Project_Objective: res.Project_Objective || [],
-
             Project_Plan_Level1: res.Project_Plan_Level1 || [],
             Project_Plan_Level1_Sub: res.Project_Plan_Level1_Sub || [],
             Project_Cabinet: res.Project_Cabinet || [],
@@ -170,24 +168,16 @@ export class ProjectPlanningComponent {
             Project_Expected: res.Project_Expected || [],
             Project_TargetGroup: res.Project_TargetGroup || [],
           };
-
           const details = res.Project_Plan_Detail || [];
           const items = res.Project_Plan_Detail_Item || [];
-          console.log('details1', details);
 
           details.forEach((d: any) => {
             d.Project_Detail_Id = Number(d.Project_Detail_Id);
             d.Parent_Id = d.Parent_Id ? Number(d.Parent_Id) : null;
           });
-
-          // 🔥 map tree
+          console.log('DETAIL', details);
           const activities = this.mapPlanDetail(details);
-
-
-          // 🔥 map items ลงทั้ง main + sub
           this.mapItems(items, activities);
-
-          this.recalculateAll(activities);
 
           this.project_planing.activities = activities;
         });
@@ -206,10 +196,16 @@ export class ProjectPlanningComponent {
         Project_Plan_Level3: {
           Urgent1_Checked: false,
           Urgent1_Name: '',
-
+          Government_Policy_Id1: null,
+          Government_Policy_Sub_Id1: null,
+          Government_Policy_Id2: null,
+          Government_Policy_Sub_Id2: null,
           Urgent2_Checked: false,
           Urgent2_Name: '',
-
+          Project_Plan_Id: null,
+          Tactics_Id: null,
+          Measure_Id: null,
+          Indicators_Id: null,
           Mid1_Checked: false,
           Mid1_Name: '',
 
@@ -239,8 +235,6 @@ export class ProjectPlanningComponent {
   }
   mapPlanDetail(data: any[]) {
 
-    if (!data || data.length === 0) return [];
-    debugger
     return data.map(x => ({
 
       id: Number(x.Project_Detail_Id),
@@ -251,11 +245,13 @@ export class ProjectPlanningComponent {
       consult: x.Is_Consult === 1,
 
       quarters: this.convertMonths(x.Months),
-      _useMultiplier: false,
+
+      // 🔥 เพิ่มตรงนี้
+      sumAmount: Number(x.Sum_Amount ?? x.Sum_Amount_Total ?? 0),
+      _edited: false,
       otherExpenses: [],
       multiplierTotal: 0,
 
-      // 🔥 ใช้ SubActivities จาก backend ตรงๆ
       SubActivities: (x.SubActivities || []).map((s: any) => ({
 
         id: Number(s.Project_Detail_Id),
@@ -267,14 +263,17 @@ export class ProjectPlanningComponent {
         consult: s.Is_Consult === 1,
 
         quarters: this.convertMonths(s.Months),
-        _useMultiplier: false,
+
+        // 🔥 เพิ่มตรงนี้
+        sumAmount: Number(s.Sum_Amount) || 0,
+
+        _edited: false,
         otherExpenses: [],
         multiplierTotal: 0
 
       }))
 
     }));
-
   }
   mapMonths(x: any) {
 
@@ -326,7 +325,6 @@ export class ProjectPlanningComponent {
 
     const map: any = {};
 
-    // 🔥 flatten main + sub
     const walk = (list: any[]) => {
       list.forEach(a => {
         map[Number(a.id)] = a;
@@ -339,10 +337,10 @@ export class ProjectPlanningComponent {
 
     walk(activities);
 
-    // 🔥 reset ก่อนกันค่าทับ
+    // 🔥 reset ก่อน
     Object.values(map).forEach((a: any) => {
       a.otherExpenses = [];
-      a.multiplierTotal = 0;
+      a.multiplierTotal = 0; // <<<<<< สำคัญ
     });
 
     items.forEach(i => {
@@ -364,32 +362,13 @@ export class ProjectPlanningComponent {
           input5: i.input5
         });
 
-        // 🔥 สำคัญ: set multiplierTotal ให้ทุก node (รวม sub)
+        // 🔥 บรรทัดนี้คือคำตอบ
         target.multiplierTotal += (i.Total || 0);
       }
 
     });
-
   }
-  recalculateAll(activities: any[]) {
 
-    activities.forEach(act => {
-
-      // 🔥 sub ก่อน
-      if (act.SubActivities?.length) {
-        act.SubActivities.forEach((sub: any) => {
-
-          sub.multiplierTotal = this.calcMultiplierTotalFromModel(sub);
-
-        });
-      }
-
-      // 🔥 main
-      act.multiplierTotal = this.calcMultiplierTotalFromModel(act);
-
-    });
-
-  }
   currentTab = 1;
   firstLoad = true;
 
@@ -464,7 +443,7 @@ export class ProjectPlanningComponent {
     };
 
     this.project_planing.Project_Plan_Detail = this.mapActivities();
-    console.log('this.project_planing.activities', this.project_planing.activities);
+
 
     if (!this.validateBeforeSave(this.project_planing.activities)) {
       return;
@@ -639,34 +618,16 @@ export class ProjectPlanningComponent {
   }
   calcMultiplierTotalFromModel(act: any): number {
 
-    // 🔥 sub ก่อน
+    // 🔥 มี sub → รวม sub
     if (act.SubActivities?.length) {
       return act.SubActivities.reduce((sum: number, sub: any) => {
         return sum + this.calcMultiplierTotalFromModel(sub);
       }, 0);
     }
 
-    const list = act.otherExpenses || [];
-
-    if (!list.length) return 0;
-
-    return list.reduce((sum: number, item: any) => {
-
-      // 🔥 ถ้ามี total จาก DB → ใช้เลย
-      if (item.total != null) {
-        return sum + Number(item.total);
-      }
-
-      // 🔥 fallback คำนวณ
-      const times = item.times ?? item.Times ?? 0;
-      const people = item.people ?? item.People ?? 0;
-      const rate = item.rate ?? item.Rate ?? 0;
-      const input3 = item.input3 ?? 1;
-      const input4 = item.input4 ?? 1;
-      const input5 = item.input5 ?? 1;
-
-      return sum + (times * people * rate * input3 * input4 * input5);
-
+    // 🔥 คำนวณจาก otherExpenses ตรงๆ
+    return (act.otherExpenses || []).reduce((sum: number, item: any) => {
+      return sum + (item.total || item.Total || 0);
     }, 0);
   }
   prepareBeforeSave(activities: any[]) {
@@ -710,4 +671,5 @@ export class ProjectPlanningComponent {
 
     return true;
   }
+
 }
