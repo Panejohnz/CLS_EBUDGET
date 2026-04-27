@@ -249,7 +249,15 @@ export class ProjectPlanningComponent {
         name: i.Expense_Name,
         times: i.Times,
         people: i.People,
-        rate: i.Rate
+        rate: i.Rate,
+        input3: i.input3,
+        input4: i.input4,
+        input5: i.input5,
+        Unit_Name_Times: i.Unit_Name_Times,
+        Unit_Name_People: i.Unit_Name_People,
+        Unit_Name_input3: i.Unit_Name_input3,
+        Unit_Name_input4: i.Unit_Name_input4,
+        Unit_Name_input5: i.Unit_Name_input5
       })),
 
       // 🔥 sub
@@ -269,7 +277,15 @@ export class ProjectPlanningComponent {
           name: i.Expense_Name,
           times: i.Times,
           people: i.People,
-          rate: i.Rate
+          rate: i.Rate,
+          input3: i.input3,
+          input4: i.input4,
+          input5: i.input5,
+          Unit_Name_Times: i.Unit_Name_Times,
+          Unit_Name_People: i.Unit_Name_People,
+          Unit_Name_input3: i.Unit_Name_input3,
+          Unit_Name_input4: i.Unit_Name_input4,
+          Unit_Name_input5: i.Unit_Name_input5
         }))
 
       }))
@@ -348,7 +364,15 @@ export class ProjectPlanningComponent {
           times: i.Times,
           people: i.People,
           rate: i.Rate,
-          total: i.Total
+          total: i.Total,
+          input3: i.input3,
+          input4: i.input4,
+          input5: i.input5,
+          Unit_Name_Times: i.Unit_Name_Times,
+          Unit_Name_People: i.Unit_Name_People,
+          Unit_Name_input3: i.Unit_Name_input3,
+          Unit_Name_input4: i.Unit_Name_input4,
+          Unit_Name_input5: i.Unit_Name_input5
         });
         target.multiplierTotal = (target.multiplierTotal || 0) + (i.Total || 0);
       }
@@ -612,11 +636,11 @@ export class ProjectPlanningComponent {
       const times = item.times ?? item.Times ?? 0;
       const people = item.people ?? item.People ?? 0;
       const rate = item.rate ?? item.Rate ?? 0;
-      const People_Type_A = item.People_Type_A ?? item.People_Type_A ?? 0;
-      const People_Type_B = item.People_Type_B ?? item.People_Type_B ?? 0;
-      const People_Type_C = item.People_Type_C ?? item.People_Type_C ?? 0;
+      const input3 = item.input3 ?? item.input3 ?? 0;
+      const input4 = item.input4 ?? item.input4 ?? 0;
+      const input5 = item.input5 ?? item.input5 ?? 0;
 
-      return sum + (times * people * rate * People_Type_A *People_Type_B*People_Type_C);
+      return sum + (times * people * rate * input3 * input4 * input5);
 
     }, 0);
   }

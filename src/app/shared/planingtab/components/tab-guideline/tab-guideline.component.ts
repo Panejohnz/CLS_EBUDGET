@@ -29,8 +29,8 @@ export class TabGuidelineComponent {
     if (this.model?.activities?.length) {
 
       this.activities = this.model.activities;
-      console.log('aa',this.activities);
-      
+      console.log('aa', this.activities);
+
       // 🔥 loop ทีละ activity
       this.activities.forEach((act: any) => {
 
@@ -172,6 +172,7 @@ export class TabGuidelineComponent {
   selectedActivityId: number | null = null;
   selectedLevel: 'act' | 'sub' | null = null;
   openMultiplierModal(content: any, item: any, level: 'act' | 'sub' = 'act') {
+
 
     this.selectedActivity = item; // 🔥 อันนี้ต้องมี
     this.selectedActivityId = item.Project_Detail_Id || item.id;
@@ -315,8 +316,10 @@ export class TabGuidelineComponent {
       const times = item.Times ?? item.times ?? 0;
       const people = item.People ?? item.people ?? 0;
       const rate = item.Rate ?? item.rate ?? 0;
-
-      return sum + (times * people * rate);
+      const input3 = item.input3 ?? item.input3 ?? 0;
+      const input4 = item.input4 ?? item.input4 ?? 0;
+      const input5 = item.input5 ?? item.input5 ?? 0;
+      return sum + (times * people * rate * input3 * input4 * input5);
 
     }, 0);
 
@@ -328,7 +331,10 @@ export class TabGuidelineComponent {
       const times = item.Times ?? item.times ?? 0;
       const people = item.People ?? item.people ?? 0;
       const rate = item.Rate ?? item.rate ?? 0;
-      return sum + (times * people * rate);
+      const input3 = item.input3 ?? item.input3 ?? 0;
+      const input4 = item.input4 ?? item.input4 ?? 0;
+      const input5 = item.input5 ?? item.input5 ?? 0;
+      return sum + (times * people * rate * input3 * input4 * input5);
     }, 0);
   }
   updateMultiplierTotal(act: any) {
@@ -340,8 +346,10 @@ export class TabGuidelineComponent {
       const times = item.times ?? item.Times ?? 0;
       const people = item.people ?? item.People ?? 0;
       const rate = item.rate ?? item.Rate ?? 0;
-
-      return sum + (times * people * rate);
+      const input3 = item.input3 ?? item.input3 ?? 0;
+      const input4 = item.input4 ?? item.input4 ?? 0;
+      const input5 = item.input5 ?? item.input5 ?? 0;
+      return sum + (times * people * rate * input3 * input4 * input5);
 
     }, 0);
   }
