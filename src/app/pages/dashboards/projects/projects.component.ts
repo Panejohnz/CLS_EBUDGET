@@ -14,6 +14,7 @@ import { ApexLegend } from "ng-apexcharts";
  */
 export class ProjectsComponent implements OnInit {
   statData: any
+  breadCrumbItems: any
   pieChart = {
     series: [30, 25, 20, 15, 10],
     chart: {
@@ -59,7 +60,7 @@ export class ProjectsComponent implements OnInit {
       height: 300
     },
     stroke: { width: [0, 3] },
-    colors: ['#4e73df', '#1cc88a','#e74a3b'],
+    colors: ['#4e73df', '#1cc88a', '#e74a3b'],
     xaxis: { categories: ['ไตรมาส 1', 'ไตรมาส 2', 'ไตรมาส 3', 'ไตรมาส 4'] }
   };
   planChart = {
@@ -220,7 +221,10 @@ export class ProjectsComponent implements OnInit {
     reimburse: 0,
     balance: 0
   };
+  setprojectvalue(str: any) {
 
+
+  }
   calculateSummary() {
     const data = this.statData; // หรือ data จาก API
 
@@ -244,20 +248,20 @@ export class ProjectsComponent implements OnInit {
   }
 
   totalAll: number = 0;
-totalFixed: number = 0;
-totalInvest: number = 0;
+  totalFixed: number = 0;
+  totalInvest: number = 0;
 
-totalPlan = 50000;
-totalUsed = 32000;
-totalRemain = 18000;
+  totalPlan = 50000;
+  totalUsed = 32000;
+  totalRemain = 18000;
 
-fixedPlan = 20000;
-fixedUsed = 15000;
-fixedRemain = 5000;
+  fixedPlan = 20000;
+  fixedUsed = 15000;
+  fixedRemain = 5000;
 
-investPlan = 30000;
-investUsed = 17000;
-investRemain = 13000;
+  investPlan = 30000;
+  investUsed = 17000;
+  investRemain = 13000;
 
   num: number = 0;
   option = {
@@ -296,9 +300,8 @@ investRemain = 13000;
   /**
  * Projects Overview
  */
-
-<<<<<<< HEAD
-   private _OverviewChart(colors:any) {
+  OverviewChart: any
+  private _OverviewChart(colors: any) {
     colors = this.getChartColorsArray(colors);
     this.OverviewChart = {
       series: [{
@@ -315,164 +318,168 @@ investRemain = 13000;
         data: [8, 12, 7, 17, 21, 11, 5, 9, 7, 29, 12, 35]
       }],
       chart: {
-          height: 374,
-          type: 'line',
-          toolbar: {
-              show: false,
-          }
+        height: 374,
+        type: 'line',
+        toolbar: {
+          show: false,
+        }
       },
       stroke: {
-          curve: 'smooth',
-          dashArray: [0, 3, 0],
-          width: [0,1, 0],
+        curve: 'smooth',
+        dashArray: [0, 3, 0],
+        width: [0, 1, 0],
       },
       fill: {
-          opacity: [1, 0.1, 1]
+        opacity: [1, 0.1, 1]
       },
       markers: {
-          size: [0, 4, 0],
-          strokeWidth: 2,
-          hover: {
-              size: 4,
-          }
+        size: [0, 4, 0],
+        strokeWidth: 2,
+        hover: {
+          size: 4,
+        }
       },
       xaxis: {
-          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-          axisTicks: {
-              show: false
-          },
-          axisBorder: {
-              show: false
-          }
+        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        axisTicks: {
+          show: false
+        },
+        axisBorder: {
+          show: false
+        }
       },
       grid: {
-          show: true,
-          xaxis: {
-              lines: {
-                  show: true,
-              }
-          },
-          yaxis: {
-              lines: {
-                  show: false,
-              }
-          },
-          padding: {
-              top: 0,
-              right: -2,
-              bottom: 15,
-              left: 10
-          },
+        show: true,
+        xaxis: {
+          lines: {
+            show: true,
+          }
+        },
+        yaxis: {
+          lines: {
+            show: false,
+          }
+        },
+        padding: {
+          top: 0,
+          right: -2,
+          bottom: 15,
+          left: 10
+        },
       },
       legend: {
-          show: true,
-          horizontalAlign: 'center',
-          offsetX: 0,
-          offsetY: -5,
-          markers: {
-              width: 9,
-              height: 9,
-              radius: 6,
-          },
-          itemMargin: {
-              horizontal: 10,
-              vertical: 0
-          },
+        show: true,
+        horizontalAlign: 'center',
+        offsetX: 0,
+        offsetY: -5,
+        markers: {
+          width: 9,
+          height: 9,
+          radius: 6,
+        },
+        itemMargin: {
+          horizontal: 10,
+          vertical: 0
+        },
       },
       plotOptions: {
-          bar: {
-              columnWidth: '30%',
-              barHeight: '70%'
-          }
+        bar: {
+          columnWidth: '30%',
+          barHeight: '70%'
+        }
       },
       colors: colors,
       tooltip: {
-      shared: true,
-      y: [{
-          formatter: function (y:any) {
-            if(typeof y !== "undefined") {
-              return  y.toFixed(0);
-            }
-            return y;
-            
-          }
-        }, {
-          formatter: function (y:any) {
-            if(typeof y !== "undefined") {
-              return   "$" + y.toFixed(2) + "k";
-            }
-            return y;
-            
-          }
-        }, {
-          formatter: function (y:any) {
-            if(typeof y !== "undefined") {
+        shared: true,
+        y: [{
+          formatter: function (y: any) {
+            if (typeof y !== "undefined") {
               return y.toFixed(0);
             }
             return y;
-            
+
+          }
+        }, {
+          formatter: function (y: any) {
+            if (typeof y !== "undefined") {
+              return "$" + y.toFixed(2) + "k";
+            }
+            return y;
+
+          }
+        }, {
+          formatter: function (y: any) {
+            if (typeof y !== "undefined") {
+              return y.toFixed(0);
+            }
+            return y;
+
           }
         }]
       }
     };
   }
 
-   /**
- *  Status7
- */
-    setstatusvalue(value: any) {
-      if (value == 'all') {
-        this.status7.series = [125, 42, 58, 89]
-      }
-      if (value == '7') {
-        this.status7.series = [25, 52, 158, 99]
-      }
-      if (value == '30') {
-        this.status7.series = [35, 22, 98, 99]
-      }
-      if (value == '90') {
-        this.status7.series = [105, 32, 68, 79]
-      }
+  /**
+*  Status7
+*/
+  status7: any
+  setstatusvalue(value: any) {
+    if (value == 'all') {
+      this.status7.series = [125, 42, 58, 89]
     }
+    if (value == '7') {
+      this.status7.series = [25, 52, 158, 99]
+    }
+    if (value == '30') {
+      this.status7.series = [35, 22, 98, 99]
+    }
+    if (value == '90') {
+      this.status7.series = [105, 32, 68, 79]
+    }
+  }
 
-    private _status7(colors:any) {
-      colors = this.getChartColorsArray(colors);
-      this.status7 = {
-        series: [125, 42, 58, 89],
-        labels: ["Completed", "In Progress", "Yet to Start", "Cancelled"],
-        chart: {
-            type: "donut",
-            height: 230,
+  private _status7(colors: any) {
+    colors = this.getChartColorsArray(colors);
+    this.status7 = {
+      series: [125, 42, 58, 89],
+      labels: ["Completed", "In Progress", "Yet to Start", "Cancelled"],
+      chart: {
+        type: "donut",
+        height: 230,
+      },
+      plotOptions: {
+        pie: {
+          offsetX: 0,
+          offsetY: 0,
+          donut: {
+            size: "90%",
+            labels: {
+              show: false,
+            }
+          },
         },
-        plotOptions: {
-            pie: {
-                offsetX: 0,
-                offsetY: 0,
-                donut: {
-                    size: "90%",
-                    labels: {
-                        show: false,
-                    }
-                },
-            },
-        },
-        dataLabels: {
-            enabled: false,
-        },
-        legend: {
-            show: false,
-        },
-        stroke: {
-            lineCap: "round",
-            width: 0
-        },
-        colors: colors
-      };
-    }
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      legend: {
+        show: false,
+      },
+      stroke: {
+        lineCap: "round",
+        width: 0
+      },
+      colors: colors
+    };
+  }
 
   /**
    * Fetches the data
    */
+  ActiveProjects: any
+  MyTask: any
+  TeamMembers: any
   private fetchData() {
     // this.statData = projectstatData;
     this.statData = projectstatData;
@@ -480,7 +487,5 @@ investRemain = 13000;
     this.MyTask = MyTask;
     this.TeamMembers = TeamMembers;
   }
-=======
->>>>>>> 0804b241d250b46e32d044d23463a8ba296cf2be
 
 }
