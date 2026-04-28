@@ -10,7 +10,7 @@
                 <app-projects-stat [title]="stat.title" [value]="stat.value" [icon]="stat.icon"
                     [persantage]="stat.persantage" [profit]="stat.profit" [month]="stat.month"></app-projects-stat>
             </div>
-        }
+            }
         </div><!-- end row -->
 
         <div class="row">
@@ -39,14 +39,16 @@
                         <div class="row g-0 text-center">
                             <div class="col-6 col-sm-3">
                                 <div class="p-3 border border-dashed border-start-0">
-                                    <h5 class="mb-1"><span [countUp]="9851" class="counter-value" [options]="option"></span></h5>
+                                    <h5 class="mb-1"><span [countUp]="9851" class="counter-value"
+                                            [options]="option"></span></h5>
                                     <p class="text-muted mb-0">Number of Projects</p>
                                 </div>
                             </div>
                             <!--end col-->
                             <div class="col-6 col-sm-3">
                                 <div class="p-3 border border-dashed border-start-0">
-                                    <h5 class="mb-1"><span [countUp]="1026" class="counter-value" [options]="option"></span></h5>
+                                    <h5 class="mb-1"><span [countUp]="1026" class="counter-value"
+                                            [options]="option"></span></h5>
                                     <p class="text-muted mb-0">Active Projects</p>
                                 </div>
                             </div>
@@ -71,12 +73,12 @@
                     </div><!-- end card header -->
                     <div class="card-body p-0 pb-2">
                         <div class="mb-n3">
-                            <apx-chart [series]="OverviewChart.series" [chart]="OverviewChart.chart"
-                                [stroke]="OverviewChart.stroke" [fill]="OverviewChart.fill"
-                                [markers]="OverviewChart.markers" [xaxis]="OverviewChart.xaxis"
-                                [grid]="OverviewChart.grid" [legend]="OverviewChart.legend"
-                                [plotOptions]="OverviewChart.plotOptions" [colors]="OverviewChart.colors"
-                                [tooltip]="OverviewChart.tooltip" dir="ltr"></apx-chart>
+                            <apx-chart [series]="OverviewChart?.series" [chart]="OverviewChart?.chart"
+                                [stroke]="OverviewChart?.stroke" [fill]="OverviewChart?.fill"
+                                [markers]="OverviewChart?.markers" [xaxis]="OverviewChart?.xaxis"
+                                [grid]="OverviewChart?.grid" [legend]="OverviewChart?.legend"
+                                [plotOptions]="OverviewChart?.plotOptions" [colors]="OverviewChart?.colors"
+                                [tooltip]="OverviewChart?.tooltip" dir="ltr"></apx-chart>
                         </div>
                     </div><!-- end card body -->
                 </div><!-- end card -->
@@ -95,124 +97,128 @@
                         [inline]="true">
                 </div>
 
-    <!-- รายจ่ายลงทุน -->
-    <div class="col-xl-4">
-        <div class="card shadow-sm p-3">
-            <h6>รายจ่ายลงทุน</h6>
-            <div class="d-flex justify-content-between">
-                <span>แผน</span>
-                <span>5,000,000</span>
-            </div>
-            <div class="d-flex justify-content-between">
-                <span>เบิกจ่าย</span>
-                <span>100,000</span>
-            </div>
-            <div class="d-flex justify-content-between">
-                <span>คงเหลือ</span>
-                <span class="text-success">400,000</span>
-            </div>
-        </div>
-    </div>
-
-</div>
-<div class="row project-wrapper">
-
-    <!-- 🔹 TOP CARDS -->
-    <div class="col-12">
-        <div class="row g-3">
-
-            <div class="col-xl-4 col-md-6 col-12" *ngFor="let stat of statData">
-                <app-projects-stat [title]="stat.title" [value]="stat.value" [Reimburse]="stat.Reimburse"
-                    [Balance]="stat.Balance" [icon]="stat.icon">
-                </app-projects-stat>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- 🔹 PIE + BAR -->
-    <div class="col-xxl-6">
-        <div class="card shadow-sm h-100">
-            <div class="card-header">
-                <h5 class="mb-0">ภาพรวมงบประมาณ</h5>
-            </div>
-            <div class="card-body">
-                <apx-chart [series]="pieChart.series" [chart]="pieChart.chart" [labels]="pieChart.labels"
-                    [colors]="pieChart.colors">
-                </apx-chart>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-xxl-6">
-        <div class="card shadow-sm h-100">
-            <div class="card-header">
-                <h5 class="mb-0">ภาพรวมเงินงบประมาณแยกตามหมวดงบประมาณ</h5>
-            </div>
-            <div class="card-body">
-                <apx-chart [series]="barLineChart.series" [chart]="barLineChart.chart" [xaxis]="barLineChart.xaxis"
-                    [stroke]="barLineChart.stroke" [colors]="barLineChart.colors">
-                </apx-chart>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="col-12">
-        <br>
-        <div class="card shadow-sm">
-            <div class="card-header">
-                <h5 class="mb-0">ภาพรวมงบประมาณแยกตาม พ.ร.บ แผนงานต่าง ๆ</h5>
-            </div>
-            <div class="card-body">
-                <apx-chart [series]="comboChart.series" [chart]="comboChart.chart" [stroke]="comboChart.stroke"
-                    [colors]="comboChart.colors" [plotOptions]="comboChart.plotOptions" [xaxis]="comboChart.xaxis"
-                    [legend]="comboChart.legend">
-                </apx-chart>
-            </div>
-        </div>
-    </div>
-
-    <!-- 🔹 TREND -->
-    <div class="col-12">
-        <div class="card shadow-sm">
-            <div class="card-header">
-                <h5 class="mb-0">ภาพรวมงบประมาณแยกตามหน่วยงานและเปรียบเทียบกับงบประมาณที่ได้รับจัดสรร</h5>
-            </div>
-            <div class="card-body">
-                <apx-chart [series]="comboChart2.series" [chart]="comboChart2.chart" [stroke]="comboChart2.stroke"
-                    [colors]="comboChart2.colors" [plotOptions]="comboChart2.plotOptions" [xaxis]="comboChart2.xaxis"
-                    [legend]="comboChart2.legend">
-                </apx-chart>
-            </div>
-        </div>
-    </div>
-    <div class="col-xxl-6">
-        <div class="card shadow-sm h-100">
-            <div class="card-header">
-                <h5 class="mb-0"> ภาพรวมงบประมาณแยกตามไตรมาส</h5>
-            </div>
-            <div class="card-body">
-
-                <apx-chart [series]="pieChart2.series" [chart]="pieChart2.chart" [labels]="pieChart2.labels"
-                    [colors]="pieChart2.colors">
-                </apx-chart>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-xxl-6">
-        <div class="card shadow-sm h-100">
-            <div class="card-header">
-                <h5 class="mb-0">ภาพรวมงบประมาณแยกตามไตรมาสเทียบผลเบิกจ่าย</h5>
-            </div>
-            <div class="card-body">
-                <apx-chart [series]="barLineChart2.series" [chart]="barLineChart2.chart" [xaxis]="barLineChart2.xaxis"
-                    [stroke]="barLineChart2.stroke" [colors]="barLineChart2.colors">
-                </apx-chart>
-
+                <!-- รายจ่ายลงทุน -->
+                <div class="col-xl-4">
+                    <div class="card shadow-sm p-3">
+                        <h6>รายจ่ายลงทุน</h6>
+                        <div class="d-flex justify-content-between">
+                            <span>แผน</span>
+                            <span>5,000,000</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>เบิกจ่าย</span>
+                            <span>100,000</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>คงเหลือ</span>
+                            <span class="text-success">400,000</span>
+                        </div>
+                    </div>
+                </div>
 
             </div>
-        </div>
-    </div>
-</div>
+            <div class="row project-wrapper">
+
+                <!-- 🔹 TOP CARDS -->
+                <div class="col-12">
+                    <div class="row g-3">
+
+                        <div class="col-xl-4 col-md-6 col-12" *ngFor="let stat of statData">
+                            <app-projects-stat [title]="stat.title" [value]="stat.value" [Reimburse]="stat.Reimburse"
+                                [Balance]="stat.Balance" [icon]="stat.icon">
+                            </app-projects-stat>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- 🔹 PIE + BAR -->
+                <div class="col-xxl-6">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">ภาพรวมงบประมาณ</h5>
+                        </div>
+                        <div class="card-body">
+                            <apx-chart [series]="pieChart.series" [chart]="pieChart.chart" [labels]="pieChart.labels"
+                                [colors]="pieChart.colors">
+                            </apx-chart>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xxl-6">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">ภาพรวมเงินงบประมาณแยกตามหมวดงบประมาณ</h5>
+                        </div>
+                        <div class="card-body">
+                            <apx-chart [series]="barLineChart.series" [chart]="barLineChart.chart"
+                                [xaxis]="barLineChart.xaxis" [stroke]="barLineChart.stroke"
+                                [colors]="barLineChart.colors">
+                            </apx-chart>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-12">
+                    <br>
+                    <div class="card shadow-sm">
+                        <div class="card-header">
+                            <h5 class="mb-0">ภาพรวมงบประมาณแยกตาม พ.ร.บ แผนงานต่าง ๆ</h5>
+                        </div>
+                        <div class="card-body">
+                            <apx-chart [series]="comboChart.series" [chart]="comboChart.chart"
+                                [stroke]="comboChart.stroke" [colors]="comboChart.colors"
+                                [plotOptions]="comboChart.plotOptions" [xaxis]="comboChart.xaxis"
+                                [legend]="comboChart.legend">
+                            </apx-chart>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 🔹 TREND -->
+                <div class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-header">
+                            <h5 class="mb-0">ภาพรวมงบประมาณแยกตามหน่วยงานและเปรียบเทียบกับงบประมาณที่ได้รับจัดสรร</h5>
+                        </div>
+                        <div class="card-body">
+                            <apx-chart [series]="comboChart2.series" [chart]="comboChart2.chart"
+                                [stroke]="comboChart2.stroke" [colors]="comboChart2.colors"
+                                [plotOptions]="comboChart2.plotOptions" [xaxis]="comboChart2.xaxis"
+                                [legend]="comboChart2.legend">
+                            </apx-chart>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xxl-6">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0"> ภาพรวมงบประมาณแยกตามไตรมาส</h5>
+                        </div>
+                        <div class="card-body">
+
+                            <apx-chart [series]="pieChart2.series" [chart]="pieChart2.chart" [labels]="pieChart2.labels"
+                                [colors]="pieChart2.colors">
+                            </apx-chart>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xxl-6">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">ภาพรวมงบประมาณแยกตามไตรมาสเทียบผลเบิกจ่าย</h5>
+                        </div>
+                        <div class="card-body">
+                            <apx-chart [series]="barLineChart2.series" [chart]="barLineChart2.chart"
+                                [xaxis]="barLineChart2.xaxis" [stroke]="barLineChart2.stroke"
+                                [colors]="barLineChart2.colors">
+                            </apx-chart>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
