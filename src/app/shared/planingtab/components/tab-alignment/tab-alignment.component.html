@@ -1,0 +1,651 @@
+<!-- ================= LEVEL 1 ================= -->
+
+
+<div class="card mb-4">
+    <div class="card-header fw-bold bg-light">
+        แผนระดับ 1
+    </div>
+
+    <div class="card-body">
+
+        <!-- 1.1 -->
+        <div class="border-start border-4 border-primary ps-3 mb-4">
+            <h6 class="fw-bold text-primary mb-3">
+                1.1 ยุทธศาสตร์ที่เกี่ยวข้องโดยตรง (Z)
+            </h6>
+        </div>
+
+        <div class="border rounded p-3 mb-3 bg-light">
+            <div class="row g-3">
+
+                <div class="col-md-4">
+                    <label>ยุทธศาสตร์ด้าน</label>
+                    <select class="form-select" [(ngModel)]="planLevel1Main.Strategy_Side_Id
+" (change)="onChangeStrategic(planLevel1Main.Strategy_Side_Id)">
+                        <option [ngValue]="null" disabled>-- เลือก --</option>
+                        <option *ngFor="let item of listStrategic" [ngValue]="item.Strategic_Id">
+                            {{ item.Strategic_Name }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label>ประเด็นยุทธศาสตร์</label>
+                    <select class="form-select" [(ngModel)]="planLevel1Main.Strategy_Issue_Id"
+                        (change)="onChangeIssue(planLevel1Main.Strategy_Issue_Id)">
+                        <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                        <option *ngFor="let item of listIssue" [ngValue]="item.Issues_Id">
+                            {{ item.Strategic_Issues_Name }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label>ประเด็นย่อย</label>
+                    <select class="form-select" [(ngModel)]="planLevel1Main.Strategy_SubIssue_Id">
+                        <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                        <option *ngFor="let item of listSubIssue" [ngValue]="item.Issues_Sub_Id">
+                            {{ item.Strategic_Sub_Issues_Name }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-md-12">
+                    <label>เป้าหมาย</label>
+                    <input class="form-control" [(ngModel)]="planLevel1Main.Target" name="l1_target">
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ================= 1.2 ================= -->
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="border-start border-4 border-primary ps-3 mb-4">
+                <h6 class="fw-bold text-primary">
+                    1.2 ยุทธศาสตร์ชาติที่เกี่ยวข้องในระดับรอง (Z)
+                </h6>
+            </div>
+
+            <button class="btn btn-sm btn-outline-primary" (click)="addSubStrategy()">
+                + เพิ่มรายการ
+            </button>
+        </div>
+
+        <div *ngFor="let item of subStrategies; let i = index" class="border rounded p-3 mb-3 bg-light">
+
+            <div class="text-end">
+                <button class="btn btn-sm btn-danger" (click)="removeSubStrategy(i,item)">
+                    <i class="bx bx-trash"></i>
+                </button>
+            </div>
+
+            <div class="row g-3">
+
+                <div class="col-md-4">
+                    <label class="form-label">ยุทธศาสตร์ด้าน</label>
+                    <select class="form-select" [(ngModel)]="item.Strategy_Side_Id"
+                        (change)="onChangeStrategicSub(item)">
+
+                        <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                        <option *ngFor="let s of listStrategic" [ngValue]="s.Strategic_Id">
+                            {{ s.Strategic_Name }}
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- 🔥 ประเด็นยุทธศาสตร์ -->
+                <div class="col-md-4">
+                    <label class="form-label">ประเด็นยุทธศาสตร์</label>
+                    <select class="form-select" [(ngModel)]="item.Strategy_Issue_Id" (change)="onChangeIssueSub(item)">
+
+                        <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                        <option *ngFor="let s of item.listIssue" [ngValue]="s.Issues_Id">
+                            {{ s.Strategic_Issues_Name }}
+                        </option>
+
+                    </select>
+                </div>
+
+                <!-- 🔥 ประเด็นย่อย -->
+                <div class="col-md-4">
+                    <label class="form-label">ประเด็นย่อย</label>
+                    <select class="form-select" [(ngModel)]="item.Strategy_SubIssue_Id">
+
+                        <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                        <option *ngFor="let s of item.listSubIssue" [ngValue]="s.Issues_Sub_Id">
+                            {{ s.Strategic_Sub_Issues_Name }}
+                        </option>
+
+                    </select>
+                </div>
+
+                <!-- 🔥 เป้าหมาย -->
+                <div class="col-md-12">
+                    <label class="form-label">เป้าหมาย</label>
+                    <input type="text" class="form-control" [(ngModel)]="item.Target" name="sub_target_{{i}}">
+                </div>
+
+                <!-- 🔥 ความสอดคล้อง -->
+                <div class="col-md-12">
+                    <label class="form-label">
+                        ความสอดคล้องของโครงการกับยุทธศาสตร์ชาติ
+                    </label>
+                    <textarea class="form-control" rows="3" [(ngModel)]="item.AlignmentDetail" name="sub_desc_{{i}}">
+      </textarea>
+                </div>
+
+            </div>
+
+        </div>
+        <!-- ================= LEVEL 2 ================= -->
+
+        <!-- ================= LEVEL 2 ================= -->
+        <div class="card mb-4">
+
+            <div class="card-header fw-bold bg-light">
+                แผนระดับ 2
+            </div>
+
+            <!-- ================= 2.1 ================= -->
+            <div class="card-body">
+
+                <div class="border-start border-4 border-primary ps-3 mb-4">
+                    <h6 class="fw-bold text-primary mb-3">
+                        2.1 ความสอดคล้องกับแผนแม่บทภายใต้ยุทธศาสตร์ชาติ (Y)
+                    </h6>
+                </div>
+
+                <div class="border rounded p-3 mb-3 bg-light">
+                    <div class="row g-3">
+
+                        <div class="col-md-4">
+                            <label class="form-label">ยุทธศาสตร์ด้าน</label>
+                            <select class="form-select" [(ngModel)]="planLevel2.Strategy_Side_Id"
+                                (change)="onChangeMasterPlan(planLevel2.Strategy_Side_Id)">
+
+                                <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                                <option *ngFor="let item of listMasterPlan" [ngValue]="item.Master_Plan_Id">
+                                    {{ item.Master_Plan_Name }}
+                                </option>
+
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">เป้าหมายระดับประเด็น (Y2)</label>
+                            <select class="form-select" [(ngModel)]="planLevel2.Target_Yz_Id">
+
+                                <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                                <option *ngFor="let item of listMasterPlanGoal" [ngValue]="item.Plan_Goals_Id">
+                                    {{ item.Plan_Goals_Name }}
+                                </option>
+
+                            </select>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label">ความสอดคล้องกับเป้าหมายของแผนแม่บท</label>
+                            <textarea class="form-control" rows="3" [(ngModel)]="planLevel2.Description" name="l2_desc">
+          </textarea>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">แผนย่อยของแผนแม่บท</label>
+                            <select class="form-select" [(ngModel)]="planLevel2.Subplan_Id"
+                                (change)="onChangeSubMasterPlan(planLevel2.Subplan_Id)">
+
+                                <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                                <option *ngFor="let item of listSubMasterPlan" [ngValue]="item.Sub_Master_Plan_Id">
+                                    {{ item.Sub_Master_Plan_Name }}
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">เป้าหมายแผนแม่บท (Y1)</label>
+                            <select (change)="onChangeTargetY1()" class="form-select"
+                                [(ngModel)]="planLevel2.Target_Y1_Id">
+
+                                <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                                <option *ngFor="let item of listSubMasterPlanGoal" [ngValue]="item.Sub_Plan_Goals_Id">
+                                    {{ item.Sub_Plan_Goals_Name }}
+                                </option>
+
+                            </select>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label">ความสอดคล้องโครงการกับเป้าหมายของแผนย่อย</label>
+                            <textarea class="form-control" rows="3" [(ngModel)]="planLevel2.SubplanDesc"
+                                name="l2_subdesc">
+          </textarea>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">แนวทางการพัฒนาภายใต้แผนย่อย</label>
+                            <select class="form-select" [(ngModel)]="planLevel2.DevGuideline_Id">
+
+                                <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                                <option *ngFor="let item of listGuideline" [ngValue]="item.Guidelines_Id">
+                                    {{ item.Guidelines_Name }}
+                                </option>
+
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="border-start border-4 border-primary ps-3 mb-4">
+                    <h6 class="fw-bold text-primary mb-3">ความสอดคล้องห่วงโซ่คุณค่า (Value Chains)</h6>
+                </div>
+
+
+                <div class="border rounded p-3 mb-3 bg-light">
+                    <div class="row g-3 ">
+
+
+                        <div class="col-md-6">
+                            <label class="form-label">หลัก</label>
+                            <select class="form-select" [(ngModel)]="planLevel2.ValueChain_Main_Id"
+                                (change)="onChangeValueChainMain()">
+                                <option [ngValue]="null" disabled>-- เลือก --</option>
+                                <option *ngFor="let item of listValueChain" [ngValue]="item.Value_Chain_Id">
+                                    {{ item.Value_Chain_Name }}
+                                </option>
+
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">ปัจจัย</label>
+                            <select class="form-select" [(ngModel)]="planLevel2.ValueChain_Factor_Main_Id">
+                                <option [ngValue]="null" disabled>-- เลือก --</option>
+                                <option *ngFor="let item of listValueChainFactorMain" [ngValue]="item.Factor_Id">
+                                    {{ item.Factor_Name }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">ส่วนสนับสนุน (ถ้ามี)</label>
+
+                            <select class="form-select" [(ngModel)]="planLevel2.ValueChain_Support_Id"
+                                (change)="onChangeValueChainSupport()">
+                                <option [ngValue]="null" disabled>-- เลือก --</option>
+                                <option *ngFor="let item of listValueChain" [ngValue]="item.Value_Chain_Id">
+                                    {{ item.Value_Chain_Name }}
+                                </option>
+
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">ปัจจัย</label>
+
+                            <select class="form-select" [(ngModel)]="planLevel2.ValueChain_Factor_Support_Id">
+                                <option [ngValue]="null" disabled>-- เลือก --</option>
+                                <option *ngFor="let item of listValueChainFactorSupport" [ngValue]="item.Factor_Id">
+                                    {{ item.Factor_Name }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <hr class="my-4">
+                <div class="border-start border-4 border-primary ps-3 mb-4">
+                    <h6 class="fw-bold text-primary mb-3">ความสอดคล้องกับเป้าหมาย SDGs</h6>
+                </div>
+
+
+                <div class="border rounded p-3 mb-3 bg-light">
+                    <div class="row g-3 ">
+
+                        <div class="col-md-6">
+                            <label class="form-label">เป้าหมายหลัก SDGs</label>
+
+                            <select class="form-select" [(ngModel)]="planLevel2.SDGs_Gloals_Id"
+                                (change)="onChangeSDGsGoal()">
+                                <option [ngValue]="null" disabled>-- เลือก --</option>
+                                <option *ngFor="let item of listSDGsGoal" [ngValue]="item.SDGs_Gloals_Id">
+                                    {{ item.SDGs_Gloals_Name }}
+                                </option>
+
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">เป้าหมายย่อย SDGs</label>
+
+                            <select class="form-select" [(ngModel)]="planLevel2.SDGs_Targets_Id">
+
+                                <option [ngValue]="null" disabled>-- เลือก --</option>
+                                <option *ngFor="let item of listSDGsTarget" [ngValue]="item.SDGs_Targets_Id">
+                                    {{ item.SDGs_Targets_Name }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="card-body">
+
+                <div class="border-start border-4 border-primary ps-3 mb-4">
+                    <h6 class="fw-bold text-primary mb-3">
+                        2.2 แผนพัฒนาเศรษฐกิจและสังคมแห่งชาติ
+                    </h6>
+                </div>
+
+                <div class="border rounded p-3 mb-3 bg-light">
+                    <div class="row g-3">
+
+                        <div class="col-md-4">
+                            <label class="form-label">หมุดหมาย</label>
+                            <select class="form-select" [(ngModel)]="planLevel2.Landmark_Id"
+                                (change)="onChangeLandmark()">
+
+                                <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                                <option *ngFor="let item of listLandmark" [ngValue]="item.Landmark_Id">
+                                    {{ item.Landmark_Name }}
+                                </option>
+
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">เป้าหมาย</label>
+                            <select class="form-select" [(ngModel)]="planLevel2.Landmark_Gloals_Id">
+
+                                <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                                <option *ngFor="let item of listLandmark_Gloals" [ngValue]="item.Landmark_Gloals_Id">
+                                    {{ item.Landmark_Gloals_Name }}
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">ตัวชี้วัดที่</label>
+                            <select class="form-select" [(ngModel)]="planLevel2.Landmark_Tacticts_Id">
+
+                                <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                                <option *ngFor="let item of listLandmark_Tactic" [ngValue]="item.Landmark_Tacticts_Id">
+                                    {{ item.Landmark_Tacticts_Name }}
+                                </option>
+
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">กลยุทธ์การพัฒนาที่</label>
+                            <select class="form-select" [(ngModel)]="planLevel2.Landmark_Guidelines_Id"
+                                (change)="onChangeStrategyMain()">
+
+                                <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                                <option *ngFor="let item of listMas_Landmark_Guideline"
+                                    [ngValue]="item.Landmark_Guidelines_Id">
+                                    {{ item.Landmark_Guidelines_Name }}
+                                </option>
+
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">กลยุทธ์ย่อยที่</label>
+                            <select class="form-select" [(ngModel)]="planLevel2.Landmark_Guidelines_Id">
+
+                                <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                                <option *ngFor="let item of listMas_Landmark_Sub_Guideline"
+                                    [ngValue]="item.Sub_Guidelines_Id">
+                                    {{ item.Sub_Guidelines_Name }}
+                                </option>
+
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+            <br>
+            <!-- ================= LEVEL 3 ================= -->
+
+            <!-- ================= LEVEL 3 ================= -->
+
+            <div class="card mb-4">
+                <div class="card-header fw-bold bg-light">
+                    แผนระดับ 3
+                </div>
+
+                <div class="card-body">
+
+                    <!-- ================= 3.1 ================= -->
+                    <div class="border-start border-4 border-primary ps-3 mb-4">
+                        <h6 class="fw-bold text-primary mb-3 mt-4">
+                            3.1 ความสอดคล้องกับนโยบายเร่งด่วนของรัฐบาล
+                        </h6>
+                    </div>
+
+                    <div class="border rounded p-3 mb-3 bg-light">
+                        <div class="row g-3">
+
+                            <!-- <label class="form-label">
+                                1. การผลักดันให้เกิดการปรับโครงสร้างหนี้ทั้งระบบ
+                            </label> -->
+
+                            <div class="col-md-4">
+
+                                <label class="form-label">1.2</label>
+
+                                <select class="form-select"
+                                    [(ngModel)]="model.Project_Plan_Level3.Government_Policy_Id1"
+                                    (change)="onChangenGovernment_Policy1()">
+
+                                    <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                                    <option *ngFor="let item of listGovernment_Policy1"
+                                        [ngValue]="item.Government_Policy_Id">
+                                        {{ item.Policy_Type_Name }}
+                                    </option>
+
+                                </select>
+                                <br>
+                                <select class="form-select"
+                                    [(ngModel)]="model.Project_Plan_Level3.Government_Policy_Sub_Id1">
+
+                                    <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                                    <option *ngFor="let item of listGovernment_Policy_Sub1"
+                                        [ngValue]="item.Government_Policy_Sub_Id">
+                                        {{ item.Government_Policy_Sub_Name }}
+                                    </option>
+
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- ================= 3.2 ================= -->
+                    <div class="border-start border-4 border-primary ps-3 mb-4">
+                        <h6 class="fw-bold text-primary mb-3 mt-4">
+                            3.2 ความสอดคล้องกับนโยบายรัฐบาลระยะกลางและระยะยาว
+                        </h6>
+                    </div>
+
+                    <div class="border rounded p-3 mb-3 bg-light">
+                        <div class="row g-3">
+
+                            <div class="col-md-4">
+
+
+                                <select class="form-select"
+                                    [(ngModel)]="model.Project_Plan_Level3.Government_Policy_Id2"
+                                    (change)="onChangenGovernment_Policy2()">
+
+                                    <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                                    <option *ngFor="let item of listGovernment_Policy2"
+                                        [ngValue]="item.Government_Policy_Id">
+                                        {{ item.Policy_Type_Name }}
+                                    </option>
+
+                                </select>
+                                <br>
+                                <select class="form-select"
+                                    [(ngModel)]="model.Project_Plan_Level3.Government_Policy_Sub_Id2">
+
+                                    <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                                    <option *ngFor="let item of listGovernment_Policy_Sub2"
+                                        [ngValue]="item.Government_Policy_Sub_Id">
+                                        {{ item.Government_Policy_Sub_Name }}
+                                    </option>
+
+                                </select>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <!-- ================= 3.3 ================= -->
+                    <div class="border-start border-4 border-primary ps-3 mb-4">
+                        <h6 class="fw-bold text-primary mb-3">
+                            3.3 มติคณะรัฐมนตรีที่เกี่ยวข้อง
+                        </h6>
+                    </div>
+
+                    <button class="btn btn-sm btn-outline-primary mb-3" (click)="addCabinet()">
+                        + เพิ่มรายการ
+                    </button>
+
+                    <div *ngFor="let item of model.Project_Cabinet; let i = index"
+                        class="input-group mb-2 border rounded p-3 bg-light">
+
+                        <input type="text" class="form-control" [(ngModel)]="item.Title" name="cabinet_{{i}}">
+
+                        <button class="btn btn-danger" (click)="removeCabinet(i,item)">
+                            <i class="bx bx-trash"></i>
+                        </button>
+
+                    </div>
+
+                    <!-- ================= 3.4 ================= -->
+                    <div class="border-start border-4 border-primary ps-3 mb-4">
+                        <h6 class="fw-bold text-primary mb-3 mt-4">
+                            3.4 ความสอดคล้องกับแผนปฏิบัติราชการ ปปท.
+                        </h6>
+                    </div>
+
+                    <div class="border rounded p-3 mb-3 bg-light">
+                        <div class="row g-3">
+
+                            <div *ngFor="let item of listActionPlan; let i = index" class="form-check">
+
+                                <input class="form-check-input" type="radio" [name]="'actionPlanGroup'"
+                                    [(ngModel)]="model.Project_Plan_Level3.Action_Plan_Id" [value]="item.Action_Plan_Id"
+                                    id="action_{{i}}">
+
+                                <label class="form-check-label" for="action_{{i}}">
+                                    {{ item.Action_Plan_Name }}
+                                </label>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- ================= 3.5 ================= -->
+                    <div class="border-start border-4 border-primary ps-3 mb-4">
+                        <h6 class="fw-bold text-primary mb-3 mt-4">
+                            3.5 ความสอดคล้องกับแผนงาน ปปท.
+                        </h6>
+                    </div>
+
+                    <div class="border rounded p-3 mb-3 bg-light">
+
+                        <div class="d-flex justify-content-between mb-2">
+                            <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Project_Plan_Id"
+                                (change)="onChangenTactic()">
+
+                                <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                                <option *ngFor="let item of listProjectPlan" [ngValue]="item.Project_Plan_Id">
+                                    {{ item.Project_Plan_Name }}
+                                </option>
+
+                            </select>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">กลยุทธ์ที่</label>
+                                <select (change)="onChangenMeasure()" class="form-select"
+                                    [(ngModel)]="model.Project_Plan_Level3.Tactics_Id" name="ppat_strategy">
+                                    <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                                    <option *ngFor="let item of listMasTactic" [ngValue]="item.Tactics_Id">
+                                        {{ item.Tactics_Name }}
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">มาตรการที่</label>
+                                <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Measure_Id"
+                                    name="ppat_strategy">
+                                    <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                                    <option *ngFor="let item of listMasMeasure" [ngValue]="item.Measure_Id">
+                                        {{ item.Measure_Name }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label class="form-label">ตัวชี้วัดแผนงาน</label>
+                                <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Indicators_Id"
+                                    name="ppat_strategy">
+                                    <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                                    <option *ngFor="let item of listMasIndicator" [ngValue]="item.Indicators_Id">
+                                        {{ item.Indicators_Name }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

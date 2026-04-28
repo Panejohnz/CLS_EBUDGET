@@ -93,7 +93,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     {
       label: 'Sign off แผนปฎิบัติการ',
       icon: 'bx bx-check-double',
-      link: '/emonitorMaster/manageStrategy'
+      link: '/singOffAction'
     },
     {
       label: 'โอนเปลี่ยนแปลงงบประมาณ',
@@ -105,18 +105,52 @@ export class SidebarComponent implements OnInit, OnDestroy {
       link: '/Transfer'
     },
     {
-      label: 'Emonitor',
+      label: 'ระบบติดตามการดำเนินงาน',
       isTitle: true
     },
     {
       label: 'เมนูกำหนดเป้าหมาย',
-      icon: 'bx bx-transfer',
-      link: '/Transfer'
+      icon: 'bx bx-target-lock',
+      link: '/Moniter/BudgetTarget'
     },
     {
       label: 'เมนูรายงานผล',
-      icon: 'bx bx-transfer',
-      link: '/Transfer'
+      icon: 'bx bx-bar-chart-alt-2',
+      link: '/Moniter/ReportResult'
+    },
+    // {
+    //   label: 'รายงานผลกรณีโครงการ',
+    //   icon: 'bx bx-task',
+    //   link: '/Moniter/Report'
+    // },
+    // {
+    //   label: 'รายงานผลกรณีงบลงทุน',
+    //   icon: 'bx bx-wallet',
+    //   link: '/Moniter/ReportInvestment'
+    // },
+    {
+      label: 'รายงานผลตามตัวชี้วัดแผนงาน',
+      icon: 'bx bx-line-chart',
+      link: '/Moniter/ReportKPI'
+    },
+    {
+      label: 'ข้อมูลกลาง',
+      isTitle: true
+    },
+    {
+      label: 'ระดับบุคลากร',
+      icon: 'bx bx-id-card',
+      link: '/MasterData/MasBusinessLevel'
+    },
+    {
+      label: 'ค่าที่พักตามระดับ',
+      icon: 'bx bx-hotel',
+      link: '/MasterData/MasExpenseDetail'
+    },
+    {
+      label: 'ความสอดคล้องโครงการ',
+      icon: 'bx bx-check-shield',
+      link: '/MasterData/MasProjectPlan'
     },
   ];
   environment = environment; // เพิ่ม environment property
@@ -138,7 +172,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     // ตรวจสอบ session expiration ก่อน
-    this.checkSessionExpiration();
+    // this.checkSessionExpiration();
 
     // Initialize with default year (will be updated by topbar event)
     const currentDate = new Date();

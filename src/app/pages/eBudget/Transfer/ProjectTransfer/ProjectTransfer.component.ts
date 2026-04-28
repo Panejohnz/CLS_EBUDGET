@@ -25,6 +25,7 @@ import { AuthenticationService } from 'src/app/core/services/auth.service';
   templateUrl: './ProjectTransfer.component.html',
 })
 export class ProjectTransferComponent {
+  constructor(private modalService: NgbModal) { }
   department = '';
   keyword = '';
 
@@ -57,16 +58,16 @@ export class ProjectTransferComponent {
     }
   ];
 
-  form: any = {
-    date: '',
-    round: '',
-    remark: '',
-    fromDept: '',
-    toDept: '',
-    expense: '',
-    type: 'increase',
-    amount: 0
-  };
+  // form: any = {
+  //   date: '',
+  //   round: '',
+  //   remark: '',
+  //   fromDept: '',
+  //   toDept: '',
+  //   expense: '',
+  //   type: 'increase',
+  //   amount: 0
+  // };
 
   // -------------------
   addRow() {
@@ -100,5 +101,31 @@ export class ProjectTransferComponent {
       type: 'increase',
       amount: 0
     };
+  }
+  form: any = {};
+  // rows: any[] = [];
+
+  isEdit: boolean = false;
+  editIndex: number = -1;
+  openAdd(modal: any) {
+    this.isEdit = false;
+
+    this.form = {
+      fromDept: '',
+      project: '',
+      projectBudget: null,
+      balance: null
+    };
+
+    this.modalService.open(modal, { size: 'xl' });
+  }
+
+  openEdit(modal: any, row: any, index: number) {
+    this.isEdit = true;
+    this.editIndex = index;
+
+    this.form = { ...row };
+
+    this.modalService.open(modal, { size: 'xl', backdrop: 'static' });
   }
 }

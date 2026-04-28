@@ -22,6 +22,9 @@ import { EmonitorMasterRoutingModule } from './PlanManagement-roution.module';
 import { PlanManagementComponent } from './PlanManagement/PlanManagement.component';
 import { AddPlanManagementComponent } from './PlanManagement/AddPlanManagement/AddPlanManagement.component';
 import { ExamineComponent } from './examine/examine.component';
+import { ProjectPlanningComponent } from './Planing/projectPlanning/projectPlanning.component';
+import { ProjectBudgetProposalAddPersonnelComponent } from './PlanManagement/AddPlanManagement/BudgetProposalAdd/BudgetProposalAddPersonnel.component';
+
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     url: 'https://httpbin.org/post',
     maxFilesize: 50,
@@ -32,7 +35,9 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     declarations: [
         PlanManagementComponent,
         AddPlanManagementComponent,
-        ExamineComponent
+        ExamineComponent,
+        ProjectPlanningComponent,
+        ProjectBudgetProposalAddPersonnelComponent
     ],
     imports: [
         CommonModule,

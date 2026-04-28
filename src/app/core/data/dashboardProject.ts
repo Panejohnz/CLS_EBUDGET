@@ -3,50 +3,47 @@ import { ChartOptions } from "src/app/store/Crypto/crypto_model";
 /**
  * Stat Counder Data
  */
- const projectstatData = [{
-    title: 'ACTIVE PROJECTS',
-    value: 825,
-    icon: 'briefcase',
-    persantage: '5.02',
-    profit: 'down',
-    month: 'Projects'
-  }, {
-    title: 'NEW LEADS',
-    value: 7522,
-    icon: 'award',
-    persantage: '3.58',
-    profit: 'up',
-    month: 'Leads'
-  }, {
-    title: 'TOTAL HOURS',
-    value: 168.40,
-    icon: 'clock',
-    persantage: '10.35 ',
-    profit: 'down',
-    month: 'Work'
-  }
+const projectstatData = [{
+  title: 'ภาพรวม',
+  value: "10,000,000",
+  Reimburse: '200,000',
+  Balance: "800,000",
+
+}, {
+  title: 'รายจ่ายประจำ',
+  value: "5,000,000",
+  Reimburse: '100,000',
+  Balance: "400,000",
+
+}, {
+  title: 'รายจ่ายลงทุน',
+  value: "5,000,000",
+  Reimburse: '100,000',
+  Balance: "400,000",
+
+}
 ];
 
 /**
  * Active Projects
  */
- const ActiveProjects = [
+const ActiveProjects = [
   {
     Pname: "Brand Logo Design",
     profile: 'assets/images/users/avatar-1.jpg',
     Uname: 'Donald Risher',
     progress: 53,
     assignee: [
-        {
-          profile: 'assets/images/users/avatar-1.jpg'
-        },
-        {
-          profile: 'assets/images/users/avatar-2.jpg'
-        },
-        {
-          profile: 'assets/images/users/avatar-3.jpg'
-        },
-      ],
+      {
+        profile: 'assets/images/users/avatar-1.jpg'
+      },
+      {
+        profile: 'assets/images/users/avatar-2.jpg'
+      },
+      {
+        profile: 'assets/images/users/avatar-3.jpg'
+      },
+    ],
     status: 'Progress',
     date: '06 Sep 2021'
   },
@@ -56,13 +53,13 @@ import { ChartOptions } from "src/app/store/Crypto/crypto_model";
     Uname: 'Prezy William',
     progress: 0,
     assignee: [
-        {
-          profile: 'assets/images/users/avatar-5.jpg'
-        },
-        {
-          profile: 'assets/images/users/avatar-6.jpg'
-        }
-      ],
+      {
+        profile: 'assets/images/users/avatar-5.jpg'
+      },
+      {
+        profile: 'assets/images/users/avatar-6.jpg'
+      }
+    ],
     status: 'Pending',
     date: '13 Nov 2021'
   },
@@ -72,13 +69,13 @@ import { ChartOptions } from "src/app/store/Crypto/crypto_model";
     Uname: 'Boonie Hoynas',
     progress: 100,
     assignee: [
-        {
-          profile: 'assets/images/users/avatar-7.jpg'
-        },
-        {
-          profile: 'assets/images/users/avatar-8.jpg'
-        }
-      ],
+      {
+        profile: 'assets/images/users/avatar-7.jpg'
+      },
+      {
+        profile: 'assets/images/users/avatar-8.jpg'
+      }
+    ],
     status: 'Completed',
     date: '26 Nov 2021'
   },
@@ -88,10 +85,10 @@ import { ChartOptions } from "src/app/store/Crypto/crypto_model";
     Uname: 'Pauline Moll',
     progress: 64,
     assignee: [
-        {
-          profile: 'assets/images/users/avatar-2.jpg'
-        }
-      ],
+      {
+        profile: 'assets/images/users/avatar-2.jpg'
+      }
+    ],
     status: 'Progress',
     date: '15 Dec 2021'
   },
@@ -101,16 +98,16 @@ import { ChartOptions } from "src/app/store/Crypto/crypto_model";
     Uname: 'James Bangs',
     progress: 77,
     assignee: [
-        {
-          profile: 'assets/images/users/avatar-1.jpg'
-        },
-        {
-          profile: 'assets/images/users/avatar-6.jpg'
-        },
-        {
-          profile: 'assets/images/users/avatar-4.jpg'
-        }
-      ],
+      {
+        profile: 'assets/images/users/avatar-1.jpg'
+      },
+      {
+        profile: 'assets/images/users/avatar-6.jpg'
+      },
+      {
+        profile: 'assets/images/users/avatar-4.jpg'
+      }
+    ],
     status: 'Progress',
     date: '21 Dec 2021'
   }
@@ -119,12 +116,12 @@ import { ChartOptions } from "src/app/store/Crypto/crypto_model";
 /**
  * My Task
  */
- const MyTask = [
+const MyTask = [
   {
     name: "Create new Admin Template",
     dedline: '03 Nov 2021',
     status: 'Completed',
-    assignee: 
+    assignee:
     {
       name: 'Mary Stoner',
       profile: 'assets/images/users/avatar-2.jpg'
@@ -134,7 +131,7 @@ import { ChartOptions } from "src/app/store/Crypto/crypto_model";
     name: "Marketing Coordinator",
     dedline: '17 Nov 2021',
     status: 'Progress',
-    assignee: 
+    assignee:
     {
       name: 'Den Davis',
       profile: 'assets/images/users/avatar-7.jpg'
@@ -144,7 +141,7 @@ import { ChartOptions } from "src/app/store/Crypto/crypto_model";
     name: "Administrative Analyst",
     dedline: '26 Nov 2021',
     status: 'Completed',
-    assignee: 
+    assignee:
     {
       name: 'Alex Brown',
       profile: 'assets/images/users/avatar-6.jpg'
@@ -154,7 +151,7 @@ import { ChartOptions } from "src/app/store/Crypto/crypto_model";
     name: "E-commerce Landing Page",
     dedline: '10 Dec 2021',
     status: 'Pending',
-    assignee: 
+    assignee:
     {
       name: 'Prezy Morin',
       profile: 'assets/images/users/avatar-5.jpg'
@@ -164,7 +161,7 @@ import { ChartOptions } from "src/app/store/Crypto/crypto_model";
     name: "UI/UX Design",
     dedline: '22 Dec 2021',
     status: 'Progress',
-    assignee: 
+    assignee:
     {
       name: 'Stine Nielsen',
       profile: 'assets/images/users/avatar-1.jpg'
@@ -174,24 +171,24 @@ import { ChartOptions } from "src/app/store/Crypto/crypto_model";
     name: "Projects Design",
     dedline: '31 Dec 2021',
     status: 'Pending',
-    assignee: 
+    assignee:
     {
       name: 'Jansh William',
       profile: 'assets/images/users/avatar-4.jpg'
     }
   }
-  
+
 ];
 
 /**
  * Team Members
  */
- const TeamMembers = [
+const TeamMembers = [
   {
     name: "Create new Admin Template",
     dedline: '03 Nov 2021',
     status: 'Completed',
-    assignee: 
+    assignee:
     {
       name: 'Mary Stoner',
       profile: 'assets/images/users/avatar-2.jpg'
@@ -201,7 +198,7 @@ import { ChartOptions } from "src/app/store/Crypto/crypto_model";
     name: "Marketing Coordinator",
     dedline: '17 Nov 2021',
     status: 'Progress',
-    assignee: 
+    assignee:
     {
       name: 'Den Davis',
       profile: 'assets/images/users/avatar-7.jpg'
@@ -211,7 +208,7 @@ import { ChartOptions } from "src/app/store/Crypto/crypto_model";
     name: "Administrative Analyst",
     dedline: '26 Nov 2021',
     status: 'Completed',
-    assignee: 
+    assignee:
     {
       name: 'Alex Brown',
       profile: 'assets/images/users/avatar-6.jpg'
@@ -221,7 +218,7 @@ import { ChartOptions } from "src/app/store/Crypto/crypto_model";
     name: "E-commerce Landing Page",
     dedline: '10 Dec 2021',
     status: 'Pending',
-    assignee: 
+    assignee:
     {
       name: 'Prezy Morin',
       profile: 'assets/images/users/avatar-5.jpg'
@@ -231,7 +228,7 @@ import { ChartOptions } from "src/app/store/Crypto/crypto_model";
     name: "UI/UX Design",
     dedline: '22 Dec 2021',
     status: 'Progress',
-    assignee: 
+    assignee:
     {
       name: 'Stine Nielsen',
       profile: 'assets/images/users/avatar-1.jpg'
@@ -241,7 +238,7 @@ import { ChartOptions } from "src/app/store/Crypto/crypto_model";
     name: "Projects Design",
     dedline: '31 Dec 2021',
     status: 'Pending',
-    assignee: 
+    assignee:
     {
       name: 'Jansh William',
       profile: 'assets/images/users/avatar-4.jpg'

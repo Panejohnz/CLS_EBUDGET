@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EbudgetService } from 'src/app/core/services/ebudget.service'
+import { ProjectPlanningComponent } from '../../Planing/projectPlanning/projectPlanning.component';
 
 @Component({
   selector: 'app-add-plan-management',
@@ -9,7 +10,16 @@ import { EbudgetService } from 'src/app/core/services/ebudget.service'
 })
 export class AddPlanManagementComponent {
   @Input() modal: any;
-  constructor(private modalService: NgbModal, public serviceebud: EbudgetService) { }
+  constructor(private modalService: NgbModal, public serviceebud: EbudgetService) {
+
+    this.activities.push({
+      id: Date.now(),
+      name: '',
+      quarters: this.generateYear(),
+      subActivities: []
+    });
+
+  }
   closeModal() {
     this.modal.dismiss();
   }
@@ -135,6 +145,7 @@ export class AddPlanManagementComponent {
       });
 
   }
+  dropdown_select = false
   onExpenseChange(item: any) {
     if (!item) return;
     let model = {
@@ -161,6 +172,9 @@ export class AddPlanManagementComponent {
         this.plan.subActivity = item.Fk_Expense_Type_Id;
         this.plan.subUnitActivity = item.Fk_Budget_Type_Id;
         this.formTitle = item.Expense_Name
+        this.dropdown_select = true
+        this.expenseItem = item;
+
       })
 
   }
@@ -201,4 +215,132 @@ export class AddPlanManagementComponent {
       windowClass: 'modal-95'
     })
   }
+  activities: any[] = [];
+  onBudgetChange(month: any) {
+
+    if (month.budget && month.budget > 0) {
+      month.selected = true;
+    } else {
+      month.selected = false;
+    }
+
+  }
+  removeActivity(index: number) {
+    this.activities.splice(index, 1);
+  }
+  addSubActivity(activity: any) {
+    activity.subActivities?.push({
+      id: Date.now(),
+      name: '',
+      quarters: this.generateYear(),
+      subActivities: []
+    });
+  }
+
+  getTotal(activity: any): number {
+    return activity.quarters
+      .flatMap((q: any) => q.months)
+      .reduce((sum: any, m: any) => sum + (m.budget || 0), 0);
+  }
+  generateYear(): any[] {
+    const MONTHS = [
+      'ต.ค.', 'พ.ย.', 'ธ.ค.',
+      'ม.ค.', 'ก.พ.', 'มี.ค.',
+      'เม.ย.', 'พ.ค.', 'มิ.ย.',
+      'ก.ค.', 'ส.ค.', 'ก.ย.'
+    ];
+
+    const quarters = [];
+
+    for (let q = 0; q < 4; q++) {
+      quarters.push({
+        quarter: q + 1,
+        months: MONTHS.slice(q * 3, q * 3 + 3).map(m => ({
+          month: m,
+          selected: false,
+          budget: null
+        }))
+      });
+    }
+
+    return quarters;
+  }
+  addSub(activity: any) {
+    activity.subActivities.push({
+      id: Date.now(),
+      name: 'กิจกรรมย่อย',
+      quarters: this.generateQuarters(),
+      subActivities: []
+    });
+  }
+  months = [
+    'ต.ค.', 'พ.ย.', 'ธ.ค.',
+    'ม.ค.', 'ก.พ.', 'มี.ค.',
+    'เม.ย.', 'พ.ค.', 'มิ.ย.',
+    'ก.ค.', 'ส.ค.', 'ก.ย.'
+  ];
+  generateQuarters(): any[] {
+    const quarters: any[] = [];
+
+    for (let i = 0; i < 4; i++) {
+      quarters.push({
+        quarter: i + 1,
+        months: this.months.slice(i * 3, i * 3 + 3).map(m => ({
+          month: m,
+          selected: false,
+          budget: null
+        }))
+      });
+    }
+
+    return quarters;
+  }
+  type: string = '';
+  formTypeMap: any = {
+    1: 'seminar',
+    2: 'pr',
+    3: 'investment',
+    4: 'consult',
+    5: 'other'
+  }
+  @Input() model: any
+  openMultiplierModal(content: any) {
+    this.modalService.open(content, {
+      backdrop: 'static',
+      windowClass: 'modal-95'
+    })
+  }
+  getTotalBudget(item: any): number {
+    return item.quarters?.reduce((sum: number, q: any) => {
+      return sum + q.months.reduce((s: number, m: any) => s + Number(m.budget || 0), 0);
+    }, 0) || 0;
+  }
+  getTotalMultiplier(item: any): number {
+    return item.quarters?.reduce((sum: number, q: any) => {
+      return sum + q.months.reduce((s: number, m: any) => {
+        return s + (Number(m.budget || 0) * (m.multiplier || 1));
+      }, 0);
+    }, 0) || 0;
+  }
+
+  currentTab = 1;
+  project_planing = {
+    projectType: '',
+    planing_Id: 0
+  };
+  goTab(tab: number) {
+    this.currentTab = tab;
+  }
+  async save() {
+    const userConfirmed = await confirmAlert('info', 'ต้องการบันทึกข้อมูล ?', '');
+
+    if (userConfirmed) {
+
+      basicAlert('success', 'บันทึกข้อมูลแล้ว', '')
+      this.modal.dismiss();
+
+    }
+  }
+
+
 }

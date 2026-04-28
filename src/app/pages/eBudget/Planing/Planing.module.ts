@@ -20,16 +20,6 @@ import lottie from 'lottie-web';
 import { SharedModule } from '../../../shared/shared.module';
 import { ProjectPlanningComponent } from './projectPlanning/projectPlanning.component';
 import { EmonitorMasterRoutingModule } from './Planing-roution.module';
-import { TabGeneralComponent } from './projectPlanning/components/tab-general/tab-general.component';
-import { TabAlignmentComponent } from './projectPlanning/components/tab-alignment/tab-alignment.component';
-import { TabDetailComponent } from './projectPlanning/components/tab-detail/tab-detail.component';
-import { TabGuidelineComponent } from './projectPlanning/components/tab-guideline/tab-guideline.component';
-import { TrainingSeminarComponent } from './projectPlanning/components/tab-guideline/training-seminar/training-seminar.component';
-import { PublicRelationsComponent } from './projectPlanning/components/tab-guideline/public-relations/public-relations.component';
-import { InvestmentBudgetComponent } from './projectPlanning/components/tab-guideline/investment-budget/investment-budget.component';
-import { ConsultantHireComponent } from './projectPlanning/components/tab-guideline/consultant-hire/consultant-hire.component';
-import { OtherExpenseProjectComponent } from './projectPlanning/components/tab-guideline/other-expense-project/other-expense-project.component';
-import { TabCoordinatorComponent } from './projectPlanning/components/tab-coordinator/tab-coordinator.component';
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     url: 'https://httpbin.org/post',
     maxFilesize: 50,
@@ -39,16 +29,6 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
 @NgModule({
     declarations: [
         ProjectPlanningComponent,
-        TabGeneralComponent,
-        TabAlignmentComponent,
-        TabDetailComponent,
-        TabGuidelineComponent,
-        TrainingSeminarComponent,
-        PublicRelationsComponent,
-        InvestmentBudgetComponent,
-        ConsultantHireComponent,
-        OtherExpenseProjectComponent,
-        TabCoordinatorComponent
     ],
     imports: [
         CommonModule,

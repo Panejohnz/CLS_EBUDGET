@@ -1,0 +1,111 @@
+<div class="container-fluid mt-3">
+
+    <div class="mb-2 fw-bold text-primary">
+        ข้อมูลผู้ประสานงาน
+    </div>
+
+    <button class="btn btn-primary btn-sm" (click)="addContact()">
+        + เพิ่มรายการ
+    </button>
+
+    <div>
+
+        <div class="card shadow-sm mb-2">
+
+            <div class="card-header bg-light fw-bold d-flex justify-content-between align-items-center">
+                <span>ผู้ประสานงาน</span>
+
+
+            </div>
+
+            <div class="card-body p-2">
+
+                <div class="table-responsive">
+
+                    <table class="table table-sm table-bordered align-middle mb-0">
+
+                        <thead class="table-light text-center">
+                            <tr>
+                                <th style="width:60px">ลำดับ</th>
+                                <th>ชื่อ - สกุล</th>
+                                <th style="width:160px">โทรศัพท์</th>
+                                <th style="width:240px">Email</th>
+                                <th style="width:160px">โทรสาร</th>
+                                <th style="width:60px"></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr *ngFor="let item of items; let i=index">
+
+                                <td class="text-center">{{i+1}}</td>
+
+                                <td>
+                                    <input class="form-control form-control-sm" [(ngModel)]="item.Full_Name">
+                                </td>
+
+                                <td>
+                                    <input class="form-control form-control-sm" [(ngModel)]="item.Phone">
+                                </td>
+
+                                <td>
+                                    <input class="form-control form-control-sm" [(ngModel)]="item.Email">
+                                </td>
+
+                                <td>
+                                    <input class="form-control form-control-sm" [(ngModel)]="item.Fax">
+                                </td>
+
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-outline-danger" (click)="removeContact(i)">
+                                        🗑
+                                    </button>
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <hr class="my-4">
+    </div>
+    <div class="card shadow-sm mb-3">
+
+        <div class="card-header bg-light fw-bold">
+            ผู้เสนอโครงการ
+        </div>
+
+        <div class="card-body ">
+
+            <div class="row g-2">
+
+                <div class="col-md-9">
+
+                    <label>ชื่อ - สกุล</label>
+
+                    <input [(ngModel)]="model.Proposer_Name" class="form-control form-control-sm">
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <label>ตำแหน่ง</label>
+
+                    <input [(ngModel)]="model.Proposer_Position" class="form-control form-control-sm">
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>

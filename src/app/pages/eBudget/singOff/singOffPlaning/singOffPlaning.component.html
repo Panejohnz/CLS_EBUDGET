@@ -32,7 +32,6 @@
                                 <th style="width:5%">
                                     <input type="checkbox" (change)="toggleAll($event)">
                                 </th>
-                                <th style="width:5%">ลำดับ</th>
                                 <th style="width:10%">หน่วยงาน</th>
                                 <th style="width:15%">แผนงาน</th>
                                 <th style="width:20%">ผลผลิต</th>
@@ -49,45 +48,40 @@
                         <tbody>
                             @for(data of griddata; track $index){
                             <tr>
-
-                                <!-- checkbox -->
                                 <td class="text-center">
                                     <input type="checkbox" [(ngModel)]="data.selected">
                                 </td>
-
-                                <td class="text-center">{{$index + 1}}</td>
-                                <td class="text-center">{{data.department}}</td>
-
-                                <td >
-                                    {{data.plan }}
+                                <td class="text-center">{{data.Department_Name}}</td>
+                                <td class="text-center">
+                                    <ngb-highlight [result]="data.Plan_Name"
+                                        [term]="service.searchTerm">{{data.Plan_Name}}</ngb-highlight>
                                 </td>
 
                                 <td>
-                                    {{data.output}}
+                                    <ngb-highlight [result]="data.Product_Name"
+                                        [term]="service.searchTerm">{{data.Product_Name}}</ngb-highlight>
                                 </td>
 
                                 <td>
-                                    {{data.activity}}
+                                    <ngb-highlight [result]="data.Activity_Name"
+                                        [term]="service.searchTerm">{{data.Activity_Name}}</ngb-highlight>
                                 </td>
+                                <td>{{data.Budget_Type}}</td>
+                                <td>{{data.Expense_Type}}</td>
 
-                                <td>{{data.budgetType}}</td>
-                                <td>{{data.project}}</td>
-
-                                <td class=" text-end">
-                                    {{data.budget | number:'1.2-2'}}
+                                <td class="text-end">
+                                    {{data.Po_Qty | number:'1.2-2'}}
                                 </td>
-
                                 <td class="text-center">
                                     <span class="badge" [ngClass]="
-                        data.status_id == 7 ? 'bg-danger' :
-                        data.status_id == 2 ? 'bg-warning text-dark' :
-                        data.status_id == 8 ? 'bg-success' :
-                        'bg-secondary'
-                    ">
-                                        {{ data.status_name }}
+    data.Status_Id == 7 ? 'bg-danger' :
+    data.Status_Id == 2 ? 'bg-warning text-dark' :
+    data.Status_Id == 8 ? 'bg-success' : 'bg-secondary'
+  ">
+                                        {{ data.Status_Name }}
                                     </span>
-                                </td>
 
+                                </td>
                                 <td class="text-center">
                                     <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#exampleModalgrid" (click)="fullModal(fullDataModal,data)">
@@ -100,7 +94,6 @@
                                         <i class="ri-delete-bin-line"></i>
                                     </button>
                                 </td>
-
                             </tr>
                             }
                         </tbody>
