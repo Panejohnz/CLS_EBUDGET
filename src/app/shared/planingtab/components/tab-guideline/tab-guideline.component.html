@@ -85,10 +85,9 @@
 
                                         <td>
                                             <input type="text" class="form-control form-control-sm text-end"
-                                                [(ngModel)]="q.months[rowIndex].budget"
+                                                [ngModel]="displayValue(q.months[rowIndex].budget)"
                                                 (ngModelChange)="onInputFormat($event, q.months[rowIndex])"
                                                 [disabled]="act.noBudget || act.SubActivities?.length > 0">
-
                                         </td>
 
                                     </ng-container>
@@ -128,7 +127,8 @@
 
                                             <span class="fw-bold text-success">
                                                 รวมผลคูณ :
-                                                {{ act.multiplierTotal | number:'1.2-2' }}</span>
+                                                {{ getMultiplierTotal(act) | number:'1.2-2' }}
+                                            </span>
                                             <span class="fw-bold text-primary">
                                                 รวมวางแผน :
                                                 {{ getActivityTotal(act) | number:'1.2-2' }}
@@ -192,9 +192,9 @@
                                             </td>
 
                                             <td>
-                                                <input type="number" class="form-control form-control-sm"
-                                                    [(ngModel)]="q.months[rowIndex].budget"
-                                                    (ngModelChange)="onSubBudgetChange(act, qIndex, rowIndex)"
+                                                <input type="text" class="form-control form-control-sm text-end"
+                                                    [ngModel]="displayValue(q.months[rowIndex].budget)"
+                                                    (ngModelChange)="onSubBudgetChange($event, act, qIndex, rowIndex)"
                                                     [disabled]="sub.noBudget">
                                             </td>
 

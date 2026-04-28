@@ -434,23 +434,25 @@ export class TabGuidelineComponent {
   }
   getMultiplierTotal(act: any): number {
 
-    // 🔥 มี sub → รวม sub
-    if (act.SubActivities?.length) {
-      return act.SubActivities.reduce((sum: number, sub: any) => {
-        return sum + this.getMultiplierTotal(sub);
-      }, 0);
-    }
+  // 🔥 1. ถ้ามี sub → ต้องรวม sub ก่อนเสมอ
+  if (act.SubActivities?.length) {
+    return act.SubActivities.reduce((sum: number, sub: any) => {
+      return sum + this.getMultiplierTotal(sub);
+    }, 0);
+  }
 
-    // 🔥 ถ้ายังไม่เคยกด modal → ใช้ค่าจาก DB
-    if (!act._useMultiplier) {
-      return act.multiplierTotal || 0;
-    }
+  // 🔥 2. ถ้า leaf (ไม่มี sub)
 
-    // 🔥 กด modal แล้ว → ใช้ค่าปัจจุบัน
-    return (act.otherExpenses || []).reduce((sum: number, item: any) => {
+  // 👉 ถ้ามีค่าใน otherExpenses → คำนวณ
+  if (act.otherExpenses?.length) {
+    return act.otherExpenses.reduce((sum: number, item: any) => {
       return sum + (item.total || item.Total || 0);
     }, 0);
   }
+
+  // 👉 fallback DB
+  return act.multiplierTotal || 0;
+}
   syncMainFromSub(act: any) {
 
     if (!act.SubActivities?.length) return;
@@ -470,10 +472,22 @@ export class TabGuidelineComponent {
     });
 
   }
-  onSubBudgetChange(act: any, qIndex: number, mIndex: number) {
+  onSubBudgetChange(value: string, act: any, qIndex: number, mIndex: number) {
 
+    // 🔥 step 1: แปลงค่าจาก input (ตัด comma)
+    const numeric = value.replace(/,/g, '');
+    const num = numeric ? Number(numeric) : 0;
+
+    // 🔥 step 2: set ค่าเข้า model ก่อน
     const sub = act.SubActivities;
+    sub.forEach((s: any) => {
+      const m = s.quarters?.[qIndex]?.months?.[mIndex];
+      if (m) {
+        m.budget = num;
+      }
+    });
 
+    // 🔥 step 3: logic เดิมของคุณ
     sub.forEach((s: any) => {
       const m = s.quarters?.[qIndex]?.months?.[mIndex];
 

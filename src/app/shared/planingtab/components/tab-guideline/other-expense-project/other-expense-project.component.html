@@ -76,8 +76,9 @@
                         <td class="bg-light fw-bold">1</td>
 
                         <td>
-                            <input type="number" class="form-control form-control-sm text-center"
-                                [(ngModel)]="item.times">
+                            <input type="text" class="form-control form-control-sm text-center"
+                                [ngModel]="formatNumber(item.times)"
+                                (ngModelChange)="onNumberInput($event, item, 'times')">
                         </td>
 
                         <td><input type="text" class="form-control form-control-sm text-center"
@@ -90,8 +91,9 @@
                         <td class="bg-light fw-bold">2</td>
 
                         <td>
-                            <input type="number" class="form-control form-control-sm text-center"
-                                [(ngModel)]="item.people">
+                            <input type="text" class="form-control form-control-sm text-center"
+                                [ngModel]="formatNumber(item.people)"
+                                (ngModelChange)="onNumberInput($event, item, 'people')">
                         </td>
 
                         <td><input type="text" class="form-control form-control-sm text-center"
@@ -104,7 +106,8 @@
 
                         <td>
                             <input type="number" class="form-control form-control-sm text-center"
-                                [(ngModel)]="item.rate">
+                                [ngModel]="formatNumber(item.rate)"
+                                (ngModelChange)="onNumberInput($event, item, 'rate')">
                         </td>
 
                         <td><input type="text" class="form-control form-control-sm text-center"
@@ -118,7 +121,8 @@
 
                         <td>
                             <input type="number" class="form-control form-control-sm text-center"
-                                [(ngModel)]="item.input3" >
+                                [ngModel]="formatNumber(item.input3)"
+                                (ngModelChange)="onNumberInput($event, item, 'input3')">
                         </td>
 
                         <td>
@@ -133,7 +137,9 @@
 
                         <td>
                             <input type="number" class="form-control form-control-sm text-center"
-                                [(ngModel)]="item.input4">
+                                [ngModel]="formatNumber(item.input4)"
+                                (ngModelChange)="onNumberInput($event, item, 'input4')"
+                                >
                         </td>
 
                         <td>
@@ -146,7 +152,10 @@
                         <td class="bg-light fw-bold">6</td>
 
                         <td>
-                            <input type="number" class="form-control form-control-sm" [(ngModel)]="item.input5">
+                            <input type="number" class="form-control form-control-sm" 
+                             [ngModel]="formatNumber(item.input5)"
+                                (ngModelChange)="onNumberInput($event, item, 'input5')"
+                            >
                         </td>
 
                         <td>

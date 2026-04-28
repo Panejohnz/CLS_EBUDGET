@@ -247,4 +247,12 @@ export class OtherExpenseProjectComponent {
     basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
     this.modal.dismiss();
   }
+  formatNumber(val: any): string {
+    if (val == null || val === '') return '';
+    return Number(val).toLocaleString('en-US');
+  }
+  onNumberInput(value: any, item: any, field: string) {
+    const raw = value?.toString().replace(/,/g, '');
+    item[field] = raw === '' ? null : Number(raw);
+  }
 }
