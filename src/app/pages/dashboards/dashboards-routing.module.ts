@@ -8,6 +8,7 @@ import { CryptoComponent } from "./crypto/crypto.component";
 import { ProjectsComponent } from "./projects/projects.component";
 import { NftComponent } from "./nft/nft.component";
 import { JobComponent } from './job/job.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 const routes: Routes = [
   {
@@ -33,6 +34,11 @@ const routes: Routes = [
   {
     path: "job",
     component: JobComponent
+  }
+  ,
+  {
+    path: "dashboard",
+    component: DashboardComponent
   }
 ];
 

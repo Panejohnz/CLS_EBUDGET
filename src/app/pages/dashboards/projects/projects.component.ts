@@ -52,6 +52,22 @@ export class ProjectsComponent implements OnInit {
     this.scrollRef.SimpleBar.getScrollElement().scrollTop = 600;
   }
 
+  totalAll: number = 0;
+totalFixed: number = 0;
+totalInvest: number = 0;
+
+totalPlan = 50000;
+totalUsed = 32000;
+totalRemain = 18000;
+
+fixedPlan = 20000;
+fixedUsed = 15000;
+fixedRemain = 5000;
+
+investPlan = 30000;
+investUsed = 17000;
+investRemain = 13000;
+
   num: number = 0;
   option = {
     startVal: this.num,
@@ -328,6 +344,7 @@ export class ProjectsComponent implements OnInit {
    * Fetches the data
    */
   private fetchData() {
+    // this.statData = projectstatData;
     this.statData = projectstatData;
     this.ActiveProjects = ActiveProjects;
     this.MyTask = MyTask;
