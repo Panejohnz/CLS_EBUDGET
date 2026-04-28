@@ -1,0 +1,280 @@
+<div class="container-fluid mt-2">
+
+    <!-- HEADER -->
+    <div class="card shadow-sm">
+
+        <div class="card-header fw-bold">
+            แบบฟอร์มครุภัณฑ์คอมพิวเตอร์ (บังคับให้ใส่ข้อมูลทุกช่อง)
+        </div>
+
+
+        <div class="card-body p-0">
+
+            <div class="d-flex justify-content-between p-2 small text-danger">
+                <span>{{items.length}} รายการ</span>
+                <span>รวม {{totalBudget | number:'1.2-2'}} บาท</span>
+            </div>
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered align-middle text-center">
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th style="width:60px">ลำดับ</th>
+
+                            <th class="text-start">รายการ</th>
+
+                            <th colspan="2">ราคา/นอกมาตรฐาน</th>
+                            <th colspan="2"></th>
+                            <th style="width:120px">จำนวนที่ขอ</th>
+                            <th style="width:120px">ราคา/หน่วย</th>
+
+                            <th style="width:150px">วงเงินค่ารวม</th>
+
+                            <th class="text-start">เหตุผล</th>
+
+                            <th style="width:50px"></th>
+
+                        </tr>
+
+                        <tr>
+
+                            <th></th>
+                            <th></th>
+
+                            <th style="width:70px">ใน</th>
+                            <th style="width:70px">นอก</th>
+
+                            <th style="width:70px">ขอใหม่</th>
+                            <th style="width:70px">ทดแทน</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <ng-container *ngFor="let item of items; let i=index">
+
+                            <tr>
+
+                                <td>{{i+1}}</td>
+
+                                <td class="text-start">
+
+                                    <select class="form-select form-select-sm" [(ngModel)]="item.name">
+
+                                        <option value="1">อุปกรณ์คอมพิวเตอร์ - เครื่องคอมพิวเตอร์</option>
+                                        <option value="2">เครื่องพิมพ์</option>
+                                        <option value="3">โน๊ตบุ๊ค</option>
+                                        <option value="4">อื่น ๆ</option>
+                                    </select>
+
+                                </td>
+
+
+                                <td>
+                                    <input type="checkbox"
+                                        [checked]="item.name == '1'||item.name == '2'||item.name == '3'"
+                                        class="form-check-input" [(ngModel)]="item.standard">
+                                </td>
+
+                                <td>
+                                    <input type="checkbox" [checked]="item.name == '4'" class="form-check-input"
+                                        [(ngModel)]="item.nonStandard">
+                                </td>
+                                <td>
+                                    <input type="radio" class="form-check-input" name="type{{i}}" value="new"
+                                        [(ngModel)]="item.type">
+                                </td>
+
+                                <td>
+                                    <input type="radio" class="form-check-input" name="type{{i}}" value="replace"
+                                        [(ngModel)]="item.type">
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control form-control-sm text-center"
+                                        [(ngModel)]="item.qty">
+
+                                    <button *ngIf="item.type=='replace'" class="btn btn-sm btn-outline-primary mt-1"
+                                        (click)="openReplacePopup(item)">
+                                        ระบุครุภัณฑ์
+                                    </button>
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control form-control-sm text-end"
+                                        [(ngModel)]="item.price">
+                                </td>
+
+                                <td class="text-end fw-bold">
+                                    {{(item.price * item.qty) || 0 | number:'1.2-2'}}
+                                </td>
+
+
+                                <td class="text-start">
+
+                                    <div class="col-md-9">
+
+                                        <textarea class="form-control form-control-sm" rows="2"
+                                            [(ngModel)]="item.reason" placeholder="เหตุผลการขอ"></textarea>
+
+                                    </div>
+                                    <div *ngIf="item.type == 'replace'" class="col-md-9">
+
+                                        <input type="text" class="form-control form-control-sm"
+                                            [(ngModel)]="item.requestQty" placeholder="ระบุเลขครุภัณฑ์">
+
+                                    </div>
+
+                                </td>
+
+
+                                <td>
+
+                                    <button class="btn btn-sm btn-outline-danger" (click)="removeItem(i)">
+                                        🗑
+                                    </button>
+
+                                </td>
+
+                            </tr>
+
+
+
+                            <tr>
+
+                                <td colspan="9">
+
+                                    <div class="row">
+
+                                        <div class="col-md-6">
+
+                                            <label class="form-label small">
+                                                คุณสมบัติ (spec)
+                                            </label>
+
+                                            <textarea class="form-control" rows="3" [(ngModel)]="item.spec"></textarea>
+
+                                        </div>
+
+
+                                        <div class="col-md-6">
+
+                                            <label class="form-label small">
+                                                แนบไฟล์เสนอราคา
+                                            </label>
+
+                                            <input type="file" class="form-control form-control-sm"
+                                                (change)="onFileChange($event,i)">
+
+                                            <small class="text-danger">
+                                                *** ต้องแนบอย่างน้อย 3 ไฟล์ ***
+                                            </small>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                            <br>
+                        </ng-container>
+
+
+
+
+                    </tbody>
+
+                </table>
+                <div class="p-2">
+
+                    <button class="btn btn-sm btn-primary" (click)="addItem()">
+                        + เพิ่มรายการ
+                    </button>
+
+                </div>
+            </div>
+
+
+
+        </div>
+
+    </div>
+
+
+    <div class="d-flex justify-content-end mt-3 gap-2">
+
+        <button class="btn btn-success" (click)="save()">
+            💾 บันทึก
+        </button>
+        <button class="btn btn-light" (click)="closeModal()">
+            ยกเลิก
+        </button>
+    </div>
+
+</div>
+
+<ng-template #replaceModal let-modal>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">รายการครุภัณฑ์ที่ทดแทน</h5>
+            </div>
+
+            <div class="modal-body">
+
+                <table class="table table-bordered table-sm">
+
+                    <thead>
+                        <tr>
+                            <th width="80">ลำดับ</th>
+                            <th width="150">อายุการใช้งาน (ปี)</th>
+                            <th>ทะเบียนครุภัณฑ์</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr *ngFor="let r of selectedItem?.replaceList; let i=index">
+
+                            <td>{{i+1}}</td>
+
+                            <td>
+                                <input type="number" class="form-control form-control-sm" [(ngModel)]="r.year">
+                            </td>
+
+                            <td>
+                                <input class="form-control form-control-sm" [(ngModel)]="r.assetNumber">
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button class="btn btn-secondary" (click)="modal.dismiss()">
+                    ปิด
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+</ng-template>

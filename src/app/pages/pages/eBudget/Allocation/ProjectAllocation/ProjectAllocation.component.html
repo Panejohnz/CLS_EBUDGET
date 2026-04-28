@@ -1,0 +1,90 @@
+<div class="container-fluid px-4">
+
+    <div class="bg-white p-3 rounded shadow-sm border">
+
+        <!-- HEADER -->
+        <div class="mb-3">
+            <h5 class="fw-bold">รายการจัดสรรงบประมาณ</h5>
+
+            <div class="row mt-2">
+                <div class="col-md-4">
+                    <label>หน่วยงาน</label>
+                    <select class="form-control" [(ngModel)]="department">
+                        <option value="">-- เลือกหน่วยงาน --</option>
+                        <option *ngFor="let d of departments" [value]="d">
+                            {{ d }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle text-center">
+
+                <thead class="table-secondary">
+                    <tr>
+                        <th style="width:40%">รายการ</th>
+                        <th style="width:15%">คำของบ</th>
+                        <th style="width:15%">จัดสรรครั้งที่ 1</th>
+                        <th style="width:15%">จัดสรรครั้งที่ 2</th>
+                        <th style="width:15%">จัดสรรครั้งที่ 3</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let item of flattenData">
+
+                        <!-- NAME -->
+                        <td class="text-start" [style.padding-left.px]="item.level * 20">
+                            <span *ngIf="item.children" (click)="toggle(item)"
+                                style="cursor:pointer; margin-right:5px;">
+                                {{ item.expanded ? '▼' : '▶' }}
+                            </span>
+                            {{ item.name }}
+                        </td>
+
+                        <!-- FIX BUDGET -->
+                        <td class="text-end">
+                            {{ item.budget | number:'1.0-0' }}
+                        </td>
+
+                        <!-- alloc1 -->
+                        <td>
+                            <ng-container *ngIf="isLeaf(item); else sum1">
+                                <input type="number" class="form-control text-end" [(ngModel)]="item.alloc1">
+                            </ng-container>
+                            <ng-template #sum1>
+                                {{ calculate(item, 'alloc1') | number:'1.0-0' }}
+                            </ng-template>
+                        </td>
+
+                        <!-- alloc2 -->
+                        <td>
+                            <ng-container *ngIf="isLeaf(item); else sum2">
+                                <input type="number" class="form-control text-end" [(ngModel)]="item.alloc2">
+                            </ng-container>
+                            <ng-template #sum2>
+                                {{ calculate(item, 'alloc2') | number:'1.0-0' }}
+                            </ng-template>
+                        </td>
+
+                        <!-- alloc3 -->
+                        <td>
+                            <ng-container *ngIf="isLeaf(item); else sum3">
+                                <input type="number" class="form-control text-end" [(ngModel)]="item.alloc3">
+                            </ng-container>
+                            <ng-template #sum3>
+                                {{ calculate(item, 'alloc3') | number:'1.0-0' }}
+                            </ng-template>
+                        </td>
+
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+</div>

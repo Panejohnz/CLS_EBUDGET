@@ -1,0 +1,224 @@
+<div class="container-fluid px-4">
+
+    <div class="bg-white p-3 rounded shadow-sm border">
+
+        <!-- HEADER -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h5 class="fw-bold">โอนเปลี่ยนแปลงงบประมาณ</h5>
+
+                <div class="d-flex align-items-center gap-2 mt-2">
+                    <label class="mb-0 text-nowrap">หน่วยงาน</label>
+                    <input class="form-control" style="width: 400px;" [(ngModel)]="department">
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+                <label>ค้นหา</label>
+                <input class="form-control" style="width:200px" [(ngModel)]="keyword">
+                <button class="btn btn-success" (click)="openAdd(formModal)">
+                    เพิ่มรายการ
+                </button>
+            </div>
+        </div>
+
+        <!-- TABLE -->
+        <table class="table table-bordered text-center align-middle">
+            <thead class="table-secondary">
+                <tr>
+                    <th>ลำดับ</th>
+                    <th>หน่วยงานที่โอน</th>
+                    <th>หน่วยงานที่รับโอน</th>
+                    <th>รายการ</th>
+                    <th>เพิ่ม/ลด</th>
+                    <th>แก้ไข</th>
+                    <th>ลบ</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr *ngFor="let row of rows; let i = index">
+                    <td>{{ i + 1 }}</td>
+
+                    <td>{{ row.fromDept }}</td>
+                    <td>{{ row.toDept }}</td>
+                    <td>{{ row.expense }}</td>
+
+                    <td>
+                        <span [class.text-success]="row.type === 'increase'"
+                            [class.text-danger]="row.type === 'decrease'">
+                            {{ row.type === 'increase' ? 'เพิ่ม' : 'ลด' }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <button class="btn btn-warning btn-sm" (click)="openEdit(formModal, row, i)">✏️</button>
+                    </td>
+
+                    <td>
+                        <button class="btn btn-danger btn-sm" (click)="remove(i)">🗑</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- FORM -->
+        <ng-template #formModal let-modal>
+
+            <!-- HEADER BAR -->
+            <div class="modal-header bg-light ">
+                <h5 class="modal-title">
+                    {{ isEdit
+                    ? 'แก้ไข ข้อมูลการโอนงบประมาณ'
+                    : 'เพิ่ม ข้อมูลการโอนงบประมาณ' }}
+                </h5>
+                <button class="btn-close btn-close-white" (click)="modal.dismiss()"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="container-fluid">
+
+                    <!-- ข้อมูลงบประมาณ -->
+                    <div class="mb-3">
+                        <span class="badge bg-warning text-dark">ข้อมูลงบประมาณ</span>
+
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <label>โอนจากหน่วยงาน :</label>
+
+                                <ng-container *ngIf="!isEdit; else viewFromDept">
+                                    <input class="form-control" [(ngModel)]="form.fromDept">
+                                </ng-container>
+
+                                <ng-template #viewFromDept>
+                                    <span class="ms-2">{{ form.fromDept || '-' }}</span>
+                                </ng-template>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label>โอนจากโครงการ :</label>
+
+                                <ng-container *ngIf="!isEdit; else viewProject">
+                                    <input class="form-control" [(ngModel)]="form.project">
+                                </ng-container>
+
+                                <ng-template #viewProject>
+                                    <span class="ms-2">{{ form.project || '-' }}</span>
+                                </ng-template>
+                            </div>
+
+                            <div class="col-md-6 mt-2">
+                                <label>จำนวนเงินโครงการ :</label>
+
+                                <ng-container *ngIf="!isEdit; else viewBudget">
+                                    <input type="number" class="form-control" [(ngModel)]="form.projectBudget">
+                                </ng-container>
+
+                                <ng-template #viewBudget>
+                                    <span class="ms-2">{{ form.projectBudget || 0 | number }} บาท</span>
+                                </ng-template>
+                            </div>
+
+                            <div class="col-md-6 mt-2">
+                                <label>จำนวนเงินคงเหลือ :</label>
+
+                                <ng-container *ngIf="!isEdit; else viewBalance">
+                                    <input type="number" class="form-control" [(ngModel)]="form.balance">
+                                </ng-container>
+
+                                <ng-template #viewBalance>
+                                    <span class="ms-2">{{ form.balance || 0 | number }}</span>
+                                </ng-template>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- ข้อมูลการโอน -->
+                    <div>
+                        <span class="badge bg-warning text-dark">ข้อมูลการโอนงบประมาณ</span>
+
+                        <div class="row mt-3">
+
+                            <div class="col-md-6">
+                                <label>วันที่ทำรายการ :</label>
+                                <input type="date" class="form-control" [(ngModel)]="form.date">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label>ครั้งที่โอน :</label>
+                                <input class="form-control" [(ngModel)]="form.transferNo">
+                            </div>
+
+                            <div class="col-md-6 mt-2">
+                                <label>วันที่เอกสาร :</label>
+                                <input type="date" class="form-control" [(ngModel)]="form.docDate">
+                            </div>
+
+                            <div class="col-md-6 mt-2">
+                                <label>เลขที่เอกสาร :</label>
+                                <input class="form-control" [(ngModel)]="form.docNo">
+                            </div>
+
+                            <div class="col-md-12 mt-2">
+                                <label>รายละเอียดการโอน :</label>
+                                <textarea class="form-control" [(ngModel)]="form.detail"></textarea>
+                            </div>
+
+                            <div class="col-md-6 mt-3">
+                                <label>โอนไปหน่วยงาน :</label>
+                                <select class="form-control" [(ngModel)]="form.toDept">
+                                    <option value="">Select an Option</option>
+                                    <option *ngFor="let d of departments" [value]="d">{{ d }}</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mt-3">
+                                <label>โอนไปโครงการ :</label>
+                                <select class="form-control" [(ngModel)]="form.toProject">
+                                    <option value="">Select an Option</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mt-3">
+                                <label>รายการค่าใช้จ่าย :</label>
+                                <input class="form-control" [(ngModel)]="form.expense">
+                            </div>
+
+                            <div class="col-md-6 mt-3 d-flex align-items-end gap-3">
+                                <label>
+                                    <input type="radio" [(ngModel)]="form.type" value="increase"> เพิ่ม
+                                </label>
+
+                                <label>
+                                    <input type="radio" [(ngModel)]="form.type" value="decrease"> ลด
+                                </label>
+                            </div>
+
+                            <div class="col-md-6 mt-3">
+                                <label>จำนวนเงินที่โอน :</label>
+                                <div class="d-flex">
+                                    <input type="number" class="form-control w-50" [(ngModel)]="form.amount">
+                                    <span class="ms-2 align-self-center">บาท</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- FOOTER -->
+            <div class="modal-footer">
+                <button class="btn btn-primary" (click)="save(); modal.close()">บันทึก</button>
+                <button class="btn btn-danger" (click)="modal.dismiss()">ยกเลิก</button>
+            </div>
+
+        </ng-template>
+
+    </div>
+</div>

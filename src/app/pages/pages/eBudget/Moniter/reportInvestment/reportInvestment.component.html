@@ -1,0 +1,213 @@
+<style>
+    .stepper {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .step {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #d9d9d9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+    }
+
+    .step.active {
+        background: #4caf50;
+        color: #fff;
+    }
+
+    .card-soft {
+        background: #fff;
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+</style>
+<div class="card-soft">
+
+    <h6 class="fw-semibold mb-3">
+        รายงานผล
+    </h6>
+
+    <!-- ตารางย่อย -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-sm text-center align-middle">
+
+            <!-- HEADER -->
+            <thead>
+                <tr>
+                    <th rowspan="2" style="min-width:250px">กิจกรรม</th>
+
+                    <th colspan="3">ไตรมาส 1</th>
+                    <th colspan="3">ไตรมาส 2</th>
+                    <th colspan="3">ไตรมาส 3</th>
+                    <th colspan="3">ไตรมาส 4</th>
+
+                    <th rowspan="2">รวมแผนเงิน</th>
+                    <th rowspan="2">รวมยุทธฯ + เบิกจ่าย</th>
+                    <th rowspan="2">หมายเหตุ</th>
+                </tr>
+
+                <tr>
+                    <ng-container *ngFor="let q of [1,2,3,4]">
+                        <th>เดือน</th>
+                        <th>แผนเงิน</th>
+                        <th>ยุทธฯ + เบิกจ่าย</th>
+                    </ng-container>
+                </tr>
+            </thead>
+
+            <!-- BODY -->
+            <tbody>
+
+                <ng-container *ngFor="let item of list2; let i = index">
+
+                    <!-- ===== 3 ROW / ACTIVITY ===== -->
+                    <tr *ngFor="let m of months; let mi = index">
+
+                        <!-- กิจกรรม (rowspan 3) -->
+                        <td *ngIf="mi === 0" [attr.rowspan]="3" class="text-start">
+                            <div class="fw-bold mb-1">{{i+1}}</div>
+                            {{item.activity}}
+                        </td>
+
+                        <!-- LOOP 4 ไตรมาส -->
+                        <ng-container *ngFor="let q of item.quarters">
+
+                            <!-- เดือน -->
+                            <td class="fw-semibold text-primary" style="cursor:pointer"
+                                (click)="openMonthDetail(item, i, mi)">
+                                {{m}}
+                            </td>
+
+                            <!-- แผนเงิน -->
+                            <td>
+                                <input class="form-control form-control-sm text-end" [(ngModel)]="q[mi].plan">
+                            </td>
+
+                            <!-- เบิกจ่าย -->
+                            <td>
+                                <input class="form-control form-control-sm text-end" [(ngModel)]="q[mi].actual">
+                            </td>
+
+                        </ng-container>
+
+                        <!-- รวม (rowspan 3) -->
+                        <td *ngIf="mi === 0" [attr.rowspan]="3">
+                            {{ getTotalPlan(item) | number }}
+                        </td>
+
+                        <td *ngIf="mi === 0" [attr.rowspan]="3">
+                            {{ getTotalActual(item) | number }}
+                        </td>
+
+                        <!-- หมายเหตุ -->
+                        <td *ngIf="mi === 0" [attr.rowspan]="3" class="text-start">
+                            <div class="text-success">+10,000</div>
+                            <div class="text-danger">-2,000</div>
+                        </td>
+
+                    </tr>
+
+                </ng-container>
+
+                <!-- ===== TOTAL ROW ===== -->
+                <tr class="fw-bold bg-light">
+                    <td>รวม</td>
+
+                    <td *ngFor="let i of [].constructor(12)"></td>
+
+                    <td>{{ getGrandPlan() | number }}</td>
+                    <td>{{ getGrandActual() | number }}</td>
+                    <td></td>
+                </tr>
+
+            </tbody>
+        </table>
+        <div *ngIf="selectedMonth" class="card mt-3 p-3 position-relative">
+
+            <!-- ❌ ปุ่มปิด -->
+            <button type="button" class="btn-close position-absolute top-0 end-0 m-2" (click)="closeMonthDetail()">
+            </button>
+
+            <h6 class="fw-bold">
+                รายละเอียดเดือน {{ months[selectedMonth.monthIndex] }}
+            </h6>
+
+            <div class="row mt-2">
+
+                <div class="col-md-4">
+                    <label>แผนเงิน</label>
+                    <input class="form-control"
+                        [(ngModel)]="selectedMonth.item.quarters[selectedMonth.quarterIndex][selectedMonth.monthIndex].plan">
+                </div>
+
+                <div class="col-md-4">
+                    <label>เบิกจ่าย</label>
+                    <input class="form-control"
+                        [(ngModel)]="selectedMonth.item.quarters[selectedMonth.quarterIndex][selectedMonth.monthIndex].actual">
+                </div>
+
+                <div class="col-md-4">
+                    <label>หมายเหตุ</label>
+                    <textarea class="form-control"></textarea>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="row mt-3">
+
+        <div class="col-md-3">
+            <label>สถานะ</label>
+            <select class="form-select" [(ngModel)]="status" (change)="onStatusChange()">
+                <option value="">-- เลือก --</option>
+                <option value="ok">เป็นไปตามแผน</option>
+                <option value="not-ok">ไม่เป็นไปตามแผน</option>
+            </select>
+        </div>
+
+        <!-- แสดงเมื่อเลือก -->
+        <div class="col-md-4" *ngIf="status === 'ok'">
+            <label>เป็นไปตามแผน</label>
+            <textarea class="form-control" [(ngModel)]="noteOk"></textarea>
+        </div>
+
+        <div class="col-md-4" *ngIf="status === 'not-ok'">
+            <label>ไม่เป็นไปตามแผน</label>
+            <textarea class="form-control" [(ngModel)]="noteNotOk"></textarea>
+        </div>
+
+    </div>
+
+    <!-- dropdown + textarea -->
+    <div class="row g-3">
+
+        <div class="col-md-3">
+            <label>สถานะ</label>
+            <select class="form-select custom-dropdown">
+                <option>เป็นไปตามแผน</option>
+                <option>ไม่เป็นไปตามแผน</option>
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <label>เหตุผล</label>
+            <textarea class="form-control" rows="2"></textarea>
+        </div>
+
+        <div class="col-md-4">
+            <label>แนวทางแก้ไข</label>
+            <textarea class="form-control" rows="2"></textarea>
+        </div>
+
+    </div>
+
+</div>

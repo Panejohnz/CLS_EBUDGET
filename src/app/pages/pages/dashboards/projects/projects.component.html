@@ -1,0 +1,161 @@
+<div class="row g-3 mb-3">
+
+    <!-- ภาพรวม -->
+    <div class="col-xl-4">
+        <div class="card shadow-sm p-3">
+            <h6>ภาพรวม</h6>
+            <div class="d-flex justify-content-between">
+                <span>แผน</span>
+                <span>10,000,000</span>
+            </div>
+            <div class="d-flex justify-content-between">
+                <span>เบิกจ่าย</span>
+                <span>200,000</span>
+            </div>
+            <div class="d-flex justify-content-between">
+                <span>คงเหลือ</span>
+                <span class="text-success">800,000</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- รายจ่ายประจำ -->
+    <div class="col-xl-4">
+        <div class="card shadow-sm p-3">
+            <h6>รายจ่ายประจำ</h6>
+            <div class="d-flex justify-content-between">
+                <span>แผน</span>
+                <span>5,000,000</span>
+            </div>
+            <div class="d-flex justify-content-between">
+                <span>เบิกจ่าย</span>
+                <span>100,000</span>
+            </div>
+            <div class="d-flex justify-content-between">
+                <span>คงเหลือ</span>
+                <span class="text-success">400,000</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- รายจ่ายลงทุน -->
+    <div class="col-xl-4">
+        <div class="card shadow-sm p-3">
+            <h6>รายจ่ายลงทุน</h6>
+            <div class="d-flex justify-content-between">
+                <span>แผน</span>
+                <span>5,000,000</span>
+            </div>
+            <div class="d-flex justify-content-between">
+                <span>เบิกจ่าย</span>
+                <span>100,000</span>
+            </div>
+            <div class="d-flex justify-content-between">
+                <span>คงเหลือ</span>
+                <span class="text-success">400,000</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="row project-wrapper">
+
+    <!-- 🔹 TOP CARDS -->
+    <div class="col-12">
+        <div class="row g-3">
+
+            <div class="col-xl-4 col-md-6 col-12" *ngFor="let stat of statData">
+                <app-projects-stat [title]="stat.title" [value]="stat.value" [Reimburse]="stat.Reimburse"
+                    [Balance]="stat.Balance" [icon]="stat.icon">
+                </app-projects-stat>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 🔹 PIE + BAR -->
+    <div class="col-xxl-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header">
+                <h5 class="mb-0">ภาพรวมงบประมาณ</h5>
+            </div>
+            <div class="card-body">
+                <apx-chart [series]="pieChart.series" [chart]="pieChart.chart" [labels]="pieChart.labels"
+                    [colors]="pieChart.colors">
+                </apx-chart>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xxl-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header">
+                <h5 class="mb-0">ภาพรวมเงินงบประมาณแยกตามหมวดงบประมาณ</h5>
+            </div>
+            <div class="card-body">
+                <apx-chart [series]="barLineChart.series" [chart]="barLineChart.chart" [xaxis]="barLineChart.xaxis"
+                    [stroke]="barLineChart.stroke" [colors]="barLineChart.colors">
+                </apx-chart>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-12">
+        <br>
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">ภาพรวมงบประมาณแยกตาม พ.ร.บ แผนงานต่าง ๆ</h5>
+            </div>
+            <div class="card-body">
+                <apx-chart [series]="comboChart.series" [chart]="comboChart.chart" [stroke]="comboChart.stroke"
+                    [colors]="comboChart.colors" [plotOptions]="comboChart.plotOptions" [xaxis]="comboChart.xaxis"
+                    [legend]="comboChart.legend">
+                </apx-chart>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔹 TREND -->
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">ภาพรวมงบประมาณแยกตามหน่วยงานและเปรียบเทียบกับงบประมาณที่ได้รับจัดสรร</h5>
+            </div>
+            <div class="card-body">
+                <apx-chart [series]="comboChart2.series" [chart]="comboChart2.chart" [stroke]="comboChart2.stroke"
+                    [colors]="comboChart2.colors" [plotOptions]="comboChart2.plotOptions" [xaxis]="comboChart2.xaxis"
+                    [legend]="comboChart2.legend">
+                </apx-chart>
+            </div>
+        </div>
+    </div>
+    <div class="col-xxl-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header">
+                <h5 class="mb-0"> ภาพรวมงบประมาณแยกตามไตรมาส</h5>
+            </div>
+            <div class="card-body">
+
+                <apx-chart [series]="pieChart2.series" [chart]="pieChart2.chart" [labels]="pieChart2.labels"
+                    [colors]="pieChart2.colors">
+                </apx-chart>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xxl-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header">
+                <h5 class="mb-0">ภาพรวมงบประมาณแยกตามไตรมาสเทียบผลเบิกจ่าย</h5>
+            </div>
+            <div class="card-body">
+                <apx-chart [series]="barLineChart2.series" [chart]="barLineChart2.chart" [xaxis]="barLineChart2.xaxis"
+                    [stroke]="barLineChart2.stroke" [colors]="barLineChart2.colors">
+                </apx-chart>
+
+
+            </div>
+        </div>
+    </div>
+</div>
