@@ -116,6 +116,49 @@ export class ProjectPlanningComponent {
       this.currentTab = 1
       this.firstLoad = true;
     })
+    this.project_planing = {
+      Project_Plan: {},
+
+      Project_Detail: [],
+      Project_Objective: [],
+
+      Project_Plan_Level1: [],
+      Project_Plan_Level1_Sub: [],
+      Project_Plan_Level2: {},
+      Project_Cabinet: [],
+      Project_Plan_Level3: {
+        Urgent1_Checked: false,
+        Urgent1_Name: '',
+        Government_Policy_Id1: null,
+        Government_Policy_Sub_Id1: null,
+        Government_Policy_Id2: null,
+        Government_Policy_Sub_Id2: null,
+        Urgent2_Checked: false,
+        Urgent2_Name: '',
+        Project_Plan_Id: null,
+        Tactics_Id: null,
+        Measure_Id: null,
+        Indicators_Id: null,
+        Mid1_Checked: false,
+        Mid1_Name: '',
+
+        Mid2_Checked: false,
+        Mid2_Name: '',
+
+        ProjectPlaningAlignment: '',
+
+        PpatPlanName: '',
+        PpatStrategy_Id: '',
+        PpatMeasure_Id: '',
+        PpatIndicator_Id: ''
+      },
+      selectedDepartment: null,
+      projectType: null,
+      selectedPlan: null,
+      selectedProduct: null,
+      selectedActivity: null,
+      selectedBudget: null,
+    };
   }
 
   filterSearch() {
@@ -134,7 +177,7 @@ export class ProjectPlanningComponent {
         .includes(keyword)
     );
   }
-  fullModal(modal: any, data: any) {
+  fullModal(data: any) {
     this.currentTab = 1;
     this.firstLoad = true;
     if (data?.Project_Id) {
@@ -176,7 +219,6 @@ export class ProjectPlanningComponent {
             d.Project_Detail_Id = Number(d.Project_Detail_Id);
             d.Parent_Id = d.Parent_Id ? Number(d.Parent_Id) : null;
           });
-          console.log('DETAIL', details);
           const activities = this.mapPlanDetail(details);
           this.mapItems(items, activities);
 
@@ -229,10 +271,6 @@ export class ProjectPlanningComponent {
       };
     }
 
-    this.modalRef = this.modalService.open(modal, {
-      backdrop: 'static',
-      windowClass: 'modal-95'
-    });
   }
   mapPlanDetail(data: any[]) {
 
@@ -247,7 +285,6 @@ export class ProjectPlanningComponent {
 
       quarters: this.convertMonths(x.Months),
 
-      // 🔥 เพิ่มตรงนี้
       sumAmount: Number(x.Sum_Amount ?? x.Sum_Amount_Total ?? 0),
       _edited: false,
       otherExpenses: [],
@@ -265,7 +302,6 @@ export class ProjectPlanningComponent {
 
         quarters: this.convertMonths(s.Months),
 
-        // 🔥 เพิ่มตรงนี้
         sumAmount: Number(s.Sum_Amount) || 0,
 
         _edited: false,
@@ -276,30 +312,7 @@ export class ProjectPlanningComponent {
 
     }));
   }
-  mapMonths(x: any) {
 
-    const months = [
-      { selected: x.Oct_Target === 1, budget: x.Oct_Amount },
-      { selected: x.Nov_Target === 1, budget: x.Nov_Amount },
-      { selected: x.Dec_Target === 1, budget: x.Dec_Amount },
-      { selected: x.Jan_Target === 1, budget: x.Jan_Amount },
-      { selected: x.Feb_Target === 1, budget: x.Feb_Amount },
-      { selected: x.Mar_Target === 1, budget: x.Mar_Amount },
-      { selected: x.Apr_Target === 1, budget: x.Apr_Amount },
-      { selected: x.May_Target === 1, budget: x.May_Amount },
-      { selected: x.Jun_Target === 1, budget: x.Jun_Amount },
-      { selected: x.Jul_Target === 1, budget: x.Jul_Amount },
-      { selected: x.Aug_Target === 1, budget: x.Aug_Amount },
-      { selected: x.Sep_Target === 1, budget: x.Sep_Amount }
-    ];
-
-    return [
-      { quarter: 1, months: months.slice(0, 3) },
-      { quarter: 2, months: months.slice(3, 6) },
-      { quarter: 3, months: months.slice(6, 9) },
-      { quarter: 4, months: months.slice(9, 12) }
-    ];
-  }
   convertMonths(months: any[]) {
 
     const MONTHS = [
