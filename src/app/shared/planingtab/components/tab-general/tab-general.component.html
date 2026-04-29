@@ -1,4 +1,5 @@
-<div class="border rounded p-3 bg-light">
+
+<div class="border rounded p-3" style="background-color: #E0E8F0;">
     <div class="row g-3" *ngIf="model">
 
         <!-- หน่วยงาน -->
@@ -88,19 +89,11 @@
         </div>
 
     </div>
-</div>
 
 <!-- ลักษณะโครงการ -->
-
-
-
-<!-- การดำเนินการ -->
-
 <div class="row mt-4">
-
-    <div class="col-md-2">
+    <div class="col-md-3">
         <label class="form-label d-block">ลักษณะโครงการ</label>
-
         <div class="form-check form-check-inline">
             <input (ngModelChange)="onBudgetChangebox()" type="radio" class="form-check-input" name="Used_BG"
                 [value]="1" [(ngModel)]="model.Used_BG">
@@ -113,9 +106,10 @@
             ไม่ใช้งบ
         </div>
     </div>
-    <div class="col-md-2">
-        <label class="form-label d-block">การดำเนินการ</label>
 
+    <!-- การดำเนินการ -->
+    <div class="col-md-3">
+        <label class="form-label d-block">การดำเนินการ</label>
         <div class="form-check form-check-inline">
             <input type="checkbox" class="form-check-input" [ngModel]="model.Operation1 === 1"
                 (ngModelChange)="model.Operation1 = $event ? 1 : 0">
@@ -130,8 +124,10 @@
     </div>
 
 </div>
-<div class="row mt-2">
-    <div class="col-md-2">
+    <div style="height:15px"></div>
+
+<div class="row mt-4">
+    <div class="col-md-3">
         <label class="form-label d-block">ประเภทโครงการ</label>
 
         <div class="d-flex gap-3">
@@ -149,16 +145,16 @@
         </div>
     </div>
 
-    <div class="col-md-3" *ngIf="model.Project_Type_Id === 2">
+    <div class="col-md-2" *ngIf="model.Project_Type_Id === 2">
         <label class="form-label">จำนวนปีที่ดำเนินการ</label>
         <input type="number" name="Project_Year_Count" class="form-control" placeholder="กรอกจำนวนปี"
             [(ngModel)]="model.Project_Year_Count">
     </div>
 
-    <div class="col-md-3" *ngIf="model.Project_Type_Id === 2">
+    <div class="col-md-2" *ngIf="model.Project_Type_Id === 2">
         <label class="form-label">ปีนี้เป็นปีที่</label>
         <input type="number" name="Project_Year_Number" class="form-control" placeholder="กรอกปี"
             [(ngModel)]="model.Project_Year_Number">
     </div>
 
-</div>
+</div></div>
