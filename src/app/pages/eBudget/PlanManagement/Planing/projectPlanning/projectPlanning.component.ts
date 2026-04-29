@@ -414,7 +414,7 @@ export class ProjectPlanningComponent {
 
   }
   Project_Plan: any
-  async savePlan(modal: any) {
+  async savePlan() {
 
     const getId = (obj: any, key: string) =>
       typeof obj === 'object' ? obj?.[key] : obj;
@@ -497,7 +497,6 @@ export class ProjectPlanningComponent {
     this.serviceebud.GatewayGetData(model).subscribe(() => {
       basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
       this.get_data();
-      modal.dismiss();
     });
   }
   toDotNetDate(dateStr: string): string | null {
