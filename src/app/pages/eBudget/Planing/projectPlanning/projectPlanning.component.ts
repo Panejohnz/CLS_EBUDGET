@@ -275,30 +275,6 @@ export class ProjectPlanningComponent {
 
     }));
   }
-  mapMonths(x: any) {
-
-    const months = [
-      { selected: x.Oct_Target === 1, budget: x.Oct_Amount },
-      { selected: x.Nov_Target === 1, budget: x.Nov_Amount },
-      { selected: x.Dec_Target === 1, budget: x.Dec_Amount },
-      { selected: x.Jan_Target === 1, budget: x.Jan_Amount },
-      { selected: x.Feb_Target === 1, budget: x.Feb_Amount },
-      { selected: x.Mar_Target === 1, budget: x.Mar_Amount },
-      { selected: x.Apr_Target === 1, budget: x.Apr_Amount },
-      { selected: x.May_Target === 1, budget: x.May_Amount },
-      { selected: x.Jun_Target === 1, budget: x.Jun_Amount },
-      { selected: x.Jul_Target === 1, budget: x.Jul_Amount },
-      { selected: x.Aug_Target === 1, budget: x.Aug_Amount },
-      { selected: x.Sep_Target === 1, budget: x.Sep_Amount }
-    ];
-
-    return [
-      { quarter: 1, months: months.slice(0, 3) },
-      { quarter: 2, months: months.slice(3, 6) },
-      { quarter: 3, months: months.slice(6, 9) },
-      { quarter: 4, months: months.slice(9, 12) }
-    ];
-  }
   convertMonths(months: any[]) {
 
     const MONTHS = [
@@ -374,7 +350,7 @@ export class ProjectPlanningComponent {
 
   goTab(tab: number) {
     this.currentTab = tab;
-    this.firstLoad = false; // 👈 พอกดครั้งแรก จบโหมดเริ่มต้น
+    this.firstLoad = false; 
   }
 
   async deletePlan(data: any) {
@@ -511,7 +487,6 @@ export class ProjectPlanningComponent {
 
       OtherExpenses: act.otherExpenses || [],
 
-      // 🔥 สำคัญสุด
       SubActivities: (act.SubActivities || []).map((sub: any) => ({
         Project_Detail_Id: sub.Project_Detail_Id,
         Activity_Name: sub.name,
