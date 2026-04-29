@@ -43,7 +43,7 @@ export class EbudgetService {
         //     return of(null);
         // }
         
-       
+        
         
         return this.http.post(EMO_API + 'GATE_WAY/GATEWAY_EXCHANGE', {
             MODEL: JSON.stringify(model)
