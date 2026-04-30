@@ -4,7 +4,7 @@
 
         <!-- หน่วยงาน -->
         <div class="col-md-6">
-            <label class="form-label">หน่วยงาน</label>
+            <label class="form-label">หน่วยงาน</label> <span class="text-danger"> *</span>
             <select class="form-select" [(ngModel)]="model.selectedDepartment" name="selectedDepartment"
                 [compareWith]="compareById" (ngModelChange)="Onchange_type_Department()">
 
@@ -17,7 +17,7 @@
 
         <!-- ประเภทโครงการ -->
         <div class="col-md-6">
-            <label class="form-label">ประเภทโครงการ</label>
+            <label class="form-label">ประเภทโครงการ</label> <span class="text-danger"> *</span>
 
             <select class="form-select" [(ngModel)]="model.projectType" name="projectType" [compareWith]="compareById"
                 (ngModelChange)="Onchange_type()">
@@ -31,7 +31,7 @@
 
         <!-- แผนงาน -->
         <div class="col-md-6">
-            <label class="form-label">แผนงาน</label>
+            <label class="form-label">แผนงาน</label> <span class="text-danger"> *</span>
             <select class="form-select" [(ngModel)]="model.selectedPlan" name="selectedPlan" [compareWith]="compareById"
                 (ngModelChange)="Onchange_type_Plan()">
 
@@ -44,7 +44,7 @@
 
         <!-- ผลผลิต -->
         <div class="col-md-6">
-            <label class="form-label">ผลผลิต</label>
+            <label class="form-label">ผลผลิต</label> <span class="text-danger"> *</span>
             <select class="form-select" [(ngModel)]="model.selectedProduct" name="selectedProduct"
                 [compareWith]="compareById" (ngModelChange)="Onchange_type_Product()">
 
@@ -57,7 +57,7 @@
 
         <!-- กิจกรรม -->
         <div class="col-md-6">
-            <label class="form-label">กิจกรรม</label>
+            <label class="form-label">กิจกรรม</label> <span class="text-danger"> *</span>
             <select class="form-select" [(ngModel)]="model.selectedActivity" name="selectedActivity"
                 [compareWith]="compareById" (ngModelChange)="onActivityChange($event)">
 
@@ -70,7 +70,7 @@
 
         <!-- หมวดงบ -->
         <div class="col-md-6">
-            <label class="form-label">หมวดงบ</label>
+            <label class="form-label">หมวดงบ</label> <span class="text-danger"> *</span>
             <select class="form-select" [(ngModel)]="model.selectedBudget" name="selectedBudget"
                 [compareWith]="compareById" (ngModelChange)="onBudgetChange($event)"
                 [disabled]="Mas_Budget_Types.length === 1">
@@ -84,7 +84,7 @@
 
         <!-- ชื่อโครงการ -->
         <div class="col-md-12">
-            <label class="form-label">ชื่อโครงการ</label>
+            <label class="form-label">ชื่อโครงการ</label> <span class="text-danger"> *</span>
             <input [(ngModel)]="model.Project_Name" name="Project_Name" type="text" class="form-control">
         </div>
 

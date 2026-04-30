@@ -4,7 +4,7 @@
         แผนระดับ 1
     </div>
 
-  <div class="card-body rounded" style="background-color: #E0E8F0;">
+    <div class="card-body rounded" style="background-color: #E0E8F0;">
         <!-- 1.1 -->
         <div class="border-start border-4 border-primary ps-3 mb-4">
             <h6 class="fw-bold text-primary mb-3">
@@ -321,7 +321,7 @@
     </div>
     <div style="height:15px"></div>
 
-     <!-- ================= 2.2 ================= -->
+    <!-- ================= 2.2 ================= -->
     <div class="card-body rounded" style="background-color: #E0E8F0;">
         <div class="border-start border-4 border-primary ps-3 mb-4">
             <h6 class="fw-bold text-primary mb-3">
@@ -406,45 +406,36 @@
     </div>
     <div style="height:15px"></div>
 
-     <!-- ================= 2.3 เพิ่มใหม่ ================= --> 
-<div class="card-body rounded" style="background-color: #E0E8F0;">
+    <!-- ================= 2.3 เพิ่มใหม่ ================= -->
+    <div class="card-body rounded" style="background-color: #E0E8F0;">
 
-    <div class="border-start border-4 border-primary ps-3 mb-4">
-        <h6 class="fw-bold text-primary mb-3">
-            2.3 ความสอดคล้องกับแผนความมั่นคงชาติ นโยบายและแผนระดับชาติว่าด้วยความมั่นคงแห่งชาติ (พ.ศ. 2566 - 2570)
-        </h6>
-    </div>
+        <div class="border-start border-4 border-primary ps-3 mb-4">
+            <h6 class="fw-bold text-primary mb-3">
+                2.3 ความสอดคล้องกับแผนความมั่นคงชาติ นโยบายและแผนระดับชาติว่าด้วยความมั่นคงแห่งชาติ (พ.ศ. 2566 - 2570)
+            </h6>
+        </div>
 
-    <button 
-        class="btn btn-primary btn-sm mb-3" 
-        (click)="addCabinet()">
-        + เพิ่มรายการ
-    </button>
+        <button class="btn btn-primary btn-sm mb-3" (click)="addCabinet()">
+            + เพิ่มรายการ
+        </button>
 
-    <div *ngFor="let item of model.Project_Cabinet; let i = index"
-         class="border rounded p-3 bg-light">
+        <div *ngFor="let item of model.Project_Cabinet; let i = index" class="border rounded p-3 bg-light">
 
-        <label class="form-label mb-1">
-            ประเด็นที่สอดคล้อง {{ i + 1 }}
-        </label>
+            <label class="form-label mb-1">
+                ประเด็นที่สอดคล้อง {{ i + 1 }}
+            </label>
 
-        <div class="input-group">
-            <input 
-                type="text" 
-                class="form-control"
-                [(ngModel)]="item.Title"
-                name="cabinet_{{i}}">
+            <div class="input-group">
+                <input type="text" class="form-control" [(ngModel)]="item.Title" name="cabinet_{{i}}">
 
-            <button 
-                class="btn btn-danger"
-                (click)="removeCabinet(i, item)">
-                <i class="bx bx-trash"></i>
-            </button>
+                <button class="btn btn-danger" (click)="removeCabinet(i, item)">
+                    <i class="bx bx-trash"></i>
+                </button>
+            </div>
+
         </div>
 
     </div>
-
-</div>
     <div style="height:15px"></div>
 
 </div>
@@ -789,23 +780,22 @@
             </h6>
         </div>
         <div class="border rounded p-3 mb-3 bg-light">
-           <div class="row g-3">
-             <div class="col-md-12">
-                       <label class="form-label">แผนงานที่</label>
-                <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Project_Plan_Id"
-                    (change)="onChangenTactic()">
-
-                    <option [ngValue]="null" disabled>-- เลือก --</option>
-
-                    <option *ngFor="let item of listProjectPlan" [ngValue]="item.Project_Plan_Id">
-                        {{ item.Project_Plan_Name }}
-                    </option>
-
-                </select>
-            </div>
-
+            <div class="row g-3">
                 <div class="col-md-12">
-                    <label class="form-label">กลยุทธ์ที่</label>
+                    <label class="form-label">แผนงานที่</label>
+                    <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Project_Plan_Id"
+                        (change)="onChangenTactic()">
+
+                        <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                        <option *ngFor="let item of listProjectPlan" [ngValue]="item.Project_Plan_Id">
+                            {{ item.Project_Plan_Name }}
+                        </option>
+
+                    </select>
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">เป้าหมายที่</label>
                     <select (change)="onChangenMeasure()" class="form-select"
                         [(ngModel)]="model.Project_Plan_Level3.Tactics_Id" name="ppat_strategy">
                         <option [ngValue]="null" disabled>-- เลือก --</option>
@@ -815,9 +805,19 @@
                         </option>
                     </select>
                 </div>
-
                 <div class="col-md-12">
-                    <label class="form-label">มาตรการที่</label>
+                    <label class="form-label">ตัวชี้วัดที่</label>
+                    <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Indicators_Id"
+                        name="ppat_strategy">
+                        <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                        <option *ngFor="let item of listMasIndicator" [ngValue]="item.Indicators_Id">
+                            {{ item.Indicators_Name }}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">แนวทางการพัฒนาที่</label>
                     <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Measure_Id" name="ppat_strategy">
                         <option [ngValue]="null" disabled>-- เลือก --</option>
 
@@ -827,20 +827,10 @@
                     </select>
                 </div>
 
-                <div class="col-md-12">
-                    <label class="form-label">ตัวชี้วัดแผนงาน</label>
-                    <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Indicators_Id"
-                        name="ppat_strategy">
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-
-                        <option *ngFor="let item of listMasIndicator" [ngValue]="item.Indicators_Id">
-                            {{ item.Indicators_Name }}
-                        </option>
-                    </select>
-                </div></div>
+            </div>
         </div>
     </div>
- <div style="height:15px"></div>
+    <div style="height:15px"></div>
 
     <!-- ================= 3.3 ================= -->
     <div class="card-body rounded" style="background-color: #E0E8F0;">
@@ -849,24 +839,23 @@
                 3.3 ความสอดคล้องกับแผนปฏิบัติราชการ ปปท. (แผน 1 ปี) <span class="text-danger">*</span>
             </h6>
         </div>
-         <div class="border rounded p-3 mb-3 bg-light">
-           <div class="row g-3">
-             <div class="col-md-12">
-                       <label class="form-label">แผนงานที่</label>
-                <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Project_Plan_Id"
-                    (change)="onChangenTactic()">
-
-                    <option [ngValue]="null" disabled>-- เลือก --</option>
-
-                    <option *ngFor="let item of listProjectPlan" [ngValue]="item.Project_Plan_Id">
-                        {{ item.Project_Plan_Name }}
-                    </option>
-
-                </select>
-            </div>
-
+        <div class="border rounded p-3 mb-3 bg-light">
+            <div class="row g-3">
                 <div class="col-md-12">
-                    <label class="form-label">กลยุทธ์ที่</label>
+                    <label class="form-label">แผนงานที่</label>
+                    <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Project_Plan_Id"
+                        (change)="onChangenTactic()">
+
+                        <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                        <option *ngFor="let item of listProjectPlan" [ngValue]="item.Project_Plan_Id">
+                            {{ item.Project_Plan_Name }}
+                        </option>
+
+                    </select>
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">เป้าหมายที่</label>
                     <select (change)="onChangenMeasure()" class="form-select"
                         [(ngModel)]="model.Project_Plan_Level3.Tactics_Id" name="ppat_strategy">
                         <option [ngValue]="null" disabled>-- เลือก --</option>
@@ -876,9 +865,19 @@
                         </option>
                     </select>
                 </div>
-
                 <div class="col-md-12">
-                    <label class="form-label">มาตรการที่</label>
+                    <label class="form-label">ตัวชี้วัดที่</label>
+                    <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Indicators_Id"
+                        name="ppat_strategy">
+                        <option [ngValue]="null" disabled>-- เลือก --</option>
+
+                        <option *ngFor="let item of listMasIndicator" [ngValue]="item.Indicators_Id">
+                            {{ item.Indicators_Name }}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">แนวทางการพัฒนาที่</label>
                     <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Measure_Id" name="ppat_strategy">
                         <option [ngValue]="null" disabled>-- เลือก --</option>
 
@@ -888,17 +887,7 @@
                     </select>
                 </div>
 
-                <div class="col-md-12">
-                    <label class="form-label">ตัวชี้วัดแผนงาน</label>
-                    <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Indicators_Id"
-                        name="ppat_strategy">
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-
-                        <option *ngFor="let item of listMasIndicator" [ngValue]="item.Indicators_Id">
-                            {{ item.Indicators_Name }}
-                        </option>
-                    </select>
-                </div></div>
+            </div>
         </div>
         <div [hidden]="true">
             <div class="border rounded p-3 mb-3 bg-light">
