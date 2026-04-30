@@ -119,6 +119,14 @@ export class ProjectPlanningComponent {
     })
   }
 
+Total: number = 0;
+
+calculateTotal() {
+  this.Total = this.griddata.reduce((sum: number, item: any) => {
+    return sum + (item.Total || 0);
+  }, 0);
+}
+
   filterSearch() {
 
     const keyword = (this.service.searchTerm || '').toLowerCase().trim();

@@ -30,44 +30,43 @@
                 </div>
              <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
 
-    <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
-                        <thead class="text-center text-white sticky-header"  style="background-color: #556398;">
-                            <tr style="text-align: center;">
-                                <th style="width:5%">ลำดับ</th>
-                                <th style="width:10%">หน่วยงาน</th>
-                                <th style="width:15%">แผนงาน</th>
-                                <th style="width:20%">ผลผลิต</th>
-                                <th style="width:15%">กิจกรรม</th>
-                                <th style="width:10%">หมวดงบ</th>
-                                <th style="width:10%">โครงการ</th>
-                                <th style="width:5%">งบประมาณ</th>
-                                <th style="width:20%">สถานะ</th>
-                                <th style="width:5%">แก้ไข</th>
-                                <th style="width:5%">ลบ</th>
-                            </tr>
-                        </thead>
+ <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+    
+    <thead class="text-center text-white sticky-header" style="background-color: #556398;">
+        <tr>
+            <th style="width:5%">ลำดับ</th>
+            <th style="width:10%">หน่วยงาน</th>
+            <th style="width:15%">แผนงาน</th>
+            <th style="width:15%">ผลผลิต</th>
+            <th style="width:15%">กิจกรรม</th>
+            <th style="width:10%">หมวดงบ</th>
+            <th style="width:20%">โครงการ</th>
+            <th style="width:5%">งบประมาณ</th>
+            <th style="width:10%">สถานะ</th>
+            <th style="width:5%">แก้ไข</th>
+            <th style="width:5%">ลบ</th>
+        </tr>
+    </thead>
 
-                        <tbody>
-                            @for(data of griddata; track $index){
-                            <tr>
-                                <td class="text-center">{{$index + 1}}</td>
-                                <td class="text-center">{{data.Department_Name}}</td>
-                                <td class="text-center">
-                                    <ngb-highlight [result]="data.Plan_Name"
-                                        [term]="service.searchTerm">{{data.Plan_Name}}</ngb-highlight>
-                                </td>
+    <tbody>
+        @for(data of griddata; track $index){
+        <tr>
+            <td>{{$index + 1}}</td>
+            <td>{{data.Department_Name}}</td>
 
-                                <td>
-                                    <ngb-highlight [result]="data.Product_Name"
-                                        [term]="service.searchTerm">{{data.Product_Name}}</ngb-highlight>
-                                </td>
+            <td>
+                <ngb-highlight [result]="data.Plan_Name"
+                    [term]="service.searchTerm">
+                    {{data.Plan_Name}}
+                </ngb-highlight>
+            </td>
 
-                                <td>
-                                    <ngb-highlight [result]="data.Activity_Name"
-                                        [term]="service.searchTerm">{{data.Activity_Name}}</ngb-highlight>
-                                </td>
-                                <td>{{data.Budget_Type}}</td>
-                                <td>{{data.Project_Name}}</td>
+            <td>
+                <ngb-highlight [result]="data.Product_Name"
+                    [term]="service.searchTerm">
+                    {{data.Product_Name}}
+                </ngb-highlight>
+            </td>
 
                                 <td class="text-end">
                                     {{data.Po_Qty | number:'1.2-2'}}
@@ -81,23 +80,57 @@
                                         {{ data.Status_Name }}
                                     </span>
 
-                                </td>
-                                <td class="text-center">
-                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#exampleModalgrid" (click)="fullModal(fullDataModal,data)">
-                                        <i class="ri-pencil-line"></i>
-                                    </button>
-                                </td>
+            <td>{{data.Budget_Type}}</td>
+            <td>{{data.Project_Name}}</td>
 
-                                <td class="text-center">
-                                    <button class="btn btn-danger btn-sm" (click)="deletePlan(data)">
-                                        <i class="ri-delete-bin-line"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            }
-                        </tbody>
-                    </table>
+            <td class="text-end">
+                {{data.Po_Qty | number:'1.2-2'}}
+            </td>
+
+            <td>
+                <span class="badge" [ngClass]="
+                    data.Status_Id == 7 ? 'bg-danger' :
+                    data.Status_Id == 2 ? 'bg-warning text-dark' :
+                    data.Status_Id == 8 ? 'bg-success' : 'bg-secondary'
+                ">
+                    {{ data.Status_Name }}
+                </span>
+            </td>
+
+            <td>
+                <button class="btn btn-warning btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModalgrid"
+                        (click)="fullModal(fullDataModal,data)">
+                    <i class="ri-pencil-line"></i>
+                </button>
+            </td>
+
+            <td>
+                <button class="btn btn-danger btn-sm"
+                        (click)="deletePlan(data)">
+                    <i class="ri-delete-bin-line"></i>
+                </button>
+            </td>
+        </tr>
+        }
+    </tbody>
+
+    <!-- ✅ Footer -->
+    <tfoot>
+        <tr style="font-weight: bold; background-color: #556398;">
+            <td colspan="7" class="text-end text-white">รวมทั้งหมด</td>
+
+            <!-- รวมงบประมาณ -->
+            <td class="text-end text-white">
+                {{ Total | number:'1.2-2' }}
+            </td>
+
+            <td colspan="3"></td>
+        </tr>
+    </tfoot>
+
+</table>
                 </div>
                 <div class="row justify-content-md-between align-items-md-center">
                     <div class="col-sm-12 col-md-5">
