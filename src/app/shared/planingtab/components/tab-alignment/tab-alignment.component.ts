@@ -2,6 +2,7 @@ import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/cor
 import { NonNullableFormBuilder } from '@angular/forms';
 import { switchMap, tap } from 'rxjs';
 import { EbudgetService } from 'src/app/core/services/ebudget.service';
+import { BudgetYearService } from 'src/app/core/services/budget-year.service';
 
 interface PlanLevel1Main {
   Strategy_Side_Id: any;
@@ -18,7 +19,7 @@ interface PlanLevel1Main {
 export class TabAlignmentComponent implements OnChanges {
 
   constructor(
-    public serviceebud: EbudgetService) { }
+    public serviceebud: EbudgetService, private budgetYearService: BudgetYearService) { }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['model'] && this.model) {
       this.initData();
@@ -132,26 +133,35 @@ export class TabAlignmentComponent implements OnChanges {
   compareFn(a: any, b: any): boolean {
     return a === b;
   }
+  currentYear: any
   loadAllMasterData() {
+    this.budgetYearService.yearChanged$.subscribe(async year => {
+      if (year) {
+        if (year < 2500) {
+          year = year + 543
+        }
+        let model = {
+          FUNC_CODE: "FUNC-GET_Master_Data",
+          BgYear: year
+        };
 
-    let model = {
-      FUNC_CODE: "FUNC-GET_Master_Data",
-    };
+        this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
 
-    this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
+          this.listStrategic = res.List_Mas_Strategic || [];
+          this.listMasterPlan = res.List_Mas_Master_Plan || [];
+          this.listLandmark = res.List_Mas_Landmark || [];
+          this.listValueChain = res.List_Mas_Value_Chain || [];
+          this.listSDGsGoal = res.List_Mas_SDGs_Gloal || [];
+          this.listGovernment_Policy1 = res.List_Mas_Government_Policy1 || [];
+          this.listGovernment_Policy2 = res.List_Mas_Government_Policy2 || [];
+          this.listActionPlan = res.List_Mas_Action_Plan || [];
+          this.listProjectPlan = res.List_Mas_Project_Plan || [];
+          this.listMasTactic = res.List_Mas_Tactic || [];
+          this.afterLoad();
+        })
+      }
+    });
 
-      this.listStrategic = res.List_Mas_Strategic || [];
-      this.listMasterPlan = res.List_Mas_Master_Plan || [];
-      this.listLandmark = res.List_Mas_Landmark || [];
-      this.listValueChain = res.List_Mas_Value_Chain || [];
-      this.listSDGsGoal = res.List_Mas_SDGs_Gloal || [];
-      this.listGovernment_Policy1 = res.List_Mas_Government_Policy1 || [];
-      this.listGovernment_Policy2 = res.List_Mas_Government_Policy2 || [];
-      this.listActionPlan = res.List_Mas_Action_Plan || [];
-      this.listProjectPlan = res.List_Mas_Project_Plan || [];
-      this.listMasTactic = res.List_Mas_Tactic || [];
-      this.afterLoad();
-    })
 
 
 
