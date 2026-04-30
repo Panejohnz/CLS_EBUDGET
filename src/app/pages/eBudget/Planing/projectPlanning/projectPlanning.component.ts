@@ -87,15 +87,16 @@ export class ProjectPlanningComponent {
   currentYear: any
   ngOnInit(): void {
 
-    this.get_data()
 
-    this.budgetYearService.yearChanged$.subscribe(year => {
+
+    this.budgetYearService.yearChanged$.subscribe(async year => {
       if (year) {
+        if (year < 2500) {
+          year = year + 543
+        }
         this.currentYear = year
-        this.allData = Array.isArray(this.griddata)
-          ? this.griddata
-          : [];
-        this.griddata = [...this.allData];
+
+        this.get_data()
       }
     });
 
@@ -104,6 +105,7 @@ export class ProjectPlanningComponent {
   get_data() {
     let model = {
       FUNC_CODE: "FUNC-Get_Project_Plan",
+      BgYear: this.currentYear
     }
     var getData = this.serviceebud.GatewayGetData(model);
     getData.subscribe((response: any) => {
@@ -350,7 +352,7 @@ export class ProjectPlanningComponent {
 
   goTab(tab: number) {
     this.currentTab = tab;
-    this.firstLoad = false; 
+    this.firstLoad = false;
   }
 
   async deletePlan(data: any) {
@@ -540,7 +542,7 @@ export class ProjectPlanningComponent {
       project: 'โครงการ ' + Math.floor(Math.random() * 100),
       budget: Math.floor(Math.random() * 90000) + 10000,
       status_name: this.randomItem(status_name),
-      status_id: 2
+      Status_Number: 2
     };
 
     this.griddata.push(newRow);

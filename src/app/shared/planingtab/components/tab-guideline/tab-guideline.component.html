@@ -8,7 +8,7 @@
 
     <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
         <!-- sticky header -->
-        <thead class="text-center text-white sticky-header"  style="background-color: #556398;">
+        <thead class="text-center text-white sticky-header" style="background-color: #556398;">
             <tr>
                 <th rowspan="2" style="width:3%;">ลำดับ</th>
                 <th rowspan="2" style="width:22%">กิจกรรม</th>
@@ -16,7 +16,7 @@
                 <th colspan="3">ไตรมาส 2</th>
                 <th colspan="3">ไตรมาส 3</th>
                 <th colspan="3">ไตรมาส 4</th>
-                <th rowspan="2" >ลบ</th>
+                <th rowspan="2">ลบ</th>
             </tr>
 
             <tr>
@@ -85,7 +85,8 @@
                             <td>
                                 <input type="text" class="form-control form-control-sm text-end"
                                     [ngModel]="displayValue(q.months[rowIndex].budget)"
-                                    (ngModelChange)="onInputFormat($event, q.months[rowIndex])"
+                                    (input)="onInputFormat($event, q.months[rowIndex])"
+                                    (keypress)="allowOnlyNumber($event)"
                                     [disabled]="act.noBudget || act.SubActivities?.length > 0">
                             </td>
 
@@ -102,46 +103,42 @@
 
                 <!-- ส่วนล่างกิจกรรมหลัก -->
                 <tr>
-<td colspan="15" style="background-color: #556398;">
+                    <td colspan="15" style="background-color: #556398;">
 
-    <div class="d-flex justify-content-end align-items-center gap-2 flex-wrap">
+                        <div class="d-flex justify-content-end align-items-center gap-2 flex-wrap">
 
-        <!-- กลุ่มผู้รับผิดชอบ -->
-        <div class="d-flex align-items-center gap-2"
-             style="margin-right: 30px;">
+                            <!-- กลุ่มผู้รับผิดชอบ -->
+                            <div class="d-flex align-items-center gap-2" style="margin-right: 30px;">
 
-            <label class="mb-0 text-white">
-                ผู้รับผิดชอบ
-            </label>
+                                <label class="mb-0 text-white">
+                                    ผู้รับผิดชอบ
+                                </label>
 
-            <input type="text"
-                   class="form-control form-control-sm"
-                   style="width:220px"
-                   [(ngModel)]="act.owner">
+                                <input type="text" class="form-control form-control-sm" style="width:220px"
+                                    [(ngModel)]="act.owner">
 
-            <button class="btn btn-sm btn-primary"
-                    (click)="addSub(act)">
-                เพิ่มกิจกรรมย่อย
-            </button>
+                                <button class="btn btn-sm btn-primary" (click)="addSub(act)">
+                                    เพิ่มกิจกรรมย่อย
+                                </button>
 
-            <button class="btn btn-sm btn-success"
-                    (click)="openMultiplierModal(fullDataModal, act, 'act')"
-                    [disabled]="act.SubActivities?.length > 0">
-                แบบฟอร์มตัวคูณ
-            </button>
-        </div>
+                                <button class="btn btn-sm btn-success"
+                                    (click)="openMultiplierModal(fullDataModal, act, 'act')"
+                                    [disabled]="act.SubActivities?.length > 0">
+                                    แบบฟอร์มตัวคูณ
+                                </button>
+                            </div>
 
-        <span class="fw-bold text-white" style="min-width: 100px;margin-right: 100px; ">
-            รวมผลคูณ : {{ getMultiplierTotal(act) | number:'1.2-2' }}
-        </span>
+                            <span class="fw-bold text-white" style="min-width: 100px;margin-right: 100px; ">
+                                รวมผลคูณ : {{ getMultiplierTotal(act) | number:'1.2-2' }}
+                            </span>
 
-        <span class="fw-bold text-white" style="min-width: 100px; margin-right: 100px;">
-            รวมวางแผน : {{ getActivityTotal(act) | number:'1.2-2' }}
-        </span>
+                            <span class="fw-bold text-white" style="min-width: 100px; margin-right: 100px;">
+                                รวมวางแผน : {{ getActivityTotal(act) | number:'1.2-2' }}
+                            </span>
 
-    </div>
+                        </div>
 
-</td>
+                    </td>
                 </tr>
 
                 <!-- SubActivities -->
@@ -200,7 +197,7 @@
                                 <td>
                                     <input type="text" class="form-control form-control-sm text-end"
                                         [ngModel]="displayValue(q.months[rowIndex].budget)"
-                                        (ngModelChange)="onSubBudgetChange($event, act, qIndex, rowIndex)"
+                                        (input)="onSubBudgetChange($event, sub, qIndex, rowIndex)"
                                         [disabled]="sub.noBudget">
                                 </td>
 
@@ -220,16 +217,15 @@
                         <td colspan="15">
 
                             <div class="d-flex justify-content-end align-items-center gap-2">
-       <!-- กลุ่มผู้รับผิดชอบ -->
-        <div class="d-flex align-items-center gap-2"
-             style="margin-right: 30px;">
-                                <button class="btn btn-sm btn-success"
-                                    (click)="openMultiplierModal(fullDataModal, sub, 'sub')"
-                                    [disabled]="sub.SubActivities?.length > 0">
-                                    แบบฟอร์มตัวคูณ
-                                </button>
-</div>  
-                               <span class="fw-bold text-black" style="min-width: 100px;margin-right: 100px; ">
+                                <!-- กลุ่มผู้รับผิดชอบ -->
+                                <div class="d-flex align-items-center gap-2" style="margin-right: 30px;">
+                                    <button class="btn btn-sm btn-success"
+                                        (click)="openMultiplierModal(fullDataModal, sub, 'sub')"
+                                        [disabled]="sub.SubActivities?.length > 0">
+                                        แบบฟอร์มตัวคูณ
+                                    </button>
+                                </div>
+                                <span class="fw-bold text-black" style="min-width: 100px;margin-right: 100px; ">
                                     รวมผลคูณ :
                                     {{ sub.multiplierTotal | number:'1.2-2' }}
                                 </span>
@@ -259,9 +255,11 @@
 <!-- </div> -->
 
 <ng-template #fullDataModal let-modal>
-    <div class="modal-header">
+    <div class="modal-header flex-column align-items-start">
         <h5 class="modal-title">แบบฟอร์มตัวคูณ</h5>
-        <button type="button" class="btn-close" (click)="modal.dismiss('Close click')"></button>
+        <h6 class="fw-bold p-2">{{ selectedActivity.name }}</h6>
+
+        <button type="button" class="btn-close ms-auto" (click)="modal.dismiss('Close click')"></button>
     </div>
 
     <app-other-expense-project [activityId]="selectedActivityId" [type]="type" [project_planing]="project_planing"

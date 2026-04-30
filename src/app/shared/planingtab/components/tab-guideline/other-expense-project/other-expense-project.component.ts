@@ -249,10 +249,43 @@ export class OtherExpenseProjectComponent {
   }
   formatNumber(val: any): string {
     if (val == null || val === '') return '';
-    return Number(val).toLocaleString('en-US');
+
+    const parts = val.toString().split('.');
+
+    const intPart = Number(parts[0]).toLocaleString('en-US');
+
+    if (parts.length > 1) {
+      return intPart + '.' + parts[1];
+    }
+
+    return intPart;
   }
-  onNumberInput(value: any, item: any, field: string) {
-    const raw = value?.toString().replace(/,/g, '');
-    item[field] = raw === '' ? null : Number(raw);
+  onNumberInput(event: any, item: any, field: string) {
+
+    let val = event.target.value || '';
+
+    val = val.replace(/[^0-9.]/g, '');
+
+    const parts = val.split('.');
+    if (parts.length > 2) {
+      val = parts[0] + '.' + parts.slice(1).join('');
+    }
+
+    const [intPart, decimalPart] = val.split('.');
+
+    const intFormatted = intPart
+      ? Number(intPart).toLocaleString('en-US')
+      : '';
+
+    let finalValue = intFormatted;
+    if (decimalPart !== undefined) {
+      finalValue += '.' + decimalPart.slice(0, 2);
+    }
+
+    event.target.value = finalValue;
+
+    const num = Number(intPart + (decimalPart ? '.' + decimalPart : ''));
+
+    item[field] = isNaN(num) ? null : num;
   }
 }

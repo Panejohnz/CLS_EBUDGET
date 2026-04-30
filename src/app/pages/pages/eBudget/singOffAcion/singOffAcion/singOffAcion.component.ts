@@ -40,7 +40,7 @@ export class SingOffPlaningComponent {
       budgetType: 'งบดำเนินงาน',
       project: 'ระบบข้อมูลกลาง',
       budget: 250000,
-      status_id: 2,
+      Status_Number: 2,
       status_name: 'รออนุมัติ'
     },
     {
@@ -52,7 +52,7 @@ export class SingOffPlaningComponent {
       budgetType: 'งบลงทุน',
       project: 'พัฒนาศักยภาพบุคลากร',
       budget: 120000,
-      status_id: 8,
+      Status_Number: 8,
       status_name: 'อนุมัติแล้ว'
     }
   ];

@@ -3,7 +3,7 @@
     <div class="card shadow-sm">
         <div class="card-body p-0">
 
-            <h6 class="fw-bold p-2">ดึงชื่อกิจกรรมขึ้นมาแสดง</h6>
+         
 
             <table class="table table-bordered align-middle text-center">
 
@@ -71,8 +71,7 @@
 
                         <td>
                             <input type="text" class="form-control form-control-sm text-center"
-                                [ngModel]="formatNumber(item.times)"
-                                (ngModelChange)="onNumberInput($event, item, 'times')">
+                                [ngModel]="formatNumber(item.times)" (input)="onNumberInput($event, item, 'times')">
                         </td>
 
                         <td><input type="text" class="form-control form-control-sm text-center"
@@ -86,8 +85,7 @@
 
                         <td>
                             <input type="text" class="form-control form-control-sm text-center"
-                                [ngModel]="formatNumber(item.people)"
-                                (ngModelChange)="onNumberInput($event, item, 'people')">
+                                [ngModel]="formatNumber(item.people)" (input)="onNumberInput($event, item, 'people')">
                         </td>
 
                         <td><input type="text" class="form-control form-control-sm text-center"
@@ -99,9 +97,8 @@
                         <td class="bg-light fw-bold">3</td>
 
                         <td>
-                            <input type="number" class="form-control form-control-sm text-center"
-                                [ngModel]="formatNumber(item.rate)"
-                                (ngModelChange)="onNumberInput($event, item, 'rate')">
+                            <input type="text" class="form-control form-control-sm text-center"
+                                [ngModel]="formatNumber(item.rate)" (input)="onNumberInput($event, item, 'rate')">
                         </td>
 
                         <td><input type="text" class="form-control form-control-sm text-center"
@@ -114,9 +111,8 @@
                         <td class="bg-light fw-bold">4</td>
 
                         <td>
-                            <input type="number" class="form-control form-control-sm text-center"
-                                [ngModel]="formatNumber(item.input3)"
-                                (ngModelChange)="onNumberInput($event, item, 'input3')">
+                            <input type="text" class="form-control form-control-sm text-center"
+                                [ngModel]="formatNumber(item.input3)" (input)="onNumberInput($event, item, 'input3')">
                         </td>
 
                         <td>
@@ -130,10 +126,8 @@
                         <td class="bg-light fw-bold">5</td>
 
                         <td>
-                            <input type="number" class="form-control form-control-sm text-center"
-                                [ngModel]="formatNumber(item.input4)"
-                                (ngModelChange)="onNumberInput($event, item, 'input4')"
-                                >
+                            <input type="text" class="form-control form-control-sm text-center"
+                                [ngModel]="formatNumber(item.input4)" (input)="onNumberInput($event, item, 'input4')">
                         </td>
 
                         <td>
@@ -146,10 +140,8 @@
                         <td class="bg-light fw-bold">6</td>
 
                         <td>
-                            <input type="number" class="form-control form-control-sm" 
-                             [ngModel]="formatNumber(item.input5)"
-                                (ngModelChange)="onNumberInput($event, item, 'input5')"
-                            >
+                            <input type="text" class="form-control form-control-sm"
+                                [ngModel]="formatNumber(item.input5)" (input)="onNumberInput($event, item, 'input5')">
                         </td>
 
                         <td>

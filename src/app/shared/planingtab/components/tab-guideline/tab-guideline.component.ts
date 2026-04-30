@@ -329,31 +329,52 @@ export class TabGuidelineComponent {
   }
 
   displayValue(value: any): string {
-    if (!value && value !== 0) return '';
+    if (value === null || value === undefined || value === '') return '';
 
-    const parts = value.toString().split('.');
+    let str = value.toString();
 
-    const intPart = Number(parts[0]).toLocaleString('en-US');
+    if (!/[0-9]/.test(str)) return '';
 
-    return parts.length > 1
-      ? intPart + '.' + parts[1]
-      : intPart;
+    const parts = str.split('.');
+
+    const intPart = Number(parts[0] || 0).toLocaleString('en-US');
+
+    if (parts.length > 1) {
+      const decimal = parts[1].slice(0, 2);
+      return `${intPart}.${decimal}`;
+    }
+
+    return intPart;
   }
-  onInputFormat(value: any, month: any) {
+  onInputFormat(event: any, month: any) {
 
-    const num = Number(value?.toString().replace(/,/g, '')) || 0;
+    let val = event.target.value || '';
 
-    month.budget = num;
+    val = val.replace(/[^0-9.,]/g, '');
 
-    month.selected = num > 0;
+    const parts = val.split('.');
+    if (parts.length > 2) {
+      val = parts[0] + '.' + parts.slice(1).join('');
+    }
+
+    event.target.value = val;
+    const num = Number(val.replace(/,/g, ''));
+
+    month.budget = isNaN(num) ? 0 : num;
+    month.selected = month.budget > 0;
 
     this.model.activities.forEach((act: any) => {
       act._edited = true;
-
       act.SubActivities?.forEach((sub: any) => {
         sub._edited = true;
       });
     });
+  }
+  allowOnlyNumber(event: KeyboardEvent) {
+    const char = event.key;
+    if (!/[0-9.,]/.test(char)) {
+      event.preventDefault();
+    }
   }
   hasSubActivities(act: any): boolean {
     return act?.SubActivities && act.SubActivities.length > 0;
@@ -434,25 +455,25 @@ export class TabGuidelineComponent {
   }
   getMultiplierTotal(act: any): number {
 
-  // 🔥 1. ถ้ามี sub → ต้องรวม sub ก่อนเสมอ
-  if (act.SubActivities?.length) {
-    return act.SubActivities.reduce((sum: number, sub: any) => {
-      return sum + this.getMultiplierTotal(sub);
-    }, 0);
+    // 🔥 1. ถ้ามี sub → ต้องรวม sub ก่อนเสมอ
+    if (act.SubActivities?.length) {
+      return act.SubActivities.reduce((sum: number, sub: any) => {
+        return sum + this.getMultiplierTotal(sub);
+      }, 0);
+    }
+
+    // 🔥 2. ถ้า leaf (ไม่มี sub)
+
+    // 👉 ถ้ามีค่าใน otherExpenses → คำนวณ
+    if (act.otherExpenses?.length) {
+      return act.otherExpenses.reduce((sum: number, item: any) => {
+        return sum + (item.total || item.Total || 0);
+      }, 0);
+    }
+
+    // 👉 fallback DB
+    return act.multiplierTotal || 0;
   }
-
-  // 🔥 2. ถ้า leaf (ไม่มี sub)
-
-  // 👉 ถ้ามีค่าใน otherExpenses → คำนวณ
-  if (act.otherExpenses?.length) {
-    return act.otherExpenses.reduce((sum: number, item: any) => {
-      return sum + (item.total || item.Total || 0);
-    }, 0);
-  }
-
-  // 👉 fallback DB
-  return act.multiplierTotal || 0;
-}
   syncMainFromSub(act: any) {
 
     if (!act.SubActivities?.length) return;
@@ -472,36 +493,39 @@ export class TabGuidelineComponent {
     });
 
   }
-  onSubBudgetChange(value: string, act: any, qIndex: number, mIndex: number) {
+  onSubBudgetChange(event: any, sub: any, qIndex: number, rowIndex: number) {
 
-    // 🔥 step 1: แปลงค่าจาก input (ตัด comma)
-    const numeric = value.replace(/,/g, '');
-    const num = numeric ? Number(numeric) : 0;
+    let val = event.target.value || '';
+    val = val.replace(/[^0-9.]/g, '');
 
-    // 🔥 step 2: set ค่าเข้า model ก่อน
-    const sub = act.SubActivities;
-    sub.forEach((s: any) => {
-      const m = s.quarters?.[qIndex]?.months?.[mIndex];
-      if (m) {
-        m.budget = num;
-      }
-    });
+    const parts = val.split('.');
+    if (parts.length > 2) {
+      val = parts[0] + '.' + parts.slice(1).join('');
+    }
 
-    // 🔥 step 3: logic เดิมของคุณ
-    sub.forEach((s: any) => {
-      const m = s.quarters?.[qIndex]?.months?.[mIndex];
+    const [intPart, decimalPart] = val.split('.');
 
-      if (m?.budget && m.budget > 0) {
-        m.selected = true;
-      } else {
-        m.selected = false;
-      }
-    });
+    const intFormatted = intPart
+      ? Number(intPart).toLocaleString('en-US')
+      : '';
 
-    const hasSelected = sub.some((s: any) => {
-      return s.quarters?.[qIndex]?.months?.[mIndex]?.selected;
-    });
+    let finalValue = intFormatted;
 
-    act.quarters[qIndex].months[mIndex].selected = hasSelected;
+    if (decimalPart !== undefined) {
+      finalValue += '.' + decimalPart.slice(0, 2);
+    }
+
+    event.target.value = finalValue;
+
+    const num = Number(intPart + (decimalPart ? '.' + decimalPart : ''));
+
+    const month = sub.quarters?.[qIndex]?.months?.[rowIndex];
+
+    if (month) {
+      month.budget = isNaN(num) ? 0 : num;
+      month.selected = month.budget > 0;
+    }
+
+    sub._edited = true;
   }
 }

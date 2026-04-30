@@ -40,7 +40,7 @@ export class ProjectPlanningComponent {
       project: 'โครงการอบรมระบบใหม่',
       budget: 50000,
       status_name: 'อนุมัติ',
-      status_id: 8
+      Status_Number: 8
     },
     {
       id: 2,
@@ -52,7 +52,7 @@ export class ProjectPlanningComponent {
       project: 'โครงการประชาสัมพันธ์หน่วยงาน',
       budget: 30000,
       status_name: 'ไม่อนุมัติ',
-      status_id: 7
+      Status_Number: 7
     }
   ];
   allData: any[] = [];
@@ -174,7 +174,7 @@ export class ProjectPlanningComponent {
       project: 'โครงการ ' + Math.floor(Math.random() * 100),
       budget: Math.floor(Math.random() * 90000) + 10000,
       status_name: this.randomItem(status_name),
-      status_id: 2
+      Status_Number: 2
     };
 
     this.griddata.push(newRow);

@@ -29,7 +29,7 @@ export class ProjectBudgetProposalOperatingComponent {
       budgetType: 'งบดำเนินงาน',
       project: 'โครงการพัฒนาระบบ e-Budget',
       budget: 2500000,
-      status_id: 7,
+      Status_Number: 7,
       status_name: 'ไม่ผ่าน'
     },
 
@@ -41,7 +41,7 @@ export class ProjectBudgetProposalOperatingComponent {
       budgetType: 'งบลงทุน',
       project: 'โครงการพัฒนาระบบรายงานงบ',
       budget: 1800000,
-      status_id: 2,
+      Status_Number: 2,
       status_name: 'รอตรวจสอบ'
     },
 
@@ -53,7 +53,7 @@ export class ProjectBudgetProposalOperatingComponent {
       budgetType: 'งบลงทุน',
       project: 'โครงการศูนย์ข้อมูลกลาง',
       budget: 5200000,
-      status_id: 8,
+      Status_Number: 8,
       status_name: 'อนุมัติแล้ว'
     },
 

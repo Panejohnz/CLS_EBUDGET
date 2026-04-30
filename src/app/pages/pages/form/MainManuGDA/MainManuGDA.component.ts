@@ -301,7 +301,7 @@ export class MainManuGDAComponent {
 
   //   for (let i = 0; i < this.search_data.length; i++) {
 
-  //     this.excel_array[i + 1] = [this.search_data[i].RCVDATE, this.search_data[i].RCVNO, this.search_data[i].INV_NO, this.search_data[i].INV_DATE, this.search_data[i].NEWCODE, this.search_data[i].FOOD_NAME, this.search_data[i].FRGN_NAME, this.search_data[i].COUNTRY, this.search_data[i].QTY, this.search_data[i].SIZE_UNIT, this.search_data[i].FDTYPE_NAME, this.search_data[i].IMPORT_NAME, this.search_data[i].CITIZEN_ID_AUTHORIZE, this.search_data[i].STATUS_ID, this.search_data[i].REMARK];
+  //     this.excel_array[i + 1] = [this.search_data[i].RCVDATE, this.search_data[i].RCVNO, this.search_data[i].INV_NO, this.search_data[i].INV_DATE, this.search_data[i].NEWCODE, this.search_data[i].FOOD_NAME, this.search_data[i].FRGN_NAME, this.search_data[i].COUNTRY, this.search_data[i].QTY, this.search_data[i].SIZE_UNIT, this.search_data[i].FDTYPE_NAME, this.search_data[i].IMPORT_NAME, this.search_data[i].CITIZEN_ID_AUTHORIZE, this.search_data[i].Status_Number, this.search_data[i].REMARK];
 
   //   }
   //   console.log(this.excel_array)
