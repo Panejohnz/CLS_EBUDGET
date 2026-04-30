@@ -1,0 +1,12 @@
+.sticky-header th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #556398 !important;
+    color: white;
+}
+
+/* สำหรับ header 2 แถว */
+.sticky-header tr:nth-child(2) th {
+    top: 48px;
+}
