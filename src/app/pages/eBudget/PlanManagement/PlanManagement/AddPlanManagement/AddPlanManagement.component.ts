@@ -147,7 +147,6 @@ export class AddPlanManagementComponent {
   }
   dropdown_select = false
   onExpenseChange(item: any) {
-    alert(this.expenseItem.Expense_Id)
     if (!item) return;
     let model = {
       FUNC_CODE: "FUNC-GET_Mas_Sub_List",
