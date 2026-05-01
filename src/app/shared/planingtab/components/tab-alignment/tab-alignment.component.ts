@@ -815,8 +815,9 @@ export class TabAlignmentComponent implements OnChanges {
     });
   }
   onChangeProjectPlan5() {
+    debugger
     const p = this.model.Project_Plan_Level3;
-    if (!p) {
+    if (!p.Project_Plan_Id_5) {
       p.Project_Plan_Goals_Id5 = null;
       p.Indicators_Id5 = null;
       p.Goals_Guidelines_Id5 = null;
