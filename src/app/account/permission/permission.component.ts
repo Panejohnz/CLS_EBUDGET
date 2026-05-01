@@ -235,7 +235,7 @@ export class PermissionComponent implements OnInit, OnDestroy {
   }
 
   selectPermission(permission: PersonalGroupPermission): void {
-    debugger
+    
     this.selectedGroup = permission;
     this.loadingService.show('กำลังโหลดเมนู...');
     this.error = '';

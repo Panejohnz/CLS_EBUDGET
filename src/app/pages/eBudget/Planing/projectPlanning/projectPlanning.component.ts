@@ -31,7 +31,6 @@ export class ProjectPlanningComponent {
   emptyplan: any = {
     Plan_Id: 0,
     Plan_Name: '',
-
     selectedDepartment: null,
     projectType: null,
     selectedPlan: null,
@@ -119,13 +118,13 @@ export class ProjectPlanningComponent {
     })
   }
 
-Total: number = 0;
+  Total: number = 0;
 
-calculateTotal() {
-  this.Total = this.griddata.reduce((sum: number, item: any) => {
-    return sum + (item.Total || 0);
-  }, 0);
-}
+  calculateTotal() {
+    this.Total = this.griddata.reduce((sum: number, item: any) => {
+      return sum + (item.Total || 0);
+    }, 0);
+  }
 
   filterSearch() {
 
@@ -163,7 +162,7 @@ calculateTotal() {
             Project_Plan_Level1: res.Project_Plan_Level1 || [],
             Project_Plan_Level1_Sub: res.Project_Plan_Level1_Sub || [],
             Project_Cabinet: res.Project_Cabinet || [],
-            Project_Plan_Level2: res.Project_Plan_Level2 || [],
+            Project_Plan_Level2: res.Project_Plan_Level2 || {},
             Project_Plan_Level3: res.Project_Plan_Level3 || {},
             Project_Coordinator: res.Project_Coordinator || [],
             selectedDepartment: res.Project_Plan?.Department_Id,
@@ -177,7 +176,7 @@ calculateTotal() {
             Project_Outcome: res.Project_Outcome || [],
             Project_Expected: res.Project_Expected || [],
             Project_TargetGroup: res.Project_TargetGroup || [],
-          };
+          };    
           const details = res.Project_Plan_Detail || [];
           const items = res.Project_Plan_Detail_Item || [];
 
@@ -185,7 +184,7 @@ calculateTotal() {
             d.Project_Detail_Id = Number(d.Project_Detail_Id);
             d.Parent_Id = d.Parent_Id ? Number(d.Parent_Id) : null;
           });
-          console.log('DETAIL', details);
+      
           const activities = this.mapPlanDetail(details);
           this.mapItems(items, activities);
 
@@ -204,30 +203,57 @@ calculateTotal() {
         Project_Plan_Level2: {},
         Project_Cabinet: [],
         Project_Plan_Level3: {
+          Government_Policy_Id1: null,
+          Government_Policy_Id2: null,
+          Action_Plan_Id: null,
           Urgent1_Checked: false,
           Urgent1_Name: '',
-          Government_Policy_Id1: null,
-          Government_Policy_Sub_Id1: null,
-          Government_Policy_Id2: null,
-          Government_Policy_Sub_Id2: null,
           Urgent2_Checked: false,
           Urgent2_Name: '',
+          Mid1_Checked: false,
+          Mid1_Name: '',
+          Mid2_Checked: false,
+          Mid2_Name: '',
+          ProjectPlaningAlignment: '',
+          PpatPlanName: '',
+          PpatStrategy_Id: '',
+          PpatMeasure_Id: '',
+          PpatIndicator_Id: '',
           Project_Plan_Id: null,
           Tactics_Id: null,
           Measure_Id: null,
           Indicators_Id: null,
-          Mid1_Checked: false,
-          Mid1_Name: '',
+          Plan5_Master_Plan_Id: null,
+          Plan5_Goals_Id: null,
+          Plan5_Indicator_Id: null,
+          Plan5_Description: '',
+          Project_Plan_Goals_Id5: null,
+          Indicators_Id5: null,
+          Goals_Guidelines_Id5: null,
+          Plan5_Subplan_Id: null,
+          Plan5_Target_Y1_Id: null,
+          Plan5_Subplan_Desc: '',
+          Plan5_Guideline_Id: null,
+          Project_Plan_Id5: null,
+          Plan5_ValueChain_Main_Id: null,
+          Plan5_ValueChain_Factor_Main_Id: null,
+          Plan5_ValueChain_Support_Id: null,
+          Plan5_ValueChain_Factor_Support_Id: null,
 
-          Mid2_Checked: false,
-          Mid2_Name: '',
+          Master_Plan_Id: null,
+          Plan_Goals_Id: null,
+          Plan_Tactics_Id: null,
+          Sub_Master_Plan_Id: null,
+          Sub_Plan_Goals_Id: null,
+          ValueChain_Main_Id: null,
+          ValueChain_Factor_Main_Id: null,
+          ValueChain_Support_Id: null,
+          ValueChain_Factor_Support_Id: null,
 
-          ProjectPlaningAlignment: '',
-
-          PpatPlanName: '',
-          PpatStrategy_Id: '',
-          PpatMeasure_Id: '',
-          PpatIndicator_Id: ''
+          Plan5_Project_Plan_Id: null,
+          Project_Plan_Goals_Id: null,
+          Goals_Guidelines_Id: null,
+          Guidelines_Id: null
         },
         selectedDepartment: null,
         projectType: null,

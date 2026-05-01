@@ -199,7 +199,7 @@ export class MainManuGDAComponent {
 
     this.ListTypesearch_Unit_dataFilter = this.ListTypesearch_dataFilter.filter((y: any) => y.Ida == Ida);
    let fil_listUnit = this.search_data?.List_MAS_UNIT.filter((i:any) => i.IDA == this.ListTypesearch_Unit_dataFilter[0].MT_UNIT_ID)
-   debugger;
+   ;
    if(fil_listUnit.length == 0){
     this.UnitFinish = '';
     this.unit_name = '';

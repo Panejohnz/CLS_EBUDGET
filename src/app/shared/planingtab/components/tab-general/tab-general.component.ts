@@ -109,7 +109,7 @@ export class TabGeneralComponent {
 
   }
   mapInitialData() {
-    debugger
+    
     const find = (list: any[], key: string, value: any) =>
       list.find(x => x[key] == value);
 

@@ -5,9 +5,9 @@ import { EbudgetService } from 'src/app/core/services/ebudget.service';
 import { BudgetYearService } from 'src/app/core/services/budget-year.service';
 
 interface PlanLevel1Main {
-  Strategy_Side_Id: any;
-  Strategy_Issue_Id: any;
-  Strategy_SubIssue_Id: any;
+  Strategic_Id: any;
+  Issues_Id: any;
+  Issues_Sub_Id: any;
   Target: any;
 }
 
@@ -35,9 +35,9 @@ export class TabAlignmentComponent implements OnChanges {
 
     if (this.model.Project_Plan_Level1.length === 0) {
       this.model.Project_Plan_Level1.push({
-        Strategy_Side_Id: null,
-        Strategy_Issue_Id: null,
-        Strategy_SubIssue_Id: null,
+        Strategic_Id: null,
+        Issues_Id: null,
+        Issues_Sub_Id: null,
         Target: ''
       });
     }
@@ -49,9 +49,9 @@ export class TabAlignmentComponent implements OnChanges {
 
     if (this.model.Project_Plan_Level1_Sub.length === 0) {
       this.model.Project_Plan_Level1_Sub.push({
-        Strategy_Side_Id: null,
-        Strategy_Issue_Id: null,
-        Strategy_SubIssue_Id: null,
+        Strategic_Id: null,
+        Issues_Id: null,
+        Issues_Sub_Id: null,
         Target: '',
         AlignmentDetail: ''
       });
@@ -59,16 +59,17 @@ export class TabAlignmentComponent implements OnChanges {
 
     this.subStrategies = this.model.Project_Plan_Level1_Sub;
 
-    if (!this.model.Project_Plan_Level2.Strategy_Side_Id) {
+    if (!this.model.Project_Plan_Level2.Project_Plan_Level2_Id) {
 
       this.model.Project_Plan_Level2 = {
-        Strategy_Side_Id: null,
+        Strategic_Id: null,
         Target_Yz_Id: null,
         Description: '',
         Subplan_Id: null,
         Target_Y1_Id: null,
         SubplanDesc: '',
         DevGuideline_Id: null,
+        Master_Plan_Id: null,
         Landmark_Id: null,
         Landmark_Gloals_Id: null,
         Landmark_Tacticts_Id: null,
@@ -77,14 +78,15 @@ export class TabAlignmentComponent implements OnChanges {
         Indicator_Id: null,
         Strategy_Main_Id: null,
         Strategy_Sub_Id: null,
-
+        Plan_Tactics_Id: null,
         ValueChain_Main_Id: null,
         ValueChain_Factor_Main_Id: null,
         ValueChain_Support_Id: null,
         ValueChain_Factor_Support_Id: null,
-
+        Landmark_Sub_Guidelines_Id: null,
         SDGs_Gloals_Id: null,
-        SDGs_Targets_Id: null
+        SDGs_Targets_Id: null,
+        Plan_Goals_Id: null
       };
     }
 
@@ -122,9 +124,39 @@ export class TabAlignmentComponent implements OnChanges {
         PpatMeasure_Id: '',
         PpatIndicator_Id: '',
         Project_Plan_Id: null,
+        Project_Plan_Id5: null,
         Tactics_Id: null,
         Measure_Id: null,
         Indicators_Id: null,
+        Plan5_Master_Plan_Id: null,
+        Plan5_Goals_Id: null,
+        Plan5_Indicator_Id: null,
+        Plan5_Description: '',
+
+        Plan5_Subplan_Id: null,
+        Plan5_Target_Y1_Id: null,
+        Plan5_Subplan_Desc: '',
+        Plan5_Guideline_Id: null,
+
+        Plan5_ValueChain_Main_Id: null,
+        Plan5_ValueChain_Factor_Main_Id: null,
+        Plan5_ValueChain_Support_Id: null,
+        Plan5_ValueChain_Factor_Support_Id: null,
+
+        Master_Plan_Id: null,
+        Plan_Goals_Id: null,
+        Plan_Tactics_Id: null,
+        Sub_Master_Plan_Id: null,
+        Sub_Plan_Goals_Id: null,
+        ValueChain_Main_Id: null,
+        ValueChain_Factor_Main_Id: null,
+        ValueChain_Support_Id: null,
+        ValueChain_Factor_Support_Id: null,
+
+        Plan5_Project_Plan_Id: null,
+        Project_Plan_Goals_Id: null,
+        Goals_Guidelines_Id: null,
+        Guidelines_Id: null
       };
     }
 
@@ -157,78 +189,15 @@ export class TabAlignmentComponent implements OnChanges {
           this.listActionPlan = res.List_Mas_Action_Plan || [];
           this.listProjectPlan = res.List_Mas_Project_Plan || [];
           this.listMasTactic = res.List_Mas_Tactic || [];
+          this.listMasterPlan5 = res.List_Mas_Master_Plan_5 || []; //new
+          this.listProjectPlan5 = res.List_Mas_Project_Plan_5 || [];
           this.afterLoad();
         })
       }
     });
-
-
-
-
-    // this.callAPI("FUNC-GET_List_Mas_Strategic").pipe(
-
-    //   tap((res: any) => {
-    //     this.listStrategic = res.List_Mas_Strategic || [];
-    //   }),
-
-    //   switchMap(() =>
-    //     this.callAPI("FUNC-GET_List_Mas_Master_Plan")
-    //   ),
-    //   tap((res: any) => {
-    //     this.listMasterPlan = res.List_Mas_Master_Plan || [];
-    //   }),
-
-    //   switchMap(() =>
-    //     this.callAPI("FUNC-GET_List_Mas_Landmark")
-    //   ),
-    //   tap((res: any) => {
-    //     this.listLandmark = res.List_Mas_Landmark || [];
-    //   }),
-
-    //   switchMap(() =>
-    //     this.callAPI("FUNC-GET_List_Mas_Value_Chain")
-    //   ),
-    //   tap((res: any) => {
-    //     this.listValueChain = res.List_Mas_Value_Chain || [];
-    //   }),
-
-    //   switchMap(() =>
-    //     this.callAPI("FUNC-GET_List_Mas_SDGs_Gloal")
-    //   ),
-    //   tap((res: any) => {
-    //     this.listSDGsGoal = res.List_Mas_SDGs_Gloal || [];
-    //   }),
-    //   switchMap(() =>
-    //     this.callAPI("FUNC-Get_List_Mas_Government_Policy")
-    //   ),
-    //   tap((res: any) => {
-    //     this.listGovernment_Policy1 = res.List_Mas_Government_Policy1 || [];
-    //     this.listGovernment_Policy2 = res.List_Mas_Government_Policy2 || [];
-    //   }),
-    //   switchMap(() =>
-    //     this.callAPI("FUNC-GET_List_Mas_Action_Plan")
-    //   ),
-    //   tap((res: any) => {
-    //     this.listActionPlan = res.List_Mas_Action_Plan || [];
-    //   }),
-    //   switchMap(() =>
-    //     this.callAPI("FUNC-GET_List_Mas_Project_Plan")
-    //   ),
-    //   tap((res: any) => {
-
-    //   }),
-    //   switchMap(() =>
-    //     this.callAPI("FUNC-GET_List_Mas_Tactics")
-    //   ),
-    //   tap((res: any) => {
-    //     this.listProjectPlan = res.List_Mas_Project_Plan || [];
-    //     this.listMasTactic = res.List_Mas_Tactic || [];
-    //   }),
-    // ).subscribe(() => {
-    //   this.afterLoad();
-    // });
   }
   listMasIndicator: any[] = []
+  listMasProjectPlanGoal: any[] = []
   listMasTactic: any[] = []
   listProjectPlan: any[] = []
   listActionPlan: any[] = []
@@ -239,6 +208,8 @@ export class TabAlignmentComponent implements OnChanges {
   listSubIssue: any[] = [];
   listMasterPlan: any[] = [];
   listMasterPlanGoal: any[] = [];
+  listMasterPlanGoalTactic: any[] = [];
+  listMasterPlanIndicator: any[] = []
   listSubMasterPlan: any[] = [];
   listSubMasterPlanGoal: any[] = [];
   listGuideline: any[] = [];
@@ -252,6 +223,19 @@ export class TabAlignmentComponent implements OnChanges {
   listValueChainFactorSupport: any[] = [];
   listSDGsGoal: any[] = [];
   listSDGsTarget: any[] = [];
+  listMasterPlan5: any[] = [];
+  listMasterPlanGoal5: any[] = [];
+  listMasterPlanIndicator5: any[] = [];
+  listSubMasterPlan5: any[] = [];
+  listSubMasterPlanGoal5: any[] = [];
+  listGuideline5: any[] = [];
+  listValueChain5: any[] = [];
+  listValueChainFactorMain5: any[] = [];
+  listValueChainFactorSupport5: any[] = [];
+  listMasterPlanTactic5: any[] = []
+  listProjectPlan5: any[] = [];
+  listProjectPlanGoal5: any[] = [];
+  listIndicator5: any[] = [];
   loadStrategic() {
     const model = {
       FUNC_CODE: "FUNC-GET_List_Mas_Strategic"
@@ -308,9 +292,9 @@ export class TabAlignmentComponent implements OnChanges {
   onChangeStrategic(id: any) {
 
     // reset ลูก
-    if (!this.planLevel1Main.Strategy_Issue_Id) {
-      this.planLevel1Main.Strategy_Issue_Id = null
-      this.planLevel1Main.Strategy_SubIssue_Id = null;
+    if (!this.planLevel1Main.Strategic_Id) {
+      this.planLevel1Main.Issues_Id = null
+      this.planLevel1Main.Issues_Sub_Id = null;
       this.listIssue = [];
       this.listSubIssue = [];
     }
@@ -330,8 +314,8 @@ export class TabAlignmentComponent implements OnChanges {
   }
   onChangeIssue(id: any) {
 
-    if (!this.planLevel1Main.Strategy_SubIssue_Id) {
-      this.planLevel1Main.Strategy_SubIssue_Id = null;
+    if (!this.planLevel1Main.Issues_Sub_Id) {
+      this.planLevel1Main.Issues_Sub_Id = null;
       this.listSubIssue = [];
     }
 
@@ -349,9 +333,9 @@ export class TabAlignmentComponent implements OnChanges {
   }
   onChangeStrategicSub(item: any) {
 
-    if (!item.Strategy_Issue_Id) {
-      item.Strategy_Issue_Id = null;
-      item.Strategy_SubIssue_Id = null;
+    if (!item.Issues_Id) {
+      item.Issues_Id = null;
+      item.Issues_Sub_Id = null;
       item.listIssue = [];
       item.listSubIssue = [];
     }
@@ -359,7 +343,7 @@ export class TabAlignmentComponent implements OnChanges {
 
     const model = {
       FUNC_CODE: "FUNC-GET_List_Mas_Strategic_Issue_By_FK",
-      FK_Strategic_Id: item.Strategy_Side_Id
+      FK_Strategic_Id: item.Strategic_Id
     };
 
     this.serviceebud.GatewayGetData(model)
@@ -374,15 +358,15 @@ export class TabAlignmentComponent implements OnChanges {
 
   onChangeIssueSub(item: any) {
 
-    if (!item.Strategy_SubIssue_Id) {
-      item.Strategy_SubIssue_Id = null;
+    if (!item.Issues_Sub_Id) {
+      item.Issues_Sub_Id = null;
       item.listSubIssue = [];
 
     }
 
     const model = {
       FUNC_CODE: "FUNC-GET_List_Mas_Strategic_Sub_Issue_By_FK",
-      FK_Strategic_Issue_Id: item.Strategy_Issue_Id
+      FK_Strategic_Issue_Id: item.Issues_Id
     };
 
     this.serviceebud.GatewayGetData(model)
@@ -392,8 +376,8 @@ export class TabAlignmentComponent implements OnChanges {
   }
   onChangeMasterPlan(id: number) {
 
-    if (!this.planLevel2.Target_Yz_Id) {
-      this.planLevel2.Target_Yz_Id = null;
+    if (!this.planLevel2.Master_Plan_Id) {
+      this.planLevel2.Master_Plan_Id = null;
       this.planLevel2.Subplan_Id = null;
       this.planLevel2.Target_Y1_Id = null;
       this.planLevel2.DevGuideline_Id = null;
@@ -423,6 +407,162 @@ export class TabAlignmentComponent implements OnChanges {
       .subscribe((res2: any) => {
         this.listSubMasterPlan = res2.List_Mas_Sub_Master_Plan || [];
       });
+  }
+  onChangeMasterPlan5(id: any) {
+
+    const p = this.model.Project_Plan_Level3;
+    if (!p) {
+      p.Plan5_Goals_Id = null;
+      p.Plan5_Indicator_Id = null;
+      p.Plan5_Subplan_Id = null;
+      p.Plan5_Target_Y1_Id = null;
+      p.Plan5_Guideline_Id = null;
+
+      p.Plan5_ValueChain_Main_Id = null;
+      p.Plan5_ValueChain_Support_Id = null;
+      p.Plan5_ValueChain_Factor_Main_Id = null;
+      p.Plan5_ValueChain_Factor_Support_Id = null;
+
+      this.listMasterPlanGoal5 = [];
+      this.listMasterPlanTactic5 = [];
+      this.listSubMasterPlan5 = [];
+      this.listSubMasterPlanGoal5 = [];
+      this.listGuideline5 = [];
+      this.listValueChain5 = [];
+    }
+
+
+    if (!id) return;
+
+    this.callAPI("FUNC-GET_List_Mas_Master_Plan_Goal_5_By_FK", {
+      FK_Master_Plan_Id: id
+    }).subscribe(res => {
+      this.listMasterPlanGoal5 = res.List_Mas_Master_Plan_Goal_5 || [];
+    });
+
+    this.callAPI("FUNC-GET_List_Mas_Sub_Master_Plan_5_By_FK", {
+      FK_Master_Plan_Id: id
+    }).subscribe(res => {
+      this.listSubMasterPlan5 = res.List_Mas_Sub_Master_Plan_5 || [];
+    });
+  }
+  onChangeMasterPlanGoal5(id: any) {
+
+    const p = this.model.Project_Plan_Level3;
+    if (!p) {
+      p.Plan5_Indicator_Id = null;
+
+      this.listMasterPlanTactic5 = [];
+
+    }
+
+    if (!id) return;
+
+    this.callAPI("FUNC-GET_List_Mas_Master_Plan_Goal_Tactic_5_By_FK", {
+      FK_Plan_Goals_Id: id
+    }).subscribe(res => {
+      this.listMasterPlanTactic5 = res.List_Mas_Master_Plan_Goal_Tactic_5 || [];
+    });
+  }
+  onChangeSubMasterPlan5(id: any) {
+
+    const p = this.model.Project_Plan_Level3;
+    if (!p) {
+      p.Plan5_Target_Y1_Id = null;
+      p.Plan5_Guideline_Id = null;
+
+      p.Plan5_ValueChain_Main_Id = null;
+      p.Plan5_ValueChain_Support_Id = null;
+      p.Plan5_ValueChain_Factor_Main_Id = null;
+      p.Plan5_ValueChain_Factor_Support_Id = null;
+
+      this.listSubMasterPlanGoal5 = [];
+      this.listGuideline5 = [];
+      this.listValueChain5 = [];
+    }
+
+
+    if (!id) return;
+
+    this.callAPI("FUNC-GET_List_Mas_Sub_Master_Plan_Goal_5_By_FK", {
+      FK_Sub_Master_Plan_Id: id
+    }).subscribe(res => {
+      this.listSubMasterPlanGoal5 = res.List_Mas_Sub_Master_Plan_Goal_5 || [];
+      this.listGuideline5 = res.List_Mas_Sub_Plan_Guideline_5 || [];
+    });
+  }
+
+  onChangeTargetY15(id: any) {
+    const p = this.model.Project_Plan_Level3;
+
+    if (!p) {
+      p.Plan5_ValueChain_Main_Id = null;
+      p.Plan5_ValueChain_Support_Id = null;
+      p.Plan5_ValueChain_Factor_Main_Id = null;
+      p.Plan5_ValueChain_Factor_Support_Id = null;
+
+      this.listValueChain5 = [];
+      this.listValueChainFactorMain5 = [];
+      this.listValueChainFactorSupport5 = [];
+
+    }
+
+    if (!id) return;
+
+    this.callAPI("FUNC-GET_List_Mas_Value_Chain_5_By_FK", {
+      Target_Y1_Id: id
+    }).subscribe(res => {
+      this.listValueChain5 = res.List_Mas_Value_Chain_5 || [];
+    });
+  }
+  onChangeValueChainMain5() {
+    const p = this.model.Project_Plan_Level3;
+    if (!p) {
+      p.Plan5_Indicator_Id = null;
+
+      this.listMasterPlanTactic5 = [];
+
+    }
+
+
+    this.callAPI("FUNC-GET_List_Mas_Value_Chain_Factor_5_By_FK", {
+      FK_Value_Chain_Id: p.ValueChain_Main_Id
+    }).subscribe(res => {
+      this.listValueChainFactorMain5 = res.List_Mas_Value_Chain_Factor_5 || [];
+    });
+  }
+  onChangeValueChainSupport5() {
+
+    const p = this.model.Project_Plan_Level3;
+    if (!p) {
+      p.Plan5_ValueChain_Factor_Support_Id = null;
+      this.listValueChainFactorSupport5 = [];
+    }
+
+
+    this.callAPI("FUNC-GET_List_Mas_Value_Chain_Factor_5_By_FK", {
+      FK_Value_Chain_Id: p.ValueChain_Support_Id
+    }).subscribe(res => {
+      this.listValueChainFactorSupport5 = res.List_Mas_Value_Chain_Factor_5 || [];
+    });
+  }
+  onChangeMasterPlanGoal(id: number) {
+
+    if (!this.planLevel2.Plan_Tactics_Id) {
+      this.planLevel2.Plan_Tactics_Id = null;
+      this.listMasterPlanGoalTactic = [];
+    }
+
+    const model = {
+      FUNC_CODE: "FUNC-GET_List_Mas_Master_Plan_Goal_Tactic_By_FK",
+      FK_Master_Plan_Id: id
+    };
+
+    this.serviceebud.GatewayGetData(model)
+      .subscribe((res: any) => {
+        this.listMasterPlanGoalTactic = res.List_Mas_Master_Plan_Goal_Tactic || [];
+      });
+
   }
   onChangeSubMasterPlan(id: number) {
 
@@ -457,13 +597,14 @@ export class TabAlignmentComponent implements OnChanges {
   onChangeLandmark() {
 
     const id = this.planLevel2.Landmark_Id;
+    if (!id) {
+      this.planLevel2.Target_Id = null;
+      this.planLevel2.Indicator_Id = null;
 
-    // 🔥 reset ลูกทั้งหมด
-    this.planLevel2.Target_Id = null;
-    this.planLevel2.Indicator_Id = null;
+      this.listLandmark_Gloals = [];
+      this.listLandmark_Tactic = [];
+    }
 
-    this.listLandmark_Gloals = [];
-    this.listLandmark_Tactic = [];
 
     if (!id) return;
 
@@ -479,12 +620,31 @@ export class TabAlignmentComponent implements OnChanges {
         this.listMas_Landmark_Guideline = res.List_Mas_Landmark_Guideline || [];
       });
   }
+  onChangeLandmarkGloals() {
+    const id = this.planLevel2.Landmark_Gloals_Id;
+    if (!id) return;
+
+    const model = {
+      FUNC_CODE: "FUNC-GET_List_Mas_Landmark_Tactic_By_Mas_Landmark_Gloals_FK",
+      FK_Landmark_Id: id
+    };
+
+    this.serviceebud.GatewayGetData(model)
+      .subscribe((res: any) => {
+        this.listLandmark_Tactic = res.List_Mas_Landmark_Tactic || [];
+      });
+  }
+  onChangeLandmarkTactic() {
+
+  }
   onChangeTarget() {
 
     const id = this.planLevel2.Target_Id;
+    if (!id) {
+      this.planLevel2.Indicator_Id = null;
+      this.listLandmark_Tactic = [];
 
-    this.planLevel2.Indicator_Id = null;
-    this.listLandmark_Tactic = [];
+    }
 
     if (!id) return;
 
@@ -495,21 +655,23 @@ export class TabAlignmentComponent implements OnChanges {
 
     this.serviceebud.GatewayGetData(model)
       .subscribe((res: any) => {
-        this.listLandmark_Tactic = res.List_Mas_Indicator || [];
+        // this.listLandmark_Tactic = res.List_Mas_Indicator || [];
       });
   }
   onChangeTargetY1() {
 
     const id = this.planLevel2.Target_Y1_Id;
+    if (!id) {
+      this.planLevel2.ValueChain_Main_Id = null;
+      this.planLevel2.ValueChain_Factor_Main_Id = null;
+      this.planLevel2.ValueChain_Support_Id = null;
+      this.planLevel2.ValueChain_Factor_Support_Id = null;
 
-    this.planLevel2.ValueChain_Main_Id = null;
-    this.planLevel2.ValueChain_Factor_Main_Id = null;
-    this.planLevel2.ValueChain_Support_Id = null;
-    this.planLevel2.ValueChain_Factor_Support_Id = null;
+      this.listValueChain = [];
+      this.listValueChainFactorMain = [];
+      this.listValueChainFactorSupport = [];
+    }
 
-    this.listValueChain = [];
-    this.listValueChainFactorMain = [];
-    this.listValueChainFactorSupport = [];
 
     if (!id) return;
 
@@ -619,6 +781,19 @@ export class TabAlignmentComponent implements OnChanges {
       this.listMasTactic = [];
       this.listMasIndicator = [];
     }
+    this.callAPI("FUNC-GET_List_Mas_Project_Plan_Goals_By_FK", {
+      FK_Project_Plan_Id: this.model.Project_Plan_Level3.Project_Plan_Id
+    }).subscribe(res => {
+      this.listMasProjectPlanGoal = res.List_Mas_Project_Plan_Goal || [];
+      // this.listMasProjectPlanGoal = res.List_Mas_Indicator || [];
+    });
+  }
+  onChangenTactic5() {
+    if (!this.model.Project_Plan_Level3.Project_Plan_Id) {
+      this.model.Project_Plan_Level3.Project_Plan_Id = null;
+      this.listMasTactic = [];
+      this.listMasIndicator = [];
+    }
     this.callAPI("FUNC-GET_List_Mas_Tactic_By_FK_Project_Plan", {
       Project_Id: this.model.Project_Plan_Level3.Project_Plan_Id
     }).subscribe(res => {
@@ -636,53 +811,136 @@ export class TabAlignmentComponent implements OnChanges {
       Tactics_Id: this.model.Project_Plan_Level3.Tactics_Id
     }).subscribe(res => {
       this.listMasMeasure = res.List_Mas_Measure || [];
-
+      this.listMasIndicator = res.List_Mas_Indicator || [];
     });
   }
-  afterLoad() {
+  onChangeProjectPlan5() {
+    const p = this.model.Project_Plan_Level3;
+    if (!p) {
+      p.Project_Plan_Goals_Id5 = null;
+      p.Indicators_Id5 = null;
+      p.Goals_Guidelines_Id5 = null;
 
+      this.listProjectPlanGoal5 = [];
+      this.listIndicator5 = [];
+      this.listGuideline5 = [];
+
+    }
+
+    if (!p.Project_Plan_Id5) return;
+
+    this.callAPI("FUNC-GET_List_Mas_Project_Plan_Goals_5_By_FK", {
+      FK_Project_Plan_Id: p.Project_Plan_Id5
+    }).subscribe(res => {
+      this.listProjectPlanGoal5 = res.List_Mas_Project_Plan_Goal_5 || [];
+    });
+  }
+  onChangeGoal5() {
+
+    const p = this.model.Project_Plan_Level3;
+    if (!p) {
+      p.Plan5_Indicator_Id = null;
+      p.Plan5_Guideline_Id = null;
+
+      this.listIndicator5 = [];
+      this.listGuideline5 = [];
+
+    }
+
+    if (!p.Project_Plan_Goals_Id5) return;
+
+    this.callAPI("FUNC-GET_List_Mas_Indicators_5_By_FK", {
+      FK_Plan_Goals_Id: p.Project_Plan_Goals_Id5
+    }).subscribe(res => {
+      this.listIndicator5 = res.List_Mas_Indicators_5 || [];
+      this.listGuideline5 = res.List_Mas_Project_Plan_Goals_Guidelines_5 || [];
+
+    });
+
+
+
+  }
+  afterLoad() {
+    debugger
     const l2 = this.planLevel2;
     if (!l2 || Object.keys(l2).length === 0) return;
 
-    if (this.planLevel1Main.Strategy_Side_Id) {
-      this.onChangeStrategic(this.planLevel1Main.Strategy_Side_Id);
+    if (this.planLevel1Main.Strategic_Id) {
+      this.onChangeStrategic(this.planLevel1Main.Strategic_Id);
     }
 
-    if (this.planLevel1Main.Strategy_Issue_Id) {
-      this.onChangeIssue(this.planLevel1Main.Strategy_Issue_Id);
+    if (this.planLevel1Main.Issues_Id) {
+      this.onChangeIssue(this.planLevel1Main.Issues_Id);
     }
 
     if (this.subStrategies && this.subStrategies.length > 0) {
 
       this.subStrategies.forEach((item: any) => {
-        if (item.Strategy_Side_Id) {
+        if (item.Strategic_Id) {
           this.onChangeStrategicSub(item);
         }
-        if (item.Strategy_Issue_Id) {
+        if (item.Issues_Id) {
           this.onChangeIssueSub(item);
         }
 
       });
     }
 
-    if (l2.Strategy_Side_Id) this.onChangeMasterPlan(l2.Strategy_Side_Id);
-    if (l2.Subplan_Id) this.onChangeSubMasterPlan(l2.Subplan_Id);
 
-    if (l2.Landmark_Id) this.onChangeLandmark();
+    if (l2.Landmark_Id) {
+      this.onChangeLandmark();
+    }
     if (l2.Target_Id) this.onChangeTarget();
 
-    if (l2.Strategy_Main_Id) this.onChangeStrategyMain();
+
 
     if (l2.ValueChain_Main_Id) this.onChangeValueChainMain();
     if (l2.ValueChain_Support_Id) this.onChangeValueChainSupport();
+    if (l2.Master_Plan_Id) {
+      this.onChangeMasterPlan(l2.Master_Plan_Id);
+    }
 
+    if (l2.Plan_Goals_Id) {
+      this.onChangeMasterPlanGoal(l2.Plan_Goals_Id);
+    }
+
+    if (l2.Subplan_Id) {
+      this.onChangeSubMasterPlan(l2.Subplan_Id);
+    }
+
+    if (l2.Target_Y1_Id) {
+      this.onChangeTargetY1();
+    }
+    if (l2.Landmark_Gloals_Id) {
+      this.onChangeLandmarkGloals();
+    }
+    if (l2.Landmark_Tacticts_Id) this.onChangeLandmarkTactic();
+
+    if (l2.Landmark_Guidelines_Id) { this.onChangeStrategyMain(); }
     if (l2.SDGs_Gloals_Id) this.onChangeSDGsGoal();
+    const l3 = this.model.Project_Plan_Level3;
+
+    if (l3?.Master_Plan_Id) {
+      this.onChangeMasterPlan5(l3.Master_Plan_Id);
+    }
+
+    if (l3?.Plan_Goals_Id) {
+      this.onChangeMasterPlanGoal5(l3.Plan_Goals_Id);
+    }
+
+    if (l3?.Sub_Master_Plan_Id) {
+      this.onChangeSubMasterPlan5(l3.Sub_Master_Plan_Id);
+    }
+
+    if (l3?.Sub_Plan_Goals_Id) {
+      this.onChangeTargetY15(l3.Sub_Plan_Goals_Id);
+    }
   }
   @Input() model: any;
   planLevel1Main: PlanLevel1Main = {
-    Strategy_Side_Id: null,
-    Strategy_Issue_Id: null,
-    Strategy_SubIssue_Id: null,
+    Strategic_Id: null,
+    Issues_Id: null,
+    Issues_Sub_Id: null,
     Target: ''
   };
 
@@ -698,7 +956,8 @@ export class TabAlignmentComponent implements OnChanges {
   projectPlaningAlignment!: string;
 
   planLevel2: any = {
-    Strategy_Side_Id: null,
+    Master_Plan_Id: null,
+    Strategic_Id: null,
     Target_Yz_Id: null,
     Description: '',
     Subplan_Id: null,
@@ -719,98 +978,13 @@ export class TabAlignmentComponent implements OnChanges {
     ValueChain_Factor_Support_Id: null,
     SDGs_Gloals_Id: null,
     SDGs_Goal_Id: null,
-    SDGs_Target_Id: null
+    SDGs_Target_Id: null,
+    Plan_Tactics_Id: null,
+    Landmark_Sub_Guidelines_Id: null,
+    Plan_Goals_Id: null
   };
   valueChain!: any;
   sdgs!: any;
-  // ngOnInit(): void {
-
-  //   // LEVEL 1
-  //   if (!this.model.Project_Plan_Level1) {
-  //     this.model.Project_Plan_Level1 = [];
-  //   }
-
-  //   if (this.model.Project_Plan_Level1.length === 0) {
-  //     this.model.Project_Plan_Level1.push({
-  //       Strategy_Side_Id: '',
-  //       Strategy_Issue_Id: '',
-  //       Strategy_SubIssue_Id: '',
-  //       Target: ''
-  //     });
-  //   }
-
-  //   this.planLevel1Main = this.model.Project_Plan_Level1[0];
-
-  //   // SUB
-  //   if (!this.model.Project_Plan_Level1_Sub) {
-  //     this.model.Project_Plan_Level1_Sub = [];
-  //   }
-
-  //   if (this.model.Project_Plan_Level1_Sub.length === 0) {
-  //     this.model.Project_Plan_Level1_Sub.push({
-  //       strategySide: '',
-  //       strategyIssue: '',
-  //       strategySubIssue: '',
-  //       Target: '',
-  //       alignmentDetail: ''
-  //     });
-  //   }
-
-  //   this.subStrategies = this.model.Project_Plan_Level1_Sub;
-
-  //   // LEVEL 2
-  //   if (!this.model.Project_Plan_Level2) {
-  //     this.model.Project_Plan_Level2 = {
-  //       strategySide: '',
-  //       targetYz: '',
-  //       description: '',
-  //       subplan: '',
-  //       targetY1: '',
-  //       subplanDesc: '',
-  //       devGuideline: '',
-  //       Landmark: '',
-  //       target: '',
-  //       indicator: '',
-  //       strategyMain: '',
-  //       strategySub: ''
-  //     };
-  //   }
-
-  //   this.planLevel2 = this.model.Project_Plan_Level2;
-
-  //   // CABINET
-  //   if (!this.model.Project_Cabinet) {
-  //     this.model.Project_Cabinet = [];
-  //   }
-
-  //   if (this.model.Project_Cabinet.length === 0) {
-  //     this.model.Project_Cabinet.push({ title: '' });
-  //   }
-
-  //   this.cabinetList = this.model.Project_Cabinet;
-  //   if (!this.model.Project_Plan_Level3) {
-  //     this.model.Project_Plan_Level3 = {
-  //       urgentFixed: [
-  //         { name: '', checked: false },
-  //         { name: '', checked: false }
-  //       ],
-  //       midLongFixed: [
-  //         { name: '', checked: false },
-  //         { name: '', checked: false }
-  //       ],
-  //       projectPlaningAlignment: '',
-  //       ppatFixed: {
-  //         planName: '',
-  //         strategy: '',
-  //         measure: '',
-  //         indicator: ''
-  //       }
-  //     };
-  //   }
-
-  //   this.alignment = this.model.Project_Plan_Level3;
-
-  // }
 
   addSubStrategy() {
     this.subStrategies.push({
