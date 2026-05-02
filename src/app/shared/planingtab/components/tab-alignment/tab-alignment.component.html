@@ -709,7 +709,7 @@
 
                         <option [ngValue]="null" disabled>-- เลือก --</option>
 
-                        <option *ngFor="let item of listGuideline5" [ngValue]="item.Guidelines_Id">
+                        <option *ngFor="let item of listSubGuideline5" [ngValue]="item.Guidelines_Id">
                             {{ item.Guidelines_Name }}
                         </option>
 
@@ -818,7 +818,7 @@
                 <!-- ตัวชี้วัด -->
                 <div class="col-md-12">
                     <label class="form-label">ตัวชี้วัดที่</label>
-                    <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Indicators_Id">
+                    <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Indicators_Id_5">
 
                         <option [ngValue]="null" disabled>-- เลือก --</option>
 
@@ -832,7 +832,7 @@
                 <!-- แนวทาง -->
                 <div class="col-md-12">
                     <label class="form-label">แนวทางการพัฒนาที่</label>
-                    <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Goals_Guidelines_Id">
+                    <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Goals_Guidelines_Id_5">
 
                         <option [ngValue]="null" disabled>-- เลือก --</option>
 
@@ -866,14 +866,14 @@
 
                         <option *ngFor="let item of listProjectPlan" [ngValue]="item.Project_Plan_Id">
                             {{ item.Project_Plan_Name }}
-                        </option>
+                        </option>  
 
                     </select>
                 </div>
                 <div class="col-md-12">
                     <label class="form-label">เป้าหมายที่</label>
                     <select (change)="onChangenMeasure()" class="form-select"
-                        [(ngModel)]="model.Project_Plan_Level3.Tactics_Id" name="ppat_strategy">
+                        [(ngModel)]="model.Project_Plan_Level3.Project_Plan_Goals_Id" name="ppat_strategy">
                         <option [ngValue]="null" disabled>-- เลือก --</option>
 
                         <option *ngFor="let item of listMasProjectPlanGoal" [ngValue]="item.Project_Plan_Goals_Id">
