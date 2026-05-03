@@ -66,6 +66,7 @@ export class ProjectPlanningComponent {
     Project_Plan_Level1: [],
     Project_Plan_Level1_Sub: [],
     Project_Cabinet: [],
+    Project_Security: [],
     Project_Plan_Level3: {}
 
   };
@@ -162,6 +163,7 @@ export class ProjectPlanningComponent {
             Project_Plan_Level1: res.Project_Plan_Level1 || [],
             Project_Plan_Level1_Sub: res.Project_Plan_Level1_Sub || [],
             Project_Cabinet: res.Project_Cabinet || [],
+            Project_Security: res.Project_Security || [],
             Project_Plan_Level2: res.Project_Plan_Level2 || {},
             Project_Plan_Level3: res.Project_Plan_Level3 || {},
             Project_Coordinator: res.Project_Coordinator || [],
@@ -176,7 +178,7 @@ export class ProjectPlanningComponent {
             Project_Outcome: res.Project_Outcome || [],
             Project_Expected: res.Project_Expected || [],
             Project_TargetGroup: res.Project_TargetGroup || [],
-          };    
+          };
           const details = res.Project_Plan_Detail || [];
           const items = res.Project_Plan_Detail_Item || [];
 
@@ -184,7 +186,7 @@ export class ProjectPlanningComponent {
             d.Project_Detail_Id = Number(d.Project_Detail_Id);
             d.Parent_Id = d.Parent_Id ? Number(d.Parent_Id) : null;
           });
-      
+
           const activities = this.mapPlanDetail(details);
           this.mapItems(items, activities);
 
@@ -202,6 +204,7 @@ export class ProjectPlanningComponent {
         Project_Plan_Level1_Sub: [],
         Project_Plan_Level2: {},
         Project_Cabinet: [],
+        Project_Security : [],
         Project_Plan_Level3: {
           Government_Policy_Id1: null,
           Government_Policy_Id2: null,
@@ -253,7 +256,11 @@ export class ProjectPlanningComponent {
           Plan5_Project_Plan_Id: null,
           Project_Plan_Goals_Id: null,
           Goals_Guidelines_Id: null,
-          Guidelines_Id: null
+          Guidelines_Id: null,
+          Project_Plan_Id_5: null,
+          Project_Plan_Goals_Id_5: null,
+          Indicators_Id_5: null,
+          Goals_Guidelines_Id_5: null
         },
         selectedDepartment: null,
         projectType: null,
@@ -488,6 +495,7 @@ export class ProjectPlanningComponent {
       Project_Plan_Level3: this.project_planing.Project_Plan_Level3,
       Project_Coordinator: this.project_planing.Project_Coordinator,
       Project_Cabinet: this.project_planing.Project_Cabinet,
+      Project_Security: this.project_planing.Project_Security,
       Project_Expected: this.project_planing.Project_Expected,
       Project_TargetGroup: this.project_planing.Project_TargetGroup,
     };

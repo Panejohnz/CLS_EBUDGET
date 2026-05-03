@@ -99,7 +99,15 @@ export class TabAlignmentComponent implements OnChanges {
     }
 
     if (this.model.Project_Cabinet.length === 0) {
-      this.model.Project_Cabinet.push({ title: '' });
+      this.model.Project_Cabinet.push({ Title: '' });
+    }
+
+    if (!this.model.Project_Security) {
+      this.model.Project_Security = [];
+    }
+
+    if (this.model.Project_Security.length === 0) {
+      this.model.Project_Security.push({ Title: '' });
     }
 
     this.cabinetList = this.model.Project_Cabinet;
@@ -156,7 +164,11 @@ export class TabAlignmentComponent implements OnChanges {
         Plan5_Project_Plan_Id: null,
         Project_Plan_Goals_Id: null,
         Goals_Guidelines_Id: null,
-        Guidelines_Id: null
+        Guidelines_Id: null,
+        Project_Plan_Id_5: null,
+        Project_Plan_Goals_Id_5: null,
+        Indicators_Id_5: null,
+        Goals_Guidelines_Id_5: null
       };
     }
 
@@ -291,7 +303,6 @@ export class TabAlignmentComponent implements OnChanges {
     });
   }
   onChangeStrategic(id: any, isInitialLoad: boolean = false) {
-
     // reset ลูก
     if (!this.isInitialLoad) {
       this.planLevel1Main.Issues_Id = null
@@ -378,7 +389,6 @@ export class TabAlignmentComponent implements OnChanges {
   onChangeMasterPlan(id: number, isInitialLoad: boolean = false) {
 
     if (!this.isInitialLoad) {
-      this.planLevel2.Master_Plan_Id = null;
       this.planLevel2.Subplan_Id = null;
       this.planLevel2.Target_Y1_Id = null;
       this.planLevel2.DevGuideline_Id = null;
@@ -536,7 +546,7 @@ export class TabAlignmentComponent implements OnChanges {
 
     const p = this.model.Project_Plan_Level3;
     if (!this.isInitialLoad) {
-      p.ValueChain_Factor_Main_Id = null;
+      p.ValueChain_Factor_Support_Id = null;
       this.listValueChainFactorSupport5 = [];
     }
 
@@ -700,7 +710,7 @@ export class TabAlignmentComponent implements OnChanges {
 
   onChangeStrategyMain(isInitialLoad: boolean = false) {
     if (!this.isInitialLoad) {
-      this.planLevel2.Landmark_Guidelines_Id = null;
+      this.planLevel2.Landmark_Sub_Guidelines_Id = null;
       this.listMas_Landmark_Sub_Guideline = [];
     }
 
@@ -778,7 +788,7 @@ export class TabAlignmentComponent implements OnChanges {
   }
   onChangenTactic(isInitialLoad: boolean = false) {
     if (!this.isInitialLoad) {
-      this.model.Project_Plan_Level3.Project_Plan_Id = null;
+      this.model.Project_Plan_Level3.Project_Plan_Goals_Id = null;
       this.listMasTactic = [];
       this.listMasIndicator = [];
     }
@@ -805,7 +815,7 @@ export class TabAlignmentComponent implements OnChanges {
   listMasMeasure: any[] = []
   onChangenMeasure(isInitialLoad: boolean = false) {
     if (!this.isInitialLoad) {
-      this.model.Project_Plan_Level3.Project_Plan_Goals_Id = null;
+      this.model.Project_Plan_Level3.Indicators_Id = null;
       this.listMasMeasure = [];
     }
     this.callAPI("FUNC-GET_List_Mas_Measure_By_FK_Tactic", {
@@ -1104,6 +1114,26 @@ export class TabAlignmentComponent implements OnChanges {
     var getData = this.serviceebud.GatewayGetData(model);
     getData.subscribe((response: any) => {
       this.model.Project_Cabinet.splice(i, 1);
+    })
+  }
+  addSecurity() {
+    this.model.Project_Security.push({
+      title: ''
+    });
+  }
+
+  removeSecurity(i: number, item: any) {
+    if (!item.Project_Security_Id) {
+      this.model.Project_Security.splice(i, 1);
+      return
+    }
+    let model = {
+      FUNC_CODE: "FUNC-Delete_Project_Security",
+      Project_Detail_Id: item.Project_Security_Id
+    }
+    var getData = this.serviceebud.GatewayGetData(model);
+    getData.subscribe((response: any) => {
+      this.model.Project_Security.splice(i, 1);
     })
   }
   addPpatPlan() {

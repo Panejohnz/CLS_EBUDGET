@@ -192,7 +192,6 @@
 
                     </select>
                 </div>
-                <!-- เพิ่มใหม่ -->
                 <div class="col-md-12">
                     <label class="form-label">ตัวชี้วัดเป้าหมายระดับประเด็น</label>
                     <select class="form-select" [(ngModel)]="planLevel2.Plan_Tactics_Id">
@@ -414,11 +413,11 @@
             </h6>
         </div>
 
-        <button class="btn btn-primary btn-sm mb-3" (click)="addCabinet()">
+        <button class="btn btn-primary btn-sm mb-3" (click)="addSecurity()">
             + เพิ่มรายการ
         </button>
 
-        <div *ngFor="let item of model.Project_Cabinet; let i = index" class="border rounded p-3 bg-light">
+        <div *ngFor="let item of model.Project_Security; let i = index" class="border rounded p-3 bg-light">
 
             <label class="form-label mb-1">
                 ประเด็นที่สอดคล้อง {{ i + 1 }}
@@ -427,7 +426,7 @@
             <div class="input-group">
                 <input type="text" class="form-control" [(ngModel)]="item.Title" name="cabinet_{{i}}">
 
-                <button class="btn btn-danger" (click)="removeCabinet(i, item)">
+                <button class="btn btn-danger" (click)="removeSecurity(i, item)">
                     <i class="bx bx-trash"></i>
                 </button>
             </div>
@@ -866,7 +865,7 @@
 
                         <option *ngFor="let item of listProjectPlan" [ngValue]="item.Project_Plan_Id">
                             {{ item.Project_Plan_Name }}
-                        </option>  
+                        </option>
 
                     </select>
                 </div>
