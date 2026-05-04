@@ -2,12 +2,28 @@ import { Component, Input } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { EbudgetService } from 'src/app/core/services/ebudget.service';
-
-
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import {
+  trigger,
+  transition,
+  style,
+  animate
+} from '@angular/animations';
 @Component({
   selector: 'app-tab-guideline',
   templateUrl: './tab-guideline.component.html',
-  styleUrl: './tab-guideline.component.scss'
+  styleUrl: './tab-guideline.component.scss',
+  animations: [
+    trigger('moveAnimation', [
+      transition(':enter', [
+        style({ transform: 'translateY(10px)', opacity: 0 }),
+        animate('200ms ease-out', style({ transform: 'translateY(0)', opacity: 1 }))
+      ]),
+      transition(':leave', [
+        animate('200ms ease-in', style({ opacity: 0 }))
+      ])
+    ])
+  ]
 })
 
 export class TabGuidelineComponent {
@@ -528,4 +544,88 @@ export class TabGuidelineComponent {
 
     sub._edited = true;
   }
+  dropActivity(event: any) {
+    moveItemInArray(this.model.activities, event.previousIndex, event.currentIndex);
+    this.reIndexSort();
+  }
+  reIndexSort() {
+    this.model.activities.forEach((a: any, i: number) => {
+      a.sort = i + 1;
+    });
+  } trackById(index: number, item: any) {
+    return item.id || index;
+  }
+  moveUp(index: number) {
+    if (index === 0) return;
+
+    this.movingIndex = index;
+
+    const arr = this.model.activities;
+    [arr[index - 1], arr[index]] = [arr[index], arr[index - 1]];
+
+    this.reIndexSort();
+
+    setTimeout(() => {
+      this.movingIndex = null;
+    }, 300);
+  }
+
+  moveDown(index: number) {
+    const arr = this.model.activities;
+    if (index === arr.length - 1) return;
+
+    this.movingIndex = index;
+
+    [arr[index], arr[index + 1]] = [arr[index + 1], arr[index]];
+
+    this.reIndexSort();
+
+    setTimeout(() => {
+      this.movingIndex = null;
+    }, 300);
+  }
+  animateSwap() {
+    const rows = document.querySelectorAll('.row-animate');
+
+    rows.forEach((row: any) => {
+      row.style.transform = 'translateY(5px)';
+      setTimeout(() => {
+        row.style.transform = 'translateY(0)';
+      }, 50);
+    });
+  }
+  animateFlip(callback: () => void) {
+
+    const rows = Array.from(document.querySelectorAll('.row-animate')) as HTMLElement[];
+
+    // 1. เก็บตำแหน่งก่อน
+    const first = rows.map(el => el.getBoundingClientRect());
+
+    // 2. reorder จริง
+    callback();
+
+    setTimeout(() => {
+
+      const newRows = Array.from(document.querySelectorAll('.row-animate')) as HTMLElement[];
+
+      newRows.forEach((el, i) => {
+
+        const last = el.getBoundingClientRect();
+        const dy = first[i]?.top - last.top;
+
+        if (dy) {
+          el.style.transition = 'none';
+          el.style.transform = `translateY(${dy}px)`;
+
+          requestAnimationFrame(() => {
+            el.style.transition = 'transform 250ms ease';
+            el.style.transform = '';
+          });
+        }
+
+      });
+
+    });
+  }
+  movingIndex: number | null = null;
 }
