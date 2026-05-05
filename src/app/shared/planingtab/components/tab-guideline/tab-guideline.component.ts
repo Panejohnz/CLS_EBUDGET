@@ -48,8 +48,9 @@ export class TabGuidelineComponent {
 
     if (this.model?.activities?.length) {
 
-      this.activities = this.model.activities;
+      this.activities = [...this.model.activities].sort((a: any, b: any) => a.Seq - b.Seq);
 
+      this.model.activities = this.activities;
       this.activities.forEach((act: any) => {
 
         if (act.SubActivities?.length) {
@@ -550,9 +551,10 @@ export class TabGuidelineComponent {
   }
   reIndexSort() {
     this.model.activities.forEach((a: any, i: number) => {
-      a.sort = i + 1;
+      a.Seq = i + 1;
     });
-  } trackById(index: number, item: any) {
+  }
+  trackById(index: number, item: any) {
     return item.id || index;
   }
   moveUp(index: number) {

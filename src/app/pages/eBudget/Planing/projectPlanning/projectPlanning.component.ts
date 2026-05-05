@@ -204,7 +204,7 @@ export class ProjectPlanningComponent {
         Project_Plan_Level1_Sub: [],
         Project_Plan_Level2: {},
         Project_Cabinet: [],
-        Project_Security : [],
+        Project_Security: [],
         Project_Plan_Level3: {
           Government_Policy_Id1: null,
           Government_Policy_Id2: null,
@@ -424,6 +424,7 @@ export class ProjectPlanningComponent {
     const getId = (obj: any, key: string) =>
       typeof obj === 'object' ? obj?.[key] : obj;
 
+    if (!this.validateHeader()) return;
     const payload = {
       BgYear: "2569",
       Project_Id: this.project_planing.Project_Id,
@@ -457,8 +458,6 @@ export class ProjectPlanningComponent {
       Operation2: this.project_planing.Operation2,
       Proposer_Name: this.project_planing.Proposer_Name,
       Proposer_Position: this.project_planing.Proposer_Position,
-
-
     };
 
     this.project_planing.Project_Plan_Detail = this.mapActivities();
@@ -506,6 +505,27 @@ export class ProjectPlanningComponent {
       modal.dismiss();
     });
   }
+  validateHeader(): boolean {
+
+    const fields = [
+      { value: this.project_planing.selectedDepartment, msg: 'เลือกหน่วยงาน' },
+      { value: this.project_planing.selectedPlan, msg: 'เลือกแผนงาน' },
+      { value: this.project_planing.projectType, msg: 'เลือกประเภทค่าใช้จ่าย' },
+      { value: this.project_planing.selectedProduct, msg: 'เลือกผลผลิต' },
+      { value: this.project_planing.selectedActivity, msg: 'เลือกกิจกรรม' },
+      { value: this.project_planing.selectedBudget, msg: 'เลือกประเภทงบ' },
+      { value: this.project_planing.Project_Name, msg: 'กรอกชื่อโครงการ' }
+    ];
+
+    for (const f of fields) {
+      if (!f.value) {
+        basicAlert('info', f.msg, '');
+        return false;
+      }
+    }
+
+    return true;
+  }
   toDotNetDate(dateStr: string): string | null {
     if (!dateStr) return null;
 
@@ -517,12 +537,12 @@ export class ProjectPlanningComponent {
 
     const activities = this.project_planing.activities || [];
 
-    return activities.map((act: any) => ({
+    return activities.map((act: any, i: number) => ({
 
-      // 🔥 MAIN
       Project_Detail_Id: act.id,
       Activity_Name: act.name,
       Responsible: act.owner,
+      Seq: act.Seq ?? (i + 1),
 
       Used_BG: act.noBudget ? 0 : 1,
       Is_Consult: act.consult ? 1 : 0,
@@ -531,10 +551,12 @@ export class ProjectPlanningComponent {
 
       OtherExpenses: act.otherExpenses || [],
 
-      SubActivities: (act.SubActivities || []).map((sub: any) => ({
+      SubActivities: (act.SubActivities || []).map((sub: any, j: number) => ({
+
         Project_Detail_Id: sub.Project_Detail_Id,
         Activity_Name: sub.name,
         Responsible: sub.owner,
+        Seq: sub.Seq ?? (j + 1),
 
         Used_BG: sub.noBudget ? 0 : 1,
         Is_Consult: sub.consult ? 1 : 0,
@@ -546,7 +568,6 @@ export class ProjectPlanningComponent {
       }))
 
     }));
-
   }
   randomItem(arr: any[]) {
     return arr[Math.floor(Math.random() * arr.length)];
