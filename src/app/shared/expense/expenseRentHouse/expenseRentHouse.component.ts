@@ -8,10 +8,10 @@ import { EbudgetService } from 'src/app/core/services/ebudget.service'
   styles: ``
 })
 export class ExpenseRentHouseComponent {
-  @Input() modal: any;
+  @Input() model: any;
   constructor(private modalService: NgbModal, public serviceebud: EbudgetService) { }
   closeModal() {
-    this.modal.dismiss();
+    this.model.dismiss();
   }
   rentList: any = [
     {

@@ -7,10 +7,10 @@ import { EbudgetService } from 'src/app/core/services/ebudget.service'
   styles: ``
 })
 export class ProjectBudgetProposalAddPersonnelComponent {
-  @Input() modal: any;
+  @Input() model: any;
   constructor(private modalService: NgbModal, public serviceebud: EbudgetService) { }
   closeModal() {
-    this.modal.dismiss();
+    this.model.dismiss();
   }
   project_budget: any
   plan: any = {
@@ -24,10 +24,6 @@ export class ProjectBudgetProposalAddPersonnelComponent {
       jul: 0, aug: 0, sep: 0
     }
   }
-
-  unit = ''
-  isIndicator = false
-
   targetList: any = [
     {
       oct: 0, nov: 0, dec: 0,
@@ -36,37 +32,16 @@ export class ProjectBudgetProposalAddPersonnelComponent {
       jul: 0, aug: 0, sep: 0
     }
   ]
+  unit = ''
+  isIndicator = false
 
-
-  planOptions = [
-    { id: 1, name: 'แผนงาน 1' },
-    { id: 2, name: 'แผนงาน 2' }
-  ];
-
-  outputOptions = [
-    { id: 1, name: 'ผลผลิต 1' },
-    { id: 2, name: 'ผลผลิต 2' }
-  ];
-
-  mainDeptActivityOptions = [
-    { id: 1, name: 'กิจกรรมหลักกรม 1' },
-    { id: 2, name: 'กิจกรรมหลักกรม 2' }
-  ];
-
-  mainUnitActivityOptions = [
-    { id: 1, name: 'กิจกรรมหลักหน่วยงาน 1' },
-    { id: 2, name: 'กิจกรรมหลักหน่วยงาน 2' }
-  ];
-
-  subUnitActivityOptions = [
-    { id: 1, name: 'กิจกรรมรองหน่วยงาน 1' },
-    { id: 2, name: 'กิจกรรมรองหน่วยงาน 2' }
-  ];
-
-  subActivityOptions = [
-    { id: 1, name: 'กิจกรรมย่อย 1' },
-    { id: 2, name: 'กิจกรรมย่อย 2' }
-  ];
+  Mas_Department_Lists: any[] = []
+  Mas_Plan_Lists: any[] = []
+  Mas_Expense_Lists: any[] = []
+  Mas_Product: any[] = []
+  Mas_Activity: any[] = []
+  Mas_Budget_Types: any[] = []
+  Mas_Expense_Group: any[] = []
   expenseItem: any = null
   div_modal = false
   mapExpenseType(id: number): string {
@@ -89,7 +64,93 @@ export class ProjectBudgetProposalAddPersonnelComponent {
   }
   expenseOptions: any[] = [];
   ngOnInit(): void {
+    let model = {
+      FUNC_CODE: "FUNC-GET_Mas_General",
+      BgYear: "2569"
+    };
+
+    this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
+
+      this.Mas_Department_Lists = res.Mas_Department_Lists || [];
+      this.Mas_Plan_Lists = res.Mas_Plan_Lists || [];
+      this.Mas_Expense_Lists = res.Mas_Expense_Lists || [];
+
+    });
+
     this.Get_Dropdown_list()
+  }
+  ngOnChanges() {
+
+
+    if (this.model?.Project_Id) {
+      this.mapInitialData();
+    }
+  }
+  mapInitialData() {
+
+    const find = (list: any[], key: string, value: any) =>
+      list.find(x => x[key] == value);
+
+    this.model.selectedDepartment =
+      find(this.Mas_Department_Lists, 'Department_Id', this.model.Department_Id);
+
+    this.model.projectType =
+      find(this.Mas_Expense_Lists, 'Expense_Id', this.model.Fk_Expense_List);
+
+    this.model.selectedPlan =
+      find(this.Mas_Plan_Lists, 'Plan_Id', this.model.Fk_Plan_Id);
+
+    // 🔥 chain load ต่อ
+    if (this.model.projectType) {
+      this.Onchange_type();
+    }
+
+    if (this.model.selectedPlan) {
+      this.Onchange_type_Plan();
+    }
+  }
+  Onchange_type() {
+
+
+    let model = {
+      FUNC_CODE: "FUNC-GET_Mas_Budget_Type_Main",
+    };
+
+
+    this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
+
+      this.Mas_Budget_Types = res.Mas_Budget_Type_Lists || [];
+
+    });
+  }
+  Onchange_type_Plan() {
+
+    if (!this.model.selectedPlan) return;
+
+    let model = {
+      FUNC_CODE: "FUNC-GET_Mas_Product",
+      Mas_Plan: {
+        Plan_Id: this.model.selectedPlan.Plan_Id
+      }
+    };
+
+    this.model.Fk_Plan_Id = this.model.selectedPlan.Plan_Id;
+
+    this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
+
+      this.Mas_Product = res.Mas_Product_Lists || [];
+
+      // 👉 map product ตอน edit
+      if (this.model.Fk_Product_Id) {
+        this.model.selectedProduct =
+          this.Mas_Product.find(x => x.Product_Id == this.model.Fk_Product_Id);
+      }
+
+      // 👉 load activity ต่อ
+      if (this.model.selectedProduct) {
+        this.Onchange_type_Product();
+      }
+    });
   }
   openTargetModal(content: any) {
 
@@ -119,20 +180,23 @@ export class ProjectBudgetProposalAddPersonnelComponent {
           this.expenseOptions = Array.isArray(response.Mas_Expense_Lists)
             ? response.Mas_Expense_Lists
             : [];
-          this.subActivityOptions = response.Mas_Expense_Types.map((x: any) => ({
-            id: x.Expense_Type_Id,
-            name: x.Expense_Type_Name
-          }));
-          this.subUnitActivityOptions = response.Mas_Budget_Type.map((x: any) => ({
-            id: x.Budget_Type_Id,
-            name: x.Budget_Type_Name
-          }));
+
+
         } else {
           basicAlert('warning', 'ผิดพลาด', '');
         }
 
       });
+    let model2 = {
+      FUNC_CODE: "FUNC-GET_Mas_Budget_Type_Main",
+    };
 
+
+    this.serviceebud.GatewayGetData(model2).subscribe((res: any) => {
+
+      this.Mas_Budget_Types = res.Mas_Budget_Type_Lists || [];
+
+    });
   }
   onExpenseChange(item: any) {
     if (!item) return;
@@ -147,21 +211,46 @@ export class ProjectBudgetProposalAddPersonnelComponent {
     };
     this.serviceebud.GatewayGetData(model)
       .subscribe((response: any) => {
-        this.subActivityOptions = (response.Mas_Expense_Types || []).map((x: any) => ({
-          id: x.Expense_Type_Id,
-          name: x.Expense_Type_Name
-        }));
+        // this.subActivityOptions = (response.Mas_Expense_Types || []).map((x: any) => ({
+        //   id: x.Expense_Type_Id,
+        //   name: x.Expense_Type_Name
+        // }));
 
-        this.subUnitActivityOptions = (response.Mas_Budget_Types || []).map((x: any) => ({
-          id: x.Budget_Type_Id,
-          name: x.Budget_Type_Name
-        }));
+        // this.subUnitActivityOptions = (response.Mas_Budget_Types || []).map((x: any) => ({
+        //   id: x.Budget_Type_Id,
+        //   name: x.Budget_Type_Name
+        // }));
 
         this.plan.subActivity = item.Fk_Expense_Type_Id;
         this.plan.subUnitActivity = item.Fk_Budget_Type_Id;
         this.formTitle = item.Expense_Name
       })
 
+  }
+
+  Onchange_type_Product() {
+
+    if (!this.model.selectedProduct) return;
+
+    let model = {
+      FUNC_CODE: "FUNC-GET_Mas_Activity",
+      Mas_Product: {
+        Product_Id: this.model.selectedProduct.Product_Id
+      }
+    };
+
+    this.model.Fk_Product_Id = this.model.selectedProduct.Product_Id;
+
+    this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
+
+      this.Mas_Activity = res.Mas_Activity_Lists || [];
+
+      // 👉 map activity ตอน edit
+      if (this.model.Fk_Activity_Id) {
+        this.model.selectedActivity =
+          this.Mas_Activity.find(x => x.Activity_Id == this.model.Fk_Activity_Id);
+      }
+    });
   }
   addTargetRow() {
 
@@ -187,7 +276,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
     if (userConfirmed) {
 
       basicAlert('success', 'บันทึกข้อมูลแล้ว', '')
-      this.modal.dismiss();
+      this.model.dismiss();
 
     }
   }

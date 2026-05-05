@@ -155,22 +155,16 @@ export class TabGeneralComponent {
 
       this.Mas_Budget_Types = res.Mas_Budget_Types || [];
 
-      // 👉 map budget ตอน edit
       if (this.model.Fk_Budget_Type) {
         this.model.selectedBudget =
           this.Mas_Budget_Types.find(x => x.Budget_Type_Id == this.model.Fk_Budget_Type);
       }
 
-      // 👉 auto select ถ้ามีตัวเดียว
       if (this.Mas_Budget_Types.length === 1) {
         this.model.selectedBudget = this.Mas_Budget_Types[0];
       }
     });
   }
-
-  // =========================
-  // 🔥 PLAN → PRODUCT
-  // =========================
   Onchange_type_Plan() {
 
     if (!this.model.selectedPlan) return;
@@ -188,22 +182,17 @@ export class TabGeneralComponent {
 
       this.Mas_Product = res.Mas_Product_Lists || [];
 
-      // 👉 map product ตอน edit
       if (this.model.Fk_Product_Id) {
         this.model.selectedProduct =
           this.Mas_Product.find(x => x.Product_Id == this.model.Fk_Product_Id);
       }
 
-      // 👉 load activity ต่อ
       if (this.model.selectedProduct) {
         this.Onchange_type_Product();
       }
     });
   }
 
-  // =========================
-  // 🔥 PRODUCT → ACTIVITY
-  // =========================
   Onchange_type_Product() {
 
     if (!this.model.selectedProduct) return;

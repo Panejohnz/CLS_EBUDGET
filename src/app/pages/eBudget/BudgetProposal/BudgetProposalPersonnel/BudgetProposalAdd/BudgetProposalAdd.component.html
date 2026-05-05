@@ -10,30 +10,35 @@
 
         <div class="col-md-4">
             <label class="form-label">แผนงาน</label>
-            <select class="form-select" [(ngModel)]="plan.projectName">
-                <option value="">-- เลือกแผนงาน --</option>
-                <option *ngFor="let item of planOptions" [value]="item.id">
-                    {{ item.name }}
+            <select class="form-select" [(ngModel)]="model.selectedPlan" name="selectedPlan"
+                (ngModelChange)="Onchange_type_Plan()">
+
+                <option [ngValue]="null" disabled>-- เลือกแผนงาน --</option>
+                <option *ngFor="let item of Mas_Plan_Lists" [ngValue]="item">
+                    {{ item.Plan_Name }}
                 </option>
             </select>
         </div>
 
         <div class="col-md-4">
             <label class="form-label">ผลผลิต</label>
-            <select class="form-select" [(ngModel)]="plan.unit">
-                <option value="">-- เลือกผลผลิต --</option>
-                <option *ngFor="let item of outputOptions" [value]="item.id">
-                    {{ item.name }}
+            <select class="form-select" [(ngModel)]="model.selectedProduct" name="selectedProduct"
+                (ngModelChange)="Onchange_type_Product()">
+
+                <option [ngValue]="null" disabled>-- เลือกผลผลิต --</option>
+                <option *ngFor="let item of Mas_Product" [ngValue]="item">
+                    {{ item.Product_Name }}
                 </option>
             </select>
         </div>
 
         <div class="col-md-4">
             <label class="form-label">กิจกรรม</label>
-            <select class="form-select" [(ngModel)]="plan.mainDeptActivity">
-                <option value="">-- เลือกกิจกรรมหลักกรม --</option>
-                <option *ngFor="let item of mainDeptActivityOptions" [value]="item.id">
-                    {{ item.name }}
+            <select class="form-select" [(ngModel)]="model.selectedActivity" name="selectedActivity">
+
+                <option [ngValue]="null" disabled>-- เลือกกิจกรรม --</option>
+                <option *ngFor="let item of Mas_Activity" [ngValue]="item">
+                    {{ item.Activity_Name }}
                 </option>
             </select>
         </div>
@@ -44,10 +49,12 @@
 
         <div class="col-md-4">
             <label class="form-label">หมวดงบ</label>
-            <select disabled class="form-select" [(ngModel)]="plan.subUnitActivity">
+            <select class="form-select" [(ngModel)]="model.selectedBudget" name="selectedBudget"
+                [disabled]="Mas_Budget_Types.length === 1">
 
-                <option *ngFor="let item of subUnitActivityOptions" [value]="item.id">
-                    {{ item.name }}
+                <option [ngValue]="null" disabled>-- เลือกหมวดงบ --</option>
+                <option *ngFor="let item of Mas_Budget_Types" [ngValue]="item">
+                    {{ item.Budget_Type_Name }}
                 </option>
             </select>
         </div>
@@ -55,7 +62,7 @@
         <div class="col-md-4">
             <label class="form-label">หมวดค่าใช้จ่าย</label>
             <select disabled class="form-select" [(ngModel)]="plan.subActivity">
-                <option *ngFor="let item of subActivityOptions" [value]="item.id">
+                <option *ngFor="let item of Mas_Expense_Group" [value]="item.id">
                     {{ item.name }}
                 </option>
             </select>
@@ -244,110 +251,110 @@
         <h5 class="card-title">
             {{ formTitle }}
         </h5>
-        <button type="button" class="btn-close" (click)="modal.dismiss();"></button>
+        <button type="button" class="btn-close" (click)="model.dismiss();"></button>
     </div>
     @if([1,2,3,4,5,6,7,8,10,11,12,14,15,16].includes(expenseItem.Expense_Id)){
-    <app-expense-list-salary [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-list-salary [model]="model" [expenseItem]="expenseItem">
     </app-expense-list-salary>
     }
     @else if(expenseItem.Expense_Id == 9){
-    <app-expense-rent-house [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-rent-house [model]="model" [expenseItem]="expenseItem">
     </app-expense-rent-house>
     }@else if(expenseItem.Expense_Id == 13){
-    <app-expense-ot [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-ot [model]="model" [expenseItem]="expenseItem">
     </app-expense-ot>
     }@else if(expenseItem.Expense_Id == 17){
-    <app-expense-meeting-support [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-meeting-support [model]="model" [expenseItem]="expenseItem">
     </app-expense-meeting-support>
     }
     @else if(expenseItem.Expense_Id == 18){
-    <app-expense-meeting-litigation [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-meeting-litigation [model]="model" [expenseItem]="expenseItem">
     </app-expense-meeting-litigation>
     }@else if(expenseItem.Expense_Id == 19){
-    <app-expense-committee [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-committee [model]="model" [expenseItem]="expenseItem">
     </app-expense-committee>
     }@else if(expenseItem.Expense_Id == 20){
-    <app-expense-car-allowance [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-car-allowance [model]="model" [expenseItem]="expenseItem">
     </app-expense-car-allowance>
     }
     @else if(expenseItem.Expense_Id == 21){
-    <app-expense-travel [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-travel [model]="model" [expenseItem]="expenseItem">
     </app-expense-travel>
     }@else if(expenseItem.Expense_Id == 22){
-    <app-expense-training-seminar [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-training-seminar [model]="model" [expenseItem]="expenseItem">
     </app-expense-training-seminar>
     }@else if([23].includes(expenseItem.Expense_Id)){
-    <app-expense-office-rent [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-office-rent [model]="model" [expenseItem]="expenseItem">
     </app-expense-office-rent>
     }@else if(expenseItem.Expense_Id == 24){
-    <app-expense-copier-rent [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-copier-rent [model]="model" [expenseItem]="expenseItem">
     </app-expense-copier-rent>
     }@else if ([25,26,27,28,29,30,31].includes(expenseItem.Expense_Id)) {
-    <app-expense-service-contract [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-service-contract [model]="model" [expenseItem]="expenseItem">
     </app-expense-service-contract>
     }@else if ([32].includes(expenseItem.Expense_Id)) {
-    <app-expense-other [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-other [model]="model" [expenseItem]="expenseItem">
     </app-expense-other>
     }@else if(expenseItem.Expense_Id == 33){
-    <app-expense-vehicle-repair [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-vehicle-repair [model]="model" [expenseItem]="expenseItem">
     </app-expense-vehicle-repair>
     }@else if(expenseItem.Expense_Id == 34){
-    <app-expense-repair-construction [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-repair-construction [model]="model" [expenseItem]="expenseItem">
     </app-expense-repair-construction>
     }@else if(expenseItem.Expense_Id == 35){
-    <app-expense-equipment-repair [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-equipment-repair [model]="model" [expenseItem]="expenseItem">
     </app-expense-equipment-repair>
     }@else if(expenseItem.Expense_Id == 36){
-    <app-expense-advertising [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-advertising [model]="model" [expenseItem]="expenseItem">
     </app-expense-advertising>
     }@else if(expenseItem.Expense_Id == 37){
-    <app-expense-ceremonial [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-ceremonial [model]="model" [expenseItem]="expenseItem">
     </app-expense-ceremonial>
     }@else if(expenseItem.Expense_Id == 38){
-    <app-expense-witness [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-witness [model]="model" [expenseItem]="expenseItem">
     </app-expense-witness>
     }@else if(expenseItem.Expense_Id == 39){
-    <app-expense-section61 [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-section61 [model]="model" [expenseItem]="expenseItem">
     </app-expense-section61>
     }@else if(expenseItem.Expense_Id == 40){
-    <app-expense-other-operating-cost [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-other-operating-cost [model]="model" [expenseItem]="expenseItem">
     </app-expense-other-operating-cost>
     }@else if(expenseItem.Expense_Id == 42){
-    <app-expense-fuel-lubricant [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-fuel-lubricant [model]="model" [expenseItem]="expenseItem">
     </app-expense-fuel-lubricant>
     } @else if([41,43,44,45,46,47,48].includes(expenseItem.Expense_Id)){
-    <app-expense-office-supplies-cost [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-office-supplies-cost [model]="model" [expenseItem]="expenseItem">
     </app-expense-office-supplies-cost>
     } @else if([49,50,51,52,53].includes(expenseItem.Expense_Id)){
-    <app-expense-utility-and-telecom-cost [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-utility-and-telecom-cost [model]="model" [expenseItem]="expenseItem">
     </app-expense-utility-and-telecom-cost>
     }@else if(expenseItem.Expense_Id == 54){
-    <app-expense-system-maintenance-cost [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-system-maintenance-cost [model]="model" [expenseItem]="expenseItem">
     </app-expense-system-maintenance-cost>
     }@else if(expenseItem.Expense_Id == 55){
-    <app-expense-car-rental-cost [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-car-rental-cost [model]="model" [expenseItem]="expenseItem">
     </app-expense-car-rental-cost>
     }@else if(expenseItem.Expense_Id == 44){
-    <app-expense-computer-material-cost [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-computer-material-cost [model]="model" [expenseItem]="expenseItem">
     </app-expense-computer-material-cost>
     }@else if([56,57,58,59,60,61,62,63].includes(expenseItem.Expense_Id)){
-    <app-expense-asset-investment-form [modal]="modal" [expenseItem]="expenseItem"
+    <app-expense-asset-investment-form [model]="model" [expenseItem]="expenseItem"
         [type]="mapExpenseType(expenseItem.Expense_Id)">
     </app-expense-asset-investment-form>
     }@else if([65,66].includes(expenseItem.Expense_Id)){
-    <app-expense-construction-form [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-construction-form [model]="model" [expenseItem]="expenseItem">
     </app-expense-construction-form>
     }@else if([67].includes(expenseItem.Expense_Id)){
-    <app-expense-foreign-travel [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-foreign-travel [model]="model" [expenseItem]="expenseItem">
     </app-expense-foreign-travel>
     }@else if([68].includes(expenseItem.Expense_Id)){
-    <app-expense-witness-protection [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-witness-protection [model]="model" [expenseItem]="expenseItem">
     </app-expense-witness-protection>
     }@else if([69,75].includes(expenseItem.Expense_Id)){
-    <app-expense-consultant-hire [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-consultant-hire [model]="model" [expenseItem]="expenseItem">
     </app-expense-consultant-hire>
     } @else if([72,71].includes(expenseItem.Expense_Id)){
-    <app-expense-grant-form [modal]="modal" [expenseItem]="expenseItem">
+    <app-expense-grant-form [model]="model" [expenseItem]="expenseItem">
     </app-expense-grant-form>
     }@else if ([64,70,73,74,75].includes(expenseItem.Expense_Id)) {
     <projectPlanning>
@@ -358,7 +365,7 @@
 
     <div class="modal-footer">
 
-        <button class="btn btn-light" (click)="modal.dismiss()">
+        <button class="btn btn-light" (click)="model.dismiss()">
             ยกเลิก
         </button>
 

@@ -7,11 +7,11 @@ import { EbudgetService } from 'src/app/core/services/ebudget.service'
   styles: ``
 })
 export class ExpenseListSalaryComponent {
-  @Input() modal: any;
+  @Input() model: any;
   @Input() expenseItem: any
   constructor(private modalService: NgbModal, public serviceebud: EbudgetService) { }
   closeModal() {
-    this.modal.dismiss();
+    this.model.dismiss();
   }
 
 

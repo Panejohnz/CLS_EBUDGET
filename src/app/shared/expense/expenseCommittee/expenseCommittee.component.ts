@@ -21,11 +21,11 @@ interface Section {
   styles: ``
 })
 export class ExpenseCommitteeComponent {
-  @Input() modal: any;
+  @Input() model: any;
   @Input() expenseItem: any
   constructor(private modalService: NgbModal, public serviceebud: EbudgetService) { }
   closeModal() {
-    this.modal.dismiss();
+    this.model.dismiss();
   }
   sections: Section[] = [
     {
@@ -140,7 +140,7 @@ export class ExpenseCommitteeComponent {
     if (userConfirmed) {
 
       basicAlert('success', 'บันทึกข้อมูลแล้ว', '')
-      this.modal.dismiss();
+      this.model.dismiss();
 
     }
   }

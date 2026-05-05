@@ -81,6 +81,28 @@ export class ProjectBudgetProposalComponent {
       status_name: 'อนุมัติแล้ว'
     }
   ];
+  project_planing: any = {
+    Project_Plan: {
+      Department_Id: null,
+      Fk_Expense_Type: null,
+      Fk_Plan_Id: null,
+      Fk_Product_Id: null,
+      Fk_Activity_Id: null,
+      Fk_Budget_Type: null,
+      Project_Name: '',
+    },
+
+    Project_Detail: {},
+    Project_Objective: [],
+    Project_Output: [],
+    Project_Outcome: [],
+    Project_Plan_Level1: [],
+    Project_Plan_Level1_Sub: [],
+    Project_Cabinet: [],
+    Project_Security: [],
+    Project_Plan_Level3: {}
+
+  };
   modalRef: any;
   total$!: Observable<number>;
   project_budget = {
@@ -118,7 +140,81 @@ export class ProjectBudgetProposalComponent {
 
   fullModal(modal: any, data: any) {
 
+    this.project_planing = {
+      Project_Plan: {},
 
+      Project_Detail: [],
+      Project_Objective: [],
+
+      Project_Plan_Level1: [],
+      Project_Plan_Level1_Sub: [],
+      Project_Plan_Level2: {},
+      Project_Cabinet: [],
+      Project_Security: [],
+      Project_Plan_Level3: {
+        Government_Policy_Id1: null,
+        Government_Policy_Id2: null,
+        Action_Plan_Id: null,
+        Urgent1_Checked: false,
+        Urgent1_Name: '',
+        Urgent2_Checked: false,
+        Urgent2_Name: '',
+        Mid1_Checked: false,
+        Mid1_Name: '',
+        Mid2_Checked: false,
+        Mid2_Name: '',
+        ProjectPlaningAlignment: '',
+        PpatPlanName: '',
+        PpatStrategy_Id: '',
+        PpatMeasure_Id: '',
+        PpatIndicator_Id: '',
+        Project_Plan_Id: null,
+        Tactics_Id: null,
+        Measure_Id: null,
+        Indicators_Id: null,
+        Plan5_Master_Plan_Id: null,
+        Plan5_Goals_Id: null,
+        Plan5_Indicator_Id: null,
+        Plan5_Description: '',
+        Project_Plan_Goals_Id5: null,
+        Indicators_Id5: null,
+        Goals_Guidelines_Id5: null,
+        Plan5_Subplan_Id: null,
+        Plan5_Target_Y1_Id: null,
+        Plan5_Subplan_Desc: '',
+        Plan5_Guideline_Id: null,
+        Project_Plan_Id5: null,
+        Plan5_ValueChain_Main_Id: null,
+        Plan5_ValueChain_Factor_Main_Id: null,
+        Plan5_ValueChain_Support_Id: null,
+        Plan5_ValueChain_Factor_Support_Id: null,
+
+        Master_Plan_Id: null,
+        Plan_Goals_Id: null,
+        Plan_Tactics_Id: null,
+        Sub_Master_Plan_Id: null,
+        Sub_Plan_Goals_Id: null,
+        ValueChain_Main_Id: null,
+        ValueChain_Factor_Main_Id: null,
+        ValueChain_Support_Id: null,
+        ValueChain_Factor_Support_Id: null,
+
+        Plan5_Project_Plan_Id: null,
+        Project_Plan_Goals_Id: null,
+        Goals_Guidelines_Id: null,
+        Guidelines_Id: null,
+        Project_Plan_Id_5: null,
+        Project_Plan_Goals_Id_5: null,
+        Indicators_Id_5: null,
+        Goals_Guidelines_Id_5: null
+      },
+      selectedDepartment: null,
+      projectType: null,
+      selectedPlan: null,
+      selectedProduct: null,
+      selectedActivity: null,
+      selectedBudget: null,
+    };
     this.modalRef = this.modalService.open(modal, {
       backdrop: 'static',
       windowClass: 'modal-95'

@@ -8,11 +8,11 @@ import { EbudgetService } from 'src/app/core/services/ebudget.service'
   styles: ``
 })
 export class ExpenseOTComponent {
-  @Input() modal: any;
+  @Input() model: any;
   @Input() expenseItem: any
   constructor(private modalService: NgbModal, public serviceebud: EbudgetService) { }
   closeModal() {
-    this.modal.dismiss();
+    this.model.dismiss();
   }
   foodList: any = [
     {
@@ -109,7 +109,7 @@ export class ExpenseOTComponent {
     if (userConfirmed) {
 
       basicAlert('success', 'บันทึกข้อมูลแล้ว', '')
-      this.modal.dismiss();
+      this.model.dismiss();
 
     }
   }
