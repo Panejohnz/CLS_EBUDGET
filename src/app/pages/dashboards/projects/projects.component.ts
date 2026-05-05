@@ -233,13 +233,12 @@ export class ProjectsComponent implements OnInit {
     this.totalSummary.balance = data.reduce((sum: any, i: any) => sum + Number(i.balance || 0), 0);
   }
   ngOnInit(): void {
-    /**
-     * BreadCrumb
-     */
 
-    /**
-     * Fetches the data
-     */
+    this.fetchData();
+
+    this._OverviewChart('["--vz-primary", "--vz-success", "--vz-danger"]');
+
+    this._status7('["--vz-success", "--vz-warning", "--vz-danger", "--vz-primary"]');
 
   }
 

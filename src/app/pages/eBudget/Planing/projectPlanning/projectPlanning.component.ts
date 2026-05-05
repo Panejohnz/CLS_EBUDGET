@@ -510,11 +510,12 @@ export class ProjectPlanningComponent {
     const fields = [
       { value: this.project_planing.selectedDepartment, msg: 'เลือกหน่วยงาน' },
       { value: this.project_planing.selectedPlan, msg: 'เลือกแผนงาน' },
-      { value: this.project_planing.projectType, msg: 'เลือกประเภทค่าใช้จ่าย' },
+      { value: this.project_planing.projectType, msg: 'เลือกประเภทโครงการ' },
       { value: this.project_planing.selectedProduct, msg: 'เลือกผลผลิต' },
       { value: this.project_planing.selectedActivity, msg: 'เลือกกิจกรรม' },
-      { value: this.project_planing.selectedBudget, msg: 'เลือกประเภทงบ' },
-      { value: this.project_planing.Project_Name, msg: 'กรอกชื่อโครงการ' }
+      { value: this.project_planing.selectedBudget, msg: 'เลือกหมวดงบ' },
+      { value: this.project_planing.Project_Name, msg: 'กรอกชื่อโครงการ' },
+      { value: this.project_planing.Strategic_Id, msg: 'เลือกยุทธศาสตร์ชาติด้าน' }
     ];
 
     for (const f of fields) {
