@@ -5,57 +5,55 @@
     </div>
 
     <div class="card-body rounded" style="background-color: #E0E8F0;">
+
         <!-- 1.1 -->
         <div class="border-start border-4 border-primary ps-3 mb-4">
             <h6 class="fw-bold text-primary mb-3">
-                1.1 ยุทธศาสตร์ชาติที่เกี่ยวข้องโดยตรง (Z) <span class="text-danger">*</span>
+                1.1 ยุทธศาสตร์ชาติที่เกี่ยวข้องโดยตรง (Z)
+                <span class="text-danger">*</span>
             </h6>
         </div>
 
         <div class="border rounded p-3 mb-3 bg-light">
+
             <div class="row g-3">
 
                 <div class="col-md-12">
-                    <label>ยุทธศาสตร์ชาติด้าน</label>
-                    <select class="form-select" [(ngModel)]="planLevel1Main.Strategic_Id
-" (change)="onChangeStrategic(planLevel1Main.Strategic_Id)">
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-                        <option *ngFor="let item of listStrategic" [ngValue]="item.Strategic_Id">
-                            {{ item.Strategic_Name }}
-                        </option>
-                    </select>
+                    <label class="form-label">ยุทธศาสตร์ชาติด้าน</label>
+
+                    <ng-select  [items]="listStrategic" bindLabel="Strategic_Name" bindValue="Strategic_Id"
+                        [(ngModel)]="planLevel1Main.Strategic_Id" (ngModelChange)="onChangeStrategic($event)"
+                        placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
                 <div class="col-md-12">
-                    <label>ประเด็นยุทธศาสตร์</label>
-                    <select class="form-select" [(ngModel)]="planLevel1Main.Issues_Id"
-                        (change)="onChangeIssue(planLevel1Main.Issues_Id)">
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
+                    <label class="form-label">ประเด็นยุทธศาสตร์</label>
 
-                        <option *ngFor="let item of listIssue" [ngValue]="item.Issues_Id">
-                            {{ item.Strategic_Issues_Name }}
-                        </option>
-                    </select>
+                    <ng-select  [items]="listIssue" bindLabel="Strategic_Issues_Name" bindValue="Issues_Id"
+                        [(ngModel)]="planLevel1Main.Issues_Id" (ngModelChange)="onChangeIssue($event)"
+                        placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
                 <div class="col-md-12">
-                    <label>ประเด็นย่อย</label>
-                    <select class="form-select" [(ngModel)]="planLevel1Main.Issues_Sub_Id">
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
+                    <label class="form-label">ประเด็นย่อย</label>
 
-                        <option *ngFor="let item of listSubIssue" [ngValue]="item.Issues_Sub_Id">
-                            {{ item.Strategic_Sub_Issues_Name }}
-                        </option>
-                    </select>
+                    <ng-select  [items]="listSubIssue" bindLabel="Strategic_Sub_Issues_Name" bindValue="Issues_Sub_Id"
+                        [(ngModel)]="planLevel1Main.Issues_Sub_Id" placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
                 <div class="col-md-12">
-                    <label>เป้าหมาย</label>
+                    <label class="form-label">เป้าหมาย</label>
+
                     <input class="form-control" [(ngModel)]="planLevel1Main.Target" name="l1_target">
                 </div>
 
             </div>
+
         </div>
+
 
         <div [hidden]="true"> <!--ซ่อน 1.2 ไว้ก่อน -->
             <!-- ================= 1.2 ================= -->
@@ -167,95 +165,72 @@
 
                 <div class="col-md-12">
                     <label class="form-label">ประเด็น</label>
-                    <select class="form-select" [(ngModel)]="planLevel2.Master_Plan_Id"
-                        (change)="onChangeMasterPlan(planLevel2.Master_Plan_Id)">
 
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-
-                        <option *ngFor="let item of listMasterPlan" [ngValue]="item.Master_Plan_Id">
-                            {{ item.Master_Plan_Name }}
-                        </option>
-
-                    </select>
+                    <ng-select  [items]="listMasterPlan" bindLabel="Master_Plan_Name" bindValue="Master_Plan_Id"
+                        [(ngModel)]="planLevel2.Master_Plan_Id" (ngModelChange)="onChangeMasterPlan($event)"
+                        placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
                 <div class="col-md-12">
                     <label class="form-label">เป้าหมายระดับประเด็น (Y2)</label>
-                    <select class="form-select" [(ngModel)]="planLevel2.Plan_Goals_Id"
-                        (change)="onChangeMasterPlanGoal(planLevel2.Plan_Goals_Id)">
 
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-
-                        <option *ngFor="let item of listMasterPlanGoal" [ngValue]="item.Plan_Goals_Id">
-                            {{ item.Plan_Goals_Name }}
-                        </option>
-
-                    </select>
+                    <ng-select  [items]="listMasterPlanGoal" bindLabel="Plan_Goals_Name" bindValue="Plan_Goals_Id"
+                        [(ngModel)]="planLevel2.Plan_Goals_Id" (ngModelChange)="onChangeMasterPlanGoal($event)"
+                        placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
+
                 <div class="col-md-12">
                     <label class="form-label">ตัวชี้วัดเป้าหมายระดับประเด็น</label>
-                    <select class="form-select" [(ngModel)]="planLevel2.Plan_Tactics_Id">
 
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-
-                        <option *ngFor="let item of listMasterPlanGoalTactic" [ngValue]="item.Plan_Tactics_Id">
-                            {{ item.Plan_Tactics_Name }}
-                        </option>
-
-                    </select>
+                    <ng-select  [items]="listMasterPlanGoalTactic" bindLabel="Plan_Tactics_Name"
+                        bindValue="Plan_Tactics_Id" [(ngModel)]="planLevel2.Plan_Tactics_Id" placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
                 <div class="col-md-12">
-                    <label class="form-label">ความสอดคล้องของโครงการกับเป้าหมายของแผนแม่บท (โปรดอธิบาย)</label>
+                    <label class="form-label">
+                        ความสอดคล้องของโครงการกับเป้าหมายของแผนแม่บท (โปรดอธิบาย)
+                    </label>
+
                     <textarea class="form-control" rows="3" [(ngModel)]="planLevel2.Description" name="l2_desc">
-                          </textarea>
+        </textarea>
                 </div>
 
                 <div class="col-md-12">
                     <label class="form-label">แผนย่อยของแผนแม่บทฯ</label>
-                    <select class="form-select" [(ngModel)]="planLevel2.Subplan_Id"
-                        (change)="onChangeSubMasterPlan(planLevel2.Subplan_Id)">
 
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-
-                        <option *ngFor="let item of listSubMasterPlan" [ngValue]="item.Sub_Master_Plan_Id">
-                            {{ item.Sub_Master_Plan_Name }}
-                        </option>
-
-                    </select>
-
+                    <ng-select  [items]="listSubMasterPlan" bindLabel="Sub_Master_Plan_Name"
+                        bindValue="Sub_Master_Plan_Id" [(ngModel)]="planLevel2.Subplan_Id"
+                        (ngModelChange)="onChangeSubMasterPlan($event)" placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
                 <div class="col-md-12">
                     <label class="form-label">เป้าหมายแผนแม่บทย่อย (Y1)</label>
-                    <select (change)="onChangeTargetY1()" class="form-select" [(ngModel)]="planLevel2.Target_Y1_Id">
 
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-
-                        <option *ngFor="let item of listSubMasterPlanGoal" [ngValue]="item.Sub_Plan_Goals_Id">
-                            {{ item.Sub_Plan_Goals_Name }}
-                        </option>
-
-                    </select>
+                    <ng-select  [items]="listSubMasterPlanGoal" bindLabel="Sub_Plan_Goals_Name"
+                        bindValue="Sub_Plan_Goals_Id" [(ngModel)]="planLevel2.Target_Y1_Id"
+                        (ngModelChange)="onChangeTargetY1()" placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
                 <div class="col-md-12">
-                    <label class="form-label">ความสอดคล้องของโครงการกับเป้าหมายของแผนย่อย (โปรดอธิบาย)</label>
+                    <label class="form-label">
+                        ความสอดคล้องของโครงการกับเป้าหมายของแผนย่อย (โปรดอธิบาย)
+                    </label>
+
                     <textarea class="form-control" rows="3" [(ngModel)]="planLevel2.SubplanDesc" name="l2_subdesc">
-                          </textarea>
+        </textarea>
                 </div>
 
                 <div class="col-md-12">
                     <label class="form-label">แนวทางการพัฒนาภายใต้แผนย่อย</label>
-                    <select class="form-select" [(ngModel)]="planLevel2.DevGuideline_Id">
 
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-
-                        <option *ngFor="let item of listGuideline" [ngValue]="item.Guidelines_Id">
-                            {{ item.Guidelines_Name }}
-                        </option>
-
-                    </select>
+                    <ng-select  [items]="listGuideline" bindLabel="Guidelines_Name" bindValue="Guidelines_Id"
+                        [(ngModel)]="planLevel2.DevGuideline_Id" placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
             </div>
@@ -266,52 +241,42 @@
 
 
         <div class="border rounded p-3 mb-3 bg-light">
-            <div class="row g-3 ">
+            <div class="row g-3">
+
                 <div class="col-md-6">
                     <label class="form-label">หลัก</label>
-                    <select class="form-select" [(ngModel)]="planLevel2.ValueChain_Main_Id"
-                        (change)="onChangeValueChainMain()">
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-                        <option *ngFor="let item of listValueChain" [ngValue]="item.Value_Chain_Id">
-                            {{ item.Value_Chain_Name }}
-                        </option>
 
-                    </select>
+                    <ng-select  [items]="listValueChain" bindLabel="Value_Chain_Name" bindValue="Value_Chain_Id"
+                        [(ngModel)]="planLevel2.ValueChain_Main_Id" (ngModelChange)="onChangeValueChainMain()"
+                        placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label">ปัจจัยหลัก</label>
-                    <select class="form-select" [(ngModel)]="planLevel2.ValueChain_Factor_Main_Id">
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-                        <option *ngFor="let item of listValueChainFactorMain" [ngValue]="item.Factor_Id">
-                            {{ item.Factor_Name }}
-                        </option>
-                    </select>
+
+                    <ng-select  [items]="listValueChainFactorMain" bindLabel="Factor_Name" bindValue="Factor_Id"
+                        [(ngModel)]="planLevel2.ValueChain_Factor_Main_Id" placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label">ส่วนสนับสนุน (ถ้ามี)</label>
 
-                    <select class="form-select" [(ngModel)]="planLevel2.ValueChain_Support_Id"
-                        (change)="onChangeValueChainSupport()">
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-                        <option *ngFor="let item of listValueChain" [ngValue]="item.Value_Chain_Id">
-                            {{ item.Value_Chain_Name }}
-                        </option>
-
-                    </select>
+                    <ng-select  [items]="listValueChain" bindLabel="Value_Chain_Name" bindValue="Value_Chain_Id"
+                        [(ngModel)]="planLevel2.ValueChain_Support_Id" (ngModelChange)="onChangeValueChainSupport()"
+                        placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label">ปัจจัยสนับสนุน (ถ้ามี)</label>
 
-                    <select class="form-select" [(ngModel)]="planLevel2.ValueChain_Factor_Support_Id">
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-                        <option *ngFor="let item of listValueChainFactorSupport" [ngValue]="item.Factor_Id">
-                            {{ item.Factor_Name }}
-                        </option>
-                    </select>
+                    <ng-select  [items]="listValueChainFactorSupport" bindLabel="Factor_Name" bindValue="Factor_Id"
+                        [(ngModel)]="planLevel2.ValueChain_Factor_Support_Id" placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
+
             </div>
         </div>
     </div>
@@ -330,71 +295,47 @@
 
                 <div class="col-md-12">
                     <label class="form-label">หมุดหมายที่</label>
-                    <select class="form-select" [(ngModel)]="planLevel2.Landmark_Id" (change)="onChangeLandmark()">
 
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-
-                        <option *ngFor="let item of listLandmark" [ngValue]="item.Landmark_Id">
-                            {{ item.Landmark_Name }}
-                        </option>
-
-                    </select>
+                    <ng-select  [items]="listLandmark" bindLabel="Landmark_Name" bindValue="Landmark_Id"
+                        [(ngModel)]="planLevel2.Landmark_Id" (ngModelChange)="onChangeLandmark()"
+                        placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
                 <div class="col-md-12">
                     <label class="form-label">เป้าหมายที่</label>
-                    <select class="form-select" (change)="onChangeLandmarkGloals()"
-                        [(ngModel)]="planLevel2.Landmark_Gloals_Id">
 
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-
-                        <option *ngFor="let item of listLandmark_Gloals" [ngValue]="item.Landmark_Gloals_Id">
-                            {{ item.Landmark_Gloals_Name }}
-                        </option>
-
-                    </select>
-
+                    <ng-select  [items]="listLandmark_Gloals" bindLabel="Landmark_Gloals_Name"
+                        bindValue="Landmark_Gloals_Id" [(ngModel)]="planLevel2.Landmark_Gloals_Id"
+                        (ngModelChange)="onChangeLandmarkGloals()" placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
                 <div class="col-md-12">
                     <label class="form-label">ตัวชี้วัดที่</label>
-                    <select class="form-select" (change)="onChangeLandmarkTactic()"
-                        [(ngModel)]="planLevel2.Landmark_Tacticts_Id">
 
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-
-                        <option *ngFor="let item of listLandmark_Tactic" [ngValue]="item.Landmark_Tacticts_Id">
-                            {{ item.Landmark_Tacticts_Name }}
-                        </option>
-
-                    </select>
+                    <ng-select  [items]="listLandmark_Tactic" bindLabel="Landmark_Tacticts_Name"
+                        bindValue="Landmark_Tacticts_Id" [(ngModel)]="planLevel2.Landmark_Tacticts_Id"
+                        (ngModelChange)="onChangeLandmarkTactic()" placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
                 <div class="col-md-12">
                     <label class="form-label">กลยุทธ์การพัฒนาที่</label>
-                    <select class="form-select" [(ngModel)]="planLevel2.Landmark_Guidelines_Id"
-                        (change)="onChangeStrategyMain()">
 
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-
-                        <option *ngFor="let item of listMas_Landmark_Guideline" [ngValue]="item.Landmark_Guidelines_Id">
-                            {{ item.Landmark_Guidelines_Name }}
-                        </option>
-
-                    </select>
+                    <ng-select  [items]="listMas_Landmark_Guideline" bindLabel="Landmark_Guidelines_Name"
+                        bindValue="Landmark_Guidelines_Id" [(ngModel)]="planLevel2.Landmark_Guidelines_Id"
+                        (ngModelChange)="onChangeStrategyMain()" placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
                 <div class="col-md-12">
                     <label class="form-label">กลยุทธ์ย่อยที่</label>
-                    <select class="form-select" [(ngModel)]="planLevel2.Landmark_Sub_Guidelines_Id">
 
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-
-                        <option *ngFor="let item of listMas_Landmark_Sub_Guideline" [ngValue]="item.Sub_Guidelines_Id">
-                            {{ item.Sub_Guidelines_Name }}
-                        </option>
-
-                    </select>
+                    <ng-select  [items]="listMas_Landmark_Sub_Guideline" bindLabel="Sub_Guidelines_Name"
+                        bindValue="Sub_Guidelines_Id" [(ngModel)]="planLevel2.Landmark_Sub_Guidelines_Id"
+                        placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
             </div>
@@ -620,99 +561,75 @@
 
                 <div class="col-md-12">
                     <label class="form-label">ประเด็น</label>
-                    <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Master_Plan_Id"
-                        (change)="onChangeMasterPlan5(model.Project_Plan_Level3.Master_Plan_Id)">
 
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-
-                        <option *ngFor="let item of listMasterPlan5" [ngValue]="item.Master_Plan_Id">
-                            {{ item.Master_Plan_Name }}
-                        </option>
-
-                    </select>
+                    <ng-select  [items]="listMasterPlan5" bindLabel="Master_Plan_Name" bindValue="Master_Plan_Id"
+                        [(ngModel)]="model.Project_Plan_Level3.Master_Plan_Id"
+                        (ngModelChange)="onChangeMasterPlan5($event)" placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
                 <div class="col-md-12">
                     <label class="form-label">เป้าหมายระดับประเด็น (Y2)</label>
-                    <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Plan_Goals_Id"
-                        (change)="onChangeMasterPlanGoal5(model.Project_Plan_Level3.Plan_Goals_Id)">
 
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-
-                        <option *ngFor="let item of listMasterPlanGoal5" [ngValue]="item.Plan_Goals_Id">
-                            {{ item.Plan_Goals_Name }}
-                        </option>
-
-                    </select>
+                    <ng-select  [items]="listMasterPlanGoal5" bindLabel="Plan_Goals_Name" bindValue="Plan_Goals_Id"
+                        [(ngModel)]="model.Project_Plan_Level3.Plan_Goals_Id"
+                        (ngModelChange)="onChangeMasterPlanGoal5($event)" placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
+
                 <!-- เพิ่มใหม่ -->
                 <div class="col-md-12">
                     <label class="form-label">ตัวชี้วัดเป้าหมายระดับประเด็น</label>
-                    <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Plan_Tactics_Id">
 
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-
-                        <option *ngFor="let item of listMasterPlanTactic5" [ngValue]="item.Plan_Tactics_Id">
-                            {{ item.Plan_Tactics_Name }}
-                        </option>
-
-                    </select>
+                    <ng-select  [items]="listMasterPlanTactic5" bindLabel="Plan_Tactics_Name" bindValue="Plan_Tactics_Id"
+                        [(ngModel)]="model.Project_Plan_Level3.Plan_Tactics_Id" placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
                 <div class="col-md-12">
-                    <label class="form-label">ความสอดคล้องของโครงการกับเป้าหมายของแผนแม่บท (โปรดอธิบาย)</label>
+                    <label class="form-label">
+                        ความสอดคล้องของโครงการกับเป้าหมายของแผนแม่บท (โปรดอธิบาย)
+                    </label>
+
                     <textarea class="form-control" rows="3" [(ngModel)]="model.Project_Plan_Level3.Description"
                         name="l2_desc">
-                          </textarea>
+        </textarea>
                 </div>
 
                 <div class="col-md-12">
                     <label class="form-label">แผนย่อยของแผนแม่บทฯ</label>
-                    <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Sub_Master_Plan_Id"
-                        (change)="onChangeSubMasterPlan5(model.Project_Plan_Level3.Sub_Master_Plan_Id)">
 
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-
-                        <option *ngFor="let item of listSubMasterPlan5" [ngValue]="item.Sub_Master_Plan_Id">
-                            {{ item.Sub_Master_Plan_Name }}
-                        </option>
-
-                    </select>
-
+                    <ng-select  [items]="listSubMasterPlan5" bindLabel="Sub_Master_Plan_Name"
+                        bindValue="Sub_Master_Plan_Id" [(ngModel)]="model.Project_Plan_Level3.Sub_Master_Plan_Id"
+                        (ngModelChange)="onChangeSubMasterPlan5($event)" placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
                 <div class="col-md-12">
                     <label class="form-label">เป้าหมายแผนแม่บทย่อย (Y1)</label>
-                    <select (change)="onChangeTargetY15(model.Project_Plan_Level3.Sub_Plan_Goals_Id)"
-                        class="form-select" [(ngModel)]="model.Project_Plan_Level3.Sub_Plan_Goals_Id">
 
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-
-                        <option *ngFor="let item of listSubMasterPlanGoal5" [ngValue]="item.Sub_Plan_Goals_Id">
-                            {{ item.Sub_Plan_Goals_Name }}
-                        </option>
-
-                    </select>
+                    <ng-select  [items]="listSubMasterPlanGoal5" bindLabel="Sub_Plan_Goals_Name"
+                        bindValue="Sub_Plan_Goals_Id" [(ngModel)]="model.Project_Plan_Level3.Sub_Plan_Goals_Id"
+                        (ngModelChange)="onChangeTargetY15($event)" placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
                 <div class="col-md-12">
-                    <label class="form-label">ความสอดคล้องของโครงการกับเป้าหมายของแผนย่อย (โปรดอธิบาย)</label>
+                    <label class="form-label">
+                        ความสอดคล้องของโครงการกับเป้าหมายของแผนย่อย (โปรดอธิบาย)
+                    </label>
+
                     <textarea class="form-control" rows="3" [(ngModel)]="model.Project_Plan_Level3.SubplanDesc"
                         name="l2_subdesc">
-                          </textarea>
+        </textarea>
                 </div>
 
                 <div class="col-md-12">
                     <label class="form-label">แนวทางการพัฒนาภายใต้แผนย่อย</label>
-                    <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Guidelines_Id">
 
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-
-                        <option *ngFor="let item of listSubGuideline5" [ngValue]="item.Guidelines_Id">
-                            {{ item.Guidelines_Name }}
-                        </option>
-
-                    </select>
+                    <ng-select  [items]="listSubGuideline5" bindLabel="Guidelines_Name" bindValue="Guidelines_Id"
+                        [(ngModel)]="model.Project_Plan_Level3.Guidelines_Id" placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
             </div>
@@ -723,52 +640,42 @@
 
 
         <div class="border rounded p-3 mb-3 bg-light">
-            <div class="row g-3 ">
+            <div class="row g-3">
+
                 <div class="col-md-6">
                     <label class="form-label">หลัก</label>
-                    <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.ValueChain_Main_Id"
-                        (change)="onChangeValueChainMain5()">
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-                        <option *ngFor="let item of listValueChain5" [ngValue]="item.Value_Chain_Id">
-                            {{ item.Value_Chain_Name }}
-                        </option>
 
-                    </select>
+                    <ng-select  [items]="listValueChain5" bindLabel="Value_Chain_Name" bindValue="Value_Chain_Id"
+                        [(ngModel)]="model.Project_Plan_Level3.ValueChain_Main_Id"
+                        (ngModelChange)="onChangeValueChainMain5()" placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label">ปัจจัยหลัก</label>
-                    <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.ValueChain_Factor_Main_Id">
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-                        <option *ngFor="let item of listValueChainFactorMain5" [ngValue]="item.Factor_Id">
-                            {{ item.Factor_Name }}
-                        </option>
-                    </select>
+
+                    <ng-select  [items]="listValueChainFactorMain5" bindLabel="Factor_Name" bindValue="Factor_Id"
+                        [(ngModel)]="model.Project_Plan_Level3.ValueChain_Factor_Main_Id" placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label">ส่วนสนับสนุน (ถ้ามี)</label>
 
-                    <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.ValueChain_Support_Id"
-                        (change)="onChangeValueChainSupport5()">
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-                        <option *ngFor="let item of listValueChain5" [ngValue]="item.Value_Chain_Id">
-                            {{ item.Value_Chain_Name }}
-                        </option>
-
-                    </select>
+                    <ng-select  [items]="listValueChain5" bindLabel="Value_Chain_Name" bindValue="Value_Chain_Id"
+                        [(ngModel)]="model.Project_Plan_Level3.ValueChain_Support_Id"
+                        (ngModelChange)="onChangeValueChainSupport5()" placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label">ปัจจัยสนับสนุน (ถ้ามี)</label>
 
-                    <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.ValueChain_Factor_Support_Id">
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-                        <option *ngFor="let item of listValueChainFactorSupport5" [ngValue]="item.Factor_Id">
-                            {{ item.Factor_Name }}
-                        </option>
-                    </select>
+                    <ng-select  [items]="listValueChainFactorSupport5" bindLabel="Factor_Name" bindValue="Factor_Id"
+                        [(ngModel)]="model.Project_Plan_Level3.ValueChain_Factor_Support_Id" placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
+
             </div>
         </div>
     </div>
@@ -787,59 +694,40 @@
                 <!-- แผนงาน -->
                 <div class="col-md-12">
                     <label class="form-label">แผนงานที่</label>
-                    <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Project_Plan_Id_5"
-                        (change)="onChangeProjectPlan5()">
 
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-
-                        <option *ngFor="let item of listProjectPlan5" [ngValue]="item.Project_Plan_Id">
-                            {{ item.Project_Plan_Name }}
-                        </option>
-
-                    </select>
+                    <ng-select  [items]="listProjectPlan5" bindLabel="Project_Plan_Name" bindValue="Project_Plan_Id"
+                        [(ngModel)]="model.Project_Plan_Level3.Project_Plan_Id_5"
+                        (ngModelChange)="onChangeProjectPlan5()" placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
                 <!-- เป้าหมาย -->
                 <div class="col-md-12">
                     <label class="form-label">เป้าหมายที่</label>
-                    <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Project_Plan_Goals_Id_5"
-                        (change)="onChangeGoal5()">
 
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-
-                        <option *ngFor="let item of listProjectPlanGoal5" [ngValue]="item.Project_Plan_Goals_Id">
-                            {{ item.Project_Plan_Name }}
-                        </option>
-
-                    </select>
+                    <ng-select  [items]="listProjectPlanGoal5" bindLabel="Project_Plan_Name"
+                        bindValue="Project_Plan_Goals_Id"
+                        [(ngModel)]="model.Project_Plan_Level3.Project_Plan_Goals_Id_5"
+                        (ngModelChange)="onChangeGoal5()" placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
                 <!-- ตัวชี้วัด -->
                 <div class="col-md-12">
                     <label class="form-label">ตัวชี้วัดที่</label>
-                    <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Indicators_Id_5">
 
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-
-                        <option *ngFor="let item of listIndicator5" [ngValue]="item.Indicators_Id">
-                            {{ item.Indicators_Name }}
-                        </option>
-
-                    </select>
+                    <ng-select  [items]="listIndicator5" bindLabel="Indicators_Name" bindValue="Indicators_Id"
+                        [(ngModel)]="model.Project_Plan_Level3.Indicators_Id_5" placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
                 <!-- แนวทาง -->
                 <div class="col-md-12">
                     <label class="form-label">แนวทางการพัฒนาที่</label>
-                    <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Goals_Guidelines_Id_5">
 
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-
-                        <option *ngFor="let item of listGuideline5" [ngValue]="item.Goals_Guidelines_Id">
-                            {{ item.Project_Plan_Name }}
-                        </option>
-
-                    </select>
+                    <ng-select  [items]="listGuideline5" bindLabel="Project_Plan_Name" bindValue="Goals_Guidelines_Id"
+                        [(ngModel)]="model.Project_Plan_Level3.Goals_Guidelines_Id_5" placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
             </div>
@@ -856,50 +744,41 @@
         </div>
         <div class="border rounded p-3 mb-3 bg-light">
             <div class="row g-3">
+
                 <div class="col-md-12">
                     <label class="form-label">แผนงานที่</label>
-                    <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Project_Plan_Id"
-                        (change)="onChangenTactic()">
 
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-
-                        <option *ngFor="let item of listProjectPlan" [ngValue]="item.Project_Plan_Id">
-                            {{ item.Project_Plan_Name }}
-                        </option>
-
-                    </select>
+                    <ng-select  [items]="listProjectPlan" bindLabel="Project_Plan_Name" bindValue="Project_Plan_Id"
+                        [(ngModel)]="model.Project_Plan_Level3.Project_Plan_Id" (ngModelChange)="onChangenTactic()"
+                        placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
+
                 <div class="col-md-12">
                     <label class="form-label">เป้าหมายที่</label>
-                    <select (change)="onChangenMeasure()" class="form-select"
-                        [(ngModel)]="model.Project_Plan_Level3.Project_Plan_Goals_Id" name="ppat_strategy">
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
 
-                        <option *ngFor="let item of listMasProjectPlanGoal" [ngValue]="item.Project_Plan_Goals_Id">
-                            {{ item.Project_Plan_Name }}
-                        </option>
-                    </select>
+                    <ng-select  [items]="listMasProjectPlanGoal" bindLabel="Project_Plan_Name"
+                        bindValue="Project_Plan_Goals_Id" [(ngModel)]="model.Project_Plan_Level3.Project_Plan_Goals_Id"
+                        (ngModelChange)="onChangenMeasure()" name="ppat_strategy" placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
+
                 <div class="col-md-12">
                     <label class="form-label">ตัวชี้วัดที่</label>
-                    <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Indicators_Id"
-                        name="ppat_strategy">
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
 
-                        <option *ngFor="let item of listMasIndicator" [ngValue]="item.Indicators_Id">
-                            {{ item.Indicators_Name }}
-                        </option>
-                    </select>
+                    <ng-select  [items]="listMasIndicator" bindLabel="Indicators_Name" bindValue="Indicators_Id"
+                        [(ngModel)]="model.Project_Plan_Level3.Indicators_Id" name="ppat_strategy"
+                        placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
+
                 <div class="col-md-12">
                     <label class="form-label">แนวทางการพัฒนาที่</label>
-                    <select class="form-select" [(ngModel)]="model.Project_Plan_Level3.Measure_Id" name="ppat_strategy">
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
 
-                        <option *ngFor="let item of listMasMeasure" [ngValue]="item.Measure_Id">
-                            {{ item.Measure_Name }}
-                        </option>
-                    </select>
+                    <ng-select  [items]="listMasMeasure" bindLabel="Measure_Name" bindValue="Measure_Id"
+                        [(ngModel)]="model.Project_Plan_Level3.Measure_Id" name="ppat_strategy"
+                        placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
             </div>
@@ -943,31 +822,25 @@
         </div>
 
         <div class="border rounded p-3 mb-3 bg-light">
-            <div class="row g-3 ">
+            <div class="row g-3">
 
                 <div class="col-md-12">
                     <label class="form-label">เป้าหมายหลัก SDGs</label>
 
-                    <select class="form-select" [(ngModel)]="planLevel2.SDGs_Gloals_Id" (change)="onChangeSDGsGoal()">
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-                        <option *ngFor="let item of listSDGsGoal" [ngValue]="item.SDGs_Gloals_Id">
-                            {{ item.SDGs_Gloals_Name }}
-                        </option>
-
-                    </select>
+                    <ng-select  [items]="listSDGsGoal" bindLabel="SDGs_Gloals_Name" bindValue="SDGs_Gloals_Id"
+                        [(ngModel)]="planLevel2.SDGs_Gloals_Id" (ngModelChange)="onChangeSDGsGoal()"
+                        placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
 
                 <div class="col-md-12">
                     <label class="form-label">เป้าหมายย่อย SDGs</label>
 
-                    <select class="form-select" [(ngModel)]="planLevel2.SDGs_Targets_Id">
-
-                        <option [ngValue]="null" disabled>-- เลือก --</option>
-                        <option *ngFor="let item of listSDGsTarget" [ngValue]="item.SDGs_Targets_Id">
-                            {{ item.SDGs_Targets_Name }}
-                        </option>
-                    </select>
+                    <ng-select  [items]="listSDGsTarget" bindLabel="SDGs_Targets_Name" bindValue="SDGs_Targets_Id"
+                        [(ngModel)]="planLevel2.SDGs_Targets_Id" placeholder="-- เลือก --">
+                    </ng-select>
                 </div>
+
             </div>
 
         </div>

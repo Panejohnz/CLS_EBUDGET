@@ -31,33 +31,56 @@ export class ExpenseRentHouseComponent {
   totalAmount: number = 0
 
   file: any = null
+  ngOnInit() {
 
+    if (!this.model.Budget_Request_Detail_Item) {
+
+      this.model.Budget_Request_Detail_Item = [
+        {
+          department: null,
+          qty: 0,
+          amount: 0
+        }
+      ];
+
+    }
+
+    this.calculateTotal();
+
+  }
   addRow() {
 
-    this.rentList.push({
-      department: '',
+    this.model.Budget_Request_Detail_Item.push({
+      department: null,
       qty: 0,
       amount: 0
-    })
+    });
 
   }
 
   removeRow(i: number) {
 
-    this.rentList.splice(i, 1)
-    this.calculateTotal()
+    this.model.Budget_Request_Detail_Item.splice(i, 1);
+
+    this.calculateTotal();
 
   }
 
   calculateTotal() {
 
-    this.totalQty = this.rentList.reduce((sum: any, row: any) => {
-      return sum + (Number(row.qty) || 0)
-    }, 0)
+    this.totalQty =
+      this.model.Budget_Request_Detail_Item.reduce(
+        (sum: number, row: any) =>
+          sum + (Number(row.qty) || 0),
+        0
+      );
 
-    this.totalAmount = this.rentList.reduce((sum: any, row: any) => {
-      return sum + (Number(row.amount) || 0)
-    }, 0)
+    this.totalAmount =
+      this.model.Budget_Request_Detail_Item.reduce(
+        (sum: number, row: any) =>
+          sum + (Number(row.amount) || 0),
+        0
+      );
 
   }
 

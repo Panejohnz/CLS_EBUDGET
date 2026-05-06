@@ -15,59 +15,43 @@ export class ExpenseListSalaryComponent {
   }
 
 
-  totalQty: number = 0
-  totalAmount: number = 0
+  totalQty: number = 0;
+  totalAmount: number = 0;
 
   ngOnInit() {
-    this.calculateTotal()
+    this.calculateAll();
   }
-
 
   onFileChange(event: any) {
 
-    const file = event.target.files[0]
+    const file = event.target.files[0];
 
-    console.log(file)
-
-  }
-
-  salary: any = {
-
-    oldQty: 0,
-    oldMonth: 0,
-    oldYear: 0,
-
-    newQty: 0,
-    newMonth: 0,
-    newYear: 0
+    console.log(file);
 
   }
 
-  calculateYear() {
+  calculateAll() {
 
-    this.salary.oldYear =
-      (Number(this.salary.oldQty) || 0) *
-      (Number(this.salary.oldMonth) || 0) *
-      12
+    const oldQty = Number(this.model.oldQty) || 0;
+    const newQty = Number(this.model.newQty) || 0;
 
-    this.salary.newYear =
-      (Number(this.salary.newQty) || 0) *
-      (Number(this.salary.newMonth) || 0) *
-      12
+    const oldMonth = Number(this.model.oldMonth) || 0;
+    const newMonth = Number(this.model.newMonth) || 0;
 
-    this.calculateTotal()
+    // expense type 5 = คำนวณรายเดือน x 12
+    if (this.model.selectedExpenseTypeId == 5) {
 
-  }
+      this.model.oldYear = oldQty * oldMonth * 12;
+      this.model.newYear = newQty * newMonth * 12;
 
-  calculateTotal() {
+    }
 
-    this.totalQty =
-      (Number(this.salary.oldQty) || 0) +
-      (Number(this.salary.newQty) || 0);
+    const oldYear = Number(this.model.oldYear) || 0;
+    const newYear = Number(this.model.newYear) || 0;
 
-    this.totalAmount =
-      (Number(this.salary.oldYear) || 0) +
-      (Number(this.salary.newYear) || 0);
+    this.totalQty = oldQty + newQty;
+
+    this.totalAmount = oldYear + newYear;
 
   }
 }

@@ -12,11 +12,18 @@
                     <!-- หน่วยงาน -->
                     <div style="width:300px;" class="me-3">
                         <label class="form-label">หน่วยงาน</label>
-                        <select class="form-select">
-                            <option value="" disabled selected>-- เลือกหน่วยงาน --</option>
-                            <option *ngFor="let item of department">
-                                {{ item.name }}
+                        <select class="form-select" [(ngModel)]="selectedDepartmentId" (change)="applyFilter()">
+
+                            <option [ngValue]="null">
+                                -- เลือกหน่วยงาน --
                             </option>
+
+                            <option *ngFor="let item of department" [ngValue]="item.Department_Id">
+
+                                {{ item.Department_Name }}
+
+                            </option>
+
                         </select>
                     </div>
 
@@ -26,7 +33,7 @@
                         <div style="width:300px;">
                             <label class="form-label">ค้นหา</label>
                             <input type="text" class="form-control" placeholder="ค้นหาโครงการ..."
-                                [(ngModel)]="service.searchTerm" (input)="filterSearch()">
+                                [(ngModel)]="service.searchTerm" (input)="applyFilter()">
                         </div>
 
                         <button class="btn btn-success text-black" (click)="fullModal(fullDataModal,emptyplan)">
@@ -63,25 +70,25 @@
 
 
                                 <td class="text-center">{{$index + 1}}</td>
-                                <td class="text-center">{{data.department}}</td>
+                                <td class="text-center">{{data.Department_Name}}</td>
 
                                 <td>
-                                    {{data.plan }}
+                                    {{data.Plan_Name }}
                                 </td>
 
                                 <td>
-                                    {{data.output}}
+                                    {{data.Product_Name}}
                                 </td>
 
                                 <td>
-                                    {{data.activity}}
+                                    {{data.Activity_Name}}
                                 </td>
 
-                                <td>{{data.budgetType}}</td>
-                                <td>{{data.project}}</td>
+                                <td>{{data.Budget_Type}}</td>
+                                <td>{{data.Project_Name}}</td>
 
                                 <td class=" text-end">
-                                    {{data.budget | number:'1.2-2'}}
+                                    {{data.Total | number:'1.2-2'}}
                                 </td>
 
                                 <td class="text-center">
@@ -91,7 +98,7 @@
                         data.Status_Number == 8 ? 'bg-success' :
                         'bg-secondary'
                     ">
-                                        {{ data.status_name }}
+                                        {{ data.Status_Name }}
                                     </span>
                                 </td>
 
@@ -134,9 +141,8 @@
         </div>
     </div>
     <ng-template #fullDataModal let-modal>
-        <app-project-budget-proposal-add [model]="modal" [project_budget]="project_budget">
+        <app-project-budget-proposal-add [model]="model" [modalRef]="modalRef" [project_budget]="project_budget">
         </app-project-budget-proposal-add>
-
     </ng-template>
 
 </div>

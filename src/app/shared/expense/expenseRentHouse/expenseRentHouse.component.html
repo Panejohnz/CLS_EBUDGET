@@ -44,11 +44,13 @@
 
                             <select class="form-select" [(ngModel)]="item.department">
 
-                                <option value="">-- เลือกหน่วยงาน --</option>
+                                <option [ngValue]="null">
+                                    -- เลือกหน่วยงาน --
+                                </option>
 
-                                <option *ngFor="let d of departments" [value]="d.id">
+                                <option *ngFor="let item of model.Budget_Request_Detail_Item" [ngValue]="item">
 
-                                    {{d.name}}
+                                    {{item.name}}
 
                                 </option>
 

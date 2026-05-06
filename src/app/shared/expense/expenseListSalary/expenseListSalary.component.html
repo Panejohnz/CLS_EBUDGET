@@ -12,7 +12,7 @@
                         จำนวนคน
                     </th>
 
-                    <th *ngIf="expenseItem?.Expense_Id == 5" style="width:200px">
+                    <th *ngIf="model.selectedExpenseTypeId == 5" style="width:200px">
                         ต่อ/เดือน
                     </th>
 
@@ -32,20 +32,20 @@
                     </td>
 
                     <td>
-                        <input type="number" class="form-control text-center" [(ngModel)]="salary.oldQty"
-                            (ngModelChange)="calculateTotal()">
+                        <input type="number" class="form-control text-center" [(ngModel)]="model.oldQty"
+                            (ngModelChange)="calculateAll()">
                     </td>
 
-                    <td *ngIf="expenseItem?.Expense_Id == 5">
+                    <td *ngIf="model.selectedExpenseTypeId == 5">
 
-                        <input type="number" class="form-control text-end" [(ngModel)]="salary.oldMonth"
-                            (ngModelChange)="calculateYear()">
+                        <input type="number" class="form-control text-end" [(ngModel)]="model.oldMonth"
+                            (ngModelChange)="calculateAll()">
 
                     </td>
 
                     <td>
-                        <input type="number" class="form-control text-end" [(ngModel)]="salary.oldYear"
-                            [readonly]="expenseItem?.Expense_Id == 5">
+                        <input type="number" class="form-control text-end" [(ngModel)]="model.oldYear"
+                            [readonly]="model.selectedExpenseTypeId == 5">
                     </td>
 
                 </tr>
@@ -58,20 +58,20 @@
                     </td>
 
                     <td>
-                        <input type="number" class="form-control text-center" [(ngModel)]="salary.newQty"
-                            (ngModelChange)="calculateTotal()">
+                        <input type="number" class="form-control text-center" [(ngModel)]="model.newQty"
+                            (ngModelChange)="calculateAll()">
                     </td>
 
-                    <td *ngIf="expenseItem?.Expense_Id == 5">
+                    <td *ngIf="model.selectedExpenseTypeId == 5">
 
-                        <input type="number" class="form-control text-end" [(ngModel)]="salary.newMonth"
-                            (ngModelChange)="calculateYear()">
+                        <input type="number" class="form-control text-end" [(ngModel)]="model.newMonth"
+                            (ngModelChange)="calculateAll()">
 
                     </td>
 
                     <td>
-                        <input type="number" class="form-control text-end" [(ngModel)]="salary.newYear"
-                            [readonly]="expenseItem?.Expense_Id == 5">
+                        <input type="number" class="form-control text-end" [(ngModel)]="model.newYear"
+                            [readonly]="model.selectedExpenseTypeId == 5">
                     </td>
 
                 </tr>
@@ -88,7 +88,7 @@
                         {{ totalQty }}
                     </td>
 
-                    <td *ngIf="expenseItem?.Expense_Id == 5"></td>
+                    <td *ngIf="model.selectedExpenseTypeId == 5"></td>
 
                     <td class="text-end">
                         {{ totalAmount | number:'1.2-2' }}
@@ -118,15 +118,3 @@
     </div>
 
 </div>
-
-<!-- <div class="card-footer d-flex justify-content-end gap-2">
-
-    <button class="btn btn-light">
-        💾 บันทึก
-    </button>
-
-    <button class="btn btn-light" (click)="closeModal()">
-        ✖ ปิดหน้าต่าง
-    </button>
-
-</div> -->
