@@ -26,7 +26,7 @@ export class SessionService {
    * เก็บข้อมูล session ทั้งหมด
    */
   storeUserSession(session: UserSession): void {
-    localStorage.setItem('userSession', JSON.stringify(session));
+    localStorage.setItem(this.SESSION_KEY, JSON.stringify(session));
   }
 
   /**
