@@ -2,35 +2,49 @@
 
   <div class="card shadow-sm border-0">
 
-    <!-- <div class="card-header bg-light  fw-semibold">
+    <div class="card-header bg-light fw-semibold">
       แบบฟอร์มค่าเช่าทรัพย์สิน
-    </div> -->
+    </div>
 
     <div class="card-body p-0">
 
       <div class="table-responsive">
 
-        <table class="table table-bordered align-middle text-center">
+        <table class="table table-bordered align-middle text-center mb-0">
 
           <thead class="table-secondary">
 
             <tr>
 
-              <th>รายการทรัพย์สิน</th>
+              <th style="width:20%">
+                รายการทรัพย์สิน
+              </th>
 
-              <th>ขนาดพื้นที่ (ตรม.)</th>
+              <th style="width:12%">
+                ขนาดพื้นที่ (ตรม.)
+              </th>
 
-              <th>ค่าเช่า/ตรม. (บาท)</th>
+              <th style="width:12%">
+                ค่าเช่า/ตรม.
+              </th>
 
-              <th>ค่าเช่า/เดือน</th>
+              <th style="width:12%">
+                ค่าเช่า/เดือน
+              </th>
 
-              <th>ค่าเช่า/ปี</th>
+              <th style="width:12%">
+                ค่าเช่า/ปี
+              </th>
 
-              <th>วัตถุประสงค์</th>
+              <th style="width:20%">
+                วัตถุประสงค์
+              </th>
 
-              <th>แนบเอกสาร</th>
+              <th style="width:10%">
+                เอกสาร
+              </th>
 
-              <th></th>
+              <th style="width:5%"></th>
 
             </tr>
 
@@ -40,13 +54,15 @@
 
             <tr *ngFor="let item of rentList; let i=index">
 
+              <!-- asset -->
               <td>
 
-                <input class="form-control" [(ngModel)]="item.asset">
+                <input class="form-control" [(ngModel)]="item.asset" (ngModelChange)="updateDetailItems()"
+                  placeholder="ระบุรายการทรัพย์สิน">
 
               </td>
 
-
+              <!-- area -->
               <td>
 
                 <input type="number" class="form-control text-end" [(ngModel)]="item.area"
@@ -54,7 +70,7 @@
 
               </td>
 
-
+              <!-- rate -->
               <td>
 
                 <input type="number" class="form-control text-end" [(ngModel)]="item.pricePerSqm"
@@ -62,7 +78,7 @@
 
               </td>
 
-
+              <!-- month -->
               <td>
 
                 <input type="number" class="form-control text-end" [(ngModel)]="item.monthlyRent"
@@ -70,33 +86,37 @@
 
               </td>
 
-
+              <!-- year -->
               <td>
 
                 <input type="number" class="form-control text-end" [(ngModel)]="item.yearlyRent"
-                  (ngModelChange)="calculateGrand()">
+                  (ngModelChange)="calculateGrand(); updateDetailItems()">
 
               </td>
 
-
+              <!-- purpose -->
               <td>
 
-                <input class="form-control" [(ngModel)]="item.purpose">
+                <textarea class="form-control" rows="2" [(ngModel)]="item.purpose" (ngModelChange)="updateDetailItems()"
+                  placeholder="ระบุวัตถุประสงค์">
+                                </textarea>
 
               </td>
 
-
+              <!-- file -->
               <td>
 
-                <input type="file" class="form-control form-control-sm">
+                <input type="file" class="form-control form-control-sm" (change)="onFileChange($event,item)">
 
               </td>
 
-
+              <!-- delete -->
               <td>
 
                 <button class="btn btn-sm btn-outline-danger" (click)="removeRow(i)">
+
                   🗑
+
                 </button>
 
               </td>
@@ -104,7 +124,6 @@
             </tr>
 
           </tbody>
-
 
           <tfoot class="table-secondary fw-semibold">
 
@@ -114,20 +133,44 @@
                 รวม
               </td>
 
+              <!-- total area -->
               <td class="text-end">
-                {{totalArea | number:'1.2-2'}}
+
+                {{
+                totalArea
+                | number:'1.2-2'
+                }}
+
               </td>
 
+              <!-- total rate -->
               <td class="text-end">
-                {{totalRate | number:'1.2-2'}}
+
+                {{
+                totalRate
+                | number:'1.2-2'
+                }}
+
               </td>
 
+              <!-- total month -->
               <td class="text-end">
-                {{totalMonth | number:'1.2-2'}}
+
+                {{
+                totalMonth
+                | number:'1.2-2'
+                }}
+
               </td>
 
-              <td class="text-end">
-                {{totalYear | number:'1.2-2'}}
+              <!-- total year -->
+              <td class="text-end text-primary">
+
+                {{
+                totalYear
+                | number:'1.2-2'
+                }}
+
               </td>
 
               <td colspan="3"></td>
@@ -144,24 +187,20 @@
 
   </div>
 
-
+  <!-- footer -->
   <div class="d-flex justify-content-between mt-3">
 
     <button class="btn btn-outline-primary btn-sm" (click)="addRow()">
+
       + เพิ่มรายการ
+
     </button>
 
-    <!-- <div>
+    <span class="text-danger">
 
-      <button class="btn btn-primary me-2">
-        บันทึก
-      </button>
+      จำนวน {{rentList.length}} รายการ
 
-      <button class="btn btn-light">
-        ✖ ปิดหน้าต่าง
-      </button>
-
-    </div> -->
+    </span>
 
   </div>
 

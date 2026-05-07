@@ -8,6 +8,7 @@ import { GlobalComponent } from "../../global-component";
 import { Store } from '@ngrx/store';
 import { RegisterSuccess, loginFailure, loginSuccess, logout, logoutSuccess } from '../../store/Authentication/authentication.actions';
 import { environment } from '../../../environments/environment';
+import { locale } from 'moment';
 
 const AUTH_API = GlobalComponent.AUTH_API;
 
@@ -30,7 +31,7 @@ export class AuthenticationService {
     // public currentUser: Observable<User>;
 
     constructor(private http: HttpClient, private store: Store) {
-        this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(sessionStorage.getItem('currentUser')!));
+        this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')!));
         // this.currentUser = this.currentUserSubject.asObservable();
      }
 
@@ -103,9 +104,9 @@ export class AuthenticationService {
         this.store.dispatch(logout());
         // logout the user
         // return getFirebaseBackend()!.logout();
-        sessionStorage.removeItem('selectedPermission');
-        sessionStorage.removeItem('userToken');
-        sessionStorage.removeItem('authen');
+        localStorage.removeItem('selectedPermission');
+        localStorage.removeItem('userToken');
+        localStorage.removeItem('authen');
         this.currentUserSubject.next(null!);
 
         return of(undefined).pipe(
@@ -177,13 +178,13 @@ export class AuthenticationService {
    * Store selected permission in session storage
    */
   storeSelectedPermission(permission: any, token: string, authen: any): void {
-    sessionStorage.setItem('selectedPermission', JSON.stringify(permission));
-    sessionStorage.setItem('userToken', token);
-    sessionStorage.setItem('authen', JSON.stringify(authen));
+    localStorage.setItem('selectedPermission', JSON.stringify(permission));
+    localStorage.setItem('userToken', token);
+    localStorage.setItem('authen', JSON.stringify(authen));
   }
 
   getAuthen(): any {
-    const authen = sessionStorage.getItem('authen');
+    const authen = localStorage.getItem('authen');
     return authen ? JSON.parse(authen) : null;
   }
 
@@ -191,7 +192,7 @@ export class AuthenticationService {
    * Get stored permission from session storage
    */
   getStoredPermission(): any {
-    const permission = sessionStorage.getItem('selectedPermission');
+    const permission = localStorage.getItem('selectedPermission');
     return permission ? JSON.parse(permission) : null;
   }
 
@@ -199,15 +200,15 @@ export class AuthenticationService {
    * Get stored token from session storage
    */
   getStoredToken(): string | null {
-    return sessionStorage.getItem('userToken');
+    return localStorage.getItem('userToken');
   }
 
   /**
    * Clear stored authentication data
    */
   clearStoredAuth(): void {
-    sessionStorage.removeItem('selectedPermission');
-    sessionStorage.removeItem('userToken');
+    localStorage.removeItem('selectedPermission');
+    localStorage.removeItem('userToken');
   }
 
 }

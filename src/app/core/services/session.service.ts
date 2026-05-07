@@ -26,14 +26,14 @@ export class SessionService {
    * เก็บข้อมูล session ทั้งหมด
    */
   storeUserSession(session: UserSession): void {
-    sessionStorage.setItem(this.SESSION_KEY, JSON.stringify(session));
+    localStorage.setItem('userSession', JSON.stringify(session));
   }
 
   /**
    * ดึงข้อมูล session ทั้งหมด
    */
   getUserSession(): UserSession | null {
-    const sessionData = sessionStorage.getItem(this.SESSION_KEY);
+    const sessionData = localStorage.getItem('');
     if (sessionData) {
       const session = JSON.parse(sessionData);
       session.lastUpdated = new Date(session.lastUpdated);
@@ -46,14 +46,14 @@ export class SessionService {
    * เก็บข้อมูล menu ใน session
    */
   storeMenuData(menuData: MenuItem[]): void {
-    sessionStorage.setItem(this.MENU_KEY, JSON.stringify(menuData));
+    localStorage.setItem(this.MENU_KEY, JSON.stringify(menuData));
   }
 
   /**
    * ดึงข้อมูล menu จาก session
    */
   getMenuData(): MenuItem[] {
-    const menuData = sessionStorage.getItem(this.MENU_KEY);
+    const menuData = localStorage.getItem(this.MENU_KEY);
     return menuData ? JSON.parse(menuData) : [];
   }
 
@@ -61,14 +61,14 @@ export class SessionService {
    * เก็บข้อมูล permission ใน session
    */
   storePermissionData(permissionData: any): void {
-    sessionStorage.setItem(this.PERMISSION_KEY, JSON.stringify(permissionData));
+    localStorage.setItem(this.PERMISSION_KEY, JSON.stringify(permissionData));
   }
 
   /**
    * ดึงข้อมูล permission จาก session
    */
   getPermissionData(): any {
-    const permissionData = sessionStorage.getItem(this.PERMISSION_KEY);
+    const permissionData = localStorage.getItem(this.PERMISSION_KEY);
     return permissionData ? JSON.parse(permissionData) : null;
   }
 
@@ -76,14 +76,14 @@ export class SessionService {
    * เก็บ token ใน session
    */
   storeToken(token: string): void {
-    sessionStorage.setItem(this.TOKEN_KEY, token);
+    localStorage.setItem(this.TOKEN_KEY, token);
   }
 
   /**
    * ดึง token จาก session
    */
   getToken(): string | null {
-    return sessionStorage.getItem(this.TOKEN_KEY);
+    return localStorage.getItem(this.TOKEN_KEY);
   }
 
   /**
@@ -116,10 +116,10 @@ export class SessionService {
    * ลบ session ทั้งหมด
    */
   clearSession(): void {
-    sessionStorage.removeItem(this.SESSION_KEY);
-    sessionStorage.removeItem(this.MENU_KEY);
-    sessionStorage.removeItem(this.PERMISSION_KEY);
-    sessionStorage.removeItem(this.TOKEN_KEY);
+    localStorage.removeItem('userSession');
+    localStorage.removeItem(this.MENU_KEY);
+    localStorage.removeItem(this.PERMISSION_KEY);
+    localStorage.removeItem(this.TOKEN_KEY);
   }
 
   /**
