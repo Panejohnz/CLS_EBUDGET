@@ -1,99 +1,182 @@
 <div class="card bg-light border">
 
+    <div class="card-header bg-light fw-bold">
+
+        แบบฟอร์มค่าใช้จ่ายอื่นๆ
+
+    </div>
 
     <div class="card-body p-2">
 
         <div class="table-responsive">
-            <table class="table table-bordered align-middle text-center">
 
+            <table class="table table-bordered align-middle text-center mb-0">
+
+                <!-- header -->
                 <thead class="table-secondary">
+
                     <tr>
-                        <th width="5%">ลำดับ</th>
-                        <th style="width:25%">ระบุชื่อรายการเช่า</th>
-                        <th style="width:10%">จำนวนรายการ</th>
-                        <th style="width:15%">จำนวนเงิน (บาท)</th>
-                        <th style="width:10%">จำนวนเดือน</th>
-                        <th style="width:15%">รวมรายปี</th>
-                        <th style="width:20%">แนบเอกสาร</th>
+
+                        <th width="5%">
+                            ลำดับ
+                        </th>
+
+                        <th style="width:25%">
+                            ระบุชื่อรายการ
+                        </th>
+
+                        <th style="width:10%">
+                            จำนวนรายการ
+                        </th>
+
+                        <th style="width:15%">
+                            จำนวนเงิน (บาท)
+                        </th>
+
+                        <th style="width:10%">
+                            จำนวนเดือน
+                        </th>
+
+                        <th style="width:15%">
+                            รวมรายปี
+                        </th>
+
+                        <th style="width:20%">
+                            แนบเอกสาร
+                        </th>
+
                         <th style="width:5%"></th>
+
                     </tr>
+
                 </thead>
 
+                <!-- body -->
                 <tbody>
 
-                    <tr *ngFor="let item of rentItems; let i = index">
-                        <td>{{i+1}}</td>
+                    <tr *ngFor="let item of rentItems; let i=index">
+
+                        <!-- no -->
                         <td>
-                            <input class="form-control form-control-sm" [(ngModel)]="item.name">
+
+                            {{ i + 1 }}
+
                         </td>
 
+                        <!-- name -->
                         <td>
+
+                            <input class="form-control form-control-sm" [(ngModel)]="item.name"
+                                (ngModelChange)="updateDetailItems()" placeholder="ระบุชื่อรายการ">
+
+                        </td>
+
+                        <!-- qty -->
+                        <td>
+
                             <input type="number" class="form-control form-control-sm text-center" [(ngModel)]="item.qty"
-                                (input)="calculate(item)">
+                                (ngModelChange)="calculate(item)">
+
                         </td>
 
+                        <!-- price -->
                         <td>
+
                             <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.price"
-                                (input)="calculate(item)">
+                                (ngModelChange)="calculate(item)">
+
                         </td>
 
+                        <!-- month -->
                         <td>
+
                             <input type="number" class="form-control form-control-sm text-center"
-                                [(ngModel)]="item.months" (input)="calculate(item)">
+                                [(ngModel)]="item.months" (ngModelChange)="calculate(item)">
+
                         </td>
 
+                        <!-- total -->
                         <td>
-                            <input class="form-control form-control-sm text-end" [value]="item.total | number:'1.2-2'"
-                                readonly>
+
+                            <input class="form-control form-control-sm text-end fw-bold text-primary"
+                                [value]="item.total | number:'1.2-2'" readonly>
+
                         </td>
 
+                        <!-- file -->
                         <td>
-                            <input type="file" class="form-control form-control-sm">
+
+                            <input type="file" class="form-control form-control-sm"
+                                (change)="onFileSelected($event,item)">
+
                         </td>
 
+                        <!-- delete -->
                         <td>
+
                             <button class="btn btn-danger btn-sm" (click)="removeItem(i)">
+
                                 <i class="bx bx-trash"></i>
+
                             </button>
+
                         </td>
 
                     </tr>
 
                 </tbody>
+
+                <!-- footer -->
                 <tfoot>
+
                     <tr class="table-light fw-bold">
-                        <td colspan="5" class="text-end">รวม</td>
-                        <td>{{ grandTotal | number:'1.2-2' }}</td>
+
+                        <td colspan="5" class="text-end">
+
+                            รวม
+
+                        </td>
+
+                        <td class="text-end text-primary">
+
+                            {{
+                            grandTotal
+                            | number:'1.2-2'
+                            }}
+
+                        </td>
+
                         <td colspan="2"></td>
+
                     </tr>
+
                 </tfoot>
 
             </table>
+
         </div>
 
-        <div class="d-flex justify-content-between mt-3">
+        <!-- footer action -->
+        <div class="d-flex justify-content-between align-items-center mt-3">
 
             <div>
+
                 <button class="btn btn-secondary btn-sm" (click)="addItem()">
+
                     เพิ่มรายการ
+
                 </button>
 
                 <span class="ms-3 text-danger small">
-                    จำนวน {{rentItems.length}} รายการ
+
+                    จำนวน {{ rentItems.length }} รายการ
+
                 </span>
+
             </div>
-
-            <!-- <div>
-                <button class="btn btn-success" (click)="save()">
-                    💾 บันทึก
-                </button>
-                <button class="btn btn-danger" (click)="closeModal()">
-                    ✖ ปิดหน้าต่าง
-                </button>
-
-            </div> -->
 
         </div>
 
     </div>
+
 </div>
