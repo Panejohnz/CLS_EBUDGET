@@ -5,15 +5,21 @@
         <table class="table table-bordered align-middle text-center">
 
             <thead class="table-secondary">
+
                 <tr>
-                    <th class="text-start">รายการ</th>
+
+                    <th class="text-start">
+                        รายการ
+                    </th>
 
                     <th style="width:150px">
                         จำนวนคน
                     </th>
 
                     <th *ngIf="model.selectedExpenseTypeId == 5" style="width:200px">
+
                         ต่อ/เดือน
+
                     </th>
 
                     <th style="width:200px">
@@ -21,10 +27,12 @@
                     </th>
 
                 </tr>
+
             </thead>
 
             <tbody>
 
+                <!-- อัตราเดิม -->
                 <tr>
 
                     <td class="text-start">
@@ -32,25 +40,29 @@
                     </td>
 
                     <td>
+
                         <input type="number" class="form-control text-center" [(ngModel)]="model.oldQty"
-                            (ngModelChange)="calculateAll()">
+                            (ngModelChange)="calculateRowOld()">
+
                     </td>
 
                     <td *ngIf="model.selectedExpenseTypeId == 5">
 
                         <input type="number" class="form-control text-end" [(ngModel)]="model.oldMonth"
-                            (ngModelChange)="calculateAll()">
+                            (ngModelChange)="calculateRowOld()">
 
                     </td>
 
                     <td>
+
                         <input type="number" class="form-control text-end" [(ngModel)]="model.oldYear"
-                            [readonly]="model.selectedExpenseTypeId == 5">
+                            (ngModelChange)="calculateRowOld()" [readonly]="model.selectedExpenseTypeId == 5">
+
                     </td>
 
                 </tr>
 
-
+                <!-- อัตราใหม่ -->
                 <tr>
 
                     <td class="text-start">
@@ -58,31 +70,38 @@
                     </td>
 
                     <td>
+
                         <input type="number" class="form-control text-center" [(ngModel)]="model.newQty"
-                            (ngModelChange)="calculateAll()">
+                            (ngModelChange)="calculateRowNew()">
+
                     </td>
 
                     <td *ngIf="model.selectedExpenseTypeId == 5">
 
                         <input type="number" class="form-control text-end" [(ngModel)]="model.newMonth"
-                            (ngModelChange)="calculateAll()">
+                            (ngModelChange)="calculateRowNew()">
 
                     </td>
 
                     <td>
+
                         <input type="number" class="form-control text-end" [(ngModel)]="model.newYear"
-                            [readonly]="model.selectedExpenseTypeId == 5">
+                            (ngModelChange)="calculateRowNew()" [readonly]="model.selectedExpenseTypeId == 5">
+
                     </td>
 
                 </tr>
 
             </tbody>
 
-
+            <!-- footer -->
             <tfoot class="table-secondary fw-bold">
 
                 <tr>
-                    <td class="text-end">รวม</td>
+
+                    <td class="text-end">
+                        รวม
+                    </td>
 
                     <td>
                         {{ totalQty }}
@@ -91,7 +110,9 @@
                     <td *ngIf="model.selectedExpenseTypeId == 5"></td>
 
                     <td class="text-end">
+
                         {{ totalAmount | number:'1.2-2' }}
+
                     </td>
 
                 </tr>
@@ -106,13 +127,17 @@
     <div class="mt-3">
 
         <label class="form-label fw-bold">
+
             แนบไฟล์
+
         </label>
 
         <input type="file" class="form-control" (change)="onFileChange($event)">
 
         <small class="text-muted">
+
             คลิกชื่อไฟล์เพื่อดูตัวอย่าง
+
         </small>
 
     </div>

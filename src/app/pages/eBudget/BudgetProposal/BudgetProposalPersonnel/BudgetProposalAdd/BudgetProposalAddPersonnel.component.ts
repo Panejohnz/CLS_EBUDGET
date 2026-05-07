@@ -85,38 +85,47 @@ export class ProjectBudgetProposalAddPersonnelComponent {
       this.Mas_Plan_Lists = res.Mas_Plan_Lists || [];
       this.Mas_Expense_Lists = res.Mas_Expense_Lists || [];
 
+      if (this.model?.Budget_Request.Request_Id) {
+
+        this.mapInitialData()
+      }
     });
 
     this.Get_Dropdown_list()
   }
   ngOnChanges() {
 
-    if (this.model?.Request_Id) {
-      this.mapInitialData();
-    }
+
   }
   mapInitialData() {
 
-    const find = (list: any[], key: string, value: any) =>
-      list.find(x => x[key] == value);
-
     this.model.selectedDepartment =
-      find(this.Mas_Department_Lists, 'Department_Id', this.model.Department_Id);
-
-    this.model.projectType =
-      find(this.Mas_Expense_Lists, 'Expense_Id', this.model.Fk_Expense_List);
+      this.model?.Budget_Request.Department_Id;
 
     this.model.selectedPlan =
-      find(this.Mas_Plan_Lists, 'Plan_Id', this.model.Fk_Plan_Id);
+      this.model?.Budget_Request.Fk_Plan_Id;
 
-    // 🔥 chain load ต่อ
-    if (this.model.projectType) {
-      this.Onchange_type();
-    }
+    this.model.selectedProduct =
+      this.model?.Budget_Request.Fk_Product_Id;
+
+    this.model.selectedActivity =
+      this.model?.Budget_Request.Fk_Activity_Id;
+
+    this.model.selectedBudget =
+      this.model?.Budget_Request.Fk_Expense_Type;
+
+    this.model.selectedGroup =
+      this.model?.Budget_Request.Fk_Budget_Type;
+
+    this.model.selectedExpenseTypeId =
+      this.model?.Budget_Request.Fk_Expense_List;
 
     if (this.model.selectedPlan) {
+
       this.Onchange_type_Plan();
+
     }
+
   }
   Onchange_type() {
 
@@ -139,23 +148,21 @@ export class ProjectBudgetProposalAddPersonnelComponent {
     let model = {
       FUNC_CODE: "FUNC-GET_Mas_Product",
       Mas_Plan: {
-        Plan_Id: this.model.selectedPlan.Plan_Id
+        Plan_Id: this.model.selectedPlan
       }
     };
 
-    this.model.Fk_Plan_Id = this.model.selectedPlan.Plan_Id;
+    this.model.Budget_Request.Fk_Plan_Id = this.model.selectedPlan;
 
     this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
 
       this.Mas_Product = res.Mas_Product_Lists || [];
 
-      // 👉 map product ตอน edit
-      if (this.model.Fk_Product_Id) {
+      if (this.model.Budget_Request.Fk_Product_Id) {
         this.model.selectedProduct =
-          this.Mas_Product.find(x => x.Product_Id == this.model.Fk_Product_Id);
+          this.model.Budget_Request.Fk_Product_Id;
       }
 
-      // 👉 load activity ต่อ
       if (this.model.selectedProduct) {
         this.Onchange_type_Product();
       }
@@ -163,7 +170,6 @@ export class ProjectBudgetProposalAddPersonnelComponent {
   }
   openTargetModal(content: any) {
 
-    // ถ้ายังไม่มีรายการ ให้สร้าง default 1 รายการ
     if (this.targetList.length === 0) {
       this.addTargetRow();
     }
@@ -230,15 +236,6 @@ export class ProjectBudgetProposalAddPersonnelComponent {
     };
     this.serviceebud.GatewayGetData(model)
       .subscribe((response: any) => {
-        // this.subActivityOptions = (response.Mas_Expense_Types || []).map((x: any) => ({
-        //   id: x.Expense_Type_Id,
-        //   name: x.Expense_Type_Name
-        // }));
-
-        // this.subUnitActivityOptions = (response.Mas_Budget_Types || []).map((x: any) => ({
-        //   id: x.Budget_Type_Id,
-        //   name: x.Budget_Type_Name
-        // }));
 
         this.plan.subActivity = item.Fk_Expense_Type_Id;
         this.plan.subUnitActivity = item.Fk_Budget_Type_Id;
@@ -254,11 +251,11 @@ export class ProjectBudgetProposalAddPersonnelComponent {
     let model = {
       FUNC_CODE: "FUNC-GET_Mas_Activity",
       Mas_Product: {
-        Product_Id: this.model.selectedProduct.Product_Id
+        Product_Id: this.model.selectedProduct
       }
     };
 
-    this.model.Fk_Product_Id = this.model.selectedProduct.Product_Id;
+    this.model.Budget_Request.Fk_Product_Id = this.model.selectedProduct;
 
     this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
 
@@ -267,7 +264,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
       // 👉 map activity ตอน edit
       if (this.model.Fk_Activity_Id) {
         this.model.selectedActivity =
-          this.Mas_Activity.find(x => x.Activity_Id == this.model.Fk_Activity_Id);
+          this.model.Budget_Request.Fk_Activity_Id;
       }
     });
   }
@@ -290,86 +287,148 @@ export class ProjectBudgetProposalAddPersonnelComponent {
 
   }
   async save() {
-    const getId = (obj: any, key: string) =>
-      typeof obj === 'object' ? obj?.[key] : obj;
-    const selectedExpenseTypeIdObj = this.expenseOptions.find(
-      x => x.Expense_Id == this.model.selectedExpenseTypeId
-    );
-    const selectedBudgetObj = this.Mas_Budget_Types.find(
-      x => x.Budget_Type_Id == this.model.selectedBudget
-    );
 
-    const selectedGroupObj = this.Mas_Expense_Group.find(
-      x => x.Expense_Group_Id == this.model.selectedGroup
-    );
+    const findById = (
+      list: any[],
+      key: string,
+      value: any
+    ) => list.find(x => x[key] == value);
+
+    const selectedPlanObj =
+      findById(
+        this.Mas_Plan_Lists,
+        'Plan_Id',
+        this.model.selectedPlan
+      );
+
+    const selectedProductObj =
+      findById(
+        this.Mas_Product,
+        'Product_Id',
+        this.model.selectedProduct
+      );
+
+    const selectedActivityObj =
+      findById(
+        this.Mas_Activity,
+        'Activity_Id',
+        this.model.selectedActivity
+      );
+
+    const selectedExpenseTypeIdObj =
+      findById(
+        this.expenseOptions,
+        'Expense_Id',
+        this.model.selectedExpenseTypeId
+      );
+
+    const selectedBudgetObj =
+      findById(
+        this.Mas_Budget_Types,
+        'Budget_Type_Id',
+        this.model.selectedBudget
+      );
+
+    const selectedGroupObj =
+      findById(
+        this.Mas_Expense_Group,
+        'Expense_Group_Id',
+        this.model.selectedGroup
+      );
+
+    const selectedDepartmentObj =
+      findById(
+        this.Mas_Department_Lists,
+        'Department_Id',
+        this.model.Department_Id
+      );
 
     const payload = {
+
       BgYear: "2569",
-      Request_Id: this.model.Request_Id,
+
+      Request_Id: this.model.Budget_Request.Request_Id,
 
       Department_Id: this.model.Department_Id,
-      Department_Name: this.model.selectedDepartment?.Department_Name,
 
-      Fk_Plan_Id: getId(this.model.selectedPlan, 'Plan_Id'),
-      Plan_Name: this.model.selectedPlan?.Plan_Name,
+      Department_Name:
+        selectedDepartmentObj?.Department_Name,
 
-      Fk_Expense_List: getId(this.model.selectedExpenseTypeId, 'Expense_Id'),
-      Expense_List: selectedExpenseTypeIdObj?.Expense_Name,
+      Fk_Plan_Id: this.model.selectedPlan,
 
-      Fk_Product_Id: getId(this.model.selectedProduct, 'Product_Id'),
-      Product_Name: this.model.selectedProduct?.Product_Name,
+      Plan_Name:
+        selectedPlanObj?.Plan_Name,
 
-      Fk_Activity_Id: getId(this.model.selectedActivity, 'Activity_Id'),
-      Activity_Name: this.model.selectedActivity?.Activity_Name,
+      Fk_Product_Id: this.model.selectedProduct,
 
-      Fk_Budget_Type: this.model.selectedGroup,
-      Budget_Type: selectedGroupObj?.Expense_Group_Name,
+      Product_Name:
+        selectedProductObj?.Product_Name,
 
-      Fk_Expense_Type: this.model.selectedBudget,
-      Expense_Type: selectedBudgetObj?.Budget_Type_Name,
+      Fk_Activity_Id: this.model.selectedActivity,
 
+      Activity_Name:
+        selectedActivityObj?.Activity_Name,
 
-      Project_Name: this.model.Project_Name,
-      Used_BG: this.model.Used_BG,
-      Project_Type_Id: this.model.Project_Type_Id,
+      Fk_Expense_List:
+        this.model.selectedExpenseTypeId,
 
-      Project_Year_Count: this.model.Project_Year_Count,
-      Project_Year_Number: this.model.Project_Year_Number,
+      Expense_List:
+        selectedExpenseTypeIdObj?.Expense_Name,
 
-      Operation1: this.model.Operation1,
-      Operation2: this.model.Operation2,
-      Proposer_Name: this.model.Proposer_Name,
-      Proposer_Position: this.model.Proposer_Position,
+      Fk_Budget_Type:
+        this.model.selectedGroup,
+
+      Budget_Type:
+        selectedGroupObj?.Expense_Group_Name,
+
+      Fk_Expense_Type:
+        this.model.selectedBudget,
+
+      Expense_Type:
+        selectedBudgetObj?.Budget_Type_Name,
+
+      Project_Name:
+        this.model.Budget_Request.Project_Name,
+
+      Used_BG:
+        this.model.Budget_Request.Used_BG,
+
+      Project_Type_Id:
+        this.model.Budget_Request.Project_Type_Id,
+
+      Project_Year_Count:
+        this.model.Budget_Request.Project_Year_Count,
+
+      Project_Year_Number:
+        this.model.Budget_Request.Project_Year_Number,
+
+      Operation1:
+        this.model.Budget_Request.Operation1,
+
+      Operation2:
+        this.model.Budget_Request.Operation2,
+
+      Proposer_Name:
+        this.model.Budget_Request.Proposer_Name,
+
+      Proposer_Position:
+        this.model.Budget_Request.Proposer_Position
+
     };
+    console.log('1', this.model.Budget_Request_Detail_Item)
 
-    const detailItems = [
-      {
-        Expense_Detail: 'อัตราเดิม',
-        Quantity: this.model.oldQty,
-        Per_Month: this.model.oldMonth,
-        Per_Year: this.model.oldYear,
-        Total: this.model.oldYear
-      },
-      {
-        Expense_Detail: 'อัตราใหม่',
-        Quantity: this.model.newQty,
-        Per_Month: this.model.newMonth,
-        Per_Year: this.model.newYear,
-        Total: this.model.newYear
-      }
-    ];
 
 
     const userConfirmed = await confirmAlert('info', 'ต้องการบันทึกข้อมูล ?', '');
 
     if (userConfirmed) {
       const model = {
-        FUNC_CODE: this.model.Request_Id > 0
+        FUNC_CODE: this.model.Budget_Request.Request_Id > 0
           ? "FUNC-Update_Budget_Request"
           : "FUNC-Insert_Budget_Request",
 
         Budget_Request: payload,
-        Budget_Request_Detail_Item: detailItems
+        Budget_Request_Detail_Item: this.model.Budget_Request_Detail_Item
         // Project_Detail: {
         //   ...this.model.Project_Detail,
 

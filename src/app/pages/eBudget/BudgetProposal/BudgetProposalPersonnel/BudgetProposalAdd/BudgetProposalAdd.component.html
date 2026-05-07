@@ -1,3 +1,4 @@
+<div *ngIf="model">
 <div class="modal-header">
     <h5 class="modal-title">กำหนดแผนงาน</h5>
     <button type="button" class="btn-close" (click)="closeModal()"></button>
@@ -10,7 +11,7 @@
         <div class="col-md-4">
             <label class="form-label">แผนงาน</label>
 
-            <ng-select [items]="Mas_Plan_Lists" bindLabel="Plan_Name" [(ngModel)]="model.selectedPlan"
+            <ng-select [items]="Mas_Plan_Lists" bindLabel="Plan_Name" bindValue="Plan_Id"  [(ngModel)]="model.selectedPlan"
                 name="selectedPlan" (ngModelChange)="Onchange_type_Plan()" placeholder="-- เลือก --">
             </ng-select>
         </div>
@@ -18,7 +19,7 @@
         <div class="col-md-4">
             <label class="form-label">ผลผลิต</label>
 
-            <ng-select [items]="Mas_Product" bindLabel="Product_Name" [(ngModel)]="model.selectedProduct"
+            <ng-select [items]="Mas_Product" bindLabel="Product_Name" bindValue="Product_Id"  [(ngModel)]="model.selectedProduct"
                 name="selectedProduct" (ngModelChange)="Onchange_type_Product()" placeholder="-- เลือก --">
             </ng-select>
         </div>
@@ -26,7 +27,7 @@
         <div class="col-md-4">
             <label class="form-label">กิจกรรม</label>
 
-            <ng-select [items]="Mas_Activity" bindLabel="Activity_Name" [(ngModel)]="model.selectedActivity"
+            <ng-select [items]="Mas_Activity" bindLabel="Activity_Name" bindValue="Activity_Id"  [(ngModel)]="model.selectedActivity"
                 name="selectedActivity" placeholder="-- เลือก --">
             </ng-select>
         </div>
@@ -361,3 +362,4 @@
 
 </div>
 }
+</div>
