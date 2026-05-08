@@ -6,33 +6,73 @@ import { Component, Input } from '@angular/core';
   styles: ``
 })
 export class ExpenseGrantFormComponent {
-  // @Input() type: 'general' | 'specific' = 'general';
 
-  items = [this.createItem()];
+  @Input() modal: any;
+  @Input() expenseItem: any;
+
+  constructor() { }
+
+  closeModal() {
+    this.modal.dismiss();
+  }
+
+  items: any[] = [
+    this.createItem()
+  ];
+
   grandTotal = 0;
 
+  // =========================
+  // CREATE ITEM
+  // =========================
+
   createItem() {
+
     return {
+
       name: '',
+
       price: 0,
+
       qty: 0,
+
       unit: 'คน',
+
       month: 0,
+
       total: 0
+
     };
+
   }
+
+  // =========================
+  // ADD / REMOVE
+  // =========================
 
   addItem() {
-    this.items.push(this.createItem());
+
+    this.items.push(
+      this.createItem()
+    );
+
   }
 
-  removeItem(i: number) {
-    this.items.splice(i, 1);
+  removeItem(index: number) {
+
+    this.items.splice(index, 1);
+
     this.calculateAll();
+
   }
 
-  calculate(i: number) {
-    const item = this.items[i];
+  // =========================
+  // CALCULATE
+  // =========================
+
+  calculate(index: number) {
+
+    const item = this.items[index];
 
     item.total =
       (item.price || 0) *
@@ -40,24 +80,68 @@ export class ExpenseGrantFormComponent {
       (item.month || 0);
 
     this.calculateAll();
+
   }
 
   calculateAll() {
-    this.grandTotal = this.items.reduce((s, x) => s + (x.total || 0), 0);
+
+    this.grandTotal =
+      this.items.reduce((sum: number, item: any) => {
+
+        return sum + (item.total || 0);
+
+      }, 0);
+
   }
 
+  // =========================
+  // SUMMARY
+  // =========================
+
   getTotalQty() {
-    return this.items.reduce((s, x) => s + (x.qty || 0), 0);
+
+    return this.items.reduce((sum: number, item: any) => {
+
+      return sum + (item.qty || 0);
+
+    }, 0);
+
   }
 
   getTotalMonth() {
-    return this.items.reduce((s, x) => s + (x.month || 0), 0);
+
+    return this.items.reduce((sum: number, item: any) => {
+
+      return sum + (item.month || 0);
+
+    }, 0);
+
   }
 
-  save() {
-    console.log({
-      // type: this.type,
-      items: this.items
-    });
+  // =========================
+  // SAVE
+  // =========================
+
+  async save() {
+
+    const userConfirmed = await confirmAlert(
+      'info',
+      'ต้องการบันทึกข้อมูล ?',
+      ''
+    );
+
+    if (userConfirmed) {
+
+      basicAlert(
+        'success',
+        'บันทึกข้อมูลแล้ว',
+        ''
+      );
+
+      this.modal.dismiss();
+
+    }
+
   }
+
 }

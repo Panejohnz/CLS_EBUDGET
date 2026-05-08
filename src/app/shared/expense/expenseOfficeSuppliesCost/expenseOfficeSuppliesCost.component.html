@@ -1,111 +1,226 @@
 <div class="card shadow-sm">
 
-    <!-- Header -->
-
-
     <div class="card-body bg-light">
 
         <div class="table-responsive">
+
             <table class="table table-bordered align-middle text-center bg-white mb-0">
 
+                <!-- HEADER -->
                 <thead class="table-secondary">
+
                     <tr>
-                        <th width="5%">ลำดับ</th>
-                        <th width="25%">รายการ</th>
-                        <th width="10%">จำนวน</th>
-                        <th width="15%">หน่วยนับ</th>
-                        <th width="15%">ราคา/หน่วย (บาท)</th>
-                        <th width="15%">รวม (บาท)</th>
-                        <th width="15%">หมายเหตุ</th>
+
+                        <th width="5%">
+
+                            ลำดับ
+
+                        </th>
+
+                        <th width="25%">
+
+                            รายการ
+
+                        </th>
+
+                        <th width="10%">
+
+                            จำนวน
+
+                        </th>
+
+                        <th width="15%">
+
+                            หน่วยนับ
+
+                        </th>
+
+                        <th width="15%">
+
+                            ราคา/หน่วย (บาท)
+
+                        </th>
+
+                        <th width="15%">
+
+                            รวม (บาท)
+
+                        </th>
+
+                        <th width="15%">
+
+                            หมายเหตุ
+
+                        </th>
+
                         <th width="5%"></th>
+
                     </tr>
+
                 </thead>
 
+                <!-- BODY -->
                 <tbody>
 
                     <tr *ngFor="let item of items; let i = index">
-                        <td>{{i+1}}</td>
 
-                        <!-- รายการ (dropdown + search) -->
+                        <!-- index -->
                         <td>
-                            <ng-select [items]="materialOptions" bindLabel="name" [(ngModel)]="item.material"
-                                placeholder="--- โปรดเลือก ---" appendTo="body" (ngModelChange)="calculate(i)">
-                            </ng-select>
+
+                            {{ i + 1 }}
+
                         </td>
 
-                        <!-- จำนวน -->
+                        <!-- material -->
                         <td>
+
+                            <ng-select [items]="materialOptions" bindLabel="name" [(ngModel)]="item.material"
+                                placeholder="--- โปรดเลือก ---" appendTo="body" (ngModelChange)="updateDetailItems()">
+
+                            </ng-select>
+
+                        </td>
+
+                        <!-- qty -->
+                        <td>
+
                             <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.qty"
                                 (ngModelChange)="calculate(i)">
+
                         </td>
 
-                        <!-- หน่วย -->
+                        <!-- unit -->
                         <td>
-                            <select class="form-select form-select-sm" [(ngModel)]="item.unit">
-                                <option value="">--- หน่วย ---</option>
-                                <option>ชิ้น</option>
-                                <option>กล่อง</option>
-                                <option>แพ็ค</option>
-                                <option>อัน</option>
+
+                            <select class="form-select form-select-sm" [(ngModel)]="item.unit"
+                                (ngModelChange)="updateDetailItems()">
+
+                                <option value="">
+
+                                    --- หน่วย ---
+
+                                </option>
+
+                                <option>
+
+                                    ชิ้น
+
+                                </option>
+
+                                <option>
+
+                                    กล่อง
+
+                                </option>
+
+                                <option>
+
+                                    แพ็ค
+
+                                </option>
+
+                                <option>
+
+                                    อัน
+
+                                </option>
+
                             </select>
+
                         </td>
 
-                        <!-- ราคา -->
+                        <!-- price -->
                         <td>
+
                             <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.price"
                                 (ngModelChange)="calculate(i)">
+
                         </td>
 
-                        <!-- รวม -->
+                        <!-- total -->
                         <td class="text-end fw-bold">
-                            {{item.total | number:'1.2-2'}}
+
+                            {{
+                            item.total
+                            | number:'1.2-2'
+                            }}
+
                         </td>
 
-                        <!-- หมายเหตุ -->
+                        <!-- remark -->
                         <td>
-                            <input class="form-control form-control-sm" [(ngModel)]="item.remark">
+
+                            <input class="form-control form-control-sm" [(ngModel)]="item.remark"
+                                (ngModelChange)="updateDetailItems()">
+
                         </td>
 
-                        <!-- ลบ -->
+                        <!-- remove -->
                         <td>
+
                             <button class="btn btn-danger btn-sm" (click)="removeItem(i)">
+
                                 🗑
+
                             </button>
+
                         </td>
+
                     </tr>
 
                 </tbody>
 
-                <!-- รวม -->
+                <!-- FOOTER -->
                 <tfoot class="table-secondary">
+
                     <tr>
+
                         <td colspan="5" class="text-end fw-bold">
+
                             รวม
+
                         </td>
-                        <td class="text-end fw-bold">
-                            {{grandTotal | number:'1.2-2'}}
+
+                        <td class="text-end fw-bold text-primary">
+
+                            {{
+                            grandTotal
+                            | number:'1.2-2'
+                            }}
+
                         </td>
+
                         <td colspan="2"></td>
+
                     </tr>
+
                 </tfoot>
 
             </table>
+
         </div>
 
-        <!-- ปุ่ม -->
+        <!-- ACTION -->
         <div class="mt-3 d-flex justify-content-between align-items-center">
+
             <div>
+
                 <button class="btn btn-primary btn-sm" (click)="addItem()">
+
                     + เพิ่มรายการ
+
                 </button>
 
                 <span class="ms-2 text-danger">
-                    จำนวน {{items.length}} รายการ
+
+                    จำนวน {{ items.length }} รายการ
+
                 </span>
+
             </div>
+
         </div>
 
     </div>
-
 
 </div>

@@ -2,128 +2,284 @@
 
     <div class="card-body bg-light">
 
+        <!-- table -->
         <div class="table-responsive">
+
             <table class="table table-bordered align-middle text-center bg-white">
 
+                <!-- header -->
                 <thead class="table-secondary">
+
                     <tr>
-                        <th rowspan="2">ลำดับ</th>
-                        <th rowspan="2">รายการ</th>
-                        <th colspan="2">ราคาในมาตรฐาน</th>
-                        <th rowspan="2">ราคา/หน่วย</th>
-                        <th rowspan="2">จำนวน</th>
-                        <th rowspan="2">วงเงินรวม</th>
-                        <th colspan="2">เหตุผล</th>
+
+                        <th rowspan="2">
+
+                            ลำดับ
+
+                        </th>
+
+                        <th rowspan="2">
+
+                            รายการ
+
+                        </th>
+
+                        <th colspan="2">
+
+                            ราคาในมาตรฐาน
+
+                        </th>
+
+                        <th rowspan="2">
+
+                            ราคา/หน่วย
+
+                        </th>
+
+                        <th rowspan="2">
+
+                            จำนวน
+
+                        </th>
+
+                        <th rowspan="2">
+
+                            วงเงินรวม
+
+                        </th>
+
+                        <th colspan="2">
+
+                            เหตุผล
+
+                        </th>
+
                         <th rowspan="2"></th>
+
                     </tr>
+
                     <tr>
-                        <th>ใน</th>
-                        <th>นอก</th>
-                        <th>จำนวนที่ขอใหม่</th>
-                        <th>จำนวนทดแทน</th>
+
+                        <th width="7%">
+
+                            ใน
+
+                        </th>
+
+                        <th width="7%">
+
+                            นอก
+
+                        </th>
+
+                        <th width="15%">
+
+                            จำนวนที่ขอใหม่
+
+                        </th>
+
+                        <th width="15%">
+
+                            จำนวนทดแทน
+
+                        </th>
+
                     </tr>
+
                 </thead>
 
+                <!-- body -->
                 <tbody>
 
-                    <tr *ngFor="let item of items; let i = index">
+                    <tr *ngFor="
+                            let item of items;
+                            let i = index
+                        ">
 
-                        <td>{{i+1}}</td>
-
-                        <!--  dropdown dynamic -->
+                        <!-- index -->
                         <td>
+
+                            {{ i + 1 }}
+
+                        </td>
+
+                        <!-- item -->
+                        <td>
+
                             <ng-select [items]="config?.options" [(ngModel)]="item.name" appendTo="body"
-                                placeholder="--- รายการ ---">
+                                placeholder="--- รายการ ---" (ngModelChange)="updateDetailItems()">
+
                             </ng-select>
+
                         </td>
 
-                        <!-- มาตรฐาน -->
+                        <!-- standard in -->
                         <td>
-                            <input type="checkbox" [(ngModel)]="item.standardIn">
-                        </td>
-                        <td>
-                            <input type="checkbox" [(ngModel)]="item.standardOut">
+
+                            <input type="checkbox" [(ngModel)]="item.standardIn" (ngModelChange)="updateDetailItems()">
+
                         </td>
 
-                        <!-- ราคา -->
+                        <!-- standard out -->
                         <td>
+
+                            <input type="checkbox" [(ngModel)]="item.standardOut" (ngModelChange)="updateDetailItems()">
+
+                        </td>
+
+                        <!-- price -->
+                        <td>
+
                             <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.price"
                                 (ngModelChange)="calculate(i)">
+
                         </td>
 
-                        <!-- จำนวน -->
+                        <!-- qty -->
                         <td>
+
                             <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.qty"
                                 (ngModelChange)="calculate(i)">
+
                         </td>
 
-                        <!-- รวม -->
-                        <td class="text-end fw-bold">
-                            {{item.total | number:'1.2-2'}}
+                        <!-- total -->
+                        <td class="text-end fw-bold text-primary">
+
+                            {{
+                            item.total
+                            | number:'1.2-2'
+                            }}
+
                         </td>
 
-                        <!-- เหตุผล -->
+                        <!-- reason new -->
                         <td>
-                            <input type="number" class="form-control form-control-sm" [(ngModel)]="item.newQty">
-                            <textarea class="form-control form-control-sm mt-1" placeholder="เหตุผลการขอใหม่"
-                                [(ngModel)]="item.reasonNew"></textarea>
+
+                            <input type="number" class="form-control form-control-sm" [(ngModel)]="item.newQty"
+                                (ngModelChange)="updateDetailItems()">
+
+                            <textarea class="form-control form-control-sm mt-1" rows="2" placeholder="เหตุผลการขอใหม่"
+                                [(ngModel)]="item.reasonNew" (ngModelChange)="updateDetailItems()">
+
+                            </textarea>
+
                         </td>
 
+                        <!-- reason replace -->
                         <td>
-                            <input type="number" class="form-control form-control-sm" [(ngModel)]="item.replaceQty">
-                            <textarea class="form-control form-control-sm mt-1" placeholder="เหตุผลการทดแทน"
-                                [(ngModel)]="item.reasonReplace"></textarea>
+
+                            <input type="number" class="form-control form-control-sm" [(ngModel)]="item.replaceQty"
+                                (ngModelChange)="updateDetailItems()">
+
+                            <textarea class="form-control form-control-sm mt-1" rows="2" placeholder="เหตุผลการทดแทน"
+                                [(ngModel)]="item.reasonReplace" (ngModelChange)="updateDetailItems()">
+
+                            </textarea>
+
                         </td>
 
+                        <!-- remove -->
                         <td>
-                            <button class="btn btn-danger btn-sm" (click)="removeItem(i)">🗑</button>
+
+                            <button class="btn btn-danger btn-sm" (click)="removeItem(i)">
+
+                                🗑
+
+                            </button>
+
                         </td>
 
                     </tr>
 
                 </tbody>
 
+                <!-- footer -->
                 <tfoot class="table-secondary">
+
                     <tr>
-                        <td colspan="6" class="text-end fw-bold">รวม</td>
-                        <td class="text-end fw-bold">
-                            {{grandTotal | number:'1.2-2'}}
+
+                        <td colspan="6" class="text-end fw-bold">
+
+                            รวม
+
                         </td>
+
+                        <td class="text-end fw-bold text-primary">
+
+                            {{
+                            grandTotal
+                            | number:'1.2-2'
+                            }}
+
+                        </td>
+
                         <td colspan="3"></td>
+
                     </tr>
+
                 </tfoot>
 
             </table>
+
         </div>
 
         <!-- spec -->
         <div class="mt-3">
-            <label class="fw-semibold">คุณสมบัติ (spec)</label>
-            <textarea class="form-control" rows="4" [(ngModel)]="spec"></textarea>
+
+            <label class="fw-semibold">
+
+                คุณสมบัติ (spec)
+
+            </label>
+
+            <textarea class="form-control" rows="4" [(ngModel)]="spec" (ngModelChange)="updateDetailItems()">
+
+            </textarea>
+
         </div>
 
-        <!-- แนบไฟล์ -->
+        <!-- upload -->
         <div class="mt-3">
+
             <label class="fw-semibold">
-                แนบไฟล์ (กรณีนอกมาตรฐาน ต้อง 3 ไฟล์)
+
+                แนบไฟล์
+                (กรณีนอกมาตรฐาน ต้อง 3 ไฟล์)
+
             </label>
 
             <input type="file" multiple class="form-control form-control-sm" (change)="uploadFiles($event)">
 
             <small class="text-danger" *ngIf="fileError">
+
                 ต้องแนบ 3 ไฟล์
+
             </small>
 
             <div class="text-success mt-2" *ngFor="let f of files">
-                📎 {{f.name}}
+
+                📎 {{ f.name }}
+
             </div>
+
         </div>
 
-        <!-- ปุ่ม -->
+        <!-- action -->
         <div class="mt-3">
+
             <button class="btn btn-primary btn-sm" (click)="addItem()">
+
                 + เพิ่มรายการ
+
             </button>
+
+            <span class="ms-2 text-danger">
+
+                จำนวน {{ items.length }} รายการ
+
+            </span>
+
         </div>
 
     </div>
