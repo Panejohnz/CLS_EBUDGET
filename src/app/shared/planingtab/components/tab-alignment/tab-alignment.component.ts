@@ -21,6 +21,8 @@ export class TabAlignmentComponent implements OnChanges {
   constructor(
     public serviceebud: EbudgetService, private budgetYearService: BudgetYearService) { }
   ngOnChanges(changes: SimpleChanges): void {
+    console.log(this.model);
+
     if (changes['model'] && this.model) {
       this.initData();
       this.loadAllMasterData();
@@ -58,6 +60,7 @@ export class TabAlignmentComponent implements OnChanges {
     }
 
     this.subStrategies = this.model.Project_Plan_Level1_Sub;
+    console.log('ก่อน error', this.model );
 
     if (!this.model.Project_Plan_Level2.Project_Plan_Level2_Id) {
 

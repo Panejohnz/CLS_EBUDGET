@@ -40,6 +40,7 @@ export class ProjectBudgetProposalComponent {
     Project_Outcome: [],
     Project_Plan_Level1: [],
     Project_Plan_Level1_Sub: [],
+    Project_Plan_Level2: {},
     Project_Cabinet: [],
     Project_Security: [],
     Project_Plan_Level3: {}
@@ -169,7 +170,7 @@ export class ProjectBudgetProposalComponent {
         });
     } else {
       this.model = {
-        Budget_Request : {},
+        Budget_Request: {},
         Department_Id: this.selectedDepartmentId,
         Project_Plan: {},
 
@@ -248,6 +249,7 @@ export class ProjectBudgetProposalComponent {
       };
     }
 
+    console.log('่ก่อน model', this.model);
 
     this.modalRef = this.modalService.open(modal, {
       backdrop: 'static',

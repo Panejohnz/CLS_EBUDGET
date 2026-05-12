@@ -92,6 +92,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
     });
 
     this.Get_Dropdown_list()
+        console.log('เข้า model', this.model);
   }
   ngOnChanges() {
 
@@ -240,6 +241,9 @@ export class ProjectBudgetProposalAddPersonnelComponent {
         this.plan.subActivity = item.Fk_Expense_Type_Id;
         this.plan.subUnitActivity = item.Fk_Budget_Type_Id;
         this.formTitle = item.Expense_Name
+
+        console.log('หาย',this.model);
+        
       })
 
   }

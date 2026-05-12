@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
+import { Component, ElementRef, ViewChild, CUSTOM_ELEMENTS_SCHEMA, Input, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { environment } from '../../../../../../environments/environment';
@@ -26,7 +26,12 @@ import { BudgetYearService } from 'src/app/core/services/budget-year.service';
   providers: [GridJsService, DecimalPipe, EbudgetService],
   templateUrl: './projectPlanning.component.html'
 })
+
 export class ProjectPlanningComponent {
+  @Input() modal: any;
+  @Input() expenseItem: any;
+  @Input() model: any;
+
   @ViewChild(TabGuidelineComponent)
   guidelineComp!: TabGuidelineComponent;
   emptyplan: any = {
@@ -67,6 +72,7 @@ export class ProjectPlanningComponent {
     Project_Outcome: [],
     Project_Plan_Level1: [],
     Project_Plan_Level1_Sub: [],
+    Project_Plan_Level2: {},
     Project_Cabinet: [],
     Project_Plan_Level3: {}
 

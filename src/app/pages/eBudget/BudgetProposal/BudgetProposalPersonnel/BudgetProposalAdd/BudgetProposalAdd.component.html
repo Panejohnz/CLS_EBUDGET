@@ -342,7 +342,7 @@
     <app-expense-grant-form [model]="model" [expenseItem]="expenseItem">
     </app-expense-grant-form>
     }@else if ([64,70,73,74,75].includes(model.selectedExpenseTypeId)) {
-    <projectPlanning>
+    <projectPlanning [model]="model" [expenseItem]="expenseItem">
     </projectPlanning>
     }
 

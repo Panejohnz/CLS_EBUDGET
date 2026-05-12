@@ -1,160 +1,239 @@
-
 <div class="border rounded p-3" style="background-color: #E0E8F0;">
+
     <div class="row g-3" *ngIf="model">
 
         <!-- หน่วยงาน -->
         <div class="col-md-6">
-            <label class="form-label">หน่วยงาน</label> <span class="text-danger"> *</span>
-            <select class="form-select" [(ngModel)]="model.selectedDepartment" name="selectedDepartment"
-                [compareWith]="compareById" (ngModelChange)="Onchange_type_Department()">
 
-                <option [ngValue]="null" disabled>-- เลือกหน่วยงาน --</option>
-                <option *ngFor="let item of Mas_Department_Lists" [ngValue]="item">
-                    {{ item.Department_Name }}
-                </option>
-            </select>
+            <label class="form-label">
+                หน่วยงาน
+            </label>
+
+            <span class="text-danger"> *</span>
+
+            <ng-select [items]="Mas_Department_Lists" bindLabel="Department_Name" [(ngModel)]="model.selectedDepartment"
+                name="selectedDepartment" [compareWith]="compareById" appendTo="body" placeholder="-- เลือกหน่วยงาน --"
+                (ngModelChange)="Onchange_type_Department()">
+
+            </ng-select>
+
         </div>
 
         <!-- ประเภทโครงการ -->
         <div class="col-md-6">
-            <label class="form-label">ประเภทโครงการ</label> <span class="text-danger"> *</span>
 
-            <select class="form-select" [(ngModel)]="model.projectType" name="projectType" [compareWith]="compareById"
+            <label class="form-label">
+                ประเภทโครงการ
+            </label>
+
+            <span class="text-danger"> *</span>
+
+            <ng-select [items]="Mas_Expense_Lists" bindLabel="Expense_Name" [(ngModel)]="model.projectType"
+                name="projectType" [compareWith]="compareById" appendTo="body" placeholder="-- เลือกประเภทโครงการ --"
                 (ngModelChange)="Onchange_type()">
 
-                <option [ngValue]="null" disabled>-- เลือกประเภทโครงการ --</option>
-                <option *ngFor="let item of Mas_Expense_Lists" [ngValue]="item">
-                    {{ item.Expense_Name }}
-                </option>
-            </select>
+            </ng-select>
+
         </div>
 
         <!-- แผนงาน -->
         <div class="col-md-6">
-            <label class="form-label">แผนงาน</label> <span class="text-danger"> *</span>
-            <select class="form-select" [(ngModel)]="model.selectedPlan" name="selectedPlan" [compareWith]="compareById"
+
+            <label class="form-label">
+                แผนงาน
+            </label>
+
+            <span class="text-danger"> *</span>
+
+            <ng-select [items]="Mas_Plan_Lists" bindLabel="Plan_Name" [(ngModel)]="model.selectedPlan"
+                name="selectedPlan" [compareWith]="compareById" appendTo="body" placeholder="-- เลือกแผนงาน --"
                 (ngModelChange)="Onchange_type_Plan()">
 
-                <option [ngValue]="null" disabled>-- เลือกแผนงาน --</option>
-                <option *ngFor="let item of Mas_Plan_Lists" [ngValue]="item">
-                    {{ item.Plan_Name }}
-                </option>
-            </select>
+            </ng-select>
+
         </div>
 
         <!-- ผลผลิต -->
         <div class="col-md-6">
-            <label class="form-label">ผลผลิต</label> <span class="text-danger"> *</span>
-            <select class="form-select" [(ngModel)]="model.selectedProduct" name="selectedProduct"
-                [compareWith]="compareById" (ngModelChange)="Onchange_type_Product()">
 
-                <option [ngValue]="null" disabled>-- เลือกผลผลิต --</option>
-                <option *ngFor="let item of Mas_Product" [ngValue]="item">
-                    {{ item.Product_Name }}
-                </option>
-            </select>
+            <label class="form-label">
+                ผลผลิต
+            </label>
+
+            <span class="text-danger"> *</span>
+
+            <ng-select [items]="Mas_Product" bindLabel="Product_Name" [(ngModel)]="model.selectedProduct"
+                name="selectedProduct" [compareWith]="compareById" appendTo="body" placeholder="-- เลือกผลผลิต --"
+                (ngModelChange)="Onchange_type_Product()">
+
+            </ng-select>
+
         </div>
 
         <!-- กิจกรรม -->
         <div class="col-md-6">
-            <label class="form-label">กิจกรรม</label> <span class="text-danger"> *</span>
-            <select class="form-select" [(ngModel)]="model.selectedActivity" name="selectedActivity"
-                [compareWith]="compareById" (ngModelChange)="onActivityChange($event)">
 
-                <option [ngValue]="null" disabled>-- เลือกกิจกรรม --</option>
-                <option *ngFor="let item of Mas_Activity" [ngValue]="item">
-                    {{ item.Activity_Name }}
-                </option>
-            </select>
+            <label class="form-label">
+                กิจกรรม
+            </label>
+
+            <span class="text-danger"> *</span>
+
+            <ng-select [items]="Mas_Activity" bindLabel="Activity_Name" [(ngModel)]="model.selectedActivity"
+                name="selectedActivity" [compareWith]="compareById" appendTo="body" placeholder="-- เลือกกิจกรรม --"
+                (ngModelChange)="onActivityChange($event)">
+
+            </ng-select>
+
         </div>
 
         <!-- หมวดงบ -->
         <div class="col-md-6">
-            <label class="form-label">หมวดงบ</label> <span class="text-danger"> *</span>
-            <select class="form-select" [(ngModel)]="model.selectedBudget" name="selectedBudget"
-                [compareWith]="compareById" (ngModelChange)="onBudgetChange($event)"
-                [disabled]="Mas_Budget_Types.length === 1">
 
-                <option [ngValue]="null" disabled>-- เลือกหมวดงบ --</option>
-                <option *ngFor="let item of Mas_Budget_Types" [ngValue]="item">
-                    {{ item.Budget_Type_Name }}
-                </option>
-            </select>
+            <label class="form-label">
+                หมวดงบ
+            </label>
+
+            <span class="text-danger"> *</span>
+
+            <ng-select [items]="Mas_Budget_Types" bindLabel="Budget_Type_Name" [(ngModel)]="model.selectedBudget"
+                name="selectedBudget" [compareWith]="compareById" appendTo="body" placeholder="-- เลือกหมวดงบ --"
+                [clearable]="false" [searchable]="true" [disabled]="Mas_Budget_Types.length === 1"
+                (ngModelChange)="onBudgetChange($event)">
+
+            </ng-select>
+
         </div>
 
         <!-- ชื่อโครงการ -->
         <div class="col-md-12">
-            <label class="form-label">ชื่อโครงการ</label> <span class="text-danger"> *</span>
+
+            <label class="form-label">
+                ชื่อโครงการ
+            </label>
+
+            <span class="text-danger"> *</span>
+
             <input [(ngModel)]="model.Project_Name" name="Project_Name" type="text" class="form-control">
+
         </div>
 
     </div>
 
-<!-- ลักษณะโครงการ -->
-<div class="row mt-4">
-    <div class="col-md-3">
-        <label class="form-label d-block">ลักษณะโครงการ</label>
-        <div class="form-check form-check-inline">
-            <input (ngModelChange)="onBudgetChangebox()" type="radio" class="form-check-input" name="Used_BG"
-                [value]="1" [(ngModel)]="model.Used_BG">
-            ใช้งบ
+    <!-- ลักษณะโครงการ -->
+    <div class="row mt-4">
+
+        <div class="col-md-3">
+
+            <label class="form-label d-block">
+                ลักษณะโครงการ
+            </label>
+
+            <div class="form-check form-check-inline">
+
+                <input (ngModelChange)="onBudgetChangebox()" type="radio" class="form-check-input" name="Used_BG"
+                    [value]="1" [(ngModel)]="model.Used_BG">
+
+                ใช้งบ
+
+            </div>
+
+            <div class="form-check form-check-inline">
+
+                <input (ngModelChange)="onBudgetChangebox()" type="radio" class="form-check-input" name="Used_BG"
+                    [value]="2" [(ngModel)]="model.Used_BG">
+
+                ไม่ใช้งบ
+
+            </div>
+
         </div>
 
-        <div class="form-check form-check-inline">
-            <input (ngModelChange)="onBudgetChangebox()" type="radio" class="form-check-input" name="Used_BG"
-                [value]="2" [(ngModel)]="model.Used_BG">
-            ไม่ใช้งบ
+        <!-- การดำเนินการ -->
+        <div class="col-md-3">
+
+            <label class="form-label d-block">
+                การดำเนินการ
+            </label>
+
+            <div class="form-check form-check-inline">
+
+                <input type="checkbox" class="form-check-input" [ngModel]="model.Operation1 === 1"
+                    (ngModelChange)="model.Operation1 = $event ? 1 : 0">
+
+                ดำเนินการเอง
+
+            </div>
+
+            <div class="form-check form-check-inline">
+
+                <input type="checkbox" class="form-check-input" [ngModel]="model.Operation2 === 2"
+                    (ngModelChange)="model.Operation2 = $event ? 2 : 0">
+
+                จัดจ้าง
+
+            </div>
+
         </div>
+
     </div>
 
-    <!-- การดำเนินการ -->
-    <div class="col-md-3">
-        <label class="form-label d-block">การดำเนินการ</label>
-        <div class="form-check form-check-inline">
-            <input type="checkbox" class="form-check-input" [ngModel]="model.Operation1 === 1"
-                (ngModelChange)="model.Operation1 = $event ? 1 : 0">
-            ดำเนินการเอง
+    <div style="height:15px"></div>
+
+    <div class="row mt-4">
+
+        <div class="col-md-3">
+
+            <label class="form-label d-block">
+                ประเภทโครงการ
+            </label>
+
+            <div class="d-flex gap-3">
+
+                <div class="form-check">
+
+                    <input type="radio" class="form-check-input" name="Project_Type_Id" [value]="1"
+                        [(ngModel)]="model.Project_Type_Id">
+
+                    โครงการใหม่
+
+                </div>
+
+                <div class="form-check">
+
+                    <input type="radio" class="form-check-input" name="Project_Type_Id" [value]="2"
+                        [(ngModel)]="model.Project_Type_Id">
+
+                    โครงการต่อเนื่อง
+
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="form-check form-check-inline">
-            <input type="checkbox" class="form-check-input" [ngModel]="model.Operation2 === 2"
-                (ngModelChange)="model.Operation2 = $event ? 2 : 0">
-            จัดจ้าง
+        <div class="col-md-2" *ngIf="model.Project_Type_Id === 2">
+
+            <label class="form-label">
+                จำนวนปีที่ดำเนินการ
+            </label>
+
+            <input type="number" name="Project_Year_Count" class="form-control" placeholder="กรอกจำนวนปี"
+                [(ngModel)]="model.Project_Year_Count">
+
         </div>
+
+        <div class="col-md-2" *ngIf="model.Project_Type_Id === 2">
+
+            <label class="form-label">
+                ปีนี้เป็นปีที่
+            </label>
+
+            <input type="number" name="Project_Year_Number" class="form-control" placeholder="กรอกปี"
+                [(ngModel)]="model.Project_Year_Number">
+
+        </div>
+
     </div>
 
 </div>
-    <div style="height:15px"></div>
-
-<div class="row mt-4">
-    <div class="col-md-3">
-        <label class="form-label d-block">ประเภทโครงการ</label>
-
-        <div class="d-flex gap-3">
-            <div class="form-check">
-                <input type="radio" class="form-check-input" name="Project_Type_Id" [value]="1"
-                    [(ngModel)]="model.Project_Type_Id">
-                โครงการใหม่
-            </div>
-
-            <div class="form-check">
-                <input type="radio" class="form-check-input" name="Project_Type_Id" [value]="2"
-                    [(ngModel)]="model.Project_Type_Id">
-                โครงการต่อเนื่อง
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-2" *ngIf="model.Project_Type_Id === 2">
-        <label class="form-label">จำนวนปีที่ดำเนินการ</label>
-        <input type="number" name="Project_Year_Count" class="form-control" placeholder="กรอกจำนวนปี"
-            [(ngModel)]="model.Project_Year_Count">
-    </div>
-
-    <div class="col-md-2" *ngIf="model.Project_Type_Id === 2">
-        <label class="form-label">ปีนี้เป็นปีที่</label>
-        <input type="number" name="Project_Year_Number" class="form-control" placeholder="กรอกปี"
-            [(ngModel)]="model.Project_Year_Number">
-    </div>
-
-</div></div>
