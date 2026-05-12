@@ -33,7 +33,7 @@ export class SessionService {
    * ดึงข้อมูล session ทั้งหมด
    */
   getUserSession(): UserSession | null {
-    const sessionData = localStorage.getItem('');
+    const sessionData = localStorage.getItem(this.SESSION_KEY);
     if (sessionData) {
       const session = JSON.parse(sessionData);
       session.lastUpdated = new Date(session.lastUpdated);
@@ -97,7 +97,7 @@ export class SessionService {
     const now = new Date();
     const sessionTime = new Date(session.lastUpdated);
     const hoursDiff = (now.getTime() - sessionTime.getTime()) / (1000 * 60 * 60);
-    
+
     return hoursDiff < 24 && !!session.token && !!session.permissionId;
   }
 

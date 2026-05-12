@@ -26,7 +26,7 @@ export class AuthGuard implements CanActivate {
         route: ActivatedRouteSnapshot,
         state: RouterStateSnapshot
     ): Promise<boolean> {
-
+        debugger
         // เช็ค token และ permission เดิม
         const storedPermission = this.authenticationService.getStoredPermission();
         const storedToken = this.authenticationService.getStoredToken();
@@ -64,7 +64,7 @@ export class AuthGuard implements CanActivate {
                 // เก็บ session
                 localStorage.setItem(
                     'userSession',
-                    JSON.stringify(response.RESULT)
+                    response.RESULT
                 );
 
                 return true;

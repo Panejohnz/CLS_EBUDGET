@@ -30,7 +30,7 @@ export const environment = {
   //ng build --base-href /CLS_ERP_BUDGET_FRONT/ --aot   --configuration production
   // ----------------------------------------------------------------------------
   //get permission from management
-  CLS_MANAGEMENT: 'https://app.celestsoft.com/CLS_ERP_MANANGEMENT_FRONT/'
+  CLS_MANAGEMENT: 'https://app.celestsoft.com/CLS_ERP_MANANGEMENT/'
 
   // -------------------------------------------------------------------------------------------------------------------------
 
