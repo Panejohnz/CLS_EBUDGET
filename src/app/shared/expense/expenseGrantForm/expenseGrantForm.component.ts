@@ -9,16 +9,29 @@ export class ExpenseGrantFormComponent {
 
   @Input() modal: any;
   @Input() expenseItem: any;
+  @Input() model: any;
 
   constructor() { }
+
+  ngOnInit() {
+
+    if (!this.model) return;
+
+    if (!this.model.Budget_Request_Detail_Item) {
+
+      this.model.Budget_Request_Detail_Item = [];
+
+    }
+
+    this.bindData();
+
+  }
 
   closeModal() {
     this.modal.dismiss();
   }
 
-  items: any[] = [
-    this.createItem()
-  ];
+  items: any[] = [];
 
   grandTotal = 0;
 
@@ -29,6 +42,8 @@ export class ExpenseGrantFormComponent {
   createItem() {
 
     return {
+
+      requestItemId: 0,
 
       name: '',
 
@@ -47,6 +62,62 @@ export class ExpenseGrantFormComponent {
   }
 
   // =========================
+  // BIND DATA
+  // =========================
+
+  bindData() {
+
+    const rows =
+      this.model.Budget_Request_Detail_Item.filter(
+        (x: any) =>
+          x.Fk_Expense_Id ==
+          this.model.selectedExpenseTypeId
+      );
+
+    if (rows.length == 0) {
+
+      this.items = [
+        this.createItem()
+      ];
+
+      return;
+
+    }
+
+    this.items = rows.map((x: any) => {
+
+      return {
+
+        requestItemId:
+          x.Request_Item_Id || 0,
+
+        name:
+          x.Expense_Detail || '',
+
+        price:
+          Number(x.Rate || 0),
+
+        qty:
+          Number(x.Quantity || 0),
+
+        unit:
+          x.Unit_Name || 'คน',
+
+        month:
+          Number(x.Month || 0),
+
+        total:
+          Number(x.Total || 0)
+
+      };
+
+    });
+
+    this.calculateAll();
+
+  }
+
+  // =========================
   // ADD / REMOVE
   // =========================
 
@@ -55,6 +126,8 @@ export class ExpenseGrantFormComponent {
     this.items.push(
       this.createItem()
     );
+
+    this.updateDetailItems();
 
   }
 
@@ -75,9 +148,12 @@ export class ExpenseGrantFormComponent {
     const item = this.items[index];
 
     item.total =
-      (item.price || 0) *
-      (item.qty || 0) *
-      (item.month || 0);
+
+      (Number(item.price) || 0) *
+
+      (Number(item.qty) || 0) *
+
+      (Number(item.month) || 0);
 
     this.calculateAll();
 
@@ -88,9 +164,11 @@ export class ExpenseGrantFormComponent {
     this.grandTotal =
       this.items.reduce((sum: number, item: any) => {
 
-        return sum + (item.total || 0);
+        return sum + (Number(item.total) || 0);
 
       }, 0);
+
+    this.updateDetailItems();
 
   }
 
@@ -102,7 +180,7 @@ export class ExpenseGrantFormComponent {
 
     return this.items.reduce((sum: number, item: any) => {
 
-      return sum + (item.qty || 0);
+      return sum + (Number(item.qty) || 0);
 
     }, 0);
 
@@ -112,9 +190,62 @@ export class ExpenseGrantFormComponent {
 
     return this.items.reduce((sum: number, item: any) => {
 
-      return sum + (item.month || 0);
+      return sum + (Number(item.month) || 0);
 
     }, 0);
+
+  }
+
+  // =========================
+  // UPDATE MODEL
+  // =========================
+
+  updateDetailItems() {
+
+    if (!this.model) return;
+
+    this.model.Budget_Request_Detail_Item =
+
+      this.model.Budget_Request_Detail_Item.filter(
+
+        (x: any) =>
+
+          x.Fk_Expense_Id !=
+          this.model.selectedExpenseTypeId
+
+      );
+
+    this.items.forEach((item: any) => {
+
+      this.model.Budget_Request_Detail_Item.push({
+
+        Request_Item_Id:
+          item.requestItemId || 0,
+
+        Fk_Expense_Id:
+          this.model.selectedExpenseTypeId,
+
+        Expense_Detail:
+          item.name || '',
+
+        Quantity:
+          item.qty || 0,
+
+        Unit_Name:
+          item.unit || '',
+
+        Month:
+          item.month || 0,
+
+        Rate:
+          item.price || 0,
+
+        Total:
+          item.total || 0
+
+      });
+
+    });
 
   }
 
@@ -123,6 +254,8 @@ export class ExpenseGrantFormComponent {
   // =========================
 
   async save() {
+
+    this.updateDetailItems();
 
     const userConfirmed = await confirmAlert(
       'info',

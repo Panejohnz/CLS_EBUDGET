@@ -11,25 +11,9 @@ export class ExpenseConsultantHireComponent {
   @Input() expenseItem: any;
   @Input() model: any;
 
-  closeModal() {
-    this.modal.dismiss();
-  }
-
-  mainStaff: any[] = []
-  supportStaff: any[] = []
-  otherCost: any[] = []
-
-  totalCost: number = 0
-  mainTotal: number = 0
-  supportTotal: number = 0
-  grandTotal: number = 0
-  otherTotal: number = 0
-
   projects: any[] = [];
 
-  constructor() {
-    this.addProject();
-  }
+  constructor() { }
 
   ngOnInit() {
 
@@ -43,10 +27,104 @@ export class ExpenseConsultantHireComponent {
 
     this.bindData();
 
+    if (this.projects.length == 0) {
+
+      this.addProject();
+
+    }
+
+  }
+
+  closeModal() {
+
+    this.modal.dismiss();
+
   }
 
   // =========================
-  // LOAD DATA
+  // CREATE
+  // =========================
+
+  createStaff() {
+
+    return {
+
+      requestItemId: 0,
+
+      name: '',
+
+      field: '',
+
+      edu_bachelor: false,
+
+      edu_master: false,
+
+      edu_phd: false,
+
+      exp: 0,
+
+      qty: 0,
+
+      month: 0,
+
+      rate: 0,
+
+      total: 0
+
+    };
+
+  }
+
+  createOtherCost() {
+
+    return {
+
+      requestItemId: 0,
+
+      name: '',
+
+      rate: 0
+
+    };
+
+  }
+
+  createProject() {
+
+    return {
+
+      requestItemId: 0,
+
+      tempId: 0,
+
+      project_name: '',
+
+      reason: '',
+
+      benefit: '',
+
+      mainStaff: [
+        this.createStaff()
+      ] as any[],
+
+      supportStaff: [] as any[],
+
+      otherCost: [] as any[],
+
+      mainTotal: 0,
+
+      supportTotal: 0,
+
+      otherTotal: 0,
+
+      totalCost: 0
+
+    };
+
+  }
+
+  // =========================
+  // BIND DATA
   // =========================
 
   bindData() {
@@ -70,15 +148,23 @@ export class ExpenseConsultantHireComponent {
           x.Other_Name == 'PROJECT'
       );
 
-    projectRows.forEach((pRow: any) => {
+    if (projectRows.length == 0) {
 
-      const projectId =
-        pRow.Request_Item_Id;
+      this.addProject();
+
+      return;
+
+    }
+
+    projectRows.forEach((pRow: any, index: number) => {
 
       const project: any = {
 
         requestItemId:
-          projectId,
+          pRow.Request_Item_Id || 0,
+
+        tempId:
+          -(index + 1),
 
         project_name:
           pRow.Expense_Name || '',
@@ -89,11 +175,11 @@ export class ExpenseConsultantHireComponent {
         benefit:
           pRow.Purpose || '',
 
-        mainStaff: [],
+        mainStaff: [] as any[],
 
-        supportStaff: [],
+        supportStaff: [] as any[],
 
-        otherCost: [],
+        otherCost: [] as any[],
 
         mainTotal: 0,
 
@@ -110,7 +196,6 @@ export class ExpenseConsultantHireComponent {
       rows
         .filter(
           (x: any) =>
-            x.Fk_Request_Detail_Id == projectId &&
             x.Other_Name == 'MAIN'
         )
         .forEach((x: any) => {
@@ -120,9 +205,11 @@ export class ExpenseConsultantHireComponent {
             requestItemId:
               x.Request_Item_Id || 0,
 
+            // รายการ
             name:
               x.Expense_Detail || '',
 
+            // กลุ่มวิชาชีพ
             field:
               x.Position_Name || '',
 
@@ -158,7 +245,6 @@ export class ExpenseConsultantHireComponent {
       rows
         .filter(
           (x: any) =>
-            x.Fk_Request_Detail_Id == projectId &&
             x.Other_Name == 'SUPPORT'
         )
         .forEach((x: any) => {
@@ -168,9 +254,11 @@ export class ExpenseConsultantHireComponent {
             requestItemId:
               x.Request_Item_Id || 0,
 
+            // รายการ
             name:
               x.Expense_Detail || '',
 
+            // กลุ่มวิชาชีพ
             field:
               x.Position_Name || '',
 
@@ -206,7 +294,6 @@ export class ExpenseConsultantHireComponent {
       rows
         .filter(
           (x: any) =>
-            x.Fk_Request_Detail_Id == projectId &&
             x.Other_Name == 'OTHER'
         )
         .forEach((x: any) => {
@@ -228,18 +315,9 @@ export class ExpenseConsultantHireComponent {
 
       if (project.mainStaff.length == 0) {
 
-        project.mainStaff.push({
-          name: '',
-          field: '',
-          edu_bachelor: false,
-          edu_master: false,
-          edu_phd: false,
-          exp: 0,
-          qty: 0,
-          month: 0,
-          rate: 0,
-          total: 0
-        });
+        project.mainStaff.push(
+          this.createStaff()
+        );
 
       }
 
@@ -265,85 +343,23 @@ export class ExpenseConsultantHireComponent {
   // PROJECT
   // =========================
 
-  addMain() {
+  addProject() {
 
-    this.projects.push({
+    const project: any =
+      this.createProject();
 
-      project_name: '',
-      reason: '',
-      benefit: '',
+    project.tempId =
+      -(this.projects.length + 1);
 
-      mainStaff: [{
-
-        name: '',
-        field: '',
-
-        edu_bachelor: false,
-        edu_master: false,
-        edu_phd: false,
-
-        exp: 0,
-        qty: 0,
-        month: 0,
-        rate: 0,
-        total: 0
-
-      }],
-
-      supportStaff: [],
-
-      otherCost: [],
-
-      totalCost: 0
-
-    });
+    this.projects.push(project);
 
     this.updateDetailItems();
 
   }
 
-  addProject() {
+  removeProject(index: number) {
 
-    this.projects.push({
-
-      requestItemId: 0,
-
-      project_name: '',
-
-      reason: '',
-
-      benefit: '',
-
-      mainStaff: [{
-
-        requestItemId: 0,
-
-        name: '',
-
-        field: '',
-
-        edu_bachelor: false,
-        edu_master: false,
-        edu_phd: false,
-
-        exp: 0,
-        qty: 0,
-        month: 0,
-        rate: 0,
-        total: 0
-
-      }],
-
-      supportStaff: [],
-
-      otherCost: [],
-
-      mainTotal: 0,
-      supportTotal: 0,
-      otherTotal: 0,
-      totalCost: 0
-
-    })
+    this.projects.splice(index, 1);
 
     this.updateDetailItems();
 
@@ -355,112 +371,25 @@ export class ExpenseConsultantHireComponent {
 
   addMainDetail(pIndex: number) {
 
-    this.projects[pIndex].mainStaff.push({
-
-      requestItemId: 0,
-
-      name: '',
-      field: '',
-
-      edu_bachelor: false,
-      edu_master: false,
-      edu_phd: false,
-
-      exp: 0,
-      qty: 0,
-      month: 0,
-      rate: 0,
-      total: 0
-
-    })
+    this.projects[pIndex].mainStaff.push(
+      this.createStaff()
+    );
 
     this.updateDetailItems();
 
   }
-
-  // =========================
-  // SUPPORT
-  // =========================
-
-  addSupportDetail(pIndex: number) {
-
-    this.projects[pIndex].supportStaff.push({
-
-      requestItemId: 0,
-
-      name: '',
-      field: '',
-
-      edu_bachelor: false,
-      edu_master: false,
-      edu_phd: false,
-
-      exp: 0,
-      qty: 0,
-      month: 0,
-      rate: 0,
-      total: 0
-
-    })
-
-    this.updateDetailItems();
-
-  }
-
-  // =========================
-  // OTHER
-  // =========================
-
-  addOtherDetail(pIndex: number) {
-
-    this.projects[pIndex].otherCost.push({
-
-      requestItemId: 0,
-
-      name: '',
-      rate: 0
-
-    })
-
-    this.updateDetailItems();
-
-  }
-
-  // =========================
-  // REMOVE
-  // =========================
 
   removeMain(pIndex: number, i: number) {
 
-    this.projects[pIndex].mainStaff.splice(i, 1)
+    this.projects[pIndex].mainStaff.splice(i, 1);
 
-    this.calculateMain(pIndex)
-
-  }
-
-  removeSupport(pIndex: number, i: number) {
-
-    this.projects[pIndex].supportStaff.splice(i, 1)
-
-    this.calculateSupport(pIndex)
+    this.calculateMain(pIndex);
 
   }
-
-  removeOther(pIndex: number, i: number) {
-
-    this.projects[pIndex].otherCost.splice(i, 1)
-
-    this.calculateOther(pIndex)
-
-  }
-
-  // =========================
-  // CALCULATE
-  // =========================
 
   calculateMain(pIndex: number) {
 
-    let total = 0
+    let total = 0;
 
     this.projects[pIndex].mainStaff.forEach((item: any) => {
 
@@ -470,21 +399,43 @@ export class ExpenseConsultantHireComponent {
 
         (Number(item.month) || 0) *
 
-        (Number(item.rate) || 0)
+        (Number(item.rate) || 0);
 
-      total += item.total
+      total += item.total;
 
-    })
+    });
 
-    this.projects[pIndex].mainTotal = total
+    this.projects[pIndex].mainTotal = total;
 
-    this.calculateTotal(pIndex)
+    this.calculateTotal(pIndex);
+
+  }
+
+  // =========================
+  // SUPPORT
+  // =========================
+
+  addSupportDetail(pIndex: number) {
+
+    this.projects[pIndex].supportStaff.push(
+      this.createStaff()
+    );
+
+    this.updateDetailItems();
+
+  }
+
+  removeSupport(pIndex: number, i: number) {
+
+    this.projects[pIndex].supportStaff.splice(i, 1);
+
+    this.calculateSupport(pIndex);
 
   }
 
   calculateSupport(pIndex: number) {
 
-    let total = 0
+    let total = 0;
 
     this.projects[pIndex].supportStaff.forEach((item: any) => {
 
@@ -494,38 +445,65 @@ export class ExpenseConsultantHireComponent {
 
         (Number(item.month) || 0) *
 
-        (Number(item.rate) || 0)
+        (Number(item.rate) || 0);
 
-      total += item.total
+      total += item.total;
 
-    })
+    });
 
-    this.projects[pIndex].supportTotal = total
+    this.projects[pIndex].supportTotal = total;
 
-    this.calculateTotal(pIndex)
+    this.calculateTotal(pIndex);
+
+  }
+
+  // =========================
+  // OTHER
+  // =========================
+
+  addOtherDetail(pIndex: number) {
+
+    this.projects[pIndex].otherCost.push(
+      this.createOtherCost()
+    );
+
+    this.updateDetailItems();
+
+  }
+
+  removeOther(pIndex: number, i: number) {
+
+    this.projects[pIndex].otherCost.splice(i, 1);
+
+    this.calculateOther(pIndex);
 
   }
 
   calculateOther(pIndex: number) {
 
-    let total = 0
+    let total = 0;
 
     this.projects[pIndex].otherCost.forEach((item: any) => {
 
       total +=
-        (Number(item.rate) || 0)
+        (Number(item.rate) || 0);
 
-    })
+    });
 
-    this.projects[pIndex].otherTotal = total
+    this.projects[pIndex].otherTotal = total;
 
-    this.calculateTotal(pIndex)
+    this.calculateTotal(pIndex);
 
   }
 
+  // =========================
+  // TOTAL
+  // =========================
+
   calculateTotal(pIndex: number) {
 
-    const p = this.projects[pIndex]
+    const p =
+      this.projects[pIndex];
 
     p.totalCost =
 
@@ -533,9 +511,9 @@ export class ExpenseConsultantHireComponent {
 
       (Number(p.supportTotal) || 0) +
 
-      (Number(p.otherTotal) || 0)
+      (Number(p.otherTotal) || 0);
 
-    this.updateDetailItems()
+    this.updateDetailItems();
 
   }
 
@@ -558,16 +536,19 @@ export class ExpenseConsultantHireComponent {
 
       );
 
-    this.projects.forEach((p: any, pIndex: number) => {
+    this.projects.forEach((p: any) => {
 
-      const projectId =
-        p.requestItemId || (pIndex + 1);
+      const relationId =
+        p.requestItemId || p.tempId;
 
       // PROJECT
       this.model.Budget_Request_Detail_Item.push({
 
         Request_Item_Id:
           p.requestItemId || 0,
+
+        Fk_Request_Detail_Id:
+          relationId,
 
         Fk_Expense_Id:
           this.model.selectedExpenseTypeId,
@@ -598,7 +579,7 @@ export class ExpenseConsultantHireComponent {
             item.requestItemId || 0,
 
           Fk_Request_Detail_Id:
-            projectId,
+            relationId,
 
           Fk_Expense_Id:
             this.model.selectedExpenseTypeId,
@@ -606,9 +587,11 @@ export class ExpenseConsultantHireComponent {
           Other_Name:
             'MAIN',
 
+          // รายการ
           Expense_Detail:
             item.name || '',
 
+          // กลุ่มวิชาชีพ
           Position_Name:
             item.field || '',
 
@@ -649,7 +632,7 @@ export class ExpenseConsultantHireComponent {
             item.requestItemId || 0,
 
           Fk_Request_Detail_Id:
-            projectId,
+            relationId,
 
           Fk_Expense_Id:
             this.model.selectedExpenseTypeId,
@@ -657,9 +640,11 @@ export class ExpenseConsultantHireComponent {
           Other_Name:
             'SUPPORT',
 
+          // รายการ
           Expense_Detail:
             item.name || '',
 
+          // กลุ่มวิชาชีพ
           Position_Name:
             item.field || '',
 
@@ -700,7 +685,7 @@ export class ExpenseConsultantHireComponent {
             item.requestItemId || 0,
 
           Fk_Request_Detail_Id:
-            projectId,
+            relationId,
 
           Fk_Expense_Id:
             this.model.selectedExpenseTypeId,
@@ -724,10 +709,6 @@ export class ExpenseConsultantHireComponent {
     });
 
   }
-
-  // =========================
-  // SAVE
-  // =========================
 
   async save() {
 

@@ -60,7 +60,8 @@
                         <!-- รายการ -->
                         <td>
 
-                            <input class="form-control form-control-sm" [(ngModel)]="item.name">
+                            <input class="form-control form-control-sm" [(ngModel)]="item.name"
+                                (ngModelChange)="updateDetailItems()">
 
                         </td>
 
@@ -83,7 +84,8 @@
                         <!-- หน่วย -->
                         <td>
 
-                            <select class="form-select form-select-sm" [(ngModel)]="item.unit">
+                            <select class="form-select form-select-sm" [(ngModel)]="item.unit"
+                                (ngModelChange)="updateDetailItems()">
 
                                 <option value="คน">คน</option>
                                 <option value="งาน">งาน</option>
