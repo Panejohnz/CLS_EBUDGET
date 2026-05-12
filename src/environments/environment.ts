@@ -27,7 +27,8 @@ export const environment = {
   //รายงาน
   EXPORT_REPORT: 'https://fdaemonitor.fda.moph.go.th/CLS_EMONITOR_KPI_REPORT/Report/Report_R002.aspx',
   // ----------------------------------------------------------------------
-
+  //get permission from management
+  CLS_MANAGEMENT: 'https://app.celestsoft.com/CLS_ERP_MANANGEMENT_FRONT/'
 
   // -----------------------------------------------------------------------------------------------------------------
 

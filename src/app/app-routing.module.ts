@@ -8,7 +8,7 @@ import { AuthGuard } from './core/guards/auth.guard';
 
 const routes: Routes = [
   // { path: '', loadChildren: () => import('./account/account.module').then(m => m.AccountModule) },
-  { path: '', component: LayoutComponent, loadChildren: () => import('./pages/pages.module').then(m => m.PagesModule) },
+  { path: '', component: LayoutComponent, loadChildren: () => import('./pages/pages.module').then(m => m.PagesModule), canActivate: [AuthGuard] },
   { path: 'auth', loadChildren: () => import('./account/account.module').then(m => m.AccountModule) },
   // { path: 'pages', component: LayoutComponent, loadChildren: () => import('./pages/pages.module').then(m => m.PagesModule), canActivate: [AuthGuard] },
   { path: 'landing', loadChildren: () => import('./landing/landing.module').then(m => m.LandingModule) },
@@ -26,7 +26,7 @@ const routes: Routes = [
   { path: 'singOffAction', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/singOffAcion/singOffAcion.module').then(m => m.EmonitorMasterModule), },
   { path: 'MasterData', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/MasterData/MasterData.module').then(m => m.PagesModule), },
 
-  
+
 ];
 
 @NgModule({

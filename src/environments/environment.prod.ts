@@ -29,6 +29,8 @@ export const environment = {
   EXPORT_REPORT: 'https://fdaemonitor.fda.moph.go.th/CLS_EMONITOR_KPI_REPORT/Report/Report_R002.aspx',
   //ng build --base-href /CLS_ERP_BUDGET_FRONT/ --aot   --configuration production
   // ----------------------------------------------------------------------------
+  //get permission from management
+  CLS_MANAGEMENT: 'https://app.celestsoft.com/CLS_ERP_MANANGEMENT_FRONT/'
 
   // -------------------------------------------------------------------------------------------------------------------------
 
