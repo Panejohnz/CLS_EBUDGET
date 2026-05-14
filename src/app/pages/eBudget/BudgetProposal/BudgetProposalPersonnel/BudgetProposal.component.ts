@@ -414,8 +414,23 @@ export class ProjectBudgetProposalComponent {
       { quarter: 4, months: mapped.slice(9, 12) }
     ];
   }
-  deletePlan(data: any) {
+  async deletePlan(data: any) {
+    const userConfirmed = await confirmAlert('info', 'ต้องการลบข้อมูล ?', '');
 
+    if (userConfirmed) {
+
+      const model = {
+        FUNC_CODE: "FUNC-Delete_Budget_Request",
+
+        Request_Id: data.Request_Id
+      };
+
+      this.servicebud.GatewayGetData(model).subscribe(async () => {
+        basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
+        this.get_data();
+
+      });
+    }
   }
 
   saveTarget() {

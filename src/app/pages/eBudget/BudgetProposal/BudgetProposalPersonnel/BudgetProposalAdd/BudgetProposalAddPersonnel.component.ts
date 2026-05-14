@@ -21,7 +21,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
   closeModal() {
 
     this.modalRef.dismiss();
-
+    window.location.reload();
   }
 
   project_budget: any
@@ -38,14 +38,28 @@ export class ProjectBudgetProposalAddPersonnelComponent {
     }
   }
 
-  targetList: any = [
+  targetList: any[] = [
     {
-      oct: 0, nov: 0, dec: 0,
-      jan: 0, feb: 0, mar: 0,
-      apr: 0, may: 0, jun: 0,
-      jul: 0, aug: 0, sep: 0
+      Request_Detail_Id: 0,
+      unit: '',
+
+      oct: 0,
+      nov: 0,
+      dec: 0,
+
+      jan: 0,
+      feb: 0,
+      mar: 0,
+
+      apr: 0,
+      may: 0,
+      jun: 0,
+
+      jul: 0,
+      aug: 0,
+      sep: 0
     }
-  ]
+  ];
 
   unit = ''
   isIndicator = false
@@ -163,31 +177,92 @@ export class ProjectBudgetProposalAddPersonnelComponent {
       this.model?.Budget_Request?.Expense_Type || '';
 
     // 🔥 target detail
-    if (this.model?.Budget_Request_Detail) {
+    if (this.model?.Budget_Request_Detail?.length > 0) {
 
-      const d = this.model.Budget_Request_Detail;
+      this.targetList =
+        this.model.Budget_Request_Detail.map((d: any) => ({
 
-      this.unit = d.Unit_Name || '';
+          Request_Detail_Id:
+            d.Request_Detail_Id || 0,
 
-      this.targetList = [{
+          unit:
+            d.Unit_Name || '',
 
-        oct: d.Oct_Target || 0,
-        nov: d.Nov_Target || 0,
-        dec: d.Dec_Target || 0,
+          oct:
+            d.Oct_Target || 0,
 
-        jan: d.Jan_Target || 0,
-        feb: d.Feb_Target || 0,
-        mar: d.Mar_Target || 0,
+          nov:
+            d.Nov_Target || 0,
 
-        apr: d.Apr_Target || 0,
-        may: d.May_Target || 0,
-        jun: d.Jun_Target || 0,
+          dec:
+            d.Dec_Target || 0,
 
-        jul: d.Jul_Target || 0,
-        aug: d.Aug_Target || 0,
-        sep: d.Sep_Target || 0
+          jan:
+            d.Jan_Target || 0,
 
-      }];
+          feb:
+            d.Feb_Target || 0,
+
+          mar:
+            d.Mar_Target || 0,
+
+          apr:
+            d.Apr_Target || 0,
+
+          may:
+            d.May_Target || 0,
+
+          jun:
+            d.Jun_Target || 0,
+
+          jul:
+            d.Jul_Target || 0,
+
+          aug:
+            d.Aug_Target || 0,
+
+          sep:
+            d.Sep_Target || 0,
+
+          amount_oct:
+            d.Oct_Amount || 0,
+
+          amount_nov:
+            d.Nov_Amount || 0,
+
+          amount_dec:
+            d.Dec_Amount || 0,
+
+          amount_jan:
+            d.Jan_Amount || 0,
+
+          amount_feb:
+            d.Feb_Amount || 0,
+
+          amount_mar:
+            d.Mar_Amount || 0,
+
+          amount_apr:
+            d.Apr_Amount || 0,
+
+          amount_may:
+            d.May_Amount || 0,
+
+          amount_jun:
+            d.Jun_Amount || 0,
+
+          amount_jul:
+            d.Jul_Amount || 0,
+
+          amount_aug:
+            d.Aug_Amount || 0,
+
+          amount_sep:
+            d.Sep_Amount || 0
+
+        }));
+      this.targetDetail =
+        [...this.model.Budget_Request_Detail];
     }
 
     if (this.model.selectedPlanPropos) {
@@ -203,6 +278,37 @@ export class ProjectBudgetProposalAddPersonnelComponent {
         this.model.selectedExpenseTypeId
       );
     }
+  }
+  getTargetSum(t: any): number {
+
+    return (
+      (Number(t.oct) || 0) +
+      (Number(t.nov) || 0) +
+      (Number(t.dec) || 0) +
+
+      (Number(t.jan) || 0) +
+      (Number(t.feb) || 0) +
+      (Number(t.mar) || 0) +
+
+      (Number(t.apr) || 0) +
+      (Number(t.may) || 0) +
+      (Number(t.jun) || 0) +
+
+      (Number(t.jul) || 0) +
+      (Number(t.aug) || 0) +
+      (Number(t.sep) || 0)
+    );
+  }
+  getGrandTotal(): number {
+
+    return this.targetList.reduce(
+      (sum: number, t: any) => {
+
+        return sum + this.getTargetSum(t);
+
+      },
+      0
+    );
   }
   Onchange_type() {
 
@@ -288,70 +394,121 @@ export class ProjectBudgetProposalAddPersonnelComponent {
     });
   }
 
-  saveTarget(modal: any) {
-
-    const t = this.targetList[0];
-
-    this.targetDetail = {
-
-      Request_Detail_Id:
-        this.model?.Budget_Request_Detail?.Request_Detail_Id,
-
-      Unit_Name: this.unit,
-
-      Oct_Target: t.oct || 0,
-      Nov_Target: t.nov || 0,
-      Dec_Target: t.dec || 0,
-
-      Jan_Target: t.jan || 0,
-      Feb_Target: t.feb || 0,
-      Mar_Target: t.mar || 0,
-
-      Apr_Target: t.apr || 0,
-      May_Target: t.may || 0,
-      Jun_Target: t.jun || 0,
-
-      Jul_Target: t.jul || 0,
-      Aug_Target: t.aug || 0,
-      Sep_Target: t.sep || 0,
-
-      Sum_Target:
-        (t.oct || 0) +
-        (t.nov || 0) +
-        (t.dec || 0) +
-        (t.jan || 0) +
-        (t.feb || 0) +
-        (t.mar || 0) +
-        (t.apr || 0) +
-        (t.may || 0) +
-        (t.jun || 0) +
-        (t.jul || 0) +
-        (t.aug || 0) +
-        (t.sep || 0)
-    };
-
-    modal.close();
-  }
 
   addTargetRow() {
 
     this.targetList.push({
-      oct: null,
-      nov: null,
-      dec: null,
-      jan: null,
-      feb: null,
-      mar: null,
-      apr: null,
-      may: null,
-      jun: null,
-      jul: null,
-      aug: null,
-      sep: null
+
+      Request_Detail_Id: 0,
+      unit: '',
+
+      oct: 0,
+      nov: 0,
+      dec: 0,
+
+      jan: 0,
+      feb: 0,
+      mar: 0,
+
+      apr: 0,
+      may: 0,
+      jun: 0,
+
+      jul: 0,
+      aug: 0,
+      sep: 0
+
     });
+  }
+  async removeTargetRow(index: number, data: any) {
+    const userConfirmed = await confirmAlert('info', 'ต้องการลบข้อมูล ?', '');
+
+    if (userConfirmed) {
+      if (data.Request_Detail_Id) {
+
+        const model = {
+          FUNC_CODE: "FUNC-Delete_Budget_Request_Detail",
+
+          Request_Detail_Id: data.Request_Detail_Id
+        };
+
+        this.serviceebud.GatewayGetData(model).subscribe(async () => {
+          this.targetList.splice(index, 1);
+
+
+        });
+      }
+    } else {
+      this.targetList.splice(index, 1);
+    }
+
 
   }
+  saveTarget(modal: any) {
 
+    this.targetDetail =
+      this.targetList.map((t: any) => ({
+
+        Request_Detail_Id:
+          t.Request_Detail_Id || 0,
+
+        Unit_Name:
+          t.unit,
+
+        Oct_Target:
+          t.oct || 0,
+
+        Nov_Target:
+          t.nov || 0,
+
+        Dec_Target:
+          t.dec || 0,
+
+        Jan_Target:
+          t.jan || 0,
+
+        Feb_Target:
+          t.feb || 0,
+
+        Mar_Target:
+          t.mar || 0,
+
+        Apr_Target:
+          t.apr || 0,
+
+        May_Target:
+          t.may || 0,
+
+        Jun_Target:
+          t.jun || 0,
+
+        Jul_Target:
+          t.jul || 0,
+
+        Aug_Target:
+          t.aug || 0,
+
+        Sep_Target:
+          t.sep || 0,
+
+        Sum_Target:
+          (t.oct || 0) +
+          (t.nov || 0) +
+          (t.dec || 0) +
+          (t.jan || 0) +
+          (t.feb || 0) +
+          (t.mar || 0) +
+          (t.apr || 0) +
+          (t.may || 0) +
+          (t.jun || 0) +
+          (t.jul || 0) +
+          (t.aug || 0) +
+          (t.sep || 0)
+
+      }));
+
+    modal.close();
+  }
   Get_Dropdown_list() {
 
     let model = {
@@ -413,7 +570,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
       .subscribe((response: any) => {
 
         this.Mas_Expense_Group =
-          response.Mas_Expense_Types || [];
+          response.List_Mas_Expense_Group || [];
 
         this.Mas_Budget_Types =
           response.Mas_Budget_Types || [];
@@ -434,7 +591,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
           group?.Fk_Expense_Group_Id;
 
         this.model.selectedGroupName =
-          group?.Expense_Type_Name || '';
+          group?.Expense_Group_Name || '';
 
         // 🔥 title
         const expense =
@@ -515,7 +672,8 @@ export class ProjectBudgetProposalAddPersonnelComponent {
 
       FK_Project_Plan_Id:
         this.model.Budget_Request.FK_Project_Plan_Id,
-
+      Total:
+        this.getGrandTotal(),
       Department_Id:
         this.model.Department_Id,
 
@@ -690,6 +848,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
 
     this.model.Project_Plan_Detail =
       this.mapActivities();
+
 
     const userConfirmed =
       await confirmAlert(
