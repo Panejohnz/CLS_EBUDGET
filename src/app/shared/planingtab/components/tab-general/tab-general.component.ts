@@ -1,33 +1,45 @@
 import { Component, Input } from '@angular/core';
 import { EbudgetService } from 'src/app/core/services/ebudget.service';
-import { ProjectPlanService } from 'src/app/core/services/ProjectPlan.service'
+import { ProjectPlanService } from 'src/app/core/services/ProjectPlan.service';
 
 export interface ProjectPlan {
   projectType: string;
 }
+
 @Component({
   selector: 'app-tab-general',
-
   templateUrl: './tab-general.component.html',
   styleUrl: './tab-general.component.scss'
 })
 export class TabGeneralComponent {
-  constructor(private ebudgetService: EbudgetService, private ProjectPlanService: ProjectPlanService) {
-  }
-  @Input() model: any
-  projectType: any = ''
+
+  constructor(
+    private ebudgetService: EbudgetService,
+    private ProjectPlanService: ProjectPlanService
+  ) { }
+
+  @Input() model: any;
+
+  projectType: any = '';
   Project_Type_Id: Number = 0;
 
-  Mas_Department_Lists: any[] = []
-  Mas_Plan_Lists: any[] = []
-  Mas_Expense_Lists: any[] = []
-  Mas_Product: any[] = []
-  Mas_Activity: any[] = []
-  Mas_Budget_Types: any[] = []
+  Mas_Department_Lists: any[] = [];
+  Mas_Plan_Lists: any[] = [];
+  Mas_Expense_Lists: any[] = [];
+  Mas_Product: any[] = [];
+  Mas_Activity: any[] = [];
+  Mas_Budget_Types: any[] = [];
 
-  Used_BG: any
+  Used_BG: any;
+  operations: any[] = [];
+
+  get data() {
+
+    return this.model?.Project_Plan || this.model
+  }
 
   compareById(a: any, b: any): boolean {
+
     if (!a || !b) return a === b;
 
     return (
@@ -41,7 +53,9 @@ export class TabGeneralComponent {
   }
 
   ngOnInit(): void {
-    this.setDefault()
+
+
+
     let model = {
       FUNC_CODE: "FUNC-GET_Mas_General",
       BgYear: "2569"
@@ -53,76 +67,91 @@ export class TabGeneralComponent {
       this.Mas_Plan_Lists = res.Mas_Plan_Lists || [];
       this.Mas_Expense_Lists = res.Mas_Expense_Lists || [];
 
+      const projectId =
+        this.data?.Project_Id || this.data.Project_Plan.Project_Id
+
+      if (projectId) {
+        this.mapInitialData();
+      }
     });
   }
+
   ngOnChanges() {
 
+
+
     if (this.model) {
-      this.setDefault(); 
+      this.setDefault();
     }
+    let model = {
+      FUNC_CODE: "FUNC-GET_Mas_General",
+      BgYear: "2569"
+    };
 
-    if (this.model?.Project_Id) {
-      this.mapInitialData();
-    }
-  }
-  onBudgetChangebox() {
-    const isNoBudget = this.model.Used_BG == 1;
+    this.ebudgetService.GatewayGetData(model).subscribe((res: any) => {
 
-    this.model.activities?.forEach((act: any) => {
-      act.noBudget = isNoBudget;
+      this.Mas_Department_Lists = res.Mas_Department_Lists || [];
+      this.Mas_Plan_Lists = res.Mas_Plan_Lists || [];
+      this.Mas_Expense_Lists = res.Mas_Expense_Lists || [];
 
-      if (isNoBudget) {
-        act.quarters?.forEach((q: any) => {
-          q.months?.forEach((m: any) => {
-            m.budget = null;
-            m.selected = false;
-          });
-        });
+      const projectId =
+        this.data?.Project_Id || this.data.Project_Plan.Project_Id
+
+      if (projectId) {
+        this.mapInitialData();
       }
-
-      act.SubActivities?.forEach((sub: any) => {
-        sub.noBudget = isNoBudget;
-      });
     });
   }
+
   setDefault() {
 
     if (!this.model) {
       this.model = {};
     }
 
-    if (this.model.Used_BG == null) {
-      this.model.Used_BG = 1;
+    if (this.data.Used_BG == null) {
+      this.data.Used_BG = 1;
     }
 
-    if (this.model.Project_Type_Id == null) {
-      this.model.Project_Type_Id = 1;
+    if (this.data.Project_Type_Id == null) {
+      this.data.Project_Type_Id = 1;
     }
 
-    if (this.model.Operation1 == null) {
-      this.model.Operation1 = 1;
+    if (this.data.Operation1 == null) {
+      this.data.Operation1 = 1;
     }
 
-    if (this.model.Operation2 == null) {
-      this.model.Operation2 = 0;
+    if (this.data.Operation2 == null) {
+      this.data.Operation2 = 0;
     }
-
   }
+
   mapInitialData() {
-    
+    debugger
     const find = (list: any[], key: string, value: any) =>
       list.find(x => x[key] == value);
 
     this.model.selectedDepartment =
-      find(this.Mas_Department_Lists, 'Department_Id', this.model.Department_Id);
+      find(
+        this.Mas_Department_Lists,
+        'Department_Id',
+        this.data.Department_Id
+      );
 
     this.model.projectType =
-      find(this.Mas_Expense_Lists, 'Expense_Id', this.model.Fk_Expense_List);
+      find(
+        this.Mas_Expense_Lists,
+        'Expense_Id',
+        this.data.Fk_Expense_List
+      );
 
     this.model.selectedPlan =
-      find(this.Mas_Plan_Lists, 'Plan_Id', this.model.Fk_Plan_Id);
+      find(
+        this.Mas_Plan_Lists,
+        'Plan_Id',
+        this.data.Fk_Plan_Id
+      );
 
-    // 🔥 chain load ต่อ
     if (this.model.projectType) {
       this.Onchange_type();
     }
@@ -132,12 +161,16 @@ export class TabGeneralComponent {
     }
   }
 
-
   Onchange_type_Department() {
+
+    this.data.Department_Id =
+      this.model.selectedDepartment?.Department_Id;
+
     this.ProjectPlanService.setProjectPlan({
       Department: this.model.selectedDepartment
     });
   }
+
   Onchange_type() {
 
     if (!this.model.projectType) return;
@@ -149,22 +182,33 @@ export class TabGeneralComponent {
       }
     };
 
-    this.model.Fk_Expense_List = this.model.projectType.Expense_Id;
+    this.data.Fk_Expense_List =
+      this.model.projectType.Expense_Id;
 
     this.ebudgetService.GatewayGetData(model).subscribe((res: any) => {
 
-      this.Mas_Budget_Types = res.Mas_Budget_Types || [];
+      this.Mas_Budget_Types =
+        res.Mas_Budget_Types || [];
 
-      if (this.model.Fk_Budget_Type) {
+      if (this.data.Fk_Budget_Type) {
+
         this.model.selectedBudget =
-          this.Mas_Budget_Types.find(x => x.Budget_Type_Id == this.model.Fk_Budget_Type);
+          this.Mas_Budget_Types.find(
+            x => x.Budget_Type_Id == this.data.Fk_Budget_Type
+          );
       }
 
       if (this.Mas_Budget_Types.length === 1) {
-        this.model.selectedBudget = this.Mas_Budget_Types[0];
+
+        this.model.selectedBudget =
+          this.Mas_Budget_Types[0];
+
+        this.data.Fk_Budget_Type =
+          this.Mas_Budget_Types[0].Budget_Type_Id;
       }
     });
   }
+
   Onchange_type_Plan() {
 
     if (!this.model.selectedPlan) return;
@@ -176,15 +220,20 @@ export class TabGeneralComponent {
       }
     };
 
-    this.model.Fk_Plan_Id = this.model.selectedPlan.Plan_Id;
+    this.data.Fk_Plan_Id =
+      this.model.selectedPlan.Plan_Id;
 
     this.ebudgetService.GatewayGetData(model).subscribe((res: any) => {
 
-      this.Mas_Product = res.Mas_Product_Lists || [];
+      this.Mas_Product =
+        res.Mas_Product_Lists || [];
 
-      if (this.model.Fk_Product_Id) {
+      if (this.data.Fk_Product_Id) {
+
         this.model.selectedProduct =
-          this.Mas_Product.find(x => x.Product_Id == this.model.Fk_Product_Id);
+          this.Mas_Product.find(
+            x => x.Product_Id == this.data.Fk_Product_Id
+          );
       }
 
       if (this.model.selectedProduct) {
@@ -204,65 +253,115 @@ export class TabGeneralComponent {
       }
     };
 
-    this.model.Fk_Product_Id = this.model.selectedProduct.Product_Id;
+    this.data.Fk_Product_Id =
+      this.model.selectedProduct.Product_Id;
 
     this.ebudgetService.GatewayGetData(model).subscribe((res: any) => {
 
-      this.Mas_Activity = res.Mas_Activity_Lists || [];
+      this.Mas_Activity =
+        res.Mas_Activity_Lists || [];
 
-      // 👉 map activity ตอน edit
-      if (this.model.Fk_Activity_Id) {
+      if (this.data.Fk_Activity_Id) {
+
         this.model.selectedActivity =
-          this.Mas_Activity.find(x => x.Activity_Id == this.model.Fk_Activity_Id);
+          this.Mas_Activity.find(
+            x => x.Activity_Id == this.data.Fk_Activity_Id
+          );
       }
     });
   }
 
   onActivityChange(activity: any) {
-    this.model.Fk_Activity_Id = activity?.Activity_Id;
+
+    this.model.selectedActivity = activity;
+
+    this.data.Fk_Activity_Id =
+      activity?.Activity_Id;
   }
 
   onBudgetChange(budget: any) {
-    this.model.Fk_Budget_Type = budget?.Budget_Type_Id;
+
+    this.model.selectedBudget = budget;
+
+    this.data.Fk_Budget_Type =
+      budget?.Budget_Type_Id;
   }
+
+  onBudgetChangebox() {
+
+    const isNoBudget =
+      this.data.Used_BG == 1;
+
+    this.model.activities?.forEach((act: any) => {
+
+      act.noBudget = isNoBudget;
+
+      if (isNoBudget) {
+
+        act.quarters?.forEach((q: any) => {
+
+          q.months?.forEach((m: any) => {
+
+            m.budget = null;
+            m.selected = false;
+          });
+        });
+      }
+
+      act.SubActivities?.forEach((sub: any) => {
+        sub.noBudget = isNoBudget;
+      });
+    });
+  }
+
   onNatureChange(value: number) {
-    this.model.Used_BG = value;
+    this.data.Used_BG = value;
   }
+
   onNatureChange_project(value: number) {
-    this.model.Used_BG = value;
+    this.data.Used_BG = value;
   }
-
-
 
   onProject_Type_IdChange(value: number) {
+
     this.Project_Type_Id = value;
 
-
-    this.model.Project_Type_Id = value;
+    this.data.Project_Type_Id = value;
   }
+
   onOperationChange(e: any, type: number) {
 
     if (type === 1) {
-      this.model.Operation1 = e.target.checked ? 1 : 0;
+      this.data.Operation1 =
+        e.target.checked ? 1 : 0;
     }
 
     if (type === 2) {
-      this.model.Operation2 = e.target.checked ? 2 : 0;
+      this.data.Operation2 =
+        e.target.checked ? 2 : 0;
     }
   }
 
   isChecked(value: number): boolean {
-    if (!this.model.Operation) return false;
-    return this.model.Operation.split(',').includes(value.toString());
+
+    if (!this.data.Operation) return false;
+
+    return this.data.Operation
+      .split(',')
+      .includes(value.toString());
   }
-  operations: any
+
   onChange(e: any) {
+
     const val = Number(e.target.value);
 
     if (e.target.checked) {
       this.operations.push(val);
     } else {
-      this.operations = this.operations.filter((x: any) => x !== val);
+      this.operations =
+        this.operations.filter(
+          (x: any) => x !== val
+        );
     }
   }
 }

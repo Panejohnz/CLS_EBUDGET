@@ -420,44 +420,96 @@ export class ProjectPlanningComponent {
   }
   Project_Plan: any
   async savePlan(modal: any) {
+    console.log('ก่อน save', this.project_planing);
 
     const getId = (obj: any, key: string) =>
       typeof obj === 'object' ? obj?.[key] : obj;
 
     if (!this.validateHeader()) return;
+    const data =
+      this.project_planing?.Project_Plan ||
+      this.project_planing;
+
     const payload = {
+
       BgYear: "2569",
-      Project_Id: this.project_planing.Project_Id,
 
-      Department_Id: getId(this.project_planing.selectedDepartment, 'Department_Id'),
-      Department_Name: this.project_planing.selectedDepartment?.Department_Name,
+      Project_Id: data.Project_Id,
 
-      Fk_Plan_Id: getId(this.project_planing.selectedPlan, 'Plan_Id'),
-      Plan_Name: this.project_planing.selectedPlan?.Plan_Name,
+      Department_Id: getId(
+        this.project_planing.selectedDepartment,
+        'Department_Id'
+      ),
 
-      Fk_Expense_List: getId(this.project_planing.projectType, 'Expense_Id'),
-      Expense_List: this.project_planing.projectType?.Expense_Name,
+      Department_Name:
+        this.project_planing.selectedDepartment?.Department_Name,
 
-      Fk_Product_Id: getId(this.project_planing.selectedProduct, 'Product_Id'),
-      Product_Name: this.project_planing.selectedProduct?.Product_Name,
+      Fk_Plan_Id: getId(
+        this.project_planing.selectedPlan,
+        'Plan_Id'
+      ),
 
-      Fk_Activity_Id: getId(this.project_planing.selectedActivity, 'Activity_Id'),
-      Activity_Name: this.project_planing.selectedActivity?.Activity_Name,
+      Plan_Name:
+        this.project_planing.selectedPlan?.Plan_Name,
 
-      Fk_Budget_Type: getId(this.project_planing.selectedBudget, 'Budget_Type_Id'),
-      Budget_Type: this.project_planing.selectedBudget?.Budget_Type_Name,
+      Fk_Expense_List: getId(
+        this.project_planing.projectType,
+        'Expense_Id'
+      ),
 
-      Project_Name: this.project_planing.Project_Name,
-      Used_BG: this.project_planing.Used_BG,
-      Project_Type_Id: this.project_planing.Project_Type_Id,
+      Expense_List:
+        this.project_planing.projectType?.Expense_Name,
 
-      Project_Year_Count: this.project_planing.Project_Year_Count,
-      Project_Year_Number: this.project_planing.Project_Year_Number,
+      Fk_Product_Id: getId(
+        this.project_planing.selectedProduct,
+        'Product_Id'
+      ),
 
-      Operation1: this.project_planing.Operation1,
-      Operation2: this.project_planing.Operation2,
-      Proposer_Name: this.project_planing.Proposer_Name,
-      Proposer_Position: this.project_planing.Proposer_Position,
+      Product_Name:
+        this.project_planing.selectedProduct?.Product_Name,
+
+      Fk_Activity_Id: getId(
+        this.project_planing.selectedActivity,
+        'Activity_Id'
+      ),
+
+      Activity_Name:
+        this.project_planing.selectedActivity?.Activity_Name,
+
+      Fk_Budget_Type: getId(
+        this.project_planing.selectedBudget,
+        'Budget_Type_Id'
+      ),
+
+      Budget_Type:
+        this.project_planing.selectedBudget?.Budget_Type_Name,
+
+      Project_Name:
+        data.Project_Name,
+
+      Used_BG:
+        data.Used_BG,
+
+      Project_Type_Id:
+        data.Project_Type_Id,
+
+      Project_Year_Count:
+        data.Project_Year_Count,
+
+      Project_Year_Number:
+        data.Project_Year_Number,
+
+      Operation1:
+        data.Operation1,
+
+      Operation2:
+        data.Operation2,
+
+      Proposer_Name:
+        data.Proposer_Name,
+
+      Proposer_Position:
+        data.Proposer_Position,
     };
 
     this.project_planing.Project_Plan_Detail = this.mapActivities();
@@ -507,18 +559,40 @@ export class ProjectPlanningComponent {
   }
   validateHeader(): boolean {
 
+    const data =
+      this.project_planing?.Project_Plan ||
+      this.project_planing;
+
     const fields = [
-      { value: this.project_planing.selectedDepartment, msg: 'เลือกหน่วยงาน' },
-      { value: this.project_planing.selectedPlan, msg: 'เลือกแผนงาน' },
-      { value: this.project_planing.projectType, msg: 'เลือกประเภทโครงการ' },
-      { value: this.project_planing.selectedProduct, msg: 'เลือกผลผลิต' },
-      { value: this.project_planing.selectedActivity, msg: 'เลือกกิจกรรม' },
-      { value: this.project_planing.selectedBudget, msg: 'เลือกหมวดงบ' },
-      { value: this.project_planing.Project_Name, msg: 'กรอกชื่อโครงการ' },
-      { value: this.project_planing.Strategic_Id, msg: 'เลือกยุทธศาสตร์ชาติด้าน' }
+      {
+        value: this.project_planing.selectedDepartment,
+        msg: 'เลือกหน่วยงาน'
+      },
+      {
+        value: this.project_planing.selectedPlan,
+        msg: 'เลือกแผนงาน'
+      },
+      {
+        value: this.project_planing.projectType,
+        msg: 'เลือกประเภทโครงการ'
+      },
+      {
+        value: this.project_planing.selectedProduct,
+        msg: 'เลือกผลผลิต'
+      },
+      {
+        value: this.project_planing.selectedActivity,
+        msg: 'เลือกกิจกรรม'
+      },
+      {
+        value: this.project_planing.selectedBudget,
+        msg: 'เลือกหมวดงบ'
+      },
+
     ];
 
     for (const f of fields) {
+
       if (!f.value) {
         basicAlert('info', f.msg, '');
         return false;

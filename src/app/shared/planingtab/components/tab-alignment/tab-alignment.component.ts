@@ -824,8 +824,9 @@ export class TabAlignmentComponent implements OnChanges {
     this.callAPI("FUNC-GET_List_Mas_Measure_By_FK_Tactic", {
       Tactics_Id: this.model.Project_Plan_Level3.Project_Plan_Goals_Id
     }).subscribe(res => {
-      this.listMasMeasure = res.List_Mas_Measure || [];
+      this.listMasMeasure = res.List_Mas_Project_Plan_Goals_Guideline || [];
       this.listMasIndicator = res.List_Mas_Indicator || [];
+      
     });
   }
   onChangeProjectPlan5(isInitialLoad: boolean = false) {
