@@ -139,7 +139,11 @@ export class TabDetailComponent implements OnInit, OnChanges {
     return `${year}-${month}-${day}`;
   }
   addObjective() {
-    this.objectives.push({ Name: '' });
+    this.model.Project_Objective.push({
+      Name: ''
+    });
+
+    this.objectives = [...this.model.Project_Objective];
   }
 
   removeObjective(i: number, item: any) {
@@ -163,6 +167,7 @@ export class TabDetailComponent implements OnInit, OnChanges {
       target: '',
       Unit: null
     });
+    this.outputs = [...this.model.Project_Output];
   }
 
   removeOutput(i: number, item: any) {
