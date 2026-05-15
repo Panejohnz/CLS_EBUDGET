@@ -154,13 +154,6 @@ export class TabGuidelineComponent {
   }
   addSub(act: any) {
 
-    act.quarters?.forEach((q: any) => {
-      q.months?.forEach((m: any) => {
-        m.budget = null;
-        m.selected = false;
-      });
-    });
-
     act.otherExpenses = [];
     act.multiplierTotal = 0;
 
@@ -544,6 +537,47 @@ export class TabGuidelineComponent {
     }
 
     sub._edited = true;
+
+    // 🔥 รวมกลับไป main activity
+    this.sumMainBudgetFromSub(
+      this.model.activities.find((a: any) =>
+        a.SubActivities?.includes(sub)
+      )
+    );
+  }
+  sumMainBudgetFromSub(act: any) {
+
+    if (!act?.SubActivities?.length) return;
+
+    act.quarters.forEach((q: any, qIndex: number) => {
+
+      q.months.forEach((m: any, mIndex: number) => {
+
+        let total = 0;
+        let hasValue = false;
+
+        act.SubActivities.forEach((sub: any) => {
+
+          const budget =
+            Number(sub.quarters?.[qIndex]?.months?.[mIndex]?.budget);
+
+          // 🔥 มีค่าจริงค่อยรวม
+          if (!isNaN(budget) && budget > 0) {
+            total += budget;
+            hasValue = true;
+          }
+
+        });
+
+        // 🔥 ถ้าไม่มีค่าเลย → เป็น null
+        m.budget = hasValue ? total : null;
+
+        m.selected = hasValue;
+
+      });
+
+    });
+
   }
   dropActivity(event: any) {
     moveItemInArray(this.model.activities, event.previousIndex, event.currentIndex);

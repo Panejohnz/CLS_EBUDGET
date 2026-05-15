@@ -873,8 +873,9 @@ export class ProjectBudgetProposalAddPersonnelComponent {
 
         Budget_Request: payload,
 
-        Budget_Request_Detail:
-          this.targetDetail,
+        Budget_Request_Detail: Array.isArray(this.targetDetail)
+          ? this.targetDetail
+          : [],
 
         Budget_Request_Detail_Item:
           this.model.Budget_Request_Detail_Item,

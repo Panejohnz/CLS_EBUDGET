@@ -701,17 +701,22 @@ export class ProjectPlanningComponent {
   }
   getActivityTotal(act: any): number {
 
+    // 🔥 ตอน GET ใช้ DB
+    if (!act._edited && act.sumAmount != null) {
+      return Number(act.sumAmount);
+    }
+
     let total = 0;
 
-    // รวมกิจกรรมหลัก
-    act.quarters.forEach((q: any) => {
-      q.months.forEach((m: any) => {
-        total += Number(m.budget) || 0;
-      });
-    });
+    (act.quarters || []).forEach((q: any) => {
 
-    // รวมกิจกรรมย่อย
-    total += this.getSubActivitiesTotal(act);
+      (q.months || []).forEach((m: any) => {
+
+        total += Number(m.budget) || 0;
+
+      });
+
+    });
 
     return total;
   }
@@ -767,6 +772,7 @@ export class ProjectPlanningComponent {
     if (this.project_planing.Project_Id) {
       return true;
     }
+
     for (let i = 0; i < activities.length; i++) {
 
       const act = activities[i];
@@ -774,12 +780,14 @@ export class ProjectPlanningComponent {
       const m = Number(this.calcMultiplierTotalFromModel(act).toFixed(2));
       const p = Number(this.getActivityTotal(act).toFixed(2));
 
-      if (m !== p) {
+      if (Math.abs(m - p) > 0.01) {
+
         basicAlert(
           'warning',
           `กิจกรรมที่ ${i + 1} ยอดไม่เท่ากัน`,
           `ผลคูณ = ${m.toLocaleString()} | วางแผน = ${p.toLocaleString()}`
         );
+
         return false;
       }
     }
