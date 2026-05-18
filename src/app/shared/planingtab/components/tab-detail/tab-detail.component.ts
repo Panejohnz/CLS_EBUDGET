@@ -139,11 +139,17 @@ export class TabDetailComponent implements OnInit, OnChanges {
     return `${year}-${month}-${day}`;
   }
   addObjective() {
-    this.model.Project_Objective.push({
-      Name: ''
-    });
 
-    this.objectives = [...this.model.Project_Objective];
+    const newItem = {
+      Project_Objectives_Id: 0,
+      FK_Project_Id: this.model.Project_Id,
+      Seq: this.objectives.length + 1,
+      Name: ''
+    };
+
+    this.objectives.push(newItem);
+
+    this.model.Project_Objective = [...this.objectives];
   }
 
   removeObjective(i: number, item: any) {
@@ -186,7 +192,16 @@ export class TabDetailComponent implements OnInit, OnChanges {
   }
 
   addOutcome() {
-    this.outcomes.push({ Name: '' });
+
+    const item = {
+      Project_Outcome_Id: 0,
+      FK_Project_Id: this.model.Project_Id,
+      Name: ''
+    };
+
+    this.outcomes.push(item);
+
+    this.model.Project_Outcome = [...this.outcomes];
   }
 
   removeOutcome(i: number, item: any) {
@@ -203,9 +218,18 @@ export class TabDetailComponent implements OnInit, OnChanges {
       this.outcomes.splice(i, 1);
     })
   }
-
+  
   addExpectedResult() {
-    this.expectedResults.push({ Name: '' });
+
+    const item = {
+      Project_Expected_Id: 0,
+      FK_Project_Id: this.model.Project_Id,
+      Name: ''
+    };
+
+    this.expectedResults.push(item);
+
+    this.model.Project_Expected = [...this.expectedResults];
   }
 
   removeExpectedResult(i: number) {
