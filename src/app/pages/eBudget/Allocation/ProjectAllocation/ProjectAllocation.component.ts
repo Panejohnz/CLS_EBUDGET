@@ -1,177 +1,389 @@
-import { Component, ElementRef, ViewChild, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { NgForm } from '@angular/forms';
-import { environment } from '../../../../../environments/environment';
-import { HttpHeaders } from '@angular/common/http';
-import { HttpClient } from '@angular/common/http';
-import { HttpEventType, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { FormGroup, FormBuilder, FormArray, FormControl, FormControlName, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GridJsService } from '../../../tables/gridjs/gridjs.service';
 import { PaginationService } from 'src/app/core/services/pagination.service';
-import { GridJsModel } from '../../../tables/gridjs/gridjs.model';
 import { DecimalPipe } from '@angular/common';
-import { get } from 'lodash';
-import Swal from 'sweetalert2';
 import { EbudgetService } from 'src/app/core/services/ebudget.service';
 import { AuthenticationService } from 'src/app/core/services/auth.service';
-import { FormsModule } from '@angular/forms';
+import { BudgetYearService } from 'src/app/core/services/budget-year.service';
 
-type AllocField = 'alloc1' | 'alloc2' | 'alloc3';
-
-interface BudgetNode {
-  name: string;
-  level: number;
-  expanded?: boolean;
-  children?: BudgetNode[];
-
-  budget: number;   // คำของบ (fix)
-  alloc1: number;
-  alloc2: number;
-  alloc3: number;
-}
 @Component({
   selector: 'app-project-allocation',
-  providers: [GridJsService, DecimalPipe, EbudgetService],
+  providers: [
+    GridJsService,
+    DecimalPipe,
+    EbudgetService
+  ],
   templateUrl: './ProjectAllocation.component.html',
   styles: ``
 })
 export class ProjectAllocationComponent {
-  department = '';
-  columns: { field: AllocField; label: string }[] = [
-    { field: 'alloc1', label: 'จัดสรรครั้งที่ 1' },
-    { field: 'alloc2', label: 'จัดสรรครั้งที่ 2' },
-    { field: 'alloc3', label: 'จัดสรรครั้งที่ 3' }
-  ];
+
+  constructor(
+    private modalService: NgbModal,
+    public service: GridJsService,
+    private sortService: PaginationService,
+    public servicebud: EbudgetService,
+    private authService: AuthenticationService,
+    private budgetYearService: BudgetYearService
+  ) { }
+
+  table_display: boolean = false;
+
+  department: any[] = [];
+
+  griddata: any[] = [];
+
+  griddataTemp: any[] = [];
+
+  flattenData: any[] = [];
+
+  allData: any[] = [];
+
+  selectedDepartmentId: any = null;
+
+  currentYear: any;
+
   item: any = {
+
     alloc1: 0,
+
     alloc2: 0,
+
     alloc3: 0
-  }
-  // departments: any[] = []
 
-  // data: BudgetNode[] = [
-  //   this.createNode('แผนงานที่ 1', 0, [
-  //     this.createNode('ผลผลิตที่ 1', 1, [
-  //       this.createNode('กิจกรรมหลักที่ 1', 2, [
-  //         this.createNode('หมวดเงินเดือน', 3, [
-  //           this.createLeaf('เงินเดือน', 4),
-  //           this.createLeaf('ค่าจ้างประจำ', 4),
-  //           this.createLeaf('เงินประจำตำแหน่ง', 4),
-  //           this.createLeaf('ค่าตอบแทนรายเดือนสำหรับข้าราชการ', 4)
-  //         ])
-  //       ])
-  //     ])
-  //   ])
-  // ];
-  // department = '';
-  departments = ['กองแผนงาน', 'กองคลัง', 'กอง IT'];
+  };
 
-  data: BudgetNode[] = [];
-  flattenData: BudgetNode[] = [];
+  // =====================================
+  // INIT
+  // =====================================
 
   ngOnInit() {
-    this.initData();
-    this.buildFlatten();
-  }
 
-  // ---------------------------
-  // 🔥 สร้างข้อมูลตัวอย่าง
-  // ---------------------------
-  initData() {
-    this.data = [
-      this.createNode('แผนงานที่ 1', 0, 400000, [
-        this.createNode('ผลผลิตที่ 1', 1, 400000, [
-          this.createNode('กิจกรรมหลักที่ 1', 2, 400000, [
-            this.createNode('งบบุคลากร', 3, 400000, [
-              this.createNode('หมวดเงินเดือน', 4, 400000, [
-                this.createLeaf('เงินเดือน', 5, 100000),
-                this.createLeaf('ค่าจ้างประจำ', 5, 100000),
-                this.createLeaf('เงินประจำตำแหน่ง', 5, 100000),
-                this.createLeaf('ค่าตอบแทนรายเดือน', 5, 100000)
-              ])
-            ])
-          ])
-        ])
-      ])
-    ];
-  }
+    this.budgetYearService.yearChanged$
+      .subscribe(async year => {
 
-  // ---------------------------
-  // 🔥 create node
-  // ---------------------------
-  createNode(name: string, level: number, budget: number, children?: BudgetNode[]): BudgetNode {
-    return {
-      name,
-      level,
-      expanded: true,
-      budget,
-      alloc1: 0,
-      alloc2: 0,
-      alloc3: 0,
-      children
-    };
-  }
+        if (year) {
 
-  createLeaf(name: string, level: number, budget: number): BudgetNode {
-    return {
-      name,
-      level,
-      budget,
-      alloc1: 0,
-      alloc2: 0,
-      alloc3: 0
-    };
-  }
+          if (year < 2500) {
 
-  // ---------------------------
-  // 🔥 check leaf
-  // ---------------------------
-  isLeaf(node: BudgetNode): boolean {
-    return !node.children || node.children.length === 0;
-  }
+            year = year + 543;
 
-  // ---------------------------
-  // 🔥 flatten tree
-  // ---------------------------
-  buildFlatten() {
-    const result: BudgetNode[] = [];
+          }
 
-    const loop = (nodes: BudgetNode[]) => {
-      for (let node of nodes) {
-        result.push(node);
+          this.currentYear = year;
 
-        if (node.children && node.expanded) {
-          loop(node.children);
+          this.get_data();
+
         }
-      }
+
+      });
+
+  }
+
+  // =====================================
+  // GET DATA
+  // =====================================
+
+  get_data() {
+
+    let model = {
+
+      FUNC_CODE: "FUNC-Get_Budget_Request",
+
+      BgYear: this.currentYear
+
     };
 
-    loop(this.data);
-    this.flattenData = result;
+    var getData =
+      this.servicebud.GatewayGetData(model);
+
+    getData.subscribe((response: any) => {
+
+      this.allData =
+        Array.isArray(
+          response.List_Budget_Request_Data_Table.Data
+        )
+          ? response.List_Budget_Request_Data_Table.Data
+          : [];
+
+      this.griddataTemp = [
+        ...this.allData
+      ];
+
+      this.griddata = [
+        ...this.allData
+      ];
+
+      this.department =
+        Array.isArray(
+          response.Mas_Department_Lists
+        )
+          ? response.Mas_Department_Lists
+          : [];
+
+    });
+
   }
 
-  // ---------------------------
-  // 🔥 toggle expand
-  // ---------------------------
-  toggle(node: BudgetNode) {
-    node.expanded = !node.expanded;
-    this.buildFlatten();
-  }
+  // =====================================
+  // FILTER
+  // =====================================
 
-  // ---------------------------
-  // 🔥 sum แนวตั้ง
-  // ---------------------------
-  calculate(node: BudgetNode, field: AllocField): number {
-    if (this.isLeaf(node)) {
-      return node[field] || 0;
+  applyFilter() {
+
+    let data = [
+      ...this.griddataTemp
+    ];
+
+    if (this.selectedDepartmentId) {
+
+      data = data.filter(
+        x =>
+          x.Department_Id ==
+          this.selectedDepartmentId
+      );
+
     }
 
-    return node.children!.reduce(
-      (sum, child) => sum + this.calculate(child, field),
-      0
+    if (this.service.searchTerm) {
+
+      const keyword =
+        this.service.searchTerm.toLowerCase();
+
+      data = data.filter(x =>
+
+        (x.Department_Name || '')
+          .toLowerCase()
+          .includes(keyword)
+
+        ||
+
+        (x.Plan_Name || '')
+          .toLowerCase()
+          .includes(keyword)
+
+        ||
+
+        (x.Product_Name || '')
+          .toLowerCase()
+          .includes(keyword)
+
+        ||
+
+        (x.Activity_Name || '')
+          .toLowerCase()
+          .includes(keyword)
+
+        ||
+
+        (x.Budget_Type || '')
+          .toLowerCase()
+          .includes(keyword)
+
+        ||
+
+        (x.Project_Name || '')
+          .toLowerCase()
+          .includes(keyword)
+
+        ||
+
+        (x.Status_Name || '')
+          .toLowerCase()
+          .includes(keyword)
+
+        ||
+
+        String(x.Total || '')
+          .includes(keyword)
+
+      );
+
+    }
+
+    this.griddata = data;
+
+  }
+
+  // =====================================
+  // DETAIL
+  // =====================================
+
+  Detail(item: any) {
+
+    this.table_display = true;
+
+    // filter ข้อมูลตาม row ที่กด
+    const rows = this.allData.filter(
+
+      (x: any) =>
+
+        x.Department_Id ==
+        item.Department_Id
+
+        &&
+
+        x.Fk_Plan_Id ==
+        item.Fk_Plan_Id
+
+        &&
+
+        x.Fk_Product_Id ==
+        item.Fk_Product_Id
+
+        &&
+
+        x.Fk_Activity_Id ==
+        item.Fk_Activity_Id
+
+        &&
+
+        x.Fk_Budget_Type ==
+        item.Fk_Budget_Type
+
     );
+
+    console.log('DETAIL ROWS', rows);
+
+    // map ลง table
+    this.flattenData = rows.map((x: any) => {
+
+      return {
+
+        // =====================
+        // PLAN
+        // =====================
+
+        Plan_Name:
+
+          x.Plan_Name ||
+
+          '',
+
+        // =====================
+        // PRODUCT
+        // =====================
+
+        Product_Name:
+
+          x.Product_Name ||
+
+          '',
+
+        // =====================
+        // ACTIVITY
+        // =====================
+
+        Activity_Name:
+
+          x.Activity_Name ||
+
+          '',
+
+        // =====================
+        // BUDGET TYPE
+        // =====================
+
+        Budget_Type:
+
+          x.Budget_Type ||
+
+          x.Budget_Type_Name ||
+
+          '',
+
+        // =====================
+        // EXPENSE
+        // =====================
+
+        Expense_List:
+
+          x.Expense_List ||
+
+          x.Expense_Detail ||
+
+          x.Expense_Name ||
+
+          '',
+
+        // =====================
+        // BUDGET
+        // =====================
+
+        Total:
+
+          Number(
+            x.Total || 0
+          ),
+
+        // =====================
+        // ALLOCATE
+        // =====================
+
+        Adjust1:
+
+          Number(
+            x.Adjust1 || 0
+          ),
+
+        Adjust2:
+
+          Number(
+            x.Adjust2 || 0
+          ),
+
+        Adjust3:
+
+          Number(
+            x.Adjust3 || 0
+          ),
+
+        // =====================
+        // ID
+        // =====================
+
+        Request_Id:
+
+          x.Request_Id || 0,
+
+        Request_Detail_Id:
+
+          x.Request_Detail_Id || 0,
+
+        Fk_Expense_Id:
+
+          x.Fk_Expense_Id || 0
+
+      };
+
+    });
+
+    console.log(
+      'FLATTEN DATA',
+      this.flattenData
+    );
+
+  }
+
+  // =====================================
+  // SAVE ADJUST
+  // =====================================
+
+  saveAdjust() {
+
+    console.log(this.flattenData);
+
+  }
+
+  // =====================================
+  // BACK
+  // =====================================
+
+  backToTable() {
+
+    this.table_display = false;
+
   }
 
 }
