@@ -36,12 +36,26 @@
                 <ng-container *ngFor="let rowIndex of [0,1,2]">
                     <tr class="row-animate" [class.moving]="movingIndex === i">
 
-                        <td *ngIf="rowIndex === 0" rowspan="3" style="cursor: grab; white-space: nowrap;">
-
-
-                            {{ i + 1 }}
-
-                        </td>
+                <td *ngIf="rowIndex === 0" [attr.rowspan]="3" style="cursor: grab; white-space: nowrap; text-align: center;">
+                
+                    <div>{{ i + 1 }}</div>
+                
+                   <div class="mt-1 d-flex flex-column gap-1 align-items-center">
+                        <button type="button" class="btn btn-success p-1" style="width: 32px; height: 32px;" (click)="moveUp(i)"
+                            [disabled]="i === 0">
+                        
+                            <i class="bx bxs-up-arrow fs-5"></i>
+                        </button>
+                    </div>
+                    <div class="mt-1 d-flex flex-column gap-1 align-items-center">
+                        <button type="button" class="btn btn-danger p-1" style="width: 32px; height: 32px;" (click)="moveDown(i)"
+                            [disabled]="i === model.activities.length - 1">
+                        
+                            <i class="bx bxs-down-arrow fs-5"></i>
+                        </button>
+                    </div>
+                
+                </td>
                         <td *ngIf="rowIndex === 0" rowspan="3" class="text-start">
                             <textarea rows="2" class="form-control form-control-sm mb-2" [(ngModel)]="act.name">
                         </textarea>
@@ -95,14 +109,7 @@
                         </ng-container>
 
                         <td *ngIf="rowIndex === 0" rowspan="3">
-                            <button class="btn btn-sm btn-light" (click)="moveUp(i)" [disabled]="i === 0">
-                                ⬆
-                            </button>
-
-                            <button class="btn btn-sm btn-light" (click)="moveDown(i)"
-                                [disabled]="i === model.activities.length - 1">
-                                ⬇
-                            </button>
+                            
 
                             <button class="btn btn-sm btn-danger" (click)="removeActivity(i)">
                                 🗑

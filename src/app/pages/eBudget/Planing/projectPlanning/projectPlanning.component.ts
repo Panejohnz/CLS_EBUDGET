@@ -518,7 +518,7 @@ export class ProjectPlanningComponent {
     if (!this.validateBeforeSave(this.project_planing.activities)) {
       return;
     }
-
+    
     const userConfirmed = await confirmAlert('info', 'ต้องการบันทึกข้อมูล ?', '');
 
     if (!userConfirmed) return;
