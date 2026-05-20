@@ -9,9 +9,9 @@
                 รายการจัดสรรงบประมาณ
             </h5>
 
-            <div class="row mt-2">
+            <div *ngIf="!table_display" class="row mt-2">
 
-                <div class="col-md-4">
+                <div  class="col-md-4">
 
                     <label>
                         หน่วยงาน
@@ -224,7 +224,7 @@
                     <!-- PRODUCT -->
                     <tr *ngIf="flattenData.length > 0">
 
-                        <td class="ps-4 fw-bold bg-light">
+                        <td class="fw-bold bg-light">
 
                             {{ flattenData[0].Product_Name }}
 
@@ -249,7 +249,7 @@
                     <!-- ACTIVITY -->
                     <tr *ngIf="flattenData.length > 0">
 
-                        <td class="ps-5 fw-bold bg-light">
+                        <td class="fw-bold bg-light">
 
                             {{ flattenData[0].Activity_Name }}
 
@@ -274,23 +274,23 @@
                     <!-- BUDGET -->
                     <tr *ngIf="flattenData.length > 0">
 
-                        <td class="ps-5 fw-semibold text-primary">
+                           <td class="fw-bold bg-light">
 
                             {{ flattenData[0].Budget_Type }}
 
                         </td>
 
-                        <td></td>
+                        <td class="bg-light"></td>
 
-                        <td class="text-center">
+                        <td class="bg-light  text-center">
                             sum
                         </td>
 
-                        <td class="text-center">
+                        <td class="bg-light  text-center">
                             sum
                         </td>
 
-                        <td class="text-center">
+                        <td class="bg-light  text-center">
                             sum
                         </td>
 
@@ -341,7 +341,13 @@
                 </tbody>
 
             </table>
+            <br>
+            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModalgrid"
+                (click)="backToTable()">
 
+                <i class="ri-skip-back-fill"> กลับ</i>
+
+            </button>
         </div>
 
     </div>

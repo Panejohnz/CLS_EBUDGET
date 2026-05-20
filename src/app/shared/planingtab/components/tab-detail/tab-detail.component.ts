@@ -218,7 +218,7 @@ export class TabDetailComponent implements OnInit, OnChanges {
       this.outcomes.splice(i, 1);
     })
   }
-  
+
   addExpectedResult() {
 
     const item = {
@@ -255,6 +255,8 @@ export class TabDetailComponent implements OnInit, OnChanges {
         this.targetGroups.splice(i, 1);
 
       })
+    } else {
+      this.targetGroups.splice(i, 1);
     }
 
   }
