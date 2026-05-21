@@ -24,137 +24,137 @@ export class SidebarComponent implements OnInit, OnDestroy {
   menu: any;
   user: any;
   toggle: any = true;
-  menuItems: MenuItem[] = [
+  // menuItems: MenuItem[] = [
 
-    {
-      label: 'หน้าหลัก',
-      isTitle: true
-    },
-    {
-      label: 'Dashboard',
-      icon: 'bx bx-home-circle',
-      link: '/Dashboard/projects'
-    },
+  //   {
+  //     label: 'หน้าหลัก',
+  //     isTitle: true
+  //   },
+  //   {
+  //     label: 'Dashboard',
+  //     icon: 'bx bx-home-circle',
+  //     link: '/Dashboard/projects'
+  //   },
 
-    {
-      label: 'ระบบวางแผน',
-      isTitle: true
-    },
-    {
-      label: 'วางแผนโครงการ (Planing)',
-      icon: 'bx bx-task',
-      link: '/Planing'
-    },
-    {
-      label: 'Sign off โครงการ',
-      icon: 'bx bx-check-circle',
-      link: '/singOff'
-    },
+  //   {
+  //     label: 'ระบบวางแผน',
+  //     isTitle: true
+  //   },
+  //   {
+  //     label: 'วางแผนโครงการ (Planing)',
+  //     icon: 'bx bx-task',
+  //     link: '/Planing'
+  //   },
+  //   {
+  //     label: 'Sign off โครงการ',
+  //     icon: 'bx bx-check-circle',
+  //     link: '/singOff'
+  //   },
 
-    {
-      label: 'ระบบจัดทำคำของบประมาณ',
-      isTitle: true
-    },
-    {
-      label: 'จัดทำคำของบประมาณ',
-      icon: 'bx bx-file',
-      link: '/ProjectBudgetProposal/Personnel'
-    },
-    {
-      label: 'Sign off คำของบประมาณ',
-      icon: 'bx bx-check-shield',
-      link: '/singOffBudgetProposal'
-    },
+  //   {
+  //     label: 'ระบบจัดทำคำของบประมาณ',
+  //     isTitle: true
+  //   },
+  //   {
+  //     label: 'จัดทำคำของบประมาณ',
+  //     icon: 'bx bx-file',
+  //     link: '/ProjectBudgetProposal/Personnel'
+  //   },
+  //   {
+  //     label: 'Sign off คำของบประมาณ',
+  //     icon: 'bx bx-check-shield',
+  //     link: '/singOffBudgetProposal'
+  //   },
 
-    {
-      label: 'ระบบจัดสรรงบประมาณ',
-      isTitle: true
-    },
-    {
-      label: 'จัดสรรงบประมาณ',
-      icon: 'bx bx-wallet',
-      link: '/Allocation'
-    },
+  //   {
+  //     label: 'ระบบจัดสรรงบประมาณ',
+  //     isTitle: true
+  //   },
+  //   {
+  //     label: 'จัดสรรงบประมาณ',
+  //     icon: 'bx bx-wallet',
+  //     link: '/Allocation'
+  //   },
 
-    {
-      label: 'ระบบจัดทำแผนที่ปฎิบัติการ',
-      isTitle: true
-    },
-    {
-      label: 'งบประมาณที่ได้รับจัดสรร',
-      icon: 'bx bx-money',
-      link: '/PlanManagement/examine'
-    },
-    {
-      label: 'จัดทำแผนปฎิบัติการ',
-      icon: 'bx bx-edit-alt',
-      link: '/PlanManagement'
-    },
-    {
-      label: 'Sign off แผนปฎิบัติการ',
-      icon: 'bx bx-check-double',
-      link: '/singOffAction'
-    },
-    {
-      label: 'โอนเปลี่ยนแปลงงบประมาณ',
-      isTitle: true
-    },
-    {
-      label: 'โอนเปลี่ยนแปลงงบประมาณ',
-      icon: 'bx bx-transfer',
-      link: '/Transfer'
-    },
-    {
-      label: 'ระบบติดตามการดำเนินงาน',
-      isTitle: true
-    },
-    {
-      label: 'เมนูกำหนดเป้าหมาย',
-      icon: 'bx bx-target-lock',
-      link: '/Moniter/BudgetTarget'
-    },
-    {
-      label: 'เมนูรายงานผล',
-      icon: 'bx bx-bar-chart-alt-2',
-      link: '/Moniter/ReportResult'
-    },
-    // {
-    //   label: 'รายงานผลกรณีโครงการ',
-    //   icon: 'bx bx-task',
-    //   link: '/Moniter/Report'
-    // },
-    // {
-    //   label: 'รายงานผลกรณีงบลงทุน',
-    //   icon: 'bx bx-wallet',
-    //   link: '/Moniter/ReportInvestment'
-    // },
-    {
-      label: 'รายงานผลตามตัวชี้วัดแผนงาน',
-      icon: 'bx bx-line-chart',
-      link: '/Moniter/ReportKPI'
-    },
-    {
-      label: 'ข้อมูลกลาง',
-      isTitle: true
-    },
-    {
-      label: 'ระดับบุคลากร',
-      icon: 'bx bx-id-card',
-      link: '/MasterData/MasBusinessLevel'
-    },
-    {
-      label: 'ค่าที่พักตามระดับ',
-      icon: 'bx bx-hotel',
-      link: '/MasterData/MasExpenseDetail'
-    },
-    {
-      label: 'ความสอดคล้องโครงการ',
-      icon: 'bx bx-check-shield',
-      link: '/MasterData/MasProjectPlan'
-    },
-  ];
+  //   {
+  //     label: 'ระบบจัดทำแผนที่ปฎิบัติการ',
+  //     isTitle: true
+  //   },
+  //   {
+  //     label: 'งบประมาณที่ได้รับจัดสรร',
+  //     icon: 'bx bx-money',
+  //     link: '/PlanManagement/examine'
+  //   },
+  //   {
+  //     label: 'จัดทำแผนปฎิบัติการ',
+  //     icon: 'bx bx-edit-alt',
+  //     link: '/PlanManagement'
+  //   },
+  //   {
+  //     label: 'Sign off แผนปฎิบัติการ',
+  //     icon: 'bx bx-check-double',
+  //     link: '/singOffAction'
+  //   },
+  //   {
+  //     label: 'โอนเปลี่ยนแปลงงบประมาณ',
+  //     isTitle: true
+  //   },
+  //   {
+  //     label: 'โอนเปลี่ยนแปลงงบประมาณ',
+  //     icon: 'bx bx-transfer',
+  //     link: '/Transfer'
+  //   },
+  //   {
+  //     label: 'ระบบติดตามการดำเนินงาน',
+  //     isTitle: true
+  //   },
+  //   {
+  //     label: 'เมนูกำหนดเป้าหมาย',
+  //     icon: 'bx bx-target-lock',
+  //     link: '/Moniter/BudgetTarget'
+  //   },
+  //   {
+  //     label: 'เมนูรายงานผล',
+  //     icon: 'bx bx-bar-chart-alt-2',
+  //     link: '/Moniter/ReportResult'
+  //   },
+  //   // {
+  //   //   label: 'รายงานผลกรณีโครงการ',
+  //   //   icon: 'bx bx-task',
+  //   //   link: '/Moniter/Report'
+  //   // },
+  //   // {
+  //   //   label: 'รายงานผลกรณีงบลงทุน',
+  //   //   icon: 'bx bx-wallet',
+  //   //   link: '/Moniter/ReportInvestment'
+  //   // },
+  //   {
+  //     label: 'รายงานผลตามตัวชี้วัดแผนงาน',
+  //     icon: 'bx bx-line-chart',
+  //     link: '/Moniter/ReportKPI'
+  //   },
+  //   {
+  //     label: 'ข้อมูลกลาง',
+  //     isTitle: true
+  //   },
+  //   {
+  //     label: 'ระดับบุคลากร',
+  //     icon: 'bx bx-id-card',
+  //     link: '/MasterData/MasBusinessLevel'
+  //   },
+  //   {
+  //     label: 'ค่าที่พักตามระดับ',
+  //     icon: 'bx bx-hotel',
+  //     link: '/MasterData/MasExpenseDetail'
+  //   },
+  //   {
+  //     label: 'ความสอดคล้องโครงการ',
+  //     icon: 'bx bx-check-shield',
+  //     link: '/MasterData/MasProjectPlan'
+  //   },
+  // ];
 
-// menuItems : MenuItem[]  = [];
+menuItems : MenuItem[]  = [];
   environment = environment; // เพิ่ม environment property
   @ViewChild('sideMenu') sideMenu!: ElementRef;
   @Output() mobileMenuButtonClicked = new EventEmitter();
