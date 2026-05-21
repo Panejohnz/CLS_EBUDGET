@@ -134,7 +134,10 @@ export class ProjectAllocationComponent implements OnInit {
     // เปิด table
     this.table_display = true;
 
-    // FILTER
+    // =====================================
+    // FILTER REQUEST
+    // =====================================
+
     const rows = this.allData.filter(
 
       (x: any) =>
@@ -150,213 +153,305 @@ export class ProjectAllocationComponent implements OnInit {
       rows
     );
 
-    // RESET
-    this.groupData = [];
-
     // =====================================
-    // GROUP
+    // GET BUDGET PLAN
     // =====================================
 
-    rows.forEach((row: any) => {
+    let model = {
 
-      // =====================
-      // PLAN
-      // =====================
+      FUNC_CODE:
+        'FUNC-Get_Budget_Plan',
 
-      let plan = this.groupData.find(
+      Department_Id:
+        this.selectedDepartmentId
 
-        (x: any) =>
+    };
 
-          x.Plan_Name ==
+    this.servicebud
+      .GatewayGetData(model)
+      .subscribe((response: any) => {
 
-          row.Plan_Name
-
-      );
-
-      if (!plan) {
-
-        plan = {
-
-          Plan_Name:
-
-            row.Plan_Name ||
-
-            '-',
-          expanded: true,
-          products: []
-
-        };
-
-        this.groupData.push(plan);
-        console.log(' this.groupData', this.groupData);
-
-      }
-
-      // =====================
-      // PRODUCT
-      // =====================
-
-      let product = plan.products.find(
-
-        (x: any) =>
-
-          x.Product_Name ==
-
-          row.Product_Name
-
-      );
-
-      if (!product) {
-
-        product = {
-
-          Product_Name:
-
-            row.Product_Name ||
-
-            '-',
-          expanded: true,
-          activities: []
-
-        };
-
-        plan.products.push(product);
-
-      }
-
-      // =====================
-      // ACTIVITY
-      // =====================
-
-      let activity = product.activities.find(
-
-        (x: any) =>
-
-          x.Activity_Name ==
-
-          row.Activity_Name
-
-      );
-
-      if (!activity) {
-
-        activity = {
-
-          Activity_Name:
-
-            row.Activity_Name ||
-
-            '-',
-          expanded: true,
-          budgets: []
-
-        };
-
-        product.activities.push(activity);
-
-      }
-
-      // =====================
-      // BUDGET
-      // =====================
-
-      let budget = activity.budgets.find(
-
-        (x: any) =>
-
-          x.Budget_Type == row.Budget_Type_Name
-
-      );
-
-      if (!budget) {
-
-        budget = {
-
-          Budget_Type:
-            row.Budget_Type_Name || '-',
-          expanded: true,
-          items: []
-
-        };
-
-        activity.budgets.push(budget);
-
-      }
-      // =====================
-      // ITEM
-      // =====================
-
-      budget.items.push({
-
-        // KEY
-        Plan_Id:
-
-          row.Plan_Id || 0,
-
-        FK_Request_Id:
-
-          row.FK_Request_Id || 0,
-
-        // DETAIL
-        Expense_List:
-
-          row.Expense_List || '',
-
-        Project_Name:
-
-          row.Project_Name || '',
-
-        Expense_Name:
-
-          row.Expense_Name
-          || row.Expense_List
-          || '',
-
-        Expense_Detail:
-
-          row.Expense_Detail
-          || row.Project_Name
-          || '',
-
-        // AMOUNT
-        Total:
-
-          Number(
-            row.Total || 0
-          ),
-
-        Adjust1:
-
-          Number(
-            row.Adjust1 || 0
-          ),
-
-        Adjust2:
-
-          Number(
-            row.Adjust2 || 0
-          ),
-
-        Adjust3:
-
-          Number(
-            row.Adjust3 || 0
-          ),
-
-        Update_Amount:
-
-          Number(
-            row.Update_Amount || 0
+        const plans =
+          Array.isArray(
+            response.List_Budget_Plan_Data_Table.Data
           )
+            ? response.List_Budget_Plan_Data_Table.Data
+            : [];
+
+        console.log(
+          'BUDGET PLAN',
+          plans
+        );
+
+        // =====================================
+        // MERGE PLAN
+        // =====================================
+
+        rows.forEach((row: any) => {
+
+          const oldPlan =
+            plans.find((p: any) =>
+
+              p.Fk_Plan_Id ==
+              row.Fk_Plan_Id
+
+              &&
+
+              p.Fk_Product_Id ==
+              row.Fk_Product_Id
+
+              &&
+
+              p.Fk_Activity_Id ==
+              row.Fk_Activity_Id
+
+              &&
+
+              p.Fk_Budget_Type ==
+              row.Fk_Budget_Type
+
+              &&
+
+              p.Fk_Expense_List ==
+              row.Fk_Expense_List
+
+            );
+
+          // ถ้ามีข้อมูลเก่า
+          if (oldPlan) {
+
+            row.Adjust1 =
+              oldPlan.Adjust1 || 0;
+
+            row.Adjust2 =
+              oldPlan.Adjust2 || 0;
+
+            row.Adjust3 =
+              oldPlan.Adjust3 || 0;
+
+            row.Update_Amount =
+              oldPlan.Update_Amount || 0;
+
+          }
+
+        });
+
+        // =====================================
+        // RESET
+        // =====================================
+
+        this.groupData = [];
+
+        // =====================================
+        // GROUP
+        // =====================================
+
+        rows.forEach((row: any) => {
+
+          // =====================
+          // PLAN
+          // =====================
+
+          let plan = this.groupData.find(
+
+            (x: any) =>
+
+              x.Plan_Name ==
+
+              row.Plan_Name
+
+          );
+
+          if (!plan) {
+
+            plan = {
+
+              Plan_Name:
+                row.Plan_Name || '-',
+
+              expanded: true,
+
+              products: []
+
+            };
+
+            this.groupData.push(plan);
+
+          }
+
+          // =====================
+          // PRODUCT
+          // =====================
+
+          let product = plan.products.find(
+
+            (x: any) =>
+
+              x.Product_Name ==
+
+              row.Product_Name
+
+          );
+
+          if (!product) {
+
+            product = {
+
+              Product_Name:
+                row.Product_Name || '-',
+
+              expanded: true,
+
+              activities: []
+
+            };
+
+            plan.products.push(product);
+
+          }
+
+          // =====================
+          // ACTIVITY
+          // =====================
+
+          let activity = product.activities.find(
+
+            (x: any) =>
+
+              x.Activity_Name ==
+
+              row.Activity_Name
+
+          );
+
+          if (!activity) {
+
+            activity = {
+
+              Activity_Name:
+                row.Activity_Name || '-',
+
+              expanded: true,
+
+              budgets: []
+
+            };
+
+            product.activities.push(activity);
+
+          }
+
+          // =====================
+          // BUDGET
+          // =====================
+
+          let budget = activity.budgets.find(
+
+            (x: any) =>
+
+              x.Budget_Type ==
+
+              row.Budget_Type_Name
+
+          );
+
+          if (!budget) {
+
+            budget = {
+
+              Budget_Type:
+                row.Budget_Type_Name || '-',
+
+              expanded: true,
+
+              items: []
+
+            };
+
+            activity.budgets.push(budget);
+
+          }
+
+          // =====================
+          // ITEM
+          // =====================
+
+          budget.items.push({
+
+            // KEY
+            Plan_Id:
+              row.Plan_Id || 0,
+
+            FK_Request_Id:
+              row.Request_Id ||
+              row.FK_Request_Id ||
+              0,
+
+            // FK
+            Department_Id:
+              row.Department_Id || 0,
+
+            Department_Name:
+              row.Department_Name || '',
+
+            Fk_Activity_Id:
+              row.Fk_Activity_Id || 0,
+
+            Fk_Budget_Type:
+              row.Fk_Budget_Type || 0,
+
+            Fk_Expense_List:
+              row.Fk_Expense_List || 0,
+
+            Fk_Plan_Id:
+              row.Fk_Plan_Id || 0,
+
+            Fk_Product_Id:
+              row.Fk_Product_Id || 0,
+
+            // DETAIL
+            Expense_List:
+              row.Expense_List || '',
+
+            Project_Name:
+              row.Project_Name || '',
+
+            Expense_Name:
+              row.Expense_Name
+              || row.Expense_List
+              || '',
+
+            Expense_Detail:
+              row.Expense_Detail
+              || row.Project_Name
+              || '',
+
+            // AMOUNT
+            Total:
+              Number(row.Total || 0),
+
+            Adjust1:
+              Number(row.Adjust1 || 0),
+
+            Adjust2:
+              Number(row.Adjust2 || 0),
+
+            Adjust3:
+              Number(row.Adjust3 || 0),
+
+            Update_Amount:
+              Number(row.Update_Amount || 0)
+
+          });
+
+        });
+
+        console.log(
+          'GROUP DATA',
+          this.groupData
+        );
 
       });
-
-    });
-
-    console.log(
-      'GROUP DATA',
-      this.groupData
-    );
 
   }
 
@@ -435,30 +530,6 @@ export class ProjectAllocationComponent implements OnInit {
   }
 
   // =====================================
-  // ROW PERCENT
-  // =====================================
-
-  getRowPercent(item: any): number {
-
-    if ((Number(item.Total) || 0) <= 0) {
-
-      return 0;
-
-    }
-
-    return (
-
-      this.getRowTotal(item)
-
-      /
-
-      Number(item.Total)
-
-    ) * 100;
-
-  }
-
-  // =====================================
   // SUMMARY
   // =====================================
 
@@ -516,26 +587,6 @@ export class ProjectAllocationComponent implements OnInit {
 
   }
 
-  get allocationPercent(): number {
-
-    if (this.totalRequest <= 0) {
-
-      return 0;
-
-    }
-
-    return (
-
-      this.totalAllocated
-
-      /
-
-      this.totalRequest
-
-    ) * 100;
-
-  }
-
   // =====================================
   // AUTO ALLOCATE
   // =====================================
@@ -584,10 +635,17 @@ export class ProjectAllocationComponent implements OnInit {
 
   saveAdjust() {
 
-    const items =
-      this.getAllItems();
+    const items = this.getAllItems();
 
+    console.log(
+      'SAVE ITEMS',
+      items
+    );
+
+    // =========================
     // VALIDATE
+    // =========================
+
     const invalid = items.some((item: any) => {
 
       return this.getRowTotal(item)
@@ -608,39 +666,53 @@ export class ProjectAllocationComponent implements OnInit {
 
     }
 
-    // =====================================
+    // =========================
     // PAYLOAD
-    // =====================================
+    // =========================
 
     const payload = items.map((item: any) => {
 
       return {
 
-        Plan_Id:
+        FK_Request_Id:
+          item.FK_Request_Id,
 
+        Plan_Id:
           item.Plan_Id,
 
         Adjust1:
-
           Number(item.Adjust1 || 0),
 
         Adjust2:
-
           Number(item.Adjust2 || 0),
 
         Adjust3:
-
           Number(item.Adjust3 || 0),
 
         Update_Amount:
-
           this.getRowTotal(item),
 
-        Update_User:
 
-          this.authService
-            .currentUserValue
-            .User_Id
+        Department_Id:
+          item.Department_Id,
+
+        Department_Name:
+          item.Department_Name,
+
+        Fk_Activity_Id:
+          item.Fk_Activity_Id,
+
+        Fk_Budget_Type:
+          item.Fk_Budget_Type,
+
+        Fk_Expense_List:
+          item.Fk_Expense_List,
+
+        Fk_Plan_Id:
+          item.Fk_Plan_Id,
+
+        Fk_Product_Id:
+          item.Fk_Product_Id
 
       };
 
@@ -651,28 +723,59 @@ export class ProjectAllocationComponent implements OnInit {
       payload
     );
 
-    // =====================================
-    // API SAVE
-    // =====================================
+    // =========================
+    // MODEL
+    // =========================
 
-    let model = {
+    const model = {
 
       FUNC_CODE:
-        'FUNC-SAVE_PROJECT_ALLOCATION',
+        'FUNC-Insert_Budget_Plan',
 
-      DATA:
+      List_Budget_Plan:
         payload
 
     };
 
-    this.servicebud.GatewayGetData(model)
-      .subscribe((response: any) => {
+    // =========================
+    // API
+    // =========================
 
-        alert(
-          'บันทึกสำเร็จ'
-        );
+    this.servicebud
+      .GatewayGetData(model)
+      .subscribe({
 
-        this.get_data();
+        next: (response: any) => {
+
+          console.log(
+            'SAVE RESPONSE',
+            response
+          );
+
+          alert(
+            'บันทึกสำเร็จ'
+          );
+
+          // reload
+          this.get_data();
+
+          // refresh
+          this.applyFilter();
+
+        },
+
+        error: (err: any) => {
+
+          console.error(
+            'SAVE ERROR',
+            err
+          );
+
+          alert(
+            'บันทึกไม่สำเร็จ'
+          );
+
+        }
 
       });
 
