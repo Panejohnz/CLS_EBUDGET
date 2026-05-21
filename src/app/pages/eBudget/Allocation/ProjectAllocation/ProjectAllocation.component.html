@@ -71,10 +71,6 @@
                             รวมจัดสรร
                         </th>
 
-                        <th style="width:10%">
-                            คงเหลือ
-                        </th>
-
                     </tr>
 
                 </thead>
@@ -87,13 +83,58 @@
                         <tr class="table-primary fw-bold" style="cursor:pointer"
                             (click)="plan.expanded = !plan.expanded">
 
-                            <td colspan="7">
+                            <td>
 
                                 <i class="ri-arrow-right-s-line me-1" *ngIf="!plan.expanded"></i>
 
                                 <i class="ri-arrow-down-s-line me-1" *ngIf="plan.expanded"></i>
 
                                 {{ plan.Plan_Name }}
+
+                            </td>
+
+                            <td class="text-end">
+
+                                {{
+                                sumTotal(plan)
+                                | number:'1.2-2'
+                                }}
+
+                            </td>
+
+                            <td class="text-end">
+
+                                {{
+                                sumAdjust1(plan)
+                                | number:'1.2-2'
+                                }}
+
+                            </td>
+
+                            <td class="text-end">
+
+                                {{
+                                sumAdjust2(plan)
+                                | number:'1.2-2'
+                                }}
+
+                            </td>
+
+                            <td class="text-end">
+
+                                {{
+                                sumAdjust3(plan)
+                                | number:'1.2-2'
+                                }}
+
+                            </td>
+
+                            <td class="text-end text-primary">
+
+                                {{
+                                sumAllocate(plan)
+                                | number:'1.2-2'
+                                }}
 
                             </td>
 
@@ -107,13 +148,58 @@
                                 <tr class="table-info fw-bold" style="cursor:pointer"
                                     (click)="product.expanded = !product.expanded">
 
-                                    <td colspan="7" class="ps-4">
+                                    <td class="ps-4">
 
                                         <i class="ri-arrow-right-s-line me-1" *ngIf="!product.expanded"></i>
 
                                         <i class="ri-arrow-down-s-line me-1" *ngIf="product.expanded"></i>
 
                                         {{ product.Product_Name }}
+
+                                    </td>
+
+                                    <td class="text-end">
+
+                                        {{
+                                        sumTotal(plan)
+                                        | number:'1.2-2'
+                                        }}
+
+                                    </td>
+
+                                    <td class="text-end">
+
+                                        {{
+                                        sumAdjust1(plan)
+                                        | number:'1.2-2'
+                                        }}
+
+                                    </td>
+
+                                    <td class="text-end">
+
+                                        {{
+                                        sumAdjust2(plan)
+                                        | number:'1.2-2'
+                                        }}
+
+                                    </td>
+
+                                    <td class="text-end">
+
+                                        {{
+                                        sumAdjust3(plan)
+                                        | number:'1.2-2'
+                                        }}
+
+                                    </td>
+
+                                    <td class="text-end text-primary">
+
+                                        {{
+                                        sumAllocate(plan)
+                                        | number:'1.2-2'
+                                        }}
 
                                     </td>
 
@@ -127,13 +213,58 @@
                                         <tr class="table-light fw-bold" style="cursor:pointer"
                                             (click)="activity.expanded = !activity.expanded">
 
-                                            <td colspan="7" class="ps-5">
+                                            <td class="ps-5">
 
                                                 <i class="ri-arrow-right-s-line me-1" *ngIf="!activity.expanded"></i>
 
                                                 <i class="ri-arrow-down-s-line me-1" *ngIf="activity.expanded"></i>
 
                                                 {{ activity.Activity_Name }}
+
+                                            </td>
+
+                                            <td class="text-end">
+
+                                                {{
+                                                sumTotal(plan)
+                                                | number:'1.2-2'
+                                                }}
+
+                                            </td>
+
+                                            <td class="text-end">
+
+                                                {{
+                                                sumAdjust1(plan)
+                                                | number:'1.2-2'
+                                                }}
+
+                                            </td>
+
+                                            <td class="text-end">
+
+                                                {{
+                                                sumAdjust2(plan)
+                                                | number:'1.2-2'
+                                                }}
+
+                                            </td>
+
+                                            <td class="text-end">
+
+                                                {{
+                                                sumAdjust3(plan)
+                                                | number:'1.2-2'
+                                                }}
+
+                                            </td>
+
+                                            <td class="text-end text-primary">
+
+                                                {{
+                                                sumAllocate(plan)
+                                                | number:'1.2-2'
+                                                }}
 
                                             </td>
 
@@ -147,7 +278,8 @@
                                                 <tr class="bg-light fw-bold" style="cursor:pointer"
                                                     (click)="budget.expanded = !budget.expanded">
 
-                                                    <td colspan="7" class="ps-5">
+                                                    <!-- NAME -->
+                                                    <td class="ps-5">
 
                                                         <i class="ri-arrow-right-s-line me-1"
                                                             *ngIf="!budget.expanded"></i>
@@ -155,7 +287,57 @@
                                                         <i class="ri-arrow-down-s-line me-1"
                                                             *ngIf="budget.expanded"></i>
 
-                                                        {{ budget.Budget_Type }}
+                                                        {{ budget.Budget_Type || '-' }}
+
+                                                    </td>
+
+                                                    <!-- TOTAL -->
+                                                    <td class="text-end">
+
+                                                        {{
+                                                        sumBudgetTotal(budget.items)
+                                                        | number:'1.2-2'
+                                                        }}
+
+                                                    </td>
+
+                                                    <!-- ADJUST1 -->
+                                                    <td class="text-end">
+
+                                                        {{
+                                                        sumBudgetAdjust1(budget.items)
+                                                        | number:'1.2-2'
+                                                        }}
+
+                                                    </td>
+
+                                                    <!-- ADJUST2 -->
+                                                    <td class="text-end">
+
+                                                        {{
+                                                        sumBudgetAdjust2(budget.items)
+                                                        | number:'1.2-2'
+                                                        }}
+
+                                                    </td>
+
+                                                    <!-- ADJUST3 -->
+                                                    <td class="text-end">
+
+                                                        {{
+                                                        sumBudgetAdjust3(budget.items)
+                                                        | number:'1.2-2'
+                                                        }}
+
+                                                    </td>
+
+                                                    <!-- TOTAL ALLOCATE -->
+                                                    <td class="text-end text-primary">
+
+                                                        {{
+                                                        sumBudgetAllocate(budget.items)
+                                                        | number:'1.2-2'
+                                                        }}
 
                                                     </td>
 
@@ -233,42 +415,6 @@
 
                                                         </td>
 
-                                                        <!-- BALANCE -->
-                                                        <td class="text-end fw-bold" [ngClass]="{
-                                                                'text-danger':
-                                                                (
-                                                                    item.Total -
-                                                                    (
-                                                                        (item.Adjust1 || 0) +
-                                                                        (item.Adjust2 || 0) +
-                                                                        (item.Adjust3 || 0)
-                                                                    )
-                                                                ) < 0,
-
-                                                                'text-success':
-                                                                (
-                                                                    item.Total -
-                                                                    (
-                                                                        (item.Adjust1 || 0) +
-                                                                        (item.Adjust2 || 0) +
-                                                                        (item.Adjust3 || 0)
-                                                                    )
-                                                                ) >= 0
-                                                            }">
-
-                                                            {{
-                                                            (
-                                                            item.Total -
-                                                            (
-                                                            (item.Adjust1 || 0) +
-                                                            (item.Adjust2 || 0) +
-                                                            (item.Adjust3 || 0)
-                                                            )
-                                                            ) | number:'1.2-2'
-                                                            }}
-
-                                                        </td>
-
                                                     </tr>
 
                                                 </ng-container>
@@ -305,22 +451,16 @@
 
                         </td>
 
-                        <td colspan="3"></td>
+                        <td></td>
+
+                        <td></td>
+
+                        <td></td>
 
                         <!-- TOTAL ALLOCATED -->
                         <td class="text-end text-primary">
 
                             {{ totalAllocated | number:'1.2-2' }}
-
-                        </td>
-
-                        <!-- BALANCE -->
-                        <td class="text-end" [ngClass]="{
-                                'text-danger': totalBalance < 0,
-                                'text-success': totalBalance >= 0
-                            }">
-
-                            {{ totalBalance | number:'1.2-2' }}
 
                         </td>
 

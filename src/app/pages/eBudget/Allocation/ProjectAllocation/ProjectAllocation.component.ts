@@ -637,10 +637,6 @@ export class ProjectAllocationComponent implements OnInit {
 
     const items = this.getAllItems();
 
-    console.log(
-      'SAVE ITEMS',
-      items
-    );
 
     // =========================
     // VALIDATE
@@ -658,17 +654,12 @@ export class ProjectAllocationComponent implements OnInit {
 
     if (invalid) {
 
-      alert(
-        'มียอดจัดสรรเกินคำของบ'
-      );
 
+      basicAlert('error', 'มียอดจัดสรรเกินคำของบ', '')
       return;
 
     }
 
-    // =========================
-    // PAYLOAD
-    // =========================
 
     const payload = items.map((item: any) => {
 
@@ -752,10 +743,8 @@ export class ProjectAllocationComponent implements OnInit {
             response
           );
 
-          alert(
-            'บันทึกสำเร็จ'
-          );
-
+      
+          basicAlert('success', 'บันทึกข้อมูล', '')
           // reload
           this.get_data();
 
@@ -771,10 +760,8 @@ export class ProjectAllocationComponent implements OnInit {
             err
           );
 
-          alert(
-            'บันทึกไม่สำเร็จ'
-          );
 
+          basicAlert('error', 'บันทึกไม่สำเร็จ', '')
         }
 
       });
@@ -794,5 +781,212 @@ export class ProjectAllocationComponent implements OnInit {
     this.selectedDepartmentId = null;
 
   }
+  sumTotal(node: any): number {
 
+    return this.getItemsFromNode(node)
+      .reduce(
+
+        (sum: number, item: any) =>
+
+          sum +
+
+          Number(item.Total || 0),
+
+        0
+
+      );
+
+  }
+  sumBudgetTotal(items: any[]): number {
+
+    return items.reduce(
+
+      (sum: number, item: any) =>
+
+        sum + Number(item.Total || 0),
+
+      0
+
+    );
+
+  }
+  sumBudgetAdjust1(items: any[]): number {
+
+    return items.reduce(
+
+      (sum: number, item: any) =>
+
+        sum + Number(item.Adjust1 || 0),
+
+      0
+
+    );
+
+  }
+  sumBudgetAdjust2(items: any[]): number {
+
+    return items.reduce(
+
+      (sum: number, item: any) =>
+
+        sum + Number(item.Adjust2 || 0),
+
+      0
+
+    );
+
+  }
+  sumBudgetAdjust3(items: any[]): number {
+
+    return items.reduce(
+
+      (sum: number, item: any) =>
+
+        sum + Number(item.Adjust3 || 0),
+
+      0
+
+    );
+
+  }
+  sumBudgetAllocate(items: any[]): number {
+
+    return items.reduce(
+
+      (sum: number, item: any) =>
+
+        sum +
+
+        Number(item.Adjust1 || 0) +
+
+        Number(item.Adjust2 || 0) +
+
+        Number(item.Adjust3 || 0),
+
+      0
+
+    );
+
+  }
+  getItemsFromNode(node: any): any[] {
+
+    let items: any[] = [];
+
+    // budget level
+    if (node.items) {
+
+      return node.items;
+
+    }
+
+    // activity level
+    if (node.budgets) {
+
+      node.budgets.forEach((budget: any) => {
+
+        items.push(
+          ...this.getItemsFromNode(budget)
+        );
+
+      });
+
+    }
+
+    // product level
+    if (node.activities) {
+
+      node.activities.forEach((activity: any) => {
+
+        items.push(
+          ...this.getItemsFromNode(activity)
+        );
+
+      });
+
+    }
+
+    // plan level
+    if (node.products) {
+
+      node.products.forEach((product: any) => {
+
+        items.push(
+          ...this.getItemsFromNode(product)
+        );
+
+      });
+
+    }
+
+    return items;
+
+  }
+  sumAdjust1(node: any): number {
+
+    return this.getItemsFromNode(node)
+      .reduce(
+
+        (sum: number, item: any) =>
+
+          sum +
+
+          Number(item.Adjust1 || 0),
+
+        0
+
+      );
+
+  }
+  sumAdjust2(node: any): number {
+
+    return this.getItemsFromNode(node)
+      .reduce(
+
+        (sum: number, item: any) =>
+
+          sum +
+
+          Number(item.Adjust2 || 0),
+
+        0
+
+      );
+
+  }
+  sumAdjust3(node: any): number {
+
+    return this.getItemsFromNode(node)
+      .reduce(
+
+        (sum: number, item: any) =>
+
+          sum +
+
+          Number(item.Adjust3 || 0),
+
+        0
+
+      );
+
+  }
+  sumAllocate(node: any): number {
+
+    return this.getItemsFromNode(node)
+      .reduce(
+
+        (sum: number, item: any) =>
+
+          sum +
+
+          Number(item.Adjust1 || 0) +
+
+          Number(item.Adjust2 || 0) +
+
+          Number(item.Adjust3 || 0),
+
+        0
+
+      );
+
+  }
 }
