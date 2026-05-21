@@ -28,6 +28,10 @@ export class ProjectAllocationComponent {
     private budgetYearService: BudgetYearService
   ) { }
 
+  // =====================================
+  // VARIABLE
+  // =====================================
+
   table_display: boolean = false;
 
   department: any[] = [];
@@ -214,10 +218,11 @@ export class ProjectAllocationComponent {
 
     this.table_display = true;
 
-    // filter ข้อมูลตาม row ที่กด
     const rows = this.allData.filter(
 
       (x: any) =>
+
+        x.Request_Id == item.Request_Id &&
 
         x.Department_Id ==
         item.Department_Id
@@ -244,9 +249,12 @@ export class ProjectAllocationComponent {
 
     );
 
-    console.log('DETAIL ROWS', rows);
+    console.log('rows', rows);
 
-    // map ลง table
+    // =====================================
+    // MAP TABLE
+    // =====================================
+
     this.flattenData = rows.map((x: any) => {
 
       return {
@@ -299,16 +307,12 @@ export class ProjectAllocationComponent {
 
         Expense_List:
 
-          x.Expense_List ||
-
-          x.Expense_Detail ||
-
           x.Expense_Name ||
 
           '',
 
         // =====================
-        // BUDGET
+        // TOTAL
         // =====================
 
         Total:
@@ -367,12 +371,235 @@ export class ProjectAllocationComponent {
   }
 
   // =====================================
+  // ROW TOTAL
+  // =====================================
+
+  getRowTotal(item: any): number {
+
+    return (
+
+      (Number(item.Adjust1) || 0) +
+
+      (Number(item.Adjust2) || 0) +
+
+      (Number(item.Adjust3) || 0)
+
+    );
+
+  }
+
+  // =====================================
+  // ROW BALANCE
+  // =====================================
+
+  getRowBalance(item: any): number {
+
+    return (
+
+      Number(item.Total || 0)
+
+      -
+
+      this.getRowTotal(item)
+
+    );
+
+  }
+
+  // =====================================
+  // ROW PERCENT
+  // =====================================
+
+  getRowPercent(item: any): number {
+
+    if ((Number(item.Total) || 0) <= 0) {
+
+      return 0;
+
+    }
+
+    return (
+
+      this.getRowTotal(item)
+
+      /
+
+      Number(item.Total)
+
+    ) * 100;
+
+  }
+
+  // =====================================
+  // SUMMARY TOTAL REQUEST
+  // =====================================
+
+  get totalRequest(): number {
+
+    return this.flattenData.reduce(
+
+      (sum: number, item: any) =>
+
+        sum +
+
+        (Number(item.Total) || 0),
+
+      0
+
+    );
+
+  }
+
+  // =====================================
+  // SUMMARY TOTAL ALLOCATED
+  // =====================================
+
+  get totalAllocated(): number {
+
+    return this.flattenData.reduce(
+
+      (sum: number, item: any) =>
+
+        sum +
+
+        (Number(item.Adjust1) || 0) +
+
+        (Number(item.Adjust2) || 0) +
+
+        (Number(item.Adjust3) || 0),
+
+      0
+
+    );
+
+  }
+
+  // =====================================
+  // SUMMARY BALANCE
+  // =====================================
+
+  get totalBalance(): number {
+
+    return (
+
+      this.totalRequest -
+
+      this.totalAllocated
+
+    );
+
+  }
+
+  // =====================================
+  // SUMMARY PERCENT
+  // =====================================
+
+  get allocationPercent(): number {
+
+    if (this.totalRequest <= 0) {
+
+      return 0;
+
+    }
+
+    return (
+
+      this.totalAllocated
+
+      /
+
+      this.totalRequest
+
+    ) * 100;
+
+  }
+
+  // =====================================
+  // AUTO ALLOCATE
+  // =====================================
+
+  autoAllocate() {
+
+    this.flattenData.forEach(item => {
+
+      const avg =
+        Number(item.Total || 0) / 3;
+
+      item.Adjust1 = avg;
+
+      item.Adjust2 = avg;
+
+      item.Adjust3 = avg;
+
+    });
+
+  }
+
+  // =====================================
+  // RESET ALLOCATE
+  // =====================================
+
+  resetAllocate() {
+
+    this.flattenData.forEach(item => {
+
+      item.Adjust1 = 0;
+
+      item.Adjust2 = 0;
+
+      item.Adjust3 = 0;
+
+    });
+
+  }
+
+  // =====================================
   // SAVE ADJUST
   // =====================================
 
   saveAdjust() {
 
+    const invalid = this.flattenData.some((item: any) => {
+
+      return this.getRowTotal(item)
+        >
+        Number(item.Total || 0);
+
+    });
+
+    if (invalid) {
+
+      alert('มียอดจัดสรรเกินคำของบ');
+
+      return;
+
+    }
+
     console.log(this.flattenData);
+
+    // =====================================
+    // API SAVE
+    // =====================================
+
+    /*
+    let model = {
+
+      FUNC_CODE: "FUNC-SAVE_PROJECT_ALLOCATION",
+
+      DATA: this.flattenData
+
+    };
+
+    this.servicebud
+      .GatewayPostData(model)
+      .subscribe((response: any) => {
+
+        alert('บันทึกสำเร็จ');
+
+      });
+    */
+
+    alert('บันทึกสำเร็จ');
 
   }
 

@@ -21,7 +21,21 @@ export class ExpenseListSalaryComponent {
 
   totalAmount: number = 0;
 
+  totalOldAmount: number = 0;
+
+  totalNewAmount: number = 0;
+
+  totalBalance: number = 0;
+
+  percentOld: number = 0;
+
+  percentNew: number = 0;
+
   file: any = null;
+
+  oldRequestItemId: number = 0;
+
+  newRequestItemId: number = 0;
 
   ngOnInit() {
 
@@ -33,14 +47,20 @@ export class ExpenseListSalaryComponent {
 
   }
 
+  /* =========================
+      CLOSE
+  ========================= */
+
   closeModal() {
 
     this.model.dismiss();
 
   }
-  oldRequestItemId: number = 0;
 
-  newRequestItemId: number = 0;
+  /* =========================
+      BIND DATA
+  ========================= */
+
   bindData() {
 
     if (!this.model.Budget_Request_Detail_Item) return;
@@ -85,20 +105,72 @@ export class ExpenseListSalaryComponent {
 
   }
 
-  // คำนวณรวม footer
+  /* =========================
+      SUMMARY
+  ========================= */
+
   updateSummary() {
 
     this.totalQty =
       (Number(this.model.oldQty) || 0) +
       (Number(this.model.newQty) || 0);
 
-    this.totalAmount =
-      (Number(this.model.oldYear) || 0) +
+    this.totalOldAmount =
+      (Number(this.model.oldYear) || 0);
+
+    this.totalNewAmount =
       (Number(this.model.newYear) || 0);
+
+    this.totalAmount =
+      this.totalOldAmount +
+      this.totalNewAmount;
+
+    this.model.Total =
+      this.totalAmount;
+
+    // ส่วนต่าง
+    this.totalBalance =
+      this.totalNewAmount -
+      this.totalOldAmount;
+
+    // %
+    this.percentOld =
+      this.calculatePercent(
+        this.totalOldAmount,
+        this.totalAmount
+      );
+
+    this.percentNew =
+      this.calculatePercent(
+        this.totalNewAmount,
+        this.totalAmount
+      );
 
   }
 
-  // คำนวณอัตราเดิม
+  /* =========================
+      CALCULATE %
+  ========================= */
+
+  calculatePercent(
+    value: number,
+    total: number
+  ): number {
+
+    if (total <= 0) {
+
+      return 0;
+
+    }
+
+    return (value / total) * 100;
+
+  }
+
+  /* =========================
+      CALCULATE OLD
+  ========================= */
+
   calculateRowOld() {
 
     const qty =
@@ -107,13 +179,21 @@ export class ExpenseListSalaryComponent {
     const month =
       Number(this.model.oldMonth) || 0;
 
-    // expense type 5 = รายเดือน x 12
+    // รายเดือน
     if (this.model.selectedExpenseTypeId == 5) {
 
       this.model.oldYear =
         qty * month * 12;
 
     }
+    else {
+
+      this.model.oldYear =
+        qty * month;
+
+    }
+
+    this.validateNegative();
 
     this.updateSummary();
 
@@ -121,7 +201,10 @@ export class ExpenseListSalaryComponent {
 
   }
 
-  // คำนวณอัตราใหม่
+  /* =========================
+      CALCULATE NEW
+  ========================= */
+
   calculateRowNew() {
 
     const qty =
@@ -130,13 +213,21 @@ export class ExpenseListSalaryComponent {
     const month =
       Number(this.model.newMonth) || 0;
 
-    // expense type 5 = รายเดือน x 12
+    // รายเดือน
     if (this.model.selectedExpenseTypeId == 5) {
 
       this.model.newYear =
         qty * month * 12;
 
     }
+    else {
+
+      this.model.newYear =
+        qty * month;
+
+    }
+
+    this.validateNegative();
 
     this.updateSummary();
 
@@ -144,22 +235,44 @@ export class ExpenseListSalaryComponent {
 
   }
 
-  // ใช้ตอน init / edit
+  /* =========================
+      CALCULATE ALL
+  ========================= */
+
   calculateAll() {
+
+    const oldQty =
+      Number(this.model.oldQty) || 0;
+
+    const oldMonth =
+      Number(this.model.oldMonth) || 0;
+
+    const newQty =
+      Number(this.model.newQty) || 0;
+
+    const newMonth =
+      Number(this.model.newMonth) || 0;
 
     if (this.model.selectedExpenseTypeId == 5) {
 
       this.model.oldYear =
-        (Number(this.model.oldQty) || 0) *
-        (Number(this.model.oldMonth) || 0) *
-        12;
+        oldQty * oldMonth * 12;
 
       this.model.newYear =
-        (Number(this.model.newQty) || 0) *
-        (Number(this.model.newMonth) || 0) *
-        12;
+        newQty * newMonth * 12;
 
     }
+    else {
+
+      this.model.oldYear =
+        oldQty * oldMonth;
+
+      this.model.newYear =
+        newQty * newMonth;
+
+    }
+
+    this.validateNegative();
 
     this.updateSummary();
 
@@ -167,7 +280,78 @@ export class ExpenseListSalaryComponent {
 
   }
 
-  // sync ลง array กลาง
+  /* =========================
+      VALIDATE
+  ========================= */
+
+  validateNegative() {
+
+    if (this.model.oldQty < 0) {
+
+      this.model.oldQty = 0;
+
+    }
+
+    if (this.model.newQty < 0) {
+
+      this.model.newQty = 0;
+
+    }
+
+    if (this.model.oldMonth < 0) {
+
+      this.model.oldMonth = 0;
+
+    }
+
+    if (this.model.newMonth < 0) {
+
+      this.model.newMonth = 0;
+
+    }
+
+  }
+
+  /* =========================
+      AUTO FILL
+  ========================= */
+
+  copyOldToNew() {
+
+    this.model.newQty =
+      this.model.oldQty;
+
+    this.model.newMonth =
+      this.model.oldMonth;
+
+    this.calculateRowNew();
+
+  }
+
+  /* =========================
+      RESET
+  ========================= */
+
+  resetForm() {
+
+    this.model.oldQty = 0;
+    this.model.oldMonth = 0;
+    this.model.oldYear = 0;
+
+    this.model.newQty = 0;
+    this.model.newMonth = 0;
+    this.model.newYear = 0;
+
+    this.updateSummary();
+
+    this.updateDetailItems();
+
+  }
+
+  /* =========================
+      SAVE ARRAY
+  ========================= */
+
   updateDetailItems() {
 
     if (!this.model.Budget_Request_Detail_Item) {
@@ -176,70 +360,97 @@ export class ExpenseListSalaryComponent {
 
     }
 
-    // ลบของ expense type นี้ก่อน
+    // ลบของ expense type เดิม
     this.model.Budget_Request_Detail_Item =
       this.model.Budget_Request_Detail_Item.filter(
         (x: any) =>
           x.Fk_Expense_Id != this.model.selectedExpenseTypeId
       );
 
-    this.model.Budget_Request_Detail_Item.push(
+    // push อัตราเดิม
+    this.model.Budget_Request_Detail_Item.push({
 
-      {
-        Request_Item_Id:
-          this.oldRequestItemId,
+      Request_Item_Id:
+        this.oldRequestItemId,
 
-        Fk_Expense_Id:
-          this.model.selectedExpenseTypeId,
+      Fk_Expense_Id:
+        this.model.selectedExpenseTypeId,
 
-        Expense_Detail:
-          'อัตราเดิม',
+      Expense_Detail:
+        'อัตราเดิม',
 
-        Quantity:
-          this.model.oldQty,
+      Quantity:
+        this.model.oldQty,
 
-        Per_Month:
-          this.model.oldMonth,
+      Per_Month:
+        this.model.oldMonth,
 
-        Per_Year:
-          this.model.oldYear,
+      Per_Year:
+        this.model.oldYear,
 
-        Total:
-          this.model.oldYear
-      },
+      Total:
+        this.model.oldYear
 
-      {
-        Request_Item_Id:
-          this.newRequestItemId,
+    });
 
-        Fk_Expense_Id:
-          this.model.selectedExpenseTypeId,
+    // push อัตราใหม่
+    this.model.Budget_Request_Detail_Item.push({
 
-        Expense_Detail:
-          'อัตราใหม่',
+      Request_Item_Id:
+        this.newRequestItemId,
 
-        Quantity:
-          this.model.newQty,
+      Fk_Expense_Id:
+        this.model.selectedExpenseTypeId,
 
-        Per_Month:
-          this.model.newMonth,
+      Expense_Detail:
+        'อัตราใหม่',
 
-        Per_Year:
-          this.model.newYear,
+      Quantity:
+        this.model.newQty,
 
-        Total:
-          this.model.newYear
-      }
+      Per_Month:
+        this.model.newMonth,
 
-    );
+      Per_Year:
+        this.model.newYear,
+
+      Total:
+        this.model.newYear
+
+    });
 
   }
 
+  /* =========================
+      FILE
+  ========================= */
+
   onFileChange(event: any) {
 
-    this.file = event.target.files[0];
+    this.file =
+      event.target.files[0];
 
     console.log(this.file);
+
+  }
+
+  /* =========================
+      SAVE
+  ========================= */
+
+  saveData() {
+
+    if (this.totalAmount <= 0) {
+
+      alert('กรุณากรอกข้อมูล');
+
+      return;
+
+    }
+
+    console.log(this.model);
+
+    alert('บันทึกสำเร็จ');
 
   }
 

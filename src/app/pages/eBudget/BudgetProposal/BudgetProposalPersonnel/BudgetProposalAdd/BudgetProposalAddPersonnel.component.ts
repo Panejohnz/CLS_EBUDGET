@@ -608,6 +608,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
 
   async save() {
 
+    
     const findById = (
       list: any[],
       key: string,
@@ -672,8 +673,8 @@ export class ProjectBudgetProposalAddPersonnelComponent {
 
       FK_Project_Plan_Id:
         this.model.Budget_Request.FK_Project_Plan_Id,
-      Total:
-        this.getGrandTotal(),
+
+      Total: this.model.Total,
       Department_Id:
         this.model.Department_Id,
 
@@ -741,7 +742,8 @@ export class ProjectBudgetProposalAddPersonnelComponent {
         this.model.Budget_Request.Proposer_Name,
 
       Proposer_Position:
-        this.model.Budget_Request.Proposer_Position
+        this.model.Budget_Request.Proposer_Position,
+
     };
 
     const getId = (obj: any, key: string) =>
