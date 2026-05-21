@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GridJsService } from '../../../tables/gridjs/gridjs.service';
 import { PaginationService } from 'src/app/core/services/pagination.service';
@@ -17,7 +17,7 @@ import { BudgetYearService } from 'src/app/core/services/budget-year.service';
   templateUrl: './ProjectAllocation.component.html',
   styles: ``
 })
-export class ProjectAllocationComponent {
+export class ProjectAllocationComponent implements OnInit {
 
   constructor(
     private modalService: NgbModal,
@@ -36,27 +36,13 @@ export class ProjectAllocationComponent {
 
   department: any[] = [];
 
-  griddata: any[] = [];
-
-  griddataTemp: any[] = [];
-
-  flattenData: any[] = [];
-
   allData: any[] = [];
+
+  groupData: any[] = [];
 
   selectedDepartmentId: any = null;
 
   currentYear: any;
-
-  item: any = {
-
-    alloc1: 0,
-
-    alloc2: 0,
-
-    alloc3: 0
-
-  };
 
   // =====================================
   // INIT
@@ -93,280 +79,311 @@ export class ProjectAllocationComponent {
 
     let model = {
 
-      FUNC_CODE: "FUNC-Get_Budget_Request",
+      FUNC_CODE: 'FUNC-Get_Budget_Request',
 
       BgYear: this.currentYear
 
     };
 
-    var getData =
-      this.servicebud.GatewayGetData(model);
+    this.servicebud
+      .GatewayGetData(model)
+      .subscribe((response: any) => {
 
-    getData.subscribe((response: any) => {
+        // table data
+        this.allData =
+          Array.isArray(
+            response.List_Budget_Request_Data_Table.Data
+          )
+            ? response.List_Budget_Request_Data_Table.Data
+            : [];
 
-      this.allData =
-        Array.isArray(
-          response.List_Budget_Request_Data_Table.Data
-        )
-          ? response.List_Budget_Request_Data_Table.Data
-          : [];
+        // department
+        this.department =
+          Array.isArray(
+            response.Mas_Department_Lists
+          )
+            ? response.Mas_Department_Lists
+            : [];
 
-      this.griddataTemp = [
-        ...this.allData
-      ];
+        console.log(
+          'ALL DATA',
+          this.allData
+        );
 
-      this.griddata = [
-        ...this.allData
-      ];
-
-      this.department =
-        Array.isArray(
-          response.Mas_Department_Lists
-        )
-          ? response.Mas_Department_Lists
-          : [];
-
-    });
+      });
 
   }
 
   // =====================================
-  // FILTER
+  // FILTER + GROUP
   // =====================================
 
   applyFilter() {
 
-    let data = [
-      ...this.griddataTemp
-    ];
+    // ยังไม่เลือก
+    if (!this.selectedDepartmentId) {
 
-    if (this.selectedDepartmentId) {
+      this.table_display = false;
 
-      data = data.filter(
-        x =>
-          x.Department_Id ==
-          this.selectedDepartmentId
-      );
+      this.groupData = [];
+
+      return;
 
     }
 
-    if (this.service.searchTerm) {
-
-      const keyword =
-        this.service.searchTerm.toLowerCase();
-
-      data = data.filter(x =>
-
-        (x.Department_Name || '')
-          .toLowerCase()
-          .includes(keyword)
-
-        ||
-
-        (x.Plan_Name || '')
-          .toLowerCase()
-          .includes(keyword)
-
-        ||
-
-        (x.Product_Name || '')
-          .toLowerCase()
-          .includes(keyword)
-
-        ||
-
-        (x.Activity_Name || '')
-          .toLowerCase()
-          .includes(keyword)
-
-        ||
-
-        (x.Budget_Type || '')
-          .toLowerCase()
-          .includes(keyword)
-
-        ||
-
-        (x.Project_Name || '')
-          .toLowerCase()
-          .includes(keyword)
-
-        ||
-
-        (x.Status_Name || '')
-          .toLowerCase()
-          .includes(keyword)
-
-        ||
-
-        String(x.Total || '')
-          .includes(keyword)
-
-      );
-
-    }
-
-    this.griddata = data;
-
-  }
-
-  // =====================================
-  // DETAIL
-  // =====================================
-
-  Detail(item: any) {
-
+    // เปิด table
     this.table_display = true;
 
+    // filter department
     const rows = this.allData.filter(
 
       (x: any) =>
 
-        x.Request_Id == item.Request_Id &&
-
         x.Department_Id ==
-        item.Department_Id
 
-        &&
-
-        x.Fk_Plan_Id ==
-        item.Fk_Plan_Id
-
-        &&
-
-        x.Fk_Product_Id ==
-        item.Fk_Product_Id
-
-        &&
-
-        x.Fk_Activity_Id ==
-        item.Fk_Activity_Id
-
-        &&
-
-        x.Fk_Budget_Type ==
-        item.Fk_Budget_Type
+        this.selectedDepartmentId
 
     );
 
-    console.log('rows', rows);
+    console.log(
+      'ROWS',
+      rows
+    );
+
+    // reset
+    this.groupData = [];
 
     // =====================================
-    // MAP TABLE
+    // GROUP
     // =====================================
 
-    this.flattenData = rows.map((x: any) => {
+    rows.forEach((row: any) => {
 
-      return {
+      // =====================
+      // PLAN
+      // =====================
 
-        // =====================
-        // PLAN
-        // =====================
+      let plan = this.groupData.find(
 
-        Plan_Name:
+        (x: any) =>
 
-          x.Plan_Name ||
+          x.Plan_Name ==
 
-          '',
+          row.Plan_Name
 
-        // =====================
-        // PRODUCT
-        // =====================
+      );
 
-        Product_Name:
+      if (!plan) {
 
-          x.Product_Name ||
+        plan = {
 
-          '',
+          Plan_Name:
 
-        // =====================
-        // ACTIVITY
-        // =====================
+            row.Plan_Name ||
 
-        Activity_Name:
+            '-',
 
-          x.Activity_Name ||
+          products: []
 
-          '',
+        };
 
-        // =====================
-        // BUDGET TYPE
-        // =====================
+        this.groupData.push(plan);
 
-        Budget_Type:
+      }
 
-          x.Budget_Type ||
+      // =====================
+      // PRODUCT
+      // =====================
 
-          x.Budget_Type_Name ||
+      let product = plan.products.find(
 
-          '',
+        (x: any) =>
 
-        // =====================
-        // EXPENSE
-        // =====================
+          x.Product_Name ==
 
+          row.Product_Name
+
+      );
+
+      if (!product) {
+
+        product = {
+
+          Product_Name:
+
+            row.Product_Name ||
+
+            '-',
+
+          activities: []
+
+        };
+
+        plan.products.push(product);
+
+      }
+
+      // =====================
+      // ACTIVITY
+      // =====================
+
+      let activity = product.activities.find(
+
+        (x: any) =>
+
+          x.Activity_Name ==
+
+          row.Activity_Name
+
+      );
+
+      if (!activity) {
+
+        activity = {
+
+          Activity_Name:
+
+            row.Activity_Name ||
+
+            '-',
+
+          budgets: []
+
+        };
+
+        product.activities.push(activity);
+
+      }
+
+      // =====================
+      // BUDGET
+      // =====================
+
+      let budget = activity.budgets.find(
+
+        (x: any) =>
+
+          x.Budget_Type ==
+
+          row.Budget_Type
+
+      );
+
+      if (!budget) {
+
+        budget = {
+
+          Budget_Type:
+
+            row.Budget_Type ||
+
+            '-',
+
+          items: []
+
+        };
+
+        activity.budgets.push(budget);
+
+      }
+
+      // =====================
+      // ITEM
+      // =====================
+
+      budget.items.push({
+
+        // key
+        Plan_Id:
+
+          row.Plan_Id || 0,
+
+        FK_Request_Id:
+
+          row.FK_Request_Id || 0,
+
+        // detail
         Expense_List:
 
-          x.Expense_Name ||
+          row.Expense_List || '',
 
-          '',
+        Project_Name:
 
-        // =====================
-        // TOTAL
-        // =====================
+          row.Project_Name || '',
 
+        // amount
         Total:
 
           Number(
-            x.Total || 0
+            row.Total || 0
           ),
-
-        // =====================
-        // ALLOCATE
-        // =====================
 
         Adjust1:
 
           Number(
-            x.Adjust1 || 0
+            row.Adjust1 || 0
           ),
 
         Adjust2:
 
           Number(
-            x.Adjust2 || 0
+            row.Adjust2 || 0
           ),
 
         Adjust3:
 
           Number(
-            x.Adjust3 || 0
+            row.Adjust3 || 0
           ),
 
-        // =====================
-        // ID
-        // =====================
+        Update_Amount:
 
-        Request_Id:
+          Number(
+            row.Update_Amount || 0
+          )
 
-          x.Request_Id || 0,
-
-        Request_Detail_Id:
-
-          x.Request_Detail_Id || 0,
-
-        Fk_Expense_Id:
-
-          x.Fk_Expense_Id || 0
-
-      };
+      });
 
     });
 
     console.log(
-      'FLATTEN DATA',
-      this.flattenData
+      'GROUP DATA',
+      this.groupData
     );
+
+  }
+
+  // =====================================
+  // GET ALL ITEMS
+  // =====================================
+
+  getAllItems(): any[] {
+
+    let items: any[] = [];
+
+    this.groupData.forEach((plan: any) => {
+
+      plan.products.forEach((product: any) => {
+
+        product.activities.forEach((activity: any) => {
+
+          activity.budgets.forEach((budget: any) => {
+
+            budget.items.forEach((item: any) => {
+
+              items.push(item);
+
+            });
+
+          });
+
+        });
+
+      });
+
+    });
+
+    return items;
 
   }
 
@@ -378,9 +395,13 @@ export class ProjectAllocationComponent {
 
     return (
 
-      (Number(item.Adjust1) || 0) +
+      (Number(item.Adjust1) || 0)
 
-      (Number(item.Adjust2) || 0) +
+      +
+
+      (Number(item.Adjust2) || 0)
+
+      +
 
       (Number(item.Adjust3) || 0)
 
@@ -431,12 +452,12 @@ export class ProjectAllocationComponent {
   }
 
   // =====================================
-  // SUMMARY TOTAL REQUEST
+  // SUMMARY
   // =====================================
 
   get totalRequest(): number {
 
-    return this.flattenData.reduce(
+    return this.getAllItems().reduce(
 
       (sum: number, item: any) =>
 
@@ -450,21 +471,21 @@ export class ProjectAllocationComponent {
 
   }
 
-  // =====================================
-  // SUMMARY TOTAL ALLOCATED
-  // =====================================
-
   get totalAllocated(): number {
 
-    return this.flattenData.reduce(
+    return this.getAllItems().reduce(
 
       (sum: number, item: any) =>
 
         sum +
 
-        (Number(item.Adjust1) || 0) +
+        (Number(item.Adjust1) || 0)
 
-        (Number(item.Adjust2) || 0) +
+        +
+
+        (Number(item.Adjust2) || 0)
+
+        +
 
         (Number(item.Adjust3) || 0),
 
@@ -474,25 +495,19 @@ export class ProjectAllocationComponent {
 
   }
 
-  // =====================================
-  // SUMMARY BALANCE
-  // =====================================
-
   get totalBalance(): number {
 
     return (
 
-      this.totalRequest -
+      this.totalRequest
+
+      -
 
       this.totalAllocated
 
     );
 
   }
-
-  // =====================================
-  // SUMMARY PERCENT
-  // =====================================
 
   get allocationPercent(): number {
 
@@ -520,10 +535,13 @@ export class ProjectAllocationComponent {
 
   autoAllocate() {
 
-    this.flattenData.forEach(item => {
+    this.getAllItems().forEach((item: any) => {
 
       const avg =
-        Number(item.Total || 0) / 3;
+
+        Number(item.Total || 0)
+
+        / 3;
 
       item.Adjust1 = avg;
 
@@ -536,12 +554,12 @@ export class ProjectAllocationComponent {
   }
 
   // =====================================
-  // RESET ALLOCATE
+  // RESET
   // =====================================
 
   resetAllocate() {
 
-    this.flattenData.forEach(item => {
+    this.getAllItems().forEach((item: any) => {
 
       item.Adjust1 = 0;
 
@@ -554,52 +572,102 @@ export class ProjectAllocationComponent {
   }
 
   // =====================================
-  // SAVE ADJUST
+  // SAVE
   // =====================================
 
   saveAdjust() {
 
-    const invalid = this.flattenData.some((item: any) => {
+    const items =
+      this.getAllItems();
+
+    // validate
+    const invalid = items.some((item: any) => {
 
       return this.getRowTotal(item)
+
         >
+
         Number(item.Total || 0);
 
     });
 
     if (invalid) {
 
-      alert('มียอดจัดสรรเกินคำของบ');
+      alert(
+        'มียอดจัดสรรเกินคำของบ'
+      );
 
       return;
 
     }
 
-    console.log(this.flattenData);
+    // =====================================
+    // PAYLOAD
+    // =====================================
+
+    const payload = items.map((item: any) => {
+
+      return {
+
+        Plan_Id:
+
+          item.Plan_Id,
+
+        Adjust1:
+
+          Number(item.Adjust1 || 0),
+
+        Adjust2:
+
+          Number(item.Adjust2 || 0),
+
+        Adjust3:
+
+          Number(item.Adjust3 || 0),
+
+        Update_Amount:
+
+          this.getRowTotal(item),
+
+        Update_User:
+
+          this.authService
+            .currentUserValue
+            .User_Id
+
+      };
+
+    });
+
+    console.log(
+      'SAVE PAYLOAD',
+      payload
+    );
 
     // =====================================
     // API SAVE
     // =====================================
 
-    /*
     let model = {
 
-      FUNC_CODE: "FUNC-SAVE_PROJECT_ALLOCATION",
+      FUNC_CODE:
+        'FUNC-SAVE_PROJECT_ALLOCATION',
 
-      DATA: this.flattenData
+      DATA:
+        payload
 
     };
 
-    this.servicebud
-      .GatewayPostData(model)
+    this.servicebud.GatewayGetData(model)
       .subscribe((response: any) => {
 
-        alert('บันทึกสำเร็จ');
+        alert(
+          'บันทึกสำเร็จ'
+        );
+
+        this.get_data();
 
       });
-    */
-
-    alert('บันทึกสำเร็จ');
 
   }
 
@@ -610,6 +678,10 @@ export class ProjectAllocationComponent {
   backToTable() {
 
     this.table_display = false;
+
+    this.groupData = [];
+
+    this.selectedDepartmentId = null;
 
   }
 

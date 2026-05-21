@@ -32,7 +32,28 @@ export class ExpenseListSalaryComponent {
     this.calculateAll();
 
   }
+  onAmountChange(value: any, field: string) {
 
+    // ลบ comma
+    const numberValue = String(value)
+      .replace(/,/g, '');
+
+    this.model[field] =
+      Number(numberValue) || 0;
+
+    if (field == 'oldYear') {
+
+      this.calculateRowOld();
+
+    }
+
+    if (field == 'newYear') {
+
+      this.calculateRowNew();
+
+    }
+
+  }
   closeModal() {
 
     this.model.dismiss();

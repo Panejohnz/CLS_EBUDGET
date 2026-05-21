@@ -55,9 +55,9 @@
 
                     <td>
 
-                        <input type="number" class="form-control text-end" [(ngModel)]="model.oldYear"
-                            (ngModelChange)="calculateRowOld()" [readonly]="model.selectedExpenseTypeId == 5">
-
+                        <input type="text" class="form-control text-end" [ngModel]="model.oldYear | number:'1.0-0'"
+                            (ngModelChange)="onAmountChange($event, 'oldYear')"
+                            [readonly]="model.selectedExpenseTypeId == 5">
                     </td>
 
                 </tr>
@@ -85,8 +85,10 @@
 
                     <td>
 
-                        <input type="number" class="form-control text-end" [(ngModel)]="model.newYear"
-                            (ngModelChange)="calculateRowNew()" [readonly]="model.selectedExpenseTypeId == 5">
+                        <input type="text" class="form-control text-end" [ngModel]="model.newYear | number:'1.0-0'"
+                            (ngModelChange)="onAmountChange($event, 'newYear')"
+                            [readonly]="model.selectedExpenseTypeId == 5">
+
 
                     </td>
 
