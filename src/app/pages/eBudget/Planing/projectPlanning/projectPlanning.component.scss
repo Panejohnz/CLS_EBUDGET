@@ -6,7 +6,17 @@
     color: white;
 }
 
+
 /* สำหรับ header 2 แถว */
 .sticky-header tr:nth-child(2) th {
     top: 48px;
 }
+
+/* ===== STATUS ===== */
+
+
+.table-responsive {
+    max-height: 600px;
+    overflow-y: auto;
+}
+
