@@ -75,7 +75,6 @@
                             คงเหลือ
                         </th>
 
-
                     </tr>
 
                 </thead>
@@ -85,9 +84,14 @@
                     <!-- PLAN -->
                     <ng-container *ngFor="let plan of groupData">
 
-                        <tr class="table-primary fw-bold">
+                        <tr class="table-primary fw-bold" style="cursor:pointer"
+                            (click)="plan.expanded = !plan.expanded">
 
-                            <td colspan="8">
+                            <td colspan="7">
+
+                                <i class="ri-arrow-right-s-line me-1" *ngIf="!plan.expanded"></i>
+
+                                <i class="ri-arrow-down-s-line me-1" *ngIf="plan.expanded"></i>
 
                                 {{ plan.Plan_Name }}
 
@@ -95,146 +99,185 @@
 
                         </tr>
 
-                        <!-- PRODUCT -->
-                        <ng-container *ngFor="let product of plan.products">
+                        <ng-container *ngIf="plan.expanded">
 
-                            <tr class="table-info fw-bold">
+                            <!-- PRODUCT -->
+                            <ng-container *ngFor="let product of plan.products">
 
-                                <td colspan="8" class="ps-4">
+                                <tr class="table-info fw-bold" style="cursor:pointer"
+                                    (click)="product.expanded = !product.expanded">
 
-                                    {{ product.Product_Name }}
+                                    <td colspan="7" class="ps-4">
 
-                                </td>
+                                        <i class="ri-arrow-right-s-line me-1" *ngIf="!product.expanded"></i>
 
-                            </tr>
+                                        <i class="ri-arrow-down-s-line me-1" *ngIf="product.expanded"></i>
 
-                            <!-- ACTIVITY -->
-                            <ng-container *ngFor="let activity of product.activities">
-
-                                <tr class="table-light fw-bold">
-
-                                    <td colspan="8" class="ps-5">
-
-                                        {{ activity.Activity_Name }}
+                                        {{ product.Product_Name }}
 
                                     </td>
 
                                 </tr>
 
-                                <!-- BUDGET -->
-                                <ng-container *ngFor="let budget of activity.budgets">
+                                <ng-container *ngIf="product.expanded">
 
-                                    <tr class="bg-light fw-bold">
+                                    <!-- ACTIVITY -->
+                                    <ng-container *ngFor="let activity of product.activities">
 
-                                        <td colspan="8" class="ps-5">
+                                        <tr class="table-light fw-bold" style="cursor:pointer"
+                                            (click)="activity.expanded = !activity.expanded">
 
-                                            {{ budget.Budget_Type }}
+                                            <td colspan="7" class="ps-5">
 
-                                        </td>
+                                                <i class="ri-arrow-right-s-line me-1" *ngIf="!activity.expanded"></i>
 
-                                    </tr>
+                                                <i class="ri-arrow-down-s-line me-1" *ngIf="activity.expanded"></i>
 
-                                    <!-- EXPENSE -->
-                                    <tr *ngFor="let item of budget.items">
+                                                {{ activity.Activity_Name }}
 
-                                        <!-- EXPENSE -->
-                                        <td class="ps-5 text-start">
+                                            </td>
 
-                                            - {{ item.Expense_Name }}
+                                        </tr>
 
-                                            <div class="small text-muted">
+                                        <ng-container *ngIf="activity.expanded">
 
-                                                {{ item.Expense_Detail }}
+                                            <!-- BUDGET -->
+                                            <ng-container *ngFor="let budget of activity.budgets">
 
-                                            </div>
+                                                <tr class="bg-light fw-bold" style="cursor:pointer"
+                                                    (click)="budget.expanded = !budget.expanded">
 
-                                        </td>
+                                                    <td colspan="7" class="ps-5">
 
-                                        <!-- TOTAL -->
-                                        <td class="text-end fw-bold">
+                                                        <i class="ri-arrow-right-s-line me-1"
+                                                            *ngIf="!budget.expanded"></i>
 
-                                            {{ item.Total | number:'1.2-2' }}
+                                                        <i class="ri-arrow-down-s-line me-1"
+                                                            *ngIf="budget.expanded"></i>
 
-                                        </td>
+                                                        {{ budget.Budget_Type }}
 
-                                        <!-- ADJUST1 -->
-                                        <td>
+                                                    </td>
 
-                                            <input type="number"
-                                                class="form-control form-control-sm text-end border-danger"
-                                                [(ngModel)]="item.Adjust1">
+                                                </tr>
 
-                                        </td>
+                                                <ng-container *ngIf="budget.expanded">
 
-                                        <!-- ADJUST2 -->
-                                        <td>
+                                                    <!-- ITEM -->
+                                                    <tr *ngFor="let item of budget.items">
 
-                                            <input type="number"
-                                                class="form-control form-control-sm text-end border-danger"
-                                                [(ngModel)]="item.Adjust2">
+                                                        <!-- EXPENSE -->
+                                                        <td class="ps-5 text-start">
 
-                                        </td>
+                                                            - {{
+                                                            item.Expense_Name ||
+                                                            item.Expense_List ||
+                                                            '-'
+                                                            }}
 
-                                        <!-- ADJUST3 -->
-                                        <td>
+                                                            <div class="small text-muted">
 
-                                            <input type="number"
-                                                class="form-control form-control-sm text-end border-danger"
-                                                [(ngModel)]="item.Adjust3">
+                                                                {{
+                                                                item.Project_Name ||
+                                                                ''
+                                                                }}
 
-                                        </td>
+                                                            </div>
 
-                                        <!-- TOTAL ALLOCATE -->
-                                        <td class="text-end fw-bold text-primary">
+                                                        </td>
 
-                                            {{
-                                            (
-                                            (item.Adjust1 || 0) +
-                                            (item.Adjust2 || 0) +
-                                            (item.Adjust3 || 0)
-                                            ) | number:'1.2-2'
-                                            }}
+                                                        <!-- TOTAL -->
+                                                        <td class="text-end fw-bold">
 
-                                        </td>
+                                                            {{ item.Total | number:'1.2-2' }}
 
-                                        <!-- BALANCE -->
-                                        <td class="text-end fw-bold" [ngClass]="{
-                                                'text-danger':
-                                                (
-                                                    item.Total -
-                                                    (
-                                                        (item.Adjust1 || 0) +
-                                                        (item.Adjust2 || 0) +
-                                                        (item.Adjust3 || 0)
-                                                    )
-                                                ) < 0,
+                                                        </td>
 
-                                                'text-success':
-                                                (
-                                                    item.Total -
-                                                    (
-                                                        (item.Adjust1 || 0) +
-                                                        (item.Adjust2 || 0) +
-                                                        (item.Adjust3 || 0)
-                                                    )
-                                                ) >= 0
-                                            }">
+                                                        <!-- ADJUST1 -->
+                                                        <td>
 
-                                            {{
-                                            (
-                                            item.Total -
-                                            (
-                                            (item.Adjust1 || 0) +
-                                            (item.Adjust2 || 0) +
-                                            (item.Adjust3 || 0)
-                                            )
-                                            ) | number:'1.2-2'
-                                            }}
+                                                            <input type="number"
+                                                                class="form-control form-control-sm text-end border-danger"
+                                                                [(ngModel)]="item.Adjust1">
 
-                                        </td>
+                                                        </td>
 
+                                                        <!-- ADJUST2 -->
+                                                        <td>
 
-                                    </tr>
+                                                            <input type="number"
+                                                                class="form-control form-control-sm text-end border-danger"
+                                                                [(ngModel)]="item.Adjust2">
+
+                                                        </td>
+
+                                                        <!-- ADJUST3 -->
+                                                        <td>
+
+                                                            <input type="number"
+                                                                class="form-control form-control-sm text-end border-danger"
+                                                                [(ngModel)]="item.Adjust3">
+
+                                                        </td>
+
+                                                        <!-- TOTAL ALLOCATED -->
+                                                        <td class="text-end fw-bold text-primary">
+
+                                                            {{
+                                                            (
+                                                            (item.Adjust1 || 0) +
+                                                            (item.Adjust2 || 0) +
+                                                            (item.Adjust3 || 0)
+                                                            ) | number:'1.2-2'
+                                                            }}
+
+                                                        </td>
+
+                                                        <!-- BALANCE -->
+                                                        <td class="text-end fw-bold" [ngClass]="{
+                                                                'text-danger':
+                                                                (
+                                                                    item.Total -
+                                                                    (
+                                                                        (item.Adjust1 || 0) +
+                                                                        (item.Adjust2 || 0) +
+                                                                        (item.Adjust3 || 0)
+                                                                    )
+                                                                ) < 0,
+
+                                                                'text-success':
+                                                                (
+                                                                    item.Total -
+                                                                    (
+                                                                        (item.Adjust1 || 0) +
+                                                                        (item.Adjust2 || 0) +
+                                                                        (item.Adjust3 || 0)
+                                                                    )
+                                                                ) >= 0
+                                                            }">
+
+                                                            {{
+                                                            (
+                                                            item.Total -
+                                                            (
+                                                            (item.Adjust1 || 0) +
+                                                            (item.Adjust2 || 0) +
+                                                            (item.Adjust3 || 0)
+                                                            )
+                                                            ) | number:'1.2-2'
+                                                            }}
+
+                                                        </td>
+
+                                                    </tr>
+
+                                                </ng-container>
+
+                                            </ng-container>
+
+                                        </ng-container>
+
+                                    </ng-container>
 
                                 </ng-container>
 
@@ -305,8 +348,6 @@
                     รีเซ็ต
 
                 </button>
-
-              
 
                 <button class="btn btn-success" (click)="saveAdjust()">
 

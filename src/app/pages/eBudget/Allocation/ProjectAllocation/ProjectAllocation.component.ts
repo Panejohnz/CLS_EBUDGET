@@ -89,7 +89,7 @@ export class ProjectAllocationComponent implements OnInit {
       .GatewayGetData(model)
       .subscribe((response: any) => {
 
-        // table data
+        // TABLE DATA
         this.allData =
           Array.isArray(
             response.List_Budget_Request_Data_Table.Data
@@ -97,7 +97,7 @@ export class ProjectAllocationComponent implements OnInit {
             ? response.List_Budget_Request_Data_Table.Data
             : [];
 
-        // department
+        // DEPARTMENT
         this.department =
           Array.isArray(
             response.Mas_Department_Lists
@@ -134,7 +134,7 @@ export class ProjectAllocationComponent implements OnInit {
     // เปิด table
     this.table_display = true;
 
-    // filter department
+    // FILTER
     const rows = this.allData.filter(
 
       (x: any) =>
@@ -150,7 +150,7 @@ export class ProjectAllocationComponent implements OnInit {
       rows
     );
 
-    // reset
+    // RESET
     this.groupData = [];
 
     // =====================================
@@ -182,12 +182,13 @@ export class ProjectAllocationComponent implements OnInit {
             row.Plan_Name ||
 
             '-',
-
+          expanded: true,
           products: []
 
         };
 
         this.groupData.push(plan);
+        console.log(' this.groupData', this.groupData);
 
       }
 
@@ -214,7 +215,7 @@ export class ProjectAllocationComponent implements OnInit {
             row.Product_Name ||
 
             '-',
-
+          expanded: true,
           activities: []
 
         };
@@ -246,7 +247,7 @@ export class ProjectAllocationComponent implements OnInit {
             row.Activity_Name ||
 
             '-',
-
+          expanded: true,
           budgets: []
 
         };
@@ -263,9 +264,7 @@ export class ProjectAllocationComponent implements OnInit {
 
         (x: any) =>
 
-          x.Budget_Type ==
-
-          row.Budget_Type
+          x.Budget_Type == row.Budget_Type_Name
 
       );
 
@@ -274,11 +273,8 @@ export class ProjectAllocationComponent implements OnInit {
         budget = {
 
           Budget_Type:
-
-            row.Budget_Type ||
-
-            '-',
-
+            row.Budget_Type_Name || '-',
+          expanded: true,
           items: []
 
         };
@@ -286,14 +282,13 @@ export class ProjectAllocationComponent implements OnInit {
         activity.budgets.push(budget);
 
       }
-
       // =====================
       // ITEM
       // =====================
 
       budget.items.push({
 
-        // key
+        // KEY
         Plan_Id:
 
           row.Plan_Id || 0,
@@ -302,7 +297,7 @@ export class ProjectAllocationComponent implements OnInit {
 
           row.FK_Request_Id || 0,
 
-        // detail
+        // DETAIL
         Expense_List:
 
           row.Expense_List || '',
@@ -311,7 +306,19 @@ export class ProjectAllocationComponent implements OnInit {
 
           row.Project_Name || '',
 
-        // amount
+        Expense_Name:
+
+          row.Expense_Name
+          || row.Expense_List
+          || '',
+
+        Expense_Detail:
+
+          row.Expense_Detail
+          || row.Project_Name
+          || '',
+
+        // AMOUNT
         Total:
 
           Number(
@@ -580,7 +587,7 @@ export class ProjectAllocationComponent implements OnInit {
     const items =
       this.getAllItems();
 
-    // validate
+    // VALIDATE
     const invalid = items.some((item: any) => {
 
       return this.getRowTotal(item)
