@@ -83,6 +83,8 @@ export class ExpenseListSalaryComponent {
     this.model.newYear =
       newData?.Per_Year || 0;
 
+    this.model.Total = this.totalAmount
+
   }
 
   // คำนวณรวม footer
@@ -95,7 +97,7 @@ export class ExpenseListSalaryComponent {
     this.totalAmount =
       (Number(this.model.oldYear) || 0) +
       (Number(this.model.newYear) || 0);
-
+    this.model.Total = this.totalAmount;
   }
 
   // คำนวณอัตราเดิม

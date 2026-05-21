@@ -11,7 +11,7 @@
 
             <div *ngIf="!table_display" class="row mt-2">
 
-                <div  class="col-md-4">
+                <div class="col-md-4">
 
                     <label>
                         หน่วยงาน
@@ -162,6 +162,7 @@
 
         </div>
 
+        <!-- DETAIL -->
         <div *ngIf="table_display" class="table-responsive">
 
             <table class="table table-bordered align-middle mb-0">
@@ -205,7 +206,9 @@
 
                         </td>
 
-                        <td class="bg-light"></td>
+                        <td class="bg-light text-end">
+                            {{ flattenData[0].Total | number:'1.2-2'}}
+                        </td>
 
                         <td class="bg-light text-center">
                             0
@@ -230,7 +233,9 @@
 
                         </td>
 
-                        <td class="bg-light"></td>
+                        <td class="bg-light text-end">
+                            {{ flattenData[0].Total | number:'1.2-2'}}
+                        </td>
 
                         <td class="bg-light text-center">
                             0
@@ -255,7 +260,9 @@
 
                         </td>
 
-                        <td class="bg-light"></td>
+                        <td class="bg-light text-end">
+                            {{ flattenData[0].Total | number:'1.2-2'}}
+                        </td>
 
                         <td class="bg-light text-center">
                             0
@@ -274,23 +281,25 @@
                     <!-- BUDGET -->
                     <tr *ngIf="flattenData.length > 0">
 
-                           <td class="fw-bold bg-light">
+                        <td class="fw-bold bg-light">
 
                             {{ flattenData[0].Budget_Type }}
 
                         </td>
 
-                        <td class="bg-light"></td>
+                        <td class="bg-light text-end">
+                            {{ flattenData[0].Total | number:'1.2-2'}}
+                        </td>
 
-                        <td class="bg-light  text-center">
+                        <td class="bg-light text-center">
                             0
                         </td>
 
-                        <td class="bg-light  text-center">
+                        <td class="bg-light text-center">
                             0
                         </td>
 
-                        <td class="bg-light  text-center">
+                        <td class="bg-light text-center">
                             0
                         </td>
 
@@ -341,13 +350,27 @@
                 </tbody>
 
             </table>
+
             <br>
-            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModalgrid"
-                (click)="backToTable()">
 
-                <i class="ri-skip-back-fill"> กลับ</i>
+            <div class="d-flex justify-content-end gap-2">
 
-            </button>
+                <button class="btn btn-danger" (click)="backToTable()">
+
+                    <i class="ri-skip-back-fill"></i>
+                    กลับ
+
+                </button>
+
+                <button class="btn btn-success" (click)="saveAdjust()">
+
+                    <i class="ri-save-line"></i>
+                    บันทึก
+
+                </button>
+
+            </div>
+
         </div>
 
     </div>
