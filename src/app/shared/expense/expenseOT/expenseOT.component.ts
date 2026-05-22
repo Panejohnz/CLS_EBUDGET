@@ -390,5 +390,18 @@ export class ExpenseOTComponent {
     this.model.dismiss();
 
   }
+  limitNumber(
+    item: any,
+    field: string,
+    min: number,
+    max: number
+  ) {
 
+    item[field] =
+      Math.min(
+        Math.max(Number(item[field]) || 0, min),
+        max
+      );
+
+  }
 }

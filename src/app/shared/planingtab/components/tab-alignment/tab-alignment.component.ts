@@ -60,7 +60,7 @@ export class TabAlignmentComponent implements OnChanges {
     }
 
     this.subStrategies = this.model.Project_Plan_Level1_Sub;
-    console.log('ก่อน error', this.model );
+    console.log('ก่อน error', this.model);
 
     if (!this.model.Project_Plan_Level2.Project_Plan_Level2_Id) {
 
@@ -826,7 +826,7 @@ export class TabAlignmentComponent implements OnChanges {
     }).subscribe(res => {
       this.listMasMeasure = res.List_Mas_Project_Plan_Goals_Guideline || [];
       this.listMasIndicator = res.List_Mas_Indicator || [];
-      
+
     });
   }
   onChangeProjectPlan5(isInitialLoad: boolean = false) {
@@ -969,7 +969,9 @@ export class TabAlignmentComponent implements OnChanges {
     if (l3?.Project_Plan_Goals_Id) {
       this.onChangenMeasure()
     }
+    this.checkCopyFromLevel2();
     this.isInitialLoad = false;
+
   }
   @Input() model: any;
   planLevel1Main: PlanLevel1Main = {
@@ -1159,5 +1161,94 @@ export class TabAlignmentComponent implements OnChanges {
     };
 
     return this.serviceebud.GatewayGetData(model);
+  }
+  isCopyFromLevel2: boolean = false;
+  onCopyFromLevel2() {
+
+    const p2 = this.planLevel2;
+    const p3 = this.model.Project_Plan_Level3;
+
+    if (this.isCopyFromLevel2) {
+
+      // master plan
+      p3.Master_Plan_Id = p2.Master_Plan_Id;
+      this.onChangeMasterPlan5(p3.Master_Plan_Id, true);
+
+      // goals
+      p3.Plan_Goals_Id = p2.Plan_Goals_Id;
+      this.onChangeMasterPlanGoal5(p3.Plan_Goals_Id, true);
+
+      // tactic
+      p3.Plan_Tactics_Id = p2.Plan_Tactics_Id;
+
+      // description
+      p3.Description = p2.Description;
+
+      // sub master plan
+      p3.Sub_Master_Plan_Id = p2.Subplan_Id;
+      this.onChangeSubMasterPlan5(p3.Sub_Master_Plan_Id, true);
+
+      // target y1
+      p3.Sub_Plan_Goals_Id = p2.Target_Y1_Id;
+      this.onChangeTargetY15(p3.Sub_Plan_Goals_Id, true);
+
+      // sub description
+      p3.SubplanDesc = p2.SubplanDesc;
+
+      // guideline
+      p3.Guidelines_Id = p2.DevGuideline_Id;
+
+      // value chain
+      p3.ValueChain_Main_Id = p2.ValueChain_Main_Id;
+      this.onChangeValueChainMain5(true);
+
+      p3.ValueChain_Factor_Main_Id = p2.ValueChain_Factor_Main_Id;
+
+      p3.ValueChain_Support_Id = p2.ValueChain_Support_Id;
+      this.onChangeValueChainSupport5(true);
+
+      p3.ValueChain_Factor_Support_Id = p2.ValueChain_Factor_Support_Id;
+    }
+    else {
+
+      // clear ค่า ถ้าเอาติ๊กออก
+      p3.Master_Plan_Id = null;
+      p3.Plan_Goals_Id = null;
+      p3.Plan_Tactics_Id = null;
+      p3.Description = '';
+
+      p3.Sub_Master_Plan_Id = null;
+      p3.Sub_Plan_Goals_Id = null;
+      p3.SubplanDesc = '';
+
+      p3.Guidelines_Id = null;
+
+      p3.ValueChain_Main_Id = null;
+      p3.ValueChain_Factor_Main_Id = null;
+
+      p3.ValueChain_Support_Id = null;
+      p3.ValueChain_Factor_Support_Id = null;
+    }
+  }
+  checkCopyFromLevel2() {
+
+    const p2 = this.planLevel2;
+    const p3 = this.model.Project_Plan_Level3;
+
+    this.isCopyFromLevel2 =
+      p2.Master_Plan_Id === p3.Master_Plan_Id &&
+      p2.Plan_Goals_Id === p3.Plan_Goals_Id &&
+      p2.Plan_Tactics_Id === p3.Plan_Tactics_Id &&
+      p2.Description === p3.Description &&
+
+      p2.Subplan_Id === p3.Sub_Master_Plan_Id &&
+      p2.Target_Y1_Id === p3.Sub_Plan_Goals_Id &&
+      p2.SubplanDesc === p3.SubplanDesc &&
+      p2.DevGuideline_Id === p3.Guidelines_Id &&
+
+      p2.ValueChain_Main_Id === p3.ValueChain_Main_Id &&
+      p2.ValueChain_Factor_Main_Id === p3.ValueChain_Factor_Main_Id &&
+      p2.ValueChain_Support_Id === p3.ValueChain_Support_Id &&
+      p2.ValueChain_Factor_Support_Id === p3.ValueChain_Factor_Support_Id;
   }
 }
