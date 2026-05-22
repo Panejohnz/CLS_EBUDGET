@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GridJsService } from '../../../tables/gridjs/gridjs.service';
 import { PaginationService } from 'src/app/core/services/pagination.service';
@@ -17,7 +17,7 @@ import { BudgetYearService } from 'src/app/core/services/budget-year.service';
   templateUrl: './ProjectAllocation.component.html',
   styles: ``
 })
-export class ProjectAllocationComponent {
+export class ProjectAllocationComponent implements OnInit {
 
   constructor(
     private modalService: NgbModal,
@@ -36,27 +36,13 @@ export class ProjectAllocationComponent {
 
   department: any[] = [];
 
-  griddata: any[] = [];
-
-  griddataTemp: any[] = [];
-
-  flattenData: any[] = [];
-
   allData: any[] = [];
+
+  groupData: any[] = [];
 
   selectedDepartmentId: any = null;
 
   currentYear: any;
-
-  item: any = {
-
-    alloc1: 0,
-
-    alloc2: 0,
-
-    alloc3: 0
-
-  };
 
   // =====================================
   // INIT
@@ -93,280 +79,413 @@ export class ProjectAllocationComponent {
 
     let model = {
 
-      FUNC_CODE: "FUNC-Get_Budget_Request",
+      FUNC_CODE: 'FUNC-Get_Budget_Request',
 
       BgYear: this.currentYear
 
     };
 
-    var getData =
-      this.servicebud.GatewayGetData(model);
+    this.servicebud
+      .GatewayGetData(model)
+      .subscribe((response: any) => {
 
-    getData.subscribe((response: any) => {
+        // TABLE DATA
+        this.allData =
+          Array.isArray(
+            response.List_Budget_Request_Data_Table.Data
+          )
+            ? response.List_Budget_Request_Data_Table.Data
+            : [];
 
-      this.allData =
-        Array.isArray(
-          response.List_Budget_Request_Data_Table.Data
-        )
-          ? response.List_Budget_Request_Data_Table.Data
-          : [];
+        // DEPARTMENT
+        this.department =
+          Array.isArray(
+            response.Mas_Department_Lists
+          )
+            ? response.Mas_Department_Lists
+            : [];
 
-      this.griddataTemp = [
-        ...this.allData
-      ];
+        console.log(
+          'ALL DATA',
+          this.allData
+        );
 
-      this.griddata = [
-        ...this.allData
-      ];
-
-      this.department =
-        Array.isArray(
-          response.Mas_Department_Lists
-        )
-          ? response.Mas_Department_Lists
-          : [];
-
-    });
+      });
 
   }
 
   // =====================================
-  // FILTER
+  // FILTER + GROUP
   // =====================================
 
   applyFilter() {
 
-    let data = [
-      ...this.griddataTemp
-    ];
+    // ยังไม่เลือก
+    if (!this.selectedDepartmentId) {
 
-    if (this.selectedDepartmentId) {
+      this.table_display = false;
 
-      data = data.filter(
-        x =>
-          x.Department_Id ==
-          this.selectedDepartmentId
-      );
+      this.groupData = [];
+
+      return;
 
     }
 
-    if (this.service.searchTerm) {
-
-      const keyword =
-        this.service.searchTerm.toLowerCase();
-
-      data = data.filter(x =>
-
-        (x.Department_Name || '')
-          .toLowerCase()
-          .includes(keyword)
-
-        ||
-
-        (x.Plan_Name || '')
-          .toLowerCase()
-          .includes(keyword)
-
-        ||
-
-        (x.Product_Name || '')
-          .toLowerCase()
-          .includes(keyword)
-
-        ||
-
-        (x.Activity_Name || '')
-          .toLowerCase()
-          .includes(keyword)
-
-        ||
-
-        (x.Budget_Type || '')
-          .toLowerCase()
-          .includes(keyword)
-
-        ||
-
-        (x.Project_Name || '')
-          .toLowerCase()
-          .includes(keyword)
-
-        ||
-
-        (x.Status_Name || '')
-          .toLowerCase()
-          .includes(keyword)
-
-        ||
-
-        String(x.Total || '')
-          .includes(keyword)
-
-      );
-
-    }
-
-    this.griddata = data;
-
-  }
-
-  // =====================================
-  // DETAIL
-  // =====================================
-
-  Detail(item: any) {
-
+    // เปิด table
     this.table_display = true;
+
+    // =====================================
+    // FILTER REQUEST
+    // =====================================
 
     const rows = this.allData.filter(
 
       (x: any) =>
 
-        x.Request_Id == item.Request_Id &&
-
         x.Department_Id ==
-        item.Department_Id
 
-        &&
-
-        x.Fk_Plan_Id ==
-        item.Fk_Plan_Id
-
-        &&
-
-        x.Fk_Product_Id ==
-        item.Fk_Product_Id
-
-        &&
-
-        x.Fk_Activity_Id ==
-        item.Fk_Activity_Id
-
-        &&
-
-        x.Fk_Budget_Type ==
-        item.Fk_Budget_Type
+        this.selectedDepartmentId
 
     );
 
-    console.log('rows', rows);
+    console.log(
+      'ROWS',
+      rows
+    );
 
     // =====================================
-    // MAP TABLE
+    // GET BUDGET PLAN
     // =====================================
 
-    this.flattenData = rows.map((x: any) => {
+    let model = {
 
-      return {
+      FUNC_CODE:
+        'FUNC-Get_Budget_Plan',
 
-        // =====================
-        // PLAN
-        // =====================
+      Department_Id:
+        this.selectedDepartmentId
 
-        Plan_Name:
+    };
 
-          x.Plan_Name ||
+    this.servicebud
+      .GatewayGetData(model)
+      .subscribe((response: any) => {
 
-          '',
+        const plans =
+          Array.isArray(
+            response.List_Budget_Plan_Data_Table.Data
+          )
+            ? response.List_Budget_Plan_Data_Table.Data
+            : [];
 
-        // =====================
-        // PRODUCT
-        // =====================
+        console.log(
+          'BUDGET PLAN',
+          plans
+        );
 
-        Product_Name:
+        // =====================================
+        // MERGE PLAN
+        // =====================================
 
-          x.Product_Name ||
+        rows.forEach((row: any) => {
 
-          '',
+          const oldPlan =
+            plans.find((p: any) =>
 
-        // =====================
-        // ACTIVITY
-        // =====================
+              p.Fk_Plan_Id ==
+              row.Fk_Plan_Id
 
-        Activity_Name:
+              &&
 
-          x.Activity_Name ||
+              p.Fk_Product_Id ==
+              row.Fk_Product_Id
 
-          '',
+              &&
 
-        // =====================
-        // BUDGET TYPE
-        // =====================
+              p.Fk_Activity_Id ==
+              row.Fk_Activity_Id
 
-        Budget_Type:
+              &&
 
-          x.Budget_Type ||
+              p.Fk_Budget_Type ==
+              row.Fk_Budget_Type
 
-          x.Budget_Type_Name ||
+              &&
 
-          '',
+              p.Fk_Expense_List ==
+              row.Fk_Expense_List
 
-        // =====================
-        // EXPENSE
-        // =====================
+            );
 
-        Expense_List:
+          // ถ้ามีข้อมูลเก่า
+          if (oldPlan) {
 
-          x.Expense_Name ||
+            row.Adjust1 =
+              oldPlan.Adjust1 || 0;
 
-          '',
+            row.Adjust2 =
+              oldPlan.Adjust2 || 0;
 
-        // =====================
-        // TOTAL
-        // =====================
+            row.Adjust3 =
+              oldPlan.Adjust3 || 0;
 
-        Total:
+            row.Update_Amount =
+              oldPlan.Update_Amount || 0;
 
-          Number(
-            x.Total || 0
-          ),
+          }
 
-        // =====================
-        // ALLOCATE
-        // =====================
+        });
 
-        Adjust1:
+        // =====================================
+        // RESET
+        // =====================================
 
-          Number(
-            x.Adjust1 || 0
-          ),
+        this.groupData = [];
 
-        Adjust2:
+        // =====================================
+        // GROUP
+        // =====================================
 
-          Number(
-            x.Adjust2 || 0
-          ),
+        rows.forEach((row: any) => {
 
-        Adjust3:
+          // =====================
+          // PLAN
+          // =====================
 
-          Number(
-            x.Adjust3 || 0
-          ),
+          let plan = this.groupData.find(
 
-        // =====================
-        // ID
-        // =====================
+            (x: any) =>
 
-        Request_Id:
+              x.Plan_Name ==
 
-          x.Request_Id || 0,
+              row.Plan_Name
 
-        Request_Detail_Id:
+          );
 
-          x.Request_Detail_Id || 0,
+          if (!plan) {
 
-        Fk_Expense_Id:
+            plan = {
 
-          x.Fk_Expense_Id || 0
+              Plan_Name:
+                row.Plan_Name || '-',
 
-      };
+              expanded: true,
+
+              products: []
+
+            };
+
+            this.groupData.push(plan);
+
+          }
+
+          // =====================
+          // PRODUCT
+          // =====================
+
+          let product = plan.products.find(
+
+            (x: any) =>
+
+              x.Product_Name ==
+
+              row.Product_Name
+
+          );
+
+          if (!product) {
+
+            product = {
+
+              Product_Name:
+                row.Product_Name || '-',
+
+              expanded: true,
+
+              activities: []
+
+            };
+
+            plan.products.push(product);
+
+          }
+
+          // =====================
+          // ACTIVITY
+          // =====================
+
+          let activity = product.activities.find(
+
+            (x: any) =>
+
+              x.Activity_Name ==
+
+              row.Activity_Name
+
+          );
+
+          if (!activity) {
+
+            activity = {
+
+              Activity_Name:
+                row.Activity_Name || '-',
+
+              expanded: true,
+
+              budgets: []
+
+            };
+
+            product.activities.push(activity);
+
+          }
+
+          // =====================
+          // BUDGET
+          // =====================
+
+          let budget = activity.budgets.find(
+
+            (x: any) =>
+
+              x.Budget_Type ==
+
+              row.Budget_Type_Name
+
+          );
+
+          if (!budget) {
+
+            budget = {
+
+              Budget_Type:
+                row.Budget_Type_Name || '-',
+
+              expanded: true,
+
+              items: []
+
+            };
+
+            activity.budgets.push(budget);
+
+          }
+
+          // =====================
+          // ITEM
+          // =====================
+
+          budget.items.push({
+
+            // KEY
+            Plan_Id:
+              row.Plan_Id || 0,
+
+            FK_Request_Id:
+              row.Request_Id ||
+              row.FK_Request_Id ||
+              0,
+
+            // FK
+            Department_Id:
+              row.Department_Id || 0,
+
+            Department_Name:
+              row.Department_Name || '',
+
+            Fk_Activity_Id:
+              row.Fk_Activity_Id || 0,
+
+            Fk_Budget_Type:
+              row.Fk_Budget_Type || 0,
+
+            Fk_Expense_List:
+              row.Fk_Expense_List || 0,
+
+            Fk_Plan_Id:
+              row.Fk_Plan_Id || 0,
+
+            Fk_Product_Id:
+              row.Fk_Product_Id || 0,
+
+            // DETAIL
+            Expense_List:
+              row.Expense_List || '',
+
+            Project_Name:
+              row.Project_Name || '',
+
+            Expense_Name:
+              row.Expense_Name
+              || row.Expense_List
+              || '',
+
+            Expense_Detail:
+              row.Expense_Detail
+              || row.Project_Name
+              || '',
+
+            // AMOUNT
+            Total:
+              Number(row.Total || 0),
+
+            Adjust1:
+              Number(row.Adjust1 || 0),
+
+            Adjust2:
+              Number(row.Adjust2 || 0),
+
+            Adjust3:
+              Number(row.Adjust3 || 0),
+
+            Update_Amount:
+              Number(row.Update_Amount || 0)
+
+          });
+
+        });
+
+        console.log(
+          'GROUP DATA',
+          this.groupData
+        );
+
+      });
+
+  }
+
+  // =====================================
+  // GET ALL ITEMS
+  // =====================================
+
+  getAllItems(): any[] {
+
+    let items: any[] = [];
+
+    this.groupData.forEach((plan: any) => {
+
+      plan.products.forEach((product: any) => {
+
+        product.activities.forEach((activity: any) => {
+
+          activity.budgets.forEach((budget: any) => {
+
+            budget.items.forEach((item: any) => {
+
+              items.push(item);
+
+            });
+
+          });
+
+        });
+
+      });
 
     });
 
-    console.log(
-      'FLATTEN DATA',
-      this.flattenData
-    );
+    return items;
 
   }
 
@@ -378,9 +497,13 @@ export class ProjectAllocationComponent {
 
     return (
 
-      (Number(item.Adjust1) || 0) +
+      (Number(item.Adjust1) || 0)
 
-      (Number(item.Adjust2) || 0) +
+      +
+
+      (Number(item.Adjust2) || 0)
+
+      +
 
       (Number(item.Adjust3) || 0)
 
@@ -407,36 +530,12 @@ export class ProjectAllocationComponent {
   }
 
   // =====================================
-  // ROW PERCENT
-  // =====================================
-
-  getRowPercent(item: any): number {
-
-    if ((Number(item.Total) || 0) <= 0) {
-
-      return 0;
-
-    }
-
-    return (
-
-      this.getRowTotal(item)
-
-      /
-
-      Number(item.Total)
-
-    ) * 100;
-
-  }
-
-  // =====================================
-  // SUMMARY TOTAL REQUEST
+  // SUMMARY
   // =====================================
 
   get totalRequest(): number {
 
-    return this.flattenData.reduce(
+    return this.getAllItems().reduce(
 
       (sum: number, item: any) =>
 
@@ -450,21 +549,21 @@ export class ProjectAllocationComponent {
 
   }
 
-  // =====================================
-  // SUMMARY TOTAL ALLOCATED
-  // =====================================
-
   get totalAllocated(): number {
 
-    return this.flattenData.reduce(
+    return this.getAllItems().reduce(
 
       (sum: number, item: any) =>
 
         sum +
 
-        (Number(item.Adjust1) || 0) +
+        (Number(item.Adjust1) || 0)
 
-        (Number(item.Adjust2) || 0) +
+        +
+
+        (Number(item.Adjust2) || 0)
+
+        +
 
         (Number(item.Adjust3) || 0),
 
@@ -474,43 +573,17 @@ export class ProjectAllocationComponent {
 
   }
 
-  // =====================================
-  // SUMMARY BALANCE
-  // =====================================
-
   get totalBalance(): number {
 
     return (
 
-      this.totalRequest -
+      this.totalRequest
+
+      -
 
       this.totalAllocated
 
     );
-
-  }
-
-  // =====================================
-  // SUMMARY PERCENT
-  // =====================================
-
-  get allocationPercent(): number {
-
-    if (this.totalRequest <= 0) {
-
-      return 0;
-
-    }
-
-    return (
-
-      this.totalAllocated
-
-      /
-
-      this.totalRequest
-
-    ) * 100;
 
   }
 
@@ -520,10 +593,13 @@ export class ProjectAllocationComponent {
 
   autoAllocate() {
 
-    this.flattenData.forEach(item => {
+    this.getAllItems().forEach((item: any) => {
 
       const avg =
-        Number(item.Total || 0) / 3;
+
+        Number(item.Total || 0)
+
+        / 3;
 
       item.Adjust1 = avg;
 
@@ -536,12 +612,12 @@ export class ProjectAllocationComponent {
   }
 
   // =====================================
-  // RESET ALLOCATE
+  // RESET
   // =====================================
 
   resetAllocate() {
 
-    this.flattenData.forEach(item => {
+    this.getAllItems().forEach((item: any) => {
 
       item.Adjust1 = 0;
 
@@ -554,52 +630,141 @@ export class ProjectAllocationComponent {
   }
 
   // =====================================
-  // SAVE ADJUST
+  // SAVE
   // =====================================
 
   saveAdjust() {
 
-    const invalid = this.flattenData.some((item: any) => {
+    const items = this.getAllItems();
+
+
+    // =========================
+    // VALIDATE
+    // =========================
+
+    const invalid = items.some((item: any) => {
 
       return this.getRowTotal(item)
+
         >
+
         Number(item.Total || 0);
 
     });
 
     if (invalid) {
 
-      alert('มียอดจัดสรรเกินคำของบ');
 
+      basicAlert('error', 'มียอดจัดสรรเกินคำของบ', '')
       return;
 
     }
 
-    console.log(this.flattenData);
 
-    // =====================================
-    // API SAVE
-    // =====================================
+    const payload = items.map((item: any) => {
 
-    /*
-    let model = {
+      return {
 
-      FUNC_CODE: "FUNC-SAVE_PROJECT_ALLOCATION",
+        FK_Request_Id:
+          item.FK_Request_Id,
 
-      DATA: this.flattenData
+        Plan_Id:
+          item.Plan_Id,
+
+        Adjust1:
+          Number(item.Adjust1 || 0),
+
+        Adjust2:
+          Number(item.Adjust2 || 0),
+
+        Adjust3:
+          Number(item.Adjust3 || 0),
+
+        Update_Amount:
+          this.getRowTotal(item),
+
+
+        Department_Id:
+          item.Department_Id,
+
+        Department_Name:
+          item.Department_Name,
+
+        Fk_Activity_Id:
+          item.Fk_Activity_Id,
+
+        Fk_Budget_Type:
+          item.Fk_Budget_Type,
+
+        Fk_Expense_List:
+          item.Fk_Expense_List,
+
+        Fk_Plan_Id:
+          item.Fk_Plan_Id,
+
+        Fk_Product_Id:
+          item.Fk_Product_Id
+
+      };
+
+    });
+
+    console.log(
+      'SAVE PAYLOAD',
+      payload
+    );
+
+    // =========================
+    // MODEL
+    // =========================
+
+    const model = {
+
+      FUNC_CODE:
+        'FUNC-Insert_Budget_Plan',
+
+      List_Budget_Plan:
+        payload
 
     };
 
-    this.servicebud
-      .GatewayPostData(model)
-      .subscribe((response: any) => {
+    // =========================
+    // API
+    // =========================
 
-        alert('บันทึกสำเร็จ');
+    this.servicebud
+      .GatewayGetData(model)
+      .subscribe({
+
+        next: (response: any) => {
+
+          console.log(
+            'SAVE RESPONSE',
+            response
+          );
+
+      
+          basicAlert('success', 'บันทึกข้อมูล', '')
+          // reload
+          this.get_data();
+
+          // refresh
+          this.applyFilter();
+
+        },
+
+        error: (err: any) => {
+
+          console.error(
+            'SAVE ERROR',
+            err
+          );
+
+
+          basicAlert('error', 'บันทึกไม่สำเร็จ', '')
+        }
 
       });
-    */
-
-    alert('บันทึกสำเร็จ');
 
   }
 
@@ -611,6 +776,217 @@ export class ProjectAllocationComponent {
 
     this.table_display = false;
 
-  }
+    this.groupData = [];
 
+    this.selectedDepartmentId = null;
+
+  }
+  sumTotal(node: any): number {
+
+    return this.getItemsFromNode(node)
+      .reduce(
+
+        (sum: number, item: any) =>
+
+          sum +
+
+          Number(item.Total || 0),
+
+        0
+
+      );
+
+  }
+  sumBudgetTotal(items: any[]): number {
+
+    return items.reduce(
+
+      (sum: number, item: any) =>
+
+        sum + Number(item.Total || 0),
+
+      0
+
+    );
+
+  }
+  sumBudgetAdjust1(items: any[]): number {
+
+    return items.reduce(
+
+      (sum: number, item: any) =>
+
+        sum + Number(item.Adjust1 || 0),
+
+      0
+
+    );
+
+  }
+  sumBudgetAdjust2(items: any[]): number {
+
+    return items.reduce(
+
+      (sum: number, item: any) =>
+
+        sum + Number(item.Adjust2 || 0),
+
+      0
+
+    );
+
+  }
+  sumBudgetAdjust3(items: any[]): number {
+
+    return items.reduce(
+
+      (sum: number, item: any) =>
+
+        sum + Number(item.Adjust3 || 0),
+
+      0
+
+    );
+
+  }
+  sumBudgetAllocate(items: any[]): number {
+
+    return items.reduce(
+
+      (sum: number, item: any) =>
+
+        sum +
+
+        Number(item.Adjust1 || 0) +
+
+        Number(item.Adjust2 || 0) +
+
+        Number(item.Adjust3 || 0),
+
+      0
+
+    );
+
+  }
+  getItemsFromNode(node: any): any[] {
+
+    let items: any[] = [];
+
+    // budget level
+    if (node.items) {
+
+      return node.items;
+
+    }
+
+    // activity level
+    if (node.budgets) {
+
+      node.budgets.forEach((budget: any) => {
+
+        items.push(
+          ...this.getItemsFromNode(budget)
+        );
+
+      });
+
+    }
+
+    // product level
+    if (node.activities) {
+
+      node.activities.forEach((activity: any) => {
+
+        items.push(
+          ...this.getItemsFromNode(activity)
+        );
+
+      });
+
+    }
+
+    // plan level
+    if (node.products) {
+
+      node.products.forEach((product: any) => {
+
+        items.push(
+          ...this.getItemsFromNode(product)
+        );
+
+      });
+
+    }
+
+    return items;
+
+  }
+  sumAdjust1(node: any): number {
+
+    return this.getItemsFromNode(node)
+      .reduce(
+
+        (sum: number, item: any) =>
+
+          sum +
+
+          Number(item.Adjust1 || 0),
+
+        0
+
+      );
+
+  }
+  sumAdjust2(node: any): number {
+
+    return this.getItemsFromNode(node)
+      .reduce(
+
+        (sum: number, item: any) =>
+
+          sum +
+
+          Number(item.Adjust2 || 0),
+
+        0
+
+      );
+
+  }
+  sumAdjust3(node: any): number {
+
+    return this.getItemsFromNode(node)
+      .reduce(
+
+        (sum: number, item: any) =>
+
+          sum +
+
+          Number(item.Adjust3 || 0),
+
+        0
+
+      );
+
+  }
+  sumAllocate(node: any): number {
+
+    return this.getItemsFromNode(node)
+      .reduce(
+
+        (sum: number, item: any) =>
+
+          sum +
+
+          Number(item.Adjust1 || 0) +
+
+          Number(item.Adjust2 || 0) +
+
+          Number(item.Adjust3 || 0),
+
+        0
+
+      );
+
+  }
 }

@@ -9,11 +9,12 @@
                 รายการจัดสรรงบประมาณ
             </h5>
 
-            <div *ngIf="!table_display" class="row mt-2">
+            <!-- SELECT DEPARTMENT -->
+            <div class="row mt-2">
 
                 <div class="col-md-4">
 
-                    <label>
+                    <label class="form-label">
                         หน่วยงาน
                     </label>
 
@@ -37,131 +38,6 @@
 
         </div>
 
-        <!-- GRID -->
-        <div *ngIf="!table_display" class="table-responsive">
-
-            <table class="table table-gridjs">
-
-                <thead>
-
-                    <tr class="text-center">
-
-                        <th style="width:5%">
-                            ลำดับ
-                        </th>
-
-                        <th style="width:10%">
-                            หน่วยงาน
-                        </th>
-
-                        <th style="width:15%">
-                            แผนงาน
-                        </th>
-
-                        <th style="width:20%">
-                            ผลผลิต
-                        </th>
-
-                        <th style="width:15%">
-                            กิจกรรม
-                        </th>
-
-                        <th style="width:10%">
-                            หมวดงบ
-                        </th>
-
-                        <th style="width:10%">
-                            โครงการ / รายการ
-                        </th>
-
-                        <th style="width:5%">
-                            งบประมาณ
-                        </th>
-
-                        <th style="width:20%">
-                            สถานะ
-                        </th>
-
-                        <th style="width:5%"></th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    @for(data of griddata; track $index){
-
-                    <tr>
-
-                        <td class="text-center">
-                            {{$index + 1}}
-                        </td>
-
-                        <td class="text-center">
-                            {{data.Department_Name}}
-                        </td>
-
-                        <td>
-                            {{data.Plan_Name }}
-                        </td>
-
-                        <td>
-                            {{data.Product_Name}}
-                        </td>
-
-                        <td>
-                            {{data.Activity_Name}}
-                        </td>
-
-                        <td>
-                            {{data.Budget_Type_Name}}
-                        </td>
-
-                        <td>
-                            {{data.Expense_Name}}
-                        </td>
-
-                        <td class="text-end">
-                            {{data.Total | number:'1.2-2'}}
-                        </td>
-
-                        <td class="text-center">
-
-                            <span class="badge" [ngClass]="
-                                    data.Status_Number == 7 ? 'bg-danger' :
-                                    data.Status_Number == 2 ? 'bg-warning text-dark' :
-                                    data.Status_Number == 8 ? 'bg-success' :
-                                    'bg-secondary'
-                                ">
-
-                                {{ data.Status_Name }}
-
-                            </span>
-
-                        </td>
-
-                        <td class="text-center">
-
-                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#exampleModalgrid" (click)="Detail(data)">
-
-                                <i class="ri-pencil-line"></i>
-
-                            </button>
-
-                        </td>
-
-                    </tr>
-
-                    }
-
-                </tbody>
-
-            </table>
-
-        </div>
-
         <!-- DETAIL -->
         <div *ngIf="table_display" class="table-responsive">
 
@@ -171,24 +47,28 @@
 
                     <tr class="text-center align-middle">
 
-                        <th style="width:45%">
-                            แผนงาน/ผลผลิต/กิจกรรม/หมวดงบ/รายการค่าใช้จ่าย
+                        <th style="width:35%">
+                            รายการ
                         </th>
 
-                        <th style="width:15%">
-                            คำของบประมาณ
+                        <th style="width:12%">
+                            คำของบ
                         </th>
 
-                        <th style="width:13%">
+                        <th style="width:12%">
                             จัดสรรครั้งที่ 1
                         </th>
 
-                        <th style="width:13%">
+                        <th style="width:12%">
                             จัดสรรครั้งที่ 2
                         </th>
 
-                        <th style="width:14%">
+                        <th style="width:12%">
                             จัดสรรครั้งที่ 3
+                        </th>
+
+                        <th style="width:10%">
+                            รวมจัดสรร
                         </th>
 
                     </tr>
@@ -198,167 +78,414 @@
                 <tbody>
 
                     <!-- PLAN -->
-                    <tr *ngIf="flattenData.length > 0">
+                    <ng-container *ngFor="let plan of groupData">
 
-                        <td class="fw-bold bg-light">
+                        <tr class="table-primary fw-bold" style="cursor:pointer"
+                            (click)="plan.expanded = !plan.expanded">
 
-                            {{ flattenData[0].Plan_Name }}
+                            <td>
 
-                        </td>
+                                <i class="ri-arrow-right-s-line me-1" *ngIf="!plan.expanded"></i>
 
-                        <td class="bg-light text-end">
-                            {{ flattenData[0].Total | number:'1.2-2'}}
-                        </td>
+                                <i class="ri-arrow-down-s-line me-1" *ngIf="plan.expanded"></i>
 
-                        <td class="bg-light text-center">
-                            0
-                        </td>
+                                {{ plan.Plan_Name }}
 
-                        <td class="bg-light text-center">
-                            0
-                        </td>
+                            </td>
 
-                        <td class="bg-light text-center">
-                            0
-                        </td>
+                            <td class="text-end">
 
-                    </tr>
+                                {{
+                                sumTotal(plan)
+                                | number:'1.2-2'
+                                }}
 
-                    <!-- PRODUCT -->
-                    <tr *ngIf="flattenData.length > 0">
+                            </td>
 
-                        <td class="fw-bold bg-light">
+                            <td class="text-end">
 
-                            {{ flattenData[0].Product_Name }}
+                                {{
+                                sumAdjust1(plan)
+                                | number:'1.2-2'
+                                }}
 
-                        </td>
+                            </td>
 
-                        <td class="bg-light text-end">
-                            {{ flattenData[0].Total | number:'1.2-2'}}
-                        </td>
+                            <td class="text-end">
 
-                        <td class="bg-light text-center">
-                            0
-                        </td>
+                                {{
+                                sumAdjust2(plan)
+                                | number:'1.2-2'
+                                }}
 
-                        <td class="bg-light text-center">
-                            0
-                        </td>
+                            </td>
 
-                        <td class="bg-light text-center">
-                            0
-                        </td>
+                            <td class="text-end">
 
-                    </tr>
+                                {{
+                                sumAdjust3(plan)
+                                | number:'1.2-2'
+                                }}
 
-                    <!-- ACTIVITY -->
-                    <tr *ngIf="flattenData.length > 0">
+                            </td>
 
-                        <td class="fw-bold bg-light">
+                            <td class="text-end text-primary">
 
-                            {{ flattenData[0].Activity_Name }}
+                                {{
+                                sumAllocate(plan)
+                                | number:'1.2-2'
+                                }}
 
-                        </td>
+                            </td>
 
-                        <td class="bg-light text-end">
-                            {{ flattenData[0].Total | number:'1.2-2'}}
-                        </td>
+                        </tr>
 
-                        <td class="bg-light text-center">
-                            0
-                        </td>
+                        <ng-container *ngIf="plan.expanded">
 
-                        <td class="bg-light text-center">
-                            0
-                        </td>
+                            <!-- PRODUCT -->
+                            <ng-container *ngFor="let product of plan.products">
 
-                        <td class="bg-light text-center">
-                            0
-                        </td>
+                                <tr class="table-info fw-bold" style="cursor:pointer"
+                                    (click)="product.expanded = !product.expanded">
 
-                    </tr>
+                                    <td class="ps-4">
 
-                    <!-- BUDGET -->
-                    <tr *ngIf="flattenData.length > 0">
+                                        <i class="ri-arrow-right-s-line me-1" *ngIf="!product.expanded"></i>
 
-                        <td class="fw-bold bg-light">
+                                        <i class="ri-arrow-down-s-line me-1" *ngIf="product.expanded"></i>
 
-                            {{ flattenData[0].Budget_Type }}
+                                        {{ product.Product_Name }}
 
-                        </td>
+                                    </td>
 
-                        <td class="bg-light text-end">
-                            {{ flattenData[0].Total | number:'1.2-2'}}
-                        </td>
+                                    <td class="text-end">
 
-                        <td class="bg-light text-center">
-                            0
-                        </td>
+                                        {{
+                                        sumTotal(plan)
+                                        | number:'1.2-2'
+                                        }}
 
-                        <td class="bg-light text-center">
-                            0
-                        </td>
+                                    </td>
 
-                        <td class="bg-light text-center">
-                            0
-                        </td>
+                                    <td class="text-end">
 
-                    </tr>
+                                        {{
+                                        sumAdjust1(plan)
+                                        | number:'1.2-2'
+                                        }}
 
-                    <!-- EXPENSE -->
-                    <tr *ngFor="let item of flattenData">
+                                    </td>
 
-                        <td class="ps-5">
+                                    <td class="text-end">
 
-                            - {{ item.Expense_List }}
+                                        {{
+                                        sumAdjust2(plan)
+                                        | number:'1.2-2'
+                                        }}
 
-                        </td>
+                                    </td>
 
-                        <!-- TOTAL -->
-                        <td class="text-end pe-3 fw-bold">
+                                    <td class="text-end">
 
-                            {{ item.Total | number:'1.2-2' }}
+                                        {{
+                                        sumAdjust3(plan)
+                                        | number:'1.2-2'
+                                        }}
 
-                        </td>
+                                    </td>
 
-                        <!-- ADJUST1 -->
-                        <td>
+                                    <td class="text-end text-primary">
 
-                            <input type="number" class="form-control form-control-sm text-end border-danger"
-                                [(ngModel)]="item.Adjust1">
+                                        {{
+                                        sumAllocate(plan)
+                                        | number:'1.2-2'
+                                        }}
 
-                        </td>
+                                    </td>
 
-                        <!-- ADJUST2 -->
-                        <td>
+                                </tr>
 
-                            <input type="number" class="form-control form-control-sm text-end border-danger"
-                                [(ngModel)]="item.Adjust2">
+                                <ng-container *ngIf="product.expanded">
 
-                        </td>
+                                    <!-- ACTIVITY -->
+                                    <ng-container *ngFor="let activity of product.activities">
 
-                        <!-- ADJUST3 -->
-                        <td>
+                                        <tr class="table-light fw-bold" style="cursor:pointer"
+                                            (click)="activity.expanded = !activity.expanded">
 
-                            <input type="number" class="form-control form-control-sm text-end border-danger"
-                                [(ngModel)]="item.Adjust3">
+                                            <td class="ps-5">
 
-                        </td>
+                                                <i class="ri-arrow-right-s-line me-1" *ngIf="!activity.expanded"></i>
 
-                    </tr>
+                                                <i class="ri-arrow-down-s-line me-1" *ngIf="activity.expanded"></i>
+
+                                                {{ activity.Activity_Name }}
+
+                                            </td>
+
+                                            <td class="text-end">
+
+                                                {{
+                                                sumTotal(plan)
+                                                | number:'1.2-2'
+                                                }}
+
+                                            </td>
+
+                                            <td class="text-end">
+
+                                                {{
+                                                sumAdjust1(plan)
+                                                | number:'1.2-2'
+                                                }}
+
+                                            </td>
+
+                                            <td class="text-end">
+
+                                                {{
+                                                sumAdjust2(plan)
+                                                | number:'1.2-2'
+                                                }}
+
+                                            </td>
+
+                                            <td class="text-end">
+
+                                                {{
+                                                sumAdjust3(plan)
+                                                | number:'1.2-2'
+                                                }}
+
+                                            </td>
+
+                                            <td class="text-end text-primary">
+
+                                                {{
+                                                sumAllocate(plan)
+                                                | number:'1.2-2'
+                                                }}
+
+                                            </td>
+
+                                        </tr>
+
+                                        <ng-container *ngIf="activity.expanded">
+
+                                            <!-- BUDGET -->
+                                            <ng-container *ngFor="let budget of activity.budgets">
+
+                                                <tr class="bg-light fw-bold" style="cursor:pointer"
+                                                    (click)="budget.expanded = !budget.expanded">
+
+                                                    <!-- NAME -->
+                                                    <td class="ps-5">
+
+                                                        <i class="ri-arrow-right-s-line me-1"
+                                                            *ngIf="!budget.expanded"></i>
+
+                                                        <i class="ri-arrow-down-s-line me-1"
+                                                            *ngIf="budget.expanded"></i>
+
+                                                        {{ budget.Budget_Type || '-' }}
+
+                                                    </td>
+
+                                                    <!-- TOTAL -->
+                                                    <td class="text-end">
+
+                                                        {{
+                                                        sumBudgetTotal(budget.items)
+                                                        | number:'1.2-2'
+                                                        }}
+
+                                                    </td>
+
+                                                    <!-- ADJUST1 -->
+                                                    <td class="text-end">
+
+                                                        {{
+                                                        sumBudgetAdjust1(budget.items)
+                                                        | number:'1.2-2'
+                                                        }}
+
+                                                    </td>
+
+                                                    <!-- ADJUST2 -->
+                                                    <td class="text-end">
+
+                                                        {{
+                                                        sumBudgetAdjust2(budget.items)
+                                                        | number:'1.2-2'
+                                                        }}
+
+                                                    </td>
+
+                                                    <!-- ADJUST3 -->
+                                                    <td class="text-end">
+
+                                                        {{
+                                                        sumBudgetAdjust3(budget.items)
+                                                        | number:'1.2-2'
+                                                        }}
+
+                                                    </td>
+
+                                                    <!-- TOTAL ALLOCATE -->
+                                                    <td class="text-end text-primary">
+
+                                                        {{
+                                                        sumBudgetAllocate(budget.items)
+                                                        | number:'1.2-2'
+                                                        }}
+
+                                                    </td>
+
+                                                </tr>
+
+                                                <ng-container *ngIf="budget.expanded">
+
+                                                    <!-- ITEM -->
+                                                    <tr *ngFor="let item of budget.items">
+
+                                                        <!-- EXPENSE -->
+                                                        <td class="ps-5 text-start">
+
+                                                            - {{
+                                                            item.Expense_Name ||
+                                                            item.Expense_List ||
+                                                            '-'
+                                                            }}
+
+                                                            <div class="small text-muted">
+
+                                                                {{
+                                                                item.Project_Name ||
+                                                                ''
+                                                                }}
+
+                                                            </div>
+
+                                                        </td>
+
+                                                        <!-- TOTAL -->
+                                                        <td class="text-end fw-bold">
+
+                                                            {{ item.Total | number:'1.2-2' }}
+
+                                                        </td>
+
+                                                        <!-- ADJUST1 -->
+                                                        <td>
+
+                                                            <input type="number"
+                                                                class="form-control form-control-sm text-end border-danger"
+                                                                [(ngModel)]="item.Adjust1">
+
+                                                        </td>
+
+                                                        <!-- ADJUST2 -->
+                                                        <td>
+
+                                                            <input type="number"
+                                                                class="form-control form-control-sm text-end border-danger"
+                                                                [(ngModel)]="item.Adjust2">
+
+                                                        </td>
+
+                                                        <!-- ADJUST3 -->
+                                                        <td>
+
+                                                            <input type="number"
+                                                                class="form-control form-control-sm text-end border-danger"
+                                                                [(ngModel)]="item.Adjust3">
+
+                                                        </td>
+
+                                                        <!-- TOTAL ALLOCATED -->
+                                                        <td class="text-end fw-bold text-primary">
+
+                                                            {{
+                                                            (
+                                                            (item.Adjust1 || 0) +
+                                                            (item.Adjust2 || 0) +
+                                                            (item.Adjust3 || 0)
+                                                            ) | number:'1.2-2'
+                                                            }}
+
+                                                        </td>
+
+                                                    </tr>
+
+                                                </ng-container>
+
+                                            </ng-container>
+
+                                        </ng-container>
+
+                                    </ng-container>
+
+                                </ng-container>
+
+                            </ng-container>
+
+                        </ng-container>
+
+                    </ng-container>
 
                 </tbody>
+
+                <!-- FOOTER -->
+                <tfoot class="table-secondary fw-bold">
+
+                    <tr>
+
+                        <td class="text-end">
+                            รวมทั้งหมด
+                        </td>
+
+                        <!-- TOTAL REQUEST -->
+                        <td class="text-end">
+
+                            {{ totalRequest | number:'1.2-2' }}
+
+                        </td>
+
+                        <td></td>
+
+                        <td></td>
+
+                        <td></td>
+
+                        <!-- TOTAL ALLOCATED -->
+                        <td class="text-end text-primary">
+
+                            {{ totalAllocated | number:'1.2-2' }}
+
+                        </td>
+
+                    </tr>
+
+                </tfoot>
 
             </table>
 
             <br>
 
+            <!-- BUTTON -->
             <div class="d-flex justify-content-end gap-2">
 
                 <button class="btn btn-danger" (click)="backToTable()">
 
                     <i class="ri-skip-back-fill"></i>
                     กลับ
+
+                </button>
+
+                <button class="btn btn-secondary" (click)="resetAllocate()">
+
+                    <i class="ri-refresh-line"></i>
+                    รีเซ็ต
 
                 </button>
 

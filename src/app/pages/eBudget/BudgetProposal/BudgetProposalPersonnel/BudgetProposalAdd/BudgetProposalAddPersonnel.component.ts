@@ -608,7 +608,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
 
   async save() {
 
-    
+
     const findById = (
       list: any[],
       key: string,
@@ -1111,4 +1111,5 @@ export class ProjectBudgetProposalAddPersonnelComponent {
   change_expense() {
 
   }
+
 }
