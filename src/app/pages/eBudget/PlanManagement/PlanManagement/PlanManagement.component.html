@@ -12,11 +12,18 @@
                     <!-- หน่วยงาน -->
                     <div style="width:300px;" class="me-3">
                         <label class="form-label">หน่วยงาน</label>
-                        <select class="form-select">
-                            <option value="" disabled selected>-- เลือกหน่วยงาน --</option>
-                            <option *ngFor="let item of department">
-                                {{ item.name }}
+                        <select class="form-select" [(ngModel)]="selectedDepartmentId">
+
+                            <option [ngValue]="null">
+                                -- เลือกหน่วยงาน --
                             </option>
+
+                            <option *ngFor="let item of department" [ngValue]="item.Department_Id">
+
+                                {{ item.Department_Name }}
+
+                            </option>
+
                         </select>
                     </div>
 
@@ -66,32 +73,35 @@
                                 <td class="text-center">{{data.department}}</td>
 
                                 <td>
-                                    {{data.plan }}
+                                    {{data.Plan_Name }}
                                 </td>
 
                                 <td>
-                                    {{data.output}}
+                                    {{data.Product_Name}}
                                 </td>
 
                                 <td>
-                                    {{data.activity}}
+                                    {{data.Activity_Name}}
                                 </td>
 
-                                <td>{{data.budgetType}}</td>
-                                <td>{{data.project}}</td>
+                                <td>{{data.Budget_Type_Name}}</td>
+                                <td>{{data.Expense_Name}}</td>
 
                                 <td class=" text-end">
-                                    {{data.budget | number:'1.2-2'}}
+                                    {{data.Total | number:'1.2-2'}}
                                 </td>
 
-                                <td class="text-center">
-                                    <span class="badge" [ngClass]="
-                        data.Status_Number == 7 ? 'bg-danger' :
-                        data.Status_Number == 2 ? 'bg-warning text-dark' :
-                        data.Status_Number == 8 ? 'bg-success' :
-                        'bg-secondary'
-                    ">
-                                        {{ data.status_name }}
+                                <td>
+                                    <span style="
+            display:inline-block;
+            padding:4px 8px;
+            border-radius:6px;
+            font-size:12px;
+            background:#78adfd;
+            color:rgb(8, 8, 8);
+            line-height:1.3;
+        ">
+                                        {{ data.Status_Name }}
                                     </span>
                                 </td>
 

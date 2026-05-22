@@ -21,7 +21,7 @@
                 <div class="col-md-12">
                     <label class="form-label">ยุทธศาสตร์ชาติด้าน</label>
 
-                    <ng-select  [items]="listStrategic" bindLabel="Strategic_Name" bindValue="Strategic_Id"
+                    <ng-select [items]="listStrategic" bindLabel="Strategic_Name" bindValue="Strategic_Id"
                         [(ngModel)]="planLevel1Main.Strategic_Id" (ngModelChange)="onChangeStrategic($event)"
                         placeholder="-- เลือก --">
                     </ng-select>
@@ -30,7 +30,7 @@
                 <div class="col-md-12">
                     <label class="form-label">ประเด็นยุทธศาสตร์</label>
 
-                    <ng-select  [items]="listIssue" bindLabel="Strategic_Issues_Name" bindValue="Issues_Id"
+                    <ng-select [items]="listIssue" bindLabel="Strategic_Issues_Name" bindValue="Issues_Id"
                         [(ngModel)]="planLevel1Main.Issues_Id" (ngModelChange)="onChangeIssue($event)"
                         placeholder="-- เลือก --">
                     </ng-select>
@@ -39,7 +39,7 @@
                 <div class="col-md-12">
                     <label class="form-label">ประเด็นย่อย</label>
 
-                    <ng-select  [items]="listSubIssue" bindLabel="Strategic_Sub_Issues_Name" bindValue="Issues_Sub_Id"
+                    <ng-select [items]="listSubIssue" bindLabel="Strategic_Sub_Issues_Name" bindValue="Issues_Sub_Id"
                         [(ngModel)]="planLevel1Main.Issues_Sub_Id" placeholder="-- เลือก --">
                     </ng-select>
                 </div>
@@ -166,7 +166,7 @@
                 <div class="col-md-12">
                     <label class="form-label">ประเด็น</label>
 
-                    <ng-select  [items]="listMasterPlan" bindLabel="Master_Plan_Name" bindValue="Master_Plan_Id"
+                    <ng-select [items]="listMasterPlan" bindLabel="Master_Plan_Name" bindValue="Master_Plan_Id"
                         [(ngModel)]="planLevel2.Master_Plan_Id" (ngModelChange)="onChangeMasterPlan($event)"
                         placeholder="-- เลือก --">
                     </ng-select>
@@ -175,7 +175,7 @@
                 <div class="col-md-12">
                     <label class="form-label">เป้าหมายระดับประเด็น (Y2)</label>
 
-                    <ng-select  [items]="listMasterPlanGoal" bindLabel="Plan_Goals_Name" bindValue="Plan_Goals_Id"
+                    <ng-select [items]="listMasterPlanGoal" bindLabel="Plan_Goals_Name" bindValue="Plan_Goals_Id"
                         [(ngModel)]="planLevel2.Plan_Goals_Id" (ngModelChange)="onChangeMasterPlanGoal($event)"
                         placeholder="-- เลือก --">
                     </ng-select>
@@ -184,7 +184,7 @@
                 <div class="col-md-12">
                     <label class="form-label">ตัวชี้วัดเป้าหมายระดับประเด็น</label>
 
-                    <ng-select  [items]="listMasterPlanGoalTactic" bindLabel="Plan_Tactics_Name"
+                    <ng-select [items]="listMasterPlanGoalTactic" bindLabel="Plan_Tactics_Name"
                         bindValue="Plan_Tactics_Id" [(ngModel)]="planLevel2.Plan_Tactics_Id" placeholder="-- เลือก --">
                     </ng-select>
                 </div>
@@ -201,7 +201,7 @@
                 <div class="col-md-12">
                     <label class="form-label">แผนย่อยของแผนแม่บทฯ</label>
 
-                    <ng-select  [items]="listSubMasterPlan" bindLabel="Sub_Master_Plan_Name"
+                    <ng-select [items]="listSubMasterPlan" bindLabel="Sub_Master_Plan_Name"
                         bindValue="Sub_Master_Plan_Id" [(ngModel)]="planLevel2.Subplan_Id"
                         (ngModelChange)="onChangeSubMasterPlan($event)" placeholder="-- เลือก --">
                     </ng-select>
@@ -210,7 +210,7 @@
                 <div class="col-md-12">
                     <label class="form-label">เป้าหมายแผนแม่บทย่อย (Y1)</label>
 
-                    <ng-select  [items]="listSubMasterPlanGoal" bindLabel="Sub_Plan_Goals_Name"
+                    <ng-select [items]="listSubMasterPlanGoal" bindLabel="Sub_Plan_Goals_Name"
                         bindValue="Sub_Plan_Goals_Id" [(ngModel)]="planLevel2.Target_Y1_Id"
                         (ngModelChange)="onChangeTargetY1()" placeholder="-- เลือก --">
                     </ng-select>
@@ -228,7 +228,7 @@
                 <div class="col-md-12">
                     <label class="form-label">แนวทางการพัฒนาภายใต้แผนย่อย</label>
 
-                    <ng-select  [items]="listGuideline" bindLabel="Guidelines_Name" bindValue="Guidelines_Id"
+                    <ng-select [items]="listGuideline" bindLabel="Guidelines_Name" bindValue="Guidelines_Id"
                         [(ngModel)]="planLevel2.DevGuideline_Id" placeholder="-- เลือก --">
                     </ng-select>
                 </div>
@@ -246,7 +246,7 @@
                 <div class="col-md-6">
                     <label class="form-label">หลัก</label>
 
-                    <ng-select  [items]="listValueChain" bindLabel="Value_Chain_Name" bindValue="Value_Chain_Id"
+                    <ng-select [items]="listValueChain" bindLabel="Value_Chain_Name" bindValue="Value_Chain_Id"
                         [(ngModel)]="planLevel2.ValueChain_Main_Id" (ngModelChange)="onChangeValueChainMain()"
                         placeholder="-- เลือก --">
                     </ng-select>
@@ -255,7 +255,7 @@
                 <div class="col-md-6">
                     <label class="form-label">ปัจจัยหลัก</label>
 
-                    <ng-select  [items]="listValueChainFactorMain" bindLabel="Factor_Name" bindValue="Factor_Id"
+                    <ng-select [items]="listValueChainFactorMain" bindLabel="Factor_Name" bindValue="Factor_Id"
                         [(ngModel)]="planLevel2.ValueChain_Factor_Main_Id" placeholder="-- เลือก --">
                     </ng-select>
                 </div>
@@ -263,7 +263,7 @@
                 <div class="col-md-6">
                     <label class="form-label">ส่วนสนับสนุน (ถ้ามี)</label>
 
-                    <ng-select  [items]="listValueChain" bindLabel="Value_Chain_Name" bindValue="Value_Chain_Id"
+                    <ng-select [items]="listValueChain" bindLabel="Value_Chain_Name" bindValue="Value_Chain_Id"
                         [(ngModel)]="planLevel2.ValueChain_Support_Id" (ngModelChange)="onChangeValueChainSupport()"
                         placeholder="-- เลือก --">
                     </ng-select>
@@ -272,7 +272,7 @@
                 <div class="col-md-6">
                     <label class="form-label">ปัจจัยสนับสนุน (ถ้ามี)</label>
 
-                    <ng-select  [items]="listValueChainFactorSupport" bindLabel="Factor_Name" bindValue="Factor_Id"
+                    <ng-select [items]="listValueChainFactorSupport" bindLabel="Factor_Name" bindValue="Factor_Id"
                         [(ngModel)]="planLevel2.ValueChain_Factor_Support_Id" placeholder="-- เลือก --">
                     </ng-select>
                 </div>
@@ -296,7 +296,7 @@
                 <div class="col-md-12">
                     <label class="form-label">หมุดหมายที่</label>
 
-                    <ng-select  [items]="listLandmark" bindLabel="Landmark_Name" bindValue="Landmark_Id"
+                    <ng-select [items]="listLandmark" bindLabel="Landmark_Name" bindValue="Landmark_Id"
                         [(ngModel)]="planLevel2.Landmark_Id" (ngModelChange)="onChangeLandmark()"
                         placeholder="-- เลือก --">
                     </ng-select>
@@ -305,7 +305,7 @@
                 <div class="col-md-12">
                     <label class="form-label">เป้าหมายที่</label>
 
-                    <ng-select  [items]="listLandmark_Gloals" bindLabel="Landmark_Gloals_Name"
+                    <ng-select [items]="listLandmark_Gloals" bindLabel="Landmark_Gloals_Name"
                         bindValue="Landmark_Gloals_Id" [(ngModel)]="planLevel2.Landmark_Gloals_Id"
                         (ngModelChange)="onChangeLandmarkGloals()" placeholder="-- เลือก --">
                     </ng-select>
@@ -314,7 +314,7 @@
                 <div class="col-md-12">
                     <label class="form-label">ตัวชี้วัดที่</label>
 
-                    <ng-select  [items]="listLandmark_Tactic" bindLabel="Landmark_Tacticts_Name"
+                    <ng-select [items]="listLandmark_Tactic" bindLabel="Landmark_Tacticts_Name"
                         bindValue="Landmark_Tacticts_Id" [(ngModel)]="planLevel2.Landmark_Tacticts_Id"
                         (ngModelChange)="onChangeLandmarkTactic()" placeholder="-- เลือก --">
                     </ng-select>
@@ -323,7 +323,7 @@
                 <div class="col-md-12">
                     <label class="form-label">กลยุทธ์การพัฒนาที่</label>
 
-                    <ng-select  [items]="listMas_Landmark_Guideline" bindLabel="Landmark_Guidelines_Name"
+                    <ng-select [items]="listMas_Landmark_Guideline" bindLabel="Landmark_Guidelines_Name"
                         bindValue="Landmark_Guidelines_Id" [(ngModel)]="planLevel2.Landmark_Guidelines_Id"
                         (ngModelChange)="onChangeStrategyMain()" placeholder="-- เลือก --">
                     </ng-select>
@@ -332,7 +332,7 @@
                 <div class="col-md-12">
                     <label class="form-label">กลยุทธ์ย่อยที่</label>
 
-                    <ng-select  [items]="listMas_Landmark_Sub_Guideline" bindLabel="Sub_Guidelines_Name"
+                    <ng-select [items]="listMas_Landmark_Sub_Guideline" bindLabel="Sub_Guidelines_Name"
                         bindValue="Sub_Guidelines_Id" [(ngModel)]="planLevel2.Landmark_Sub_Guidelines_Id"
                         placeholder="-- เลือก --">
                     </ng-select>
@@ -550,10 +550,24 @@
 
     <!-- =================3.1 ================= -->
     <div class="card-body rounded" style="background-color: #E0E8F0;">
-        <div class="border-start border-4 border-primary ps-3 mb-4">
-            <h6 class="fw-bold text-primary mb-3">
-                3.1 ความสอดคล้องกับแผนปฏิบัติราชการ (แผน 5 ปี) <span class="text-danger">*</span>
-            </h6>
+        <div class="d-flex align-items-center gap-3 mb-3">
+
+            <div class="border-start border-4 border-primary ps-3">
+                <h6 class="fw-bold text-primary mb-0">
+                    3.1 ความสอดคล้องกับแผนปฏิบัติราชการ (แผน 5 ปี)
+                    <span class="text-danger">*</span>
+                </h6>
+            </div>
+
+            <div class="form-check mb-0">
+                <input class="form-check-input" type="checkbox" id="copyPlanLevel2" [(ngModel)]="isCopyFromLevel2"
+                    (change)="onCopyFromLevel2()">
+
+                <label class="form-check-label ms-1" for="copyPlanLevel2">
+                    เหมือนข้อ 2.1
+                </label>
+            </div>
+
         </div>
 
         <div class="border rounded p-3 mb-3 bg-light">
@@ -562,7 +576,7 @@
                 <div class="col-md-12">
                     <label class="form-label">ประเด็น</label>
 
-                    <ng-select  [items]="listMasterPlan5" bindLabel="Master_Plan_Name" bindValue="Master_Plan_Id"
+                    <ng-select [items]="listMasterPlan5" bindLabel="Master_Plan_Name" bindValue="Master_Plan_Id"
                         [(ngModel)]="model.Project_Plan_Level3.Master_Plan_Id"
                         (ngModelChange)="onChangeMasterPlan5($event)" placeholder="-- เลือก --">
                     </ng-select>
@@ -571,7 +585,7 @@
                 <div class="col-md-12">
                     <label class="form-label">เป้าหมายระดับประเด็น (Y2)</label>
 
-                    <ng-select  [items]="listMasterPlanGoal5" bindLabel="Plan_Goals_Name" bindValue="Plan_Goals_Id"
+                    <ng-select [items]="listMasterPlanGoal5" bindLabel="Plan_Goals_Name" bindValue="Plan_Goals_Id"
                         [(ngModel)]="model.Project_Plan_Level3.Plan_Goals_Id"
                         (ngModelChange)="onChangeMasterPlanGoal5($event)" placeholder="-- เลือก --">
                     </ng-select>
@@ -581,7 +595,7 @@
                 <div class="col-md-12">
                     <label class="form-label">ตัวชี้วัดเป้าหมายระดับประเด็น</label>
 
-                    <ng-select  [items]="listMasterPlanTactic5" bindLabel="Plan_Tactics_Name" bindValue="Plan_Tactics_Id"
+                    <ng-select [items]="listMasterPlanTactic5" bindLabel="Plan_Tactics_Name" bindValue="Plan_Tactics_Id"
                         [(ngModel)]="model.Project_Plan_Level3.Plan_Tactics_Id" placeholder="-- เลือก --">
                     </ng-select>
                 </div>
@@ -599,7 +613,7 @@
                 <div class="col-md-12">
                     <label class="form-label">แผนย่อยของแผนแม่บทฯ</label>
 
-                    <ng-select  [items]="listSubMasterPlan5" bindLabel="Sub_Master_Plan_Name"
+                    <ng-select [items]="listSubMasterPlan5" bindLabel="Sub_Master_Plan_Name"
                         bindValue="Sub_Master_Plan_Id" [(ngModel)]="model.Project_Plan_Level3.Sub_Master_Plan_Id"
                         (ngModelChange)="onChangeSubMasterPlan5($event)" placeholder="-- เลือก --">
                     </ng-select>
@@ -608,7 +622,7 @@
                 <div class="col-md-12">
                     <label class="form-label">เป้าหมายแผนแม่บทย่อย (Y1)</label>
 
-                    <ng-select  [items]="listSubMasterPlanGoal5" bindLabel="Sub_Plan_Goals_Name"
+                    <ng-select [items]="listSubMasterPlanGoal5" bindLabel="Sub_Plan_Goals_Name"
                         bindValue="Sub_Plan_Goals_Id" [(ngModel)]="model.Project_Plan_Level3.Sub_Plan_Goals_Id"
                         (ngModelChange)="onChangeTargetY15($event)" placeholder="-- เลือก --">
                     </ng-select>
@@ -627,7 +641,7 @@
                 <div class="col-md-12">
                     <label class="form-label">แนวทางการพัฒนาภายใต้แผนย่อย</label>
 
-                    <ng-select  [items]="listSubGuideline5" bindLabel="Guidelines_Name" bindValue="Guidelines_Id"
+                    <ng-select [items]="listSubGuideline5" bindLabel="Guidelines_Name" bindValue="Guidelines_Id"
                         [(ngModel)]="model.Project_Plan_Level3.Guidelines_Id" placeholder="-- เลือก --">
                     </ng-select>
                 </div>
@@ -645,7 +659,7 @@
                 <div class="col-md-6">
                     <label class="form-label">หลัก</label>
 
-                    <ng-select  [items]="listValueChain5" bindLabel="Value_Chain_Name" bindValue="Value_Chain_Id"
+                    <ng-select [items]="listValueChain5" bindLabel="Value_Chain_Name" bindValue="Value_Chain_Id"
                         [(ngModel)]="model.Project_Plan_Level3.ValueChain_Main_Id"
                         (ngModelChange)="onChangeValueChainMain5()" placeholder="-- เลือก --">
                     </ng-select>
@@ -654,7 +668,7 @@
                 <div class="col-md-6">
                     <label class="form-label">ปัจจัยหลัก</label>
 
-                    <ng-select  [items]="listValueChainFactorMain5" bindLabel="Factor_Name" bindValue="Factor_Id"
+                    <ng-select [items]="listValueChainFactorMain5" bindLabel="Factor_Name" bindValue="Factor_Id"
                         [(ngModel)]="model.Project_Plan_Level3.ValueChain_Factor_Main_Id" placeholder="-- เลือก --">
                     </ng-select>
                 </div>
@@ -662,7 +676,7 @@
                 <div class="col-md-6">
                     <label class="form-label">ส่วนสนับสนุน (ถ้ามี)</label>
 
-                    <ng-select  [items]="listValueChain5" bindLabel="Value_Chain_Name" bindValue="Value_Chain_Id"
+                    <ng-select [items]="listValueChain5" bindLabel="Value_Chain_Name" bindValue="Value_Chain_Id"
                         [(ngModel)]="model.Project_Plan_Level3.ValueChain_Support_Id"
                         (ngModelChange)="onChangeValueChainSupport5()" placeholder="-- เลือก --">
                     </ng-select>
@@ -671,7 +685,7 @@
                 <div class="col-md-6">
                     <label class="form-label">ปัจจัยสนับสนุน (ถ้ามี)</label>
 
-                    <ng-select  [items]="listValueChainFactorSupport5" bindLabel="Factor_Name" bindValue="Factor_Id"
+                    <ng-select [items]="listValueChainFactorSupport5" bindLabel="Factor_Name" bindValue="Factor_Id"
                         [(ngModel)]="model.Project_Plan_Level3.ValueChain_Factor_Support_Id" placeholder="-- เลือก --">
                     </ng-select>
                 </div>
@@ -695,7 +709,7 @@
                 <div class="col-md-12">
                     <label class="form-label">แผนงานที่</label>
 
-                    <ng-select  [items]="listProjectPlan5" bindLabel="Project_Plan_Name" bindValue="Project_Plan_Id"
+                    <ng-select [items]="listProjectPlan5" bindLabel="Project_Plan_Name" bindValue="Project_Plan_Id"
                         [(ngModel)]="model.Project_Plan_Level3.Project_Plan_Id_5"
                         (ngModelChange)="onChangeProjectPlan5()" placeholder="-- เลือก --">
                     </ng-select>
@@ -705,7 +719,7 @@
                 <div class="col-md-12">
                     <label class="form-label">เป้าหมายที่</label>
 
-                    <ng-select  [items]="listProjectPlanGoal5" bindLabel="Project_Plan_Name"
+                    <ng-select [items]="listProjectPlanGoal5" bindLabel="Project_Plan_Name"
                         bindValue="Project_Plan_Goals_Id"
                         [(ngModel)]="model.Project_Plan_Level3.Project_Plan_Goals_Id_5"
                         (ngModelChange)="onChangeGoal5()" placeholder="-- เลือก --">
@@ -716,7 +730,7 @@
                 <div class="col-md-12">
                     <label class="form-label">ตัวชี้วัดที่</label>
 
-                    <ng-select  [items]="listIndicator5" bindLabel="Indicators_Name" bindValue="Indicators_Id"
+                    <ng-select [items]="listIndicator5" bindLabel="Indicators_Name" bindValue="Indicators_Id"
                         [(ngModel)]="model.Project_Plan_Level3.Indicators_Id_5" placeholder="-- เลือก --">
                     </ng-select>
                 </div>
@@ -725,7 +739,7 @@
                 <div class="col-md-12">
                     <label class="form-label">แนวทางการพัฒนาที่</label>
 
-                    <ng-select  [items]="listGuideline5" bindLabel="Project_Plan_Name" bindValue="Goals_Guidelines_Id"
+                    <ng-select [items]="listGuideline5" bindLabel="Project_Plan_Name" bindValue="Goals_Guidelines_Id"
                         [(ngModel)]="model.Project_Plan_Level3.Goals_Guidelines_Id_5" placeholder="-- เลือก --">
                     </ng-select>
                 </div>
@@ -748,7 +762,7 @@
                 <div class="col-md-12">
                     <label class="form-label">แผนงานที่</label>
 
-                    <ng-select  [items]="listProjectPlan" bindLabel="Project_Plan_Name" bindValue="Project_Plan_Id"
+                    <ng-select [items]="listProjectPlan" bindLabel="Project_Plan_Name" bindValue="Project_Plan_Id"
                         [(ngModel)]="model.Project_Plan_Level3.Project_Plan_Id" (ngModelChange)="onChangenTactic()"
                         placeholder="-- เลือก --">
                     </ng-select>
@@ -757,7 +771,7 @@
                 <div class="col-md-12">
                     <label class="form-label">เป้าหมายที่</label>
 
-                    <ng-select  [items]="listMasProjectPlanGoal" bindLabel="Project_Plan_Name"
+                    <ng-select [items]="listMasProjectPlanGoal" bindLabel="Project_Plan_Name"
                         bindValue="Project_Plan_Goals_Id" [(ngModel)]="model.Project_Plan_Level3.Project_Plan_Goals_Id"
                         (ngModelChange)="onChangenMeasure()" name="ppat_strategy" placeholder="-- เลือก --">
                     </ng-select>
@@ -766,7 +780,7 @@
                 <div class="col-md-12">
                     <label class="form-label">ตัวชี้วัดที่</label>
 
-                    <ng-select  [items]="listMasIndicator" bindLabel="Indicators_Name" bindValue="Indicators_Id"
+                    <ng-select [items]="listMasIndicator" bindLabel="Indicators_Name" bindValue="Indicators_Id"
                         [(ngModel)]="model.Project_Plan_Level3.Indicators_Id" name="ppat_strategy"
                         placeholder="-- เลือก --">
                     </ng-select>
@@ -775,7 +789,7 @@
                 <div class="col-md-12">
                     <label class="form-label">แนวทางการพัฒนาที่</label>
 
-                    <ng-select  [items]="listMasMeasure" bindLabel="Project_Plan_Name" bindValue="Goals_Guidelines_Id"
+                    <ng-select [items]="listMasMeasure" bindLabel="Project_Plan_Name" bindValue="Goals_Guidelines_Id"
                         [(ngModel)]="model.Project_Plan_Level3.Measure_Id" name="ppat_strategy"
                         placeholder="-- เลือก --">
                     </ng-select>
@@ -827,7 +841,7 @@
                 <div class="col-md-12">
                     <label class="form-label">เป้าหมายหลัก SDGs</label>
 
-                    <ng-select  [items]="listSDGsGoal" bindLabel="SDGs_Gloals_Name" bindValue="SDGs_Gloals_Id"
+                    <ng-select [items]="listSDGsGoal" bindLabel="SDGs_Gloals_Name" bindValue="SDGs_Gloals_Id"
                         [(ngModel)]="planLevel2.SDGs_Gloals_Id" (ngModelChange)="onChangeSDGsGoal()"
                         placeholder="-- เลือก --">
                     </ng-select>
@@ -836,7 +850,7 @@
                 <div class="col-md-12">
                     <label class="form-label">เป้าหมายย่อย SDGs</label>
 
-                    <ng-select  [items]="listSDGsTarget" bindLabel="SDGs_Targets_Name" bindValue="SDGs_Targets_Id"
+                    <ng-select [items]="listSDGsTarget" bindLabel="SDGs_Targets_Name" bindValue="SDGs_Targets_Id"
                         [(ngModel)]="planLevel2.SDGs_Targets_Id" placeholder="-- เลือก --">
                     </ng-select>
                 </div>

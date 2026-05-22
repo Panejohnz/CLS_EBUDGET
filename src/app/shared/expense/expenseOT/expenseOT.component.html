@@ -85,10 +85,14 @@
                             </td>
 
                             <td>
-                                <input type="number" class="form-control" [(ngModel)]="item.workHour"
-                                    (ngModelChange)="calculate(i)">
-                            </td>
+                                <input type="number" class="form-control" [class.is-invalid]="item.workHour > 4"
+                                    [(ngModel)]="item.workHour" (ngModelChange)="calculate(i)">
+                                <span class="text-danger small" *ngIf="item.workHour > 4">
 
+                                    ห้ามเกิน 4ชั่วโมง/วัน
+
+                                </span>
+                            </td>
                             <td class="bg-light">
                                 {{ workRate | number:'1.2-2' }}
                             </td>
@@ -109,8 +113,13 @@
                             </td>
 
                             <td>
-                                <input type="number" class="form-control" [(ngModel)]="item.holidayHour"
-                                    (ngModelChange)="calculate(i)">
+                                <input type="number" class="form-control" [class.is-invalid]="item.holidayHour > 8"
+                                    [(ngModel)]="item.holidayHour" (ngModelChange)="calculate(i)">
+                                <span class="text-danger small" *ngIf="item.holidayHour > 8">
+
+                                 ห้ามเกิน 8ชั่วโมง/วัน
+
+                                </span>
                             </td>
 
                             <td class="bg-light">

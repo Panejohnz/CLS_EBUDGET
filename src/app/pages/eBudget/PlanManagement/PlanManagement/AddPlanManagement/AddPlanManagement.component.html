@@ -5,403 +5,364 @@
 
 <div class="modal-body">
 
-    <!-- ข้อมูลโครงการ -->
+    <!-- แผนงาน -->
     <div class="row mb-3">
 
         <div class="col-md-4">
-            <label class="form-label">แผนงาน</label>
-            <select class="form-select" [(ngModel)]="plan.projectName">
-                <option value="">-- เลือกแผนงาน --</option>
-                <option *ngFor="let item of planOptions" [value]="item.id">
-                    {{ item.name }}
-                </option>
-            </select>
-        </div>
 
-        <div class="col-md-4">
-            <label class="form-label">ผลผลิต</label>
-            <select class="form-select" [(ngModel)]="plan.unit">
-                <option value="">-- เลือกผลผลิต --</option>
-                <option *ngFor="let item of outputOptions" [value]="item.id">
-                    {{ item.name }}
-                </option>
-            </select>
-        </div>
+            <label class="form-label">
+                แผนงาน
+            </label>
 
-        <div class="col-md-4">
-            <label class="form-label">กิจกรรม</label>
-            <select class="form-select" [(ngModel)]="plan.mainDeptActivity">
-                <option value="">-- เลือกกิจกรรมหลักกรม --</option>
-                <option *ngFor="let item of mainDeptActivityOptions" [value]="item.id">
-                    {{ item.name }}
-                </option>
-            </select>
-        </div>
+            <ng-select [items]="Mas_Plan_Lists" bindLabel="Plan_Name" bindValue="Plan_Id"
+                [(ngModel)]="model.selectedPlanPropos" name="selectedPlan" (ngModelChange)="Onchange_type_Plan()"
+                placeholder="-- เลือก --">
 
-    </div>
-
-    <div class="row mb-3">
-
-        <div class="col-md-4">
-            <label class="form-label">หมวดงบ</label>
-            <select disabled class="form-select" [(ngModel)]="plan.subUnitActivity">
-
-                <option *ngFor="let item of subUnitActivityOptions" [value]="item.id">
-                    {{ item.name }}
-                </option>
-            </select>
-        </div>
-
-        <div class="col-md-4">
-            <label class="form-label">หมวดค่าใช้จ่าย</label>
-            <select disabled class="form-select" [(ngModel)]="plan.subActivity">
-                <option *ngFor="let item of subActivityOptions" [value]="item.id">
-                    {{ item.name }}
-                </option>
-            </select>
-        </div>
-
-        <div class="col-md-4">
-            <label class="form-label">รายการค่าใช้จ่าย</label>
-            <ng-select [items]="expenseOptions" bindLabel="Expense_Name" [(ngModel)]="expenseItem"
-                (ngModelChange)="onExpenseChange($event)" appendTo="body"
-                placeholder="-- กรุณาเลือกรายการค่าใช้จ่าย --">
             </ng-select>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <label class="form-label">
+                ผลผลิต
+            </label>
+
+            <ng-select [items]="Mas_Product" bindLabel="Product_Name" bindValue="Product_Id"
+                [(ngModel)]="model.selectedProductPropos" name="selectedProduct"
+                (ngModelChange)="Onchange_type_Product()" placeholder="-- เลือก --">
+
+            </ng-select>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <label class="form-label">
+                กิจกรรม
+            </label>
+
+            <ng-select [items]="Mas_Activity" bindLabel="Activity_Name" bindValue="Activity_Id"
+                [(ngModel)]="model.selectedActivityPropos" name="selectedActivity" placeholder="-- เลือก --">
+
+            </ng-select>
+
         </div>
 
     </div>
+
+    <!-- expense -->
     <div class="row mb-3">
+
+        <!-- หมวดงบ -->
+        <div class="col-md-4">
+
+            <label class="form-label">
+                หมวดงบ
+            </label>
+
+            <input class="form-control" [value]="model.selectedBudgetName || ''" readonly>
+
+        </div>
+
+        <!-- หมวดค่าใช้จ่าย -->
+        <div class="col-md-4">
+
+            <label class="form-label">
+                หมวดค่าใช้จ่าย
+            </label>
+
+            <input class="form-control" [value]="model.selectedGroupName || ''" readonly>
+
+        </div>
+
+        <!-- รายการค่าใช้จ่าย -->
+        <div class="col-md-4">
+
+            <label class="form-label">
+                รายการค่าใช้จ่าย
+            </label>
+
+            <ng-select [disabled]="model.Budget_Request.Request_Id" [items]="expenseOptions" bindLabel="Expense_Name"
+                bindValue="Expense_Id" [(ngModel)]="model.selectedExpenseTypeId"
+                (ngModelChange)="onExpenseChange($event)" placeholder="-- กรุณาเลือกรายการค่าใช้จ่าย --">
+
+            </ng-select>
+
+        </div>
+
+    </div>
+
+    <!-- target -->
+    <div class="row mb-3">
+
         <div class="col d-flex align-items-center">
 
-            <span class="fw-bold">เป้าหมาย</span>
+            <span class="fw-bold">
+                เป้าหมาย
+            </span>
 
             <button class="btn btn-primary btn-sm ms-2" (click)="openTargetModal(targetModal)">
-                กำหนดเป้าหมาย
+
+                กำหนดเป้าหมาย //
+
             </button>
 
         </div>
+
     </div>
-    <div  *ngIf="dropdown_select">
-        <div class="modal-header bg-light">
-            <h5 class="card-title bg-light">
-                {{ formTitle }}
-            </h5>
-            <button type="button" class="btn-close" (click)="modal.dismiss();"></button>
+
+    <!-- target modal -->
+    <!-- target modal -->
+    <!-- TARGET MODAL -->
+    <ng-template #targetModal let-modal>
+
+        <!-- HEADER -->
+        <div class="modal-header border-0 bg-light">
+
+            <div>
+
+                <h5 class="modal-title fw-bold mb-1">
+                    กำหนดเป้าหมาย
+                </h5>
+
+                <small class="text-muted">
+                    กรอกจำนวนเป้าหมายรายเดือน
+                </small>
+
+            </div>
+
+            <button type="button" class="btn-close" (click)="modal.dismiss()">
+
+            </button>
+
         </div>
-        @if ([64,70,73,74,75].includes(expenseItem.Expense_Id)) {
-        <projectPlanning>
-        </projectPlanning>
-        }@else {
-        <div class="table-responsive">
 
-            <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+        <!-- BODY -->
+        <div class="modal-body bg-light-subtle">
 
-                <thead class="table-light text-center">
+            <!-- ACTION -->
+            <div class="d-flex justify-content-end mb-3">
 
-                    <tr>
-                        <th colspan="3">ไตรมาส 1</th>
-                        <th colspan="3">ไตรมาส 2</th>
-                        <th colspan="3">ไตรมาส 3</th>
-                        <th colspan="3">ไตรมาส 4</th>
-                    </tr>
+                <button class="btn btn-primary rounded-pill px-4" (click)="addTargetRow()">
 
-                    <tr>
-                        <ng-container *ngFor="let i of [1,2,3,4]">
-                            <th style="width:5%">เดือน</th>
-                            <th style="width:4%">แผน</th>
-                            <th style="width:6%">แผนเงิน</th>
-                        </ng-container>
-                    </tr>
+                    + เพิ่มรายการ
 
-                </thead>
+                </button>
 
-                <tbody>
+            </div>
 
-                    <ng-container *ngFor="let act of activities; let i = index">
+            <!-- TABLE CARD -->
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
 
-                        <ng-container *ngFor="let rowIndex of [0,1,2]">
+                <div class="table-responsive">
+
+                    <table class="table align-middle mb-0">
+
+                        <!-- HEADER -->
+                        <thead class="table-primary">
 
                             <tr>
 
-                                <ng-container *ngFor="let q of act.quarters">
+                                <th class="ps-4" style="min-width:260px">
 
-                                    <td>
-                                        {{ q.months[rowIndex].month }}
-                                    </td>
+                                    รายการ
 
-                                    <td>
-                                        <div class="form-check d-flex justify-content-center">
-                                            <input type="checkbox" class="form-check-input"
-                                                [(ngModel)]="q.months[rowIndex].selected">
-                                        </div>
-                                    </td>
+                                </th>
 
-                                    <td>
-                                        <input type="number" class="form-control form-control-sm"
-                                            [(ngModel)]="q.months[rowIndex].budget"
-                                            (ngModelChange)="onBudgetChange(q.months[rowIndex])">
-                                    </td>
+                                <th class="text-center" *ngFor="let m of [
+                                    'ต.ค.',
+                                    'พ.ย.',
+                                    'ธ.ค.',
+                                    'ม.ค.',
+                                    'ก.พ.',
+                                    'มี.ค.',
+                                    'เม.ย.',
+                                    'พ.ค.',
+                                    'มิ.ย.',
+                                    'ก.ค.',
+                                    'ส.ค.',
+                                    'ก.ย.'
+                                ]">
 
-                                </ng-container>
+                                    {{ m }}
 
+                                </th>
+
+                                <th class="text-center" style="width:120px">
+
+                                    รวม
+
+                                </th>
+
+                                <th class="text-center" style="width:90px">
+
+                                </th>
 
                             </tr>
 
-                        </ng-container>
-                        <tr>
-                            <td colspan="12" class="bg-light">
-                                <div class="d-flex justify-content-end align-items-center gap-3 flex-wrap">
+                        </thead>
 
-                                    <!-- ✅ รวมเงิน (อยู่ก่อนปุ่ม) -->
-                                    <div>
-                                        <strong>รวมเงินวางแผน:</strong>
-                                        {{ getTotalBudget(act) | number }}
+                        <!-- BODY -->
+                        <tbody>
+
+                            <tr *ngFor="let t of targetList; let i = index">
+
+                                <!-- name -->
+                                <td class="ps-4">
+
+                                    <div class="fw-semibold mb-2">
+
+                                        รายการ {{ i + 1 }}
+
                                     </div>
 
-                                    <div>
-                                        <strong>รวมเงินตัวคูณ:</strong>
-                                        {{ getTotalMultiplier(act) | number }}
-                                    </div>
+                                    <input class="form-control form-control-sm" placeholder="หน่วยนับ"
+                                        [(ngModel)]="t.unit">
 
-                                    <!-- ✅ ปุ่ม -->
-                                    <button class="btn btn-sm btn-outline-secondary"
-                                        (click)="openMultiplierModal(fullDataModal)"
-                                        [disabled]="act.subActivities?.length > 0">
-                                        แบบฟอร์มตัวคูณ
+                                </td>
+
+                                <!-- oct -->
+                                <td>
+                                    <input type="number" class="form-control form-control-sm text-center"
+                                        [(ngModel)]="t.oct">
+                                </td>
+
+                                <!-- nov -->
+                                <td>
+                                    <input type="number" class="form-control form-control-sm text-center"
+                                        [(ngModel)]="t.nov">
+                                </td>
+
+                                <!-- dec -->
+                                <td>
+                                    <input type="number" class="form-control form-control-sm text-center"
+                                        [(ngModel)]="t.dec">
+                                </td>
+
+                                <!-- jan -->
+                                <td>
+                                    <input type="number" class="form-control form-control-sm text-center"
+                                        [(ngModel)]="t.jan">
+                                </td>
+
+                                <!-- feb -->
+                                <td>
+                                    <input type="number" class="form-control form-control-sm text-center"
+                                        [(ngModel)]="t.feb">
+                                </td>
+
+                                <!-- mar -->
+                                <td>
+                                    <input type="number" class="form-control form-control-sm text-center"
+                                        [(ngModel)]="t.mar">
+                                </td>
+
+                                <!-- apr -->
+                                <td>
+                                    <input type="number" class="form-control form-control-sm text-center"
+                                        [(ngModel)]="t.apr">
+                                </td>
+
+                                <!-- may -->
+                                <td>
+                                    <input type="number" class="form-control form-control-sm text-center"
+                                        [(ngModel)]="t.may">
+                                </td>
+
+                                <!-- jun -->
+                                <td>
+                                    <input type="number" class="form-control form-control-sm text-center"
+                                        [(ngModel)]="t.jun">
+                                </td>
+
+                                <!-- jul -->
+                                <td>
+                                    <input type="number" class="form-control form-control-sm text-center"
+                                        [(ngModel)]="t.jul">
+                                </td>
+
+                                <!-- aug -->
+                                <td>
+                                    <input type="number" class="form-control form-control-sm text-center"
+                                        [(ngModel)]="t.aug">
+                                </td>
+
+                                <!-- sep -->
+                                <td>
+                                    <input type="number" class="form-control form-control-sm text-center"
+                                        [(ngModel)]="t.sep">
+                                </td>
+
+                                <!-- total -->
+                                <td>
+
+                                    <input class="form-control form-control-sm fw-bold text-center bg-light"
+                                        [value]="getTargetSum(t)" readonly>
+
+                                </td>
+
+                                <!-- remove -->
+                                <td class="text-center">
+
+                                    <button class="btn btn-outline-danger btn-sm rounded-circle"
+                                        *ngIf="targetList.length > 1" (click)="removeTargetRow(i,t)">
+
+                                        ✕
+
                                     </button>
 
-                                </div>
-                            </td>
-                        </tr>
-                        <ng-container *ngFor="let sub of act.subActivities; let subIndex = index">
+                                </td>
 
-                            <ng-container *ngFor="let rowIndex of [0,1,2]">
+                            </tr>
 
-                                <tr class="table-info">
-                                    <td *ngIf="rowIndex === 0" rowspan="3">{{ i + 1 }}.{{subIndex + 1}}</td>
+                        </tbody>
 
-                                    <td *ngIf="rowIndex === 0" rowspan="3" class="text-start">
+                        <!-- FOOTER -->
+                        <tfoot class="table-primary">
 
-                                        <textarea rows="2" class="form-control form-control-sm mb-2"
-                                            [(ngModel)]="sub.name">    </textarea>
+                            <tr>
 
-                                        <div class="d-flex gap-3 mb-2">
-                                            <div class="form-check m-0">
-                                                <input class="form-check-input" type="checkbox" id="not_money_sub"
-                                                    [(ngModel)]="sub.noBudget">
-                                                <label class="form-check-label" for="not_money_sub">ไม่ใช้งบ</label>
-                                            </div>
+                                <td colspan="13" class="text-end fw-bold pe-4">
 
-                                            <div class="form-check m-0">
-                                                <input class="form-check-input" type="checkbox" id="call_sub"
-                                                    [(ngModel)]="sub.consult">
-                                                <label class="form-check-label" for="call_sub">จ้างที่ปรึกษา</label>
-                                            </div>
-                                        </div>
+                                    รวมทั้งหมด
 
-                                        <!-- ส่วนล่างกิจกรรมย่อย -->
+                                </td>
 
+                                <td>
 
-                                    </td>
-                                    <ng-container *ngFor="let q of sub.quarters">
+                                    <input class="form-control form-control-sm fw-bold text-center bg-white"
+                                        [value]="getGrandTotal()" readonly>
 
-                                        <td>
-                                            {{ q.months[rowIndex].month }}
-                                        </td>
+                                </td>
 
-                                        <td>
-                                            <div class="form-check d-flex justify-content-center">
-                                                <input type="checkbox" class="form-check-input"
-                                                    [(ngModel)]="q.months[rowIndex].selected">
-                                            </div>
-                                        </td>
+                                <td></td>
 
-                                        <td>
-                                            <input type="number" class="form-control form-control-sm"
-                                                [(ngModel)]="q.months[rowIndex].budget"
-                                                (ngModelChange)="onBudgetChange(q.months[rowIndex])">
-                                        </td>
+                            </tr>
 
-                                    </ng-container>
+                        </tfoot>
 
-
-
-                                </tr>
-
-                            </ng-container>
-
-                        </ng-container>
-
-
-                    </ng-container>
-
-                </tbody>
-
-            </table>
-            <div class="modal-footer">
-
-                <button class="btn btn-light" (click)="modal.dismiss()">
-                    ยกเลิก
-                </button>
-
-                <button class="btn btn-success" (click)="save()">
-                    💾 บันทึก
-                </button>
-
-            </div>
-        </div>
-
-        }
-
-
-
-    </div>
-    <!-- ตารางเป้าหมาย -->
-    <ng-template #targetModal let-modal>
-
-        <div class="modal-header">
-            <h5 class="modal-title">กำหนดเป้าหมาย</h5>
-            <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
-        </div>
-
-        <div class="modal-body">
-
-            <!-- header -->
-            <div class="row align-items-end mb-3">
-
-                <div class="col-md-1">
-                    <label class="form-label">โปรดระบุ</label>
+                    </table>
 
                 </div>
-
-                <div class="col-md-3">
-                    <label class="form-label">หน่วยนับ</label>
-                    <input class="form-control form-control-sm" [(ngModel)]="unit">
-                </div>
-
-                <div class="col-md-4 d-flex align-items-center gap-2 mt-3">
-                    <input type="checkbox" class="form-check-input" [(ngModel)]="isIndicator">
-                    <label class="form-check-label">เป้าหมายสำนักงบ</label>
-                </div>
-
-            </div>
-
-
-            <!-- table -->
-            <div class="table-responsive">
-
-                <table class="table table-bordered text-center align-middle">
-
-                    <tbody>
-
-                        <!-- Q1 -->
-                        <tr>
-                            <td class="fw-bold text-start" style="width:120px">ไตรมาส 1</td>
-
-                            <td>
-                                <small>ต.ค.</small>
-                                <input type="number" class="form-control form-control-sm"
-                                    [(ngModel)]="targetList[0].oct">
-                            </td>
-
-                            <td>
-                                <small>พ.ย.</small>
-                                <input type="number" class="form-control form-control-sm"
-                                    [(ngModel)]="targetList[0].nov">
-                            </td>
-
-                            <td>
-                                <small>ธ.ค.</small>
-                                <input type="number" class="form-control form-control-sm"
-                                    [(ngModel)]="targetList[0].dec">
-                            </td>
-                        </tr>
-
-                        <!-- Q2 -->
-                        <tr>
-                            <td class="fw-bold text-start">ไตรมาส 2</td>
-
-                            <td>
-                                <small>ม.ค.</small>
-                                <input type="number" class="form-control form-control-sm"
-                                    [(ngModel)]="targetList[0].jan">
-                            </td>
-
-                            <td>
-                                <small>ก.พ.</small>
-                                <input type="number" class="form-control form-control-sm"
-                                    [(ngModel)]="targetList[0].feb">
-                            </td>
-
-                            <td>
-                                <small>มี.ค.</small>
-                                <input type="number" class="form-control form-control-sm"
-                                    [(ngModel)]="targetList[0].mar">
-                            </td>
-                        </tr>
-
-                        <!-- Q3 -->
-                        <tr>
-                            <td class="fw-bold text-start">ไตรมาส 3</td>
-
-                            <td>
-                                <small>เม.ย.</small>
-                                <input type="number" class="form-control form-control-sm"
-                                    [(ngModel)]="targetList[0].apr">
-                            </td>
-
-                            <td>
-                                <small>พ.ค.</small>
-                                <input type="number" class="form-control form-control-sm"
-                                    [(ngModel)]="targetList[0].may">
-                            </td>
-
-                            <td>
-                                <small>มิ.ย.</small>
-                                <input type="number" class="form-control form-control-sm"
-                                    [(ngModel)]="targetList[0].jun">
-                            </td>
-                        </tr>
-
-                        <!-- Q4 -->
-                        <tr>
-                            <td class="fw-bold text-start">ไตรมาส 4</td>
-
-                            <td>
-                                <small>ก.ค.</small>
-                                <input type="number" class="form-control form-control-sm"
-                                    [(ngModel)]="targetList[0].jul">
-                            </td>
-
-                            <td>
-                                <small>ส.ค.</small>
-                                <input type="number" class="form-control form-control-sm"
-                                    [(ngModel)]="targetList[0].aug">
-                            </td>
-
-                            <td>
-                                <small>ก.ย.</small>
-                                <input type="number" class="form-control form-control-sm"
-                                    [(ngModel)]="targetList[0].sep">
-                            </td>
-                        </tr>
-
-                    </tbody>
-
-                </table>
 
             </div>
 
         </div>
 
-        <div class="modal-footer">
+        <!-- FOOTER -->
+        <div class="modal-footer border-0 bg-light">
 
-            <button class="btn btn-light" (click)="modal.dismiss()">
+            <button class="btn btn-light rounded-pill px-4" (click)="modal.dismiss()">
+
                 ยกเลิก
+
             </button>
 
-            <button class="btn btn-success" (click)="modal.close(targetList)">
+            <button class="btn btn-success rounded-pill px-4" (click)="saveTarget(modal)">
+
                 💾 บันทึก
+
             </button>
 
         </div>
