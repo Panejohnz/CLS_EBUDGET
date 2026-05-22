@@ -19,7 +19,7 @@ export class ExpenseOfficeRentComponent {
 
   rentList: any[] = [];
 
-  totalArea = 0;
+  // totalArea = '';
   totalRate = 0;
   totalMonth = 0;
   totalYear = 0;
@@ -77,16 +77,25 @@ export class ExpenseOfficeRentComponent {
           row.Expense_Detail || '',
 
         area:
-          row.Quantity || 0,
+          row.Other_Name || '',
 
-        pricePerSqm:
-          row.Rate || 0,
+        // pricePerSqm:
+        //   row.Rate || 0,
 
-        monthlyRent:
-          row.Per_Month || 0,
+        // monthlyRent:
+        //   row.Per_Month || 0,
 
-        yearlyRent:
-          row.Per_Year || 0,
+        // yearlyRent:
+        //   row.Per_Year || 0,
+
+ pricePerSqm:
+  this.formatNumber(row.Rate),
+
+monthlyRent:
+  this.formatNumber(row.Per_Month),
+
+yearlyRent:
+  this.formatNumber(row.Per_Year),
 
         purpose:
           row.Purpose || '',
@@ -110,13 +119,13 @@ export class ExpenseOfficeRentComponent {
 
       asset: '',
 
-      area: 0,
+      area: '',
 
-      pricePerSqm: 0,
+      pricePerSqm: '',
 
-      monthlyRent: 0,
+      monthlyRent: '',
 
-      yearlyRent: 0,
+      yearlyRent: '',
 
       purpose: '',
 
@@ -125,6 +134,8 @@ export class ExpenseOfficeRentComponent {
     };
 
   }
+
+
 
   addRow() {
 
@@ -144,81 +155,263 @@ export class ExpenseOfficeRentComponent {
 
   }
 
-  calculate(item: any) {
+  // calculate(item: any) {
 
-    item.monthlyRent =
+  //   item.monthlyRent =
 
-      (Number(item.area) || 0) *
+  //     (Number(item.area) || 0) *
 
-      (Number(item.pricePerSqm) || 0);
+  //     (Number(item.pricePerSqm) || 0);
 
-    this.calculateYear(item);
+  //   this.calculateYear(item);
 
-  }
+  // }
 
-  calculateYear(item: any) {
+calculate(item: any) {
 
-    item.yearlyRent =
+  const area = Number(
+    item.area?.toString().replace(/,/g, '')
+  );
 
-      (Number(item.monthlyRent) || 0) * 12;
+  const rate = Number(
+    item.pricePerSqm?.toString().replace(/,/g, '')
+  );
+
+  // ถ้ายังกรอกไม่ครบ
+  if (!area || !rate) {
+
+    item.monthlyRent = '';
+    item.yearlyRent = '';
 
     this.calculateGrand();
 
     this.updateDetailItems();
 
-  }
-
-  calculateGrand() {
-
-    this.totalArea =
-
-      this.rentList.reduce(
-
-        (sum: number, i: any) =>
-
-          sum + (Number(i.area) || 0),
-
-        0
-
-      );
-
-    this.totalRate =
-
-      this.rentList.reduce(
-
-        (sum: number, i: any) =>
-
-          sum + (Number(i.pricePerSqm) || 0),
-
-        0
-
-      );
-
-    this.totalMonth =
-
-      this.rentList.reduce(
-
-        (sum: number, i: any) =>
-
-          sum + (Number(i.monthlyRent) || 0),
-
-        0
-
-      );
-
-    this.totalYear =
-
-      this.rentList.reduce(
-
-        (sum: number, i: any) =>
-
-          sum + (Number(i.yearlyRent) || 0),
-
-        0
-
-      );
+    return;
 
   }
+
+  const monthly = area * rate;
+
+  item.monthlyRent = monthly.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+  this.calculateYear(item);
+
+}
+  // calculateYear(item: any) {
+
+  //   item.yearlyRent =
+
+  //     (Number(item.monthlyRent) || 0) * 12;
+
+  //   this.calculateGrand();
+
+  //   this.updateDetailItems();
+
+  // }
+
+calculateYear(item: any) {
+
+  const monthly = Number(
+    item.monthlyRent?.toString().replace(/,/g, '')
+  ) || 0;
+
+  item.yearlyRent = (monthly * 12).toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+  this.calculateGrand();
+
+  this.updateDetailItems();
+
+}
+
+  formatNumber(value: any): string {
+
+  if (value === null || value === undefined || value === '') {
+    return '';
+  }
+
+  return Number(value).toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+}
+
+onNumberChange(
+  value: string,
+  item: any,
+  field: string,
+  callback: Function,
+  callbackItem: any
+): void {
+
+  const numericValue = value.replace(/,/g, '');
+
+  item[field] = parseFloat(numericValue) || 0;
+
+  callback.call(this, callbackItem);
+
+}
+
+onInputNumber(event: any, item: any, field: string): void {
+
+  let value = event.target.value;
+
+  // อนุญาตเฉพาะเลขและ .
+  value = value.replace(/[^0-9.]/g, '');
+
+  // กัน . ซ้ำ
+  const parts = value.split('.');
+
+  if (parts.length > 2) {
+
+    value = parts[0] + '.' + parts[1];
+
+  }
+
+  item[field] = value;
+
+}
+
+formatInput(event: any, item: any, field: string): void {
+
+  let value = event.target.value;
+
+  // อนุญาตเฉพาะเลขและ .
+  value = value.replace(/[^0-9.]/g, '');
+
+  // กัน . ซ้ำ
+  const parts = value.split('.');
+
+  if (parts.length > 2) {
+
+    value = parts[0] + '.' + parts[1];
+
+  }
+
+  let integerPart = parts[0];
+  let decimalPart = parts[1];
+
+  // ลบ 0 นำหน้า
+  integerPart = integerPart.replace(/^0+(?!$)/, '');
+
+  // ใส่ comma เฉพาะตอนมีค่า
+  if (integerPart !== '') {
+
+    integerPart = Number(integerPart).toLocaleString('en-US');
+
+  }
+
+  // รวมกลับ
+  value = decimalPart !== undefined
+    ? `${integerPart}.${decimalPart}`
+    : integerPart;
+
+  // set value
+  item[field] = value;
+
+  // update input
+  event.target.value = value;
+
+}
+
+
+
+formatField(item: any, field: string): void {
+
+  let value = item[field];
+
+  if (!value) {
+
+    item[field] = '0.00';
+    return;
+
+  }
+
+  value = Number(value.toString().replace(/,/g, ''));
+
+  item[field] = value.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+}
+
+onYearlyChange(value: string, item: any): void {
+
+  const numericValue = value.replace(/,/g, '');
+
+  item.yearlyRent = parseFloat(numericValue) || 0;
+
+  this.calculateGrand();
+
+  this.updateDetailItems();
+
+}
+
+calculateGrand() {
+
+  this.totalRate =
+
+    this.rentList.reduce(
+
+      (sum: number, i: any) =>
+
+        sum + (
+
+          Number(
+            i.pricePerSqm?.toString().replace(/,/g, '')
+          ) || 0
+
+        ),
+
+      0
+
+    );
+
+  this.totalMonth =
+
+    this.rentList.reduce(
+
+      (sum: number, i: any) =>
+
+        sum + (
+
+          Number(
+            i.monthlyRent?.toString().replace(/,/g, '')
+          ) || 0
+
+        ),
+
+      0
+
+    );
+
+  this.totalYear =
+
+    this.rentList.reduce(
+
+      (sum: number, i: any) =>
+
+        sum + (
+
+          Number(
+            i.yearlyRent?.toString().replace(/,/g, '')
+          ) || 0
+
+        ),
+
+      0
+
+    );
+
+}
 
   updateDetailItems() {
 
@@ -248,7 +441,7 @@ export class ExpenseOfficeRentComponent {
         Expense_Detail:
           item.asset,
 
-        Quantity:
+        Other_Name:
           item.area,
 
         Rate:

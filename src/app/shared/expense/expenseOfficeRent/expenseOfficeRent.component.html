@@ -2,9 +2,9 @@
 
   <div class="card shadow-sm border-0">
 
-    <div class="card-header bg-light fw-semibold">
+    <!-- <div class="card-header bg-light fw-semibold">
       แบบฟอร์มค่าเช่าทรัพย์สิน
-    </div>
+    </div> -->
 
     <div class="card-body p-0">
 
@@ -65,34 +65,59 @@
               <!-- area -->
               <td>
 
-                <input type="number" class="form-control text-end" [(ngModel)]="item.area"
-                  (ngModelChange)="calculate(item)">
-
+                <!-- <input type="number" class="form-control text-end" [(ngModel)]="item.area"
+                  (ngModelChange)="calculate(item)"> -->
+                <input type="text" class="form-control text-center" [(ngModel)]="item.area">
               </td>
+
 
               <!-- rate -->
               <td>
 
-                <input type="number" class="form-control text-end" [(ngModel)]="item.pricePerSqm"
-                  (ngModelChange)="calculate(item)">
+                <input type="text" class="form-control text-end" [value]="item.pricePerSqm"
+                  (input)="formatInput($event, item, 'pricePerSqm'); calculate(item)" inputmode="decimal">
 
               </td>
 
               <!-- month -->
               <td>
 
-                <input type="number" class="form-control text-end" [(ngModel)]="item.monthlyRent"
-                  (ngModelChange)="calculateYear(item)">
+                <input type="text" class="form-control text-end" [value]="item.monthlyRent"
+                  (input)="formatInput($event, item, 'monthlyRent'); calculateYear(item)" inputmode="decimal">
 
               </td>
 
               <!-- year -->
               <td>
 
+                <input type="text" class="form-control text-end" [value]="item.yearlyRent"
+                  (input)="formatInput($event, item, 'yearlyRent'); calculateGrand(); updateDetailItems()"
+                  inputmode="decimal">
+
+              </td>
+              <!-- rate -->
+              <!-- <td>
+
+                <input type="number" class="form-control text-end" [(ngModel)]="item.pricePerSqm"
+                  (ngModelChange)="calculate(item)">
+
+              </td> -->
+
+              <!-- month -->
+              <!-- <td>
+
+                <input type="number" class="form-control text-end" [(ngModel)]="item.monthlyRent"
+                  (ngModelChange)="calculateYear(item)">
+
+              </td> -->
+
+              <!-- year -->
+              <!-- <td>
+
                 <input type="number" class="form-control text-end" [(ngModel)]="item.yearlyRent"
                   (ngModelChange)="calculateGrand(); updateDetailItems()">
 
-              </td>
+              </td> -->
 
               <!-- purpose -->
               <td>
@@ -130,16 +155,13 @@
             <tr>
 
               <td class="text-end">
-                รวม
+
               </td>
 
               <!-- total area -->
               <td class="text-end">
 
-                {{
-                totalArea
-                | number:'1.2-2'
-                }}
+                รวมทั้งสิ้น
 
               </td>
 

@@ -20,10 +20,6 @@
                             รายการ
                         </th>
 
-                        <th width="12%">
-                            จำนวน (บาท)
-                        </th>
-
                         <th width="10%">
                             จำนวน
                         </th>
@@ -35,7 +31,9 @@
                         <th width="10%">
                             จำนวนเดือน
                         </th>
-
+                        <th width="12%">
+                            อัตรา (บาท)
+                        </th>
                         <th width="10%">
                             รวมทั้งสิ้น
                         </th>
@@ -70,22 +68,18 @@
 
                         </td>
 
-                        <!-- price -->
-                        <td>
-
-                            <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.price"
-                                (ngModelChange)="calculate(i)">
-
-                        </td>
 
                         <!-- qty -->
                         <td>
 
-                            <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.qty"
-                                (ngModelChange)="calculate(i)">
+                            <!-- <input type="number" class="form-control form-control-sm text-center" [(ngModel)]="item.qty"
+                                (ngModelChange)="calculate(i)"> -->
+                                     <input type="text" class="form-control form-control-sm text-center" [(ngModel)]="item.qty"
+                            (input)="formatInput($event, item, 'qty'); calculate(i)" inputmode="decimal">
+
 
                         </td>
-
+                   
                         <!-- unit -->
                         <td>
 
@@ -109,18 +103,30 @@
                         <!-- month -->
                         <td>
 
-                            <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.month"
-                                (ngModelChange)="calculate(i)">
+                            <!-- <input type="number" class="form-control form-control-sm text-center" [(ngModel)]="item.month"
+                                (ngModelChange)="calculate(i)"> -->
+                            <input type="text" class="form-control form-control-sm text-center" [value]="item.month"
+                                (input)="formatInput($event, item, 'month'); calculate(i)" inputmode="decimal">
 
                         </td>
 
-                        <!-- total -->
-                        <td class="text-end fw-bold text-primary">
+                        <!-- price -->
+                        <td>
 
-                            {{
-                            item.total
-                            | number:'1.2-2'
-                            }}
+                            <!-- <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.price"
+                                (ngModelChange)="calculate(i)"> -->
+                            <input type="text" class="form-control form-control-sm text-end pe-3" [value]="item.price"
+                                (input)="formatInput($event, item, 'price'); calculate(i)" inputmode="decimal">
+
+                        </td>
+
+
+                        <!-- total -->
+                        <td class="text-end fw-bold">
+
+                           {{
+item.total
+}}
 
                         </td>
 
@@ -153,11 +159,11 @@
 
                         <td colspan="6" class="text-end">
 
-                            รวม
+                            รวมทั้งสิ้น
 
                         </td>
 
-                        <td class="text-end text-primary">
+                        <td class="text-end fw-bold">
 
                             {{
                             grandTotal

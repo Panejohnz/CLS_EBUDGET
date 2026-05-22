@@ -180,6 +180,29 @@ export class ExpenseCopierRentComponent {
 
   }
 
+  formatNumber(value: any): string {
+
+  if (value === null || value === undefined || value === '') {
+    return '';
+  }
+
+  return Number(value).toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+}
+
+onPriceChange(value: string, item: any, i: number): void {
+
+  const numericValue = value.replace(/,/g, '');
+
+  item.price = parseFloat(numericValue) || 0;
+
+  this.calculate(i);
+
+}
+
   updateDetailItems() {
 
     // ลบของ type นี้ก่อน

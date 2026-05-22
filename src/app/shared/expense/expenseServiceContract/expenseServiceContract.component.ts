@@ -77,20 +77,22 @@ export class ExpenseServiceContractComponent {
         name:
           row.Expense_Detail || '',
 
-        price:
-          row.Price || 0,
+    price:
+  this.formatNumber(row.Price),
 
-        qty:
-          row.Quantity || 0,
+    qty:
+  this.formatNumber(row.Quantity),
+
+
 
         unit:
           row.Unit_Name || 'คน',
 
-        month:
-          row.Month || 0,
+ month:
+  this.formatNumber(row.Month),
 
-        total:
-          row.Total || 0,
+     total:
+  this.formatNumber(row.Total),
 
         file:
           null
@@ -102,6 +104,59 @@ export class ExpenseServiceContractComponent {
     this.calculateGrand();
 
   }
+
+  formatNumber(value: any): string {
+
+  if (value === null || value === undefined || value === '') {
+    return '';
+  }
+
+  return Number(value).toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+}
+
+formatInput(event: any, item: any, field: string): void {
+
+  let value = event.target.value;
+
+  // อนุญาตเฉพาะเลขและ .
+  value = value.replace(/[^0-9.]/g, '');
+
+  // กัน . ซ้ำ
+  const parts = value.split('.');
+
+  if (parts.length > 2) {
+
+    value = parts[0] + '.' + parts[1];
+
+  }
+
+  let integerPart = parts[0];
+  let decimalPart = parts[1];
+
+  // ลบ 0 นำหน้า
+  integerPart = integerPart.replace(/^0+(?!$)/, '');
+
+  // ใส่ comma
+  if (integerPart !== '') {
+
+    integerPart = Number(integerPart).toLocaleString('en-US');
+
+  }
+
+  // รวมกลับ
+  value = decimalPart !== undefined
+    ? `${integerPart}.${decimalPart}`
+    : integerPart;
+
+  item[field] = value;
+
+  event.target.value = value;
+
+}
 
   newItem() {
 
@@ -145,39 +200,73 @@ export class ExpenseServiceContractComponent {
 
   }
 
-  calculate(i: number) {
+calculate(i: number) {
 
-    let item = this.items[i];
+  let item = this.items[i];
 
-    item.total =
+  const price = Number(
+    item.price?.toString().replace(/,/g, '')
+  ) || 0;
 
-      (Number(item.price) || 0) *
+  const qty = Number(
+    item.qty?.toString().replace(/,/g, '')
+  ) || 0;
 
-      (Number(item.qty) || 0) *
+  const month = Number(
+    item.month?.toString().replace(/,/g, '')
+  ) || 0;
 
-      (Number(item.month) || 0);
+  const total = price * qty * month;
 
-    this.calculateGrand();
+  item.total = total.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
 
-    this.updateDetailItems();
+  this.calculateGrand();
 
-  }
+  this.updateDetailItems();
 
-  calculateGrand() {
+}
+  // calculate(i: number) {
 
-    this.grandTotal =
+  //   let item = this.items[i];
 
-      this.items.reduce(
+  //   item.total =
 
-        (sum: number, x: any) =>
+  //     (Number(item.price) || 0) *
 
-          sum + (Number(x.total) || 0),
+  //     (Number(item.qty) || 0) *
 
-        0
+  //     (Number(item.month) || 0);
 
-      );
+  //   this.calculateGrand();
 
-  }
+  //   this.updateDetailItems();
+
+  // }
+
+calculateGrand() {
+
+  this.grandTotal =
+
+    this.items.reduce(
+
+      (sum: number, x: any) =>
+
+        sum + (
+
+          Number(
+            x.total?.toString().replace(/,/g, '')
+          ) || 0
+
+        ),
+
+      0
+
+    );
+
+}
 
   updateDetailItems() {
 
