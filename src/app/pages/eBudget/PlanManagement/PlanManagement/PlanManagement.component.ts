@@ -15,6 +15,7 @@ import { BudgetYearService } from 'src/app/core/services/budget-year.service';
   styles: ``
 })
 export class PlanManagementComponent {
+  
   constructor(private modalService: NgbModal, public service: GridJsService
     , private sortService: PaginationService, public servicebud: EbudgetService
     , private authService: AuthenticationService, private budgetYearService: BudgetYearService) {
@@ -98,6 +99,40 @@ export class PlanManagementComponent {
     });
 
   }
+  applyFilter() {
+
+    let data = [...this.griddataTemp];
+
+    if (this.selectedDepartmentId) {
+
+      data = data.filter(
+        x => x.Department_Id == this.selectedDepartmentId
+      );
+
+    }
+
+    if (this.service.searchTerm) {
+
+      const keyword = this.service.searchTerm.toLowerCase();
+
+      data = data.filter(x =>
+
+        (x.Department_Name || '').toLowerCase().includes(keyword) ||
+        (x.Plan_Name || '').toLowerCase().includes(keyword) ||
+        (x.Product_Name || '').toLowerCase().includes(keyword) ||
+        (x.Activity_Name || '').toLowerCase().includes(keyword) ||
+        (x.Budget_Type || '').toLowerCase().includes(keyword) ||
+        (x.Project_Name || '').toLowerCase().includes(keyword) ||
+        (x.Status_Name || '').toLowerCase().includes(keyword) ||
+        String(x.Total || '').includes(keyword)
+
+      );
+
+    }
+
+    this.griddata = data;
+
+  }
   filterSearch() {
 
     const keyword = (this.service.searchTerm || '').toLowerCase().trim();
@@ -135,7 +170,7 @@ export class PlanManagementComponent {
 
           this.model = {
             Budget_Plan: res.Budget_Plan || {},
-            Budget_Plan_Detail_Item: res.Budget_Plan_Detail_Item || {},
+            Budget_Request_Detail_Item: res.Budget_Plan_Detail_Items || {},
             Budget_Plan_Detail: res.Budget_Plan_Detail || {},
             Project_Plan: res.Project_Plan || {},
             Project_Detail: res.Project_Detail || {},

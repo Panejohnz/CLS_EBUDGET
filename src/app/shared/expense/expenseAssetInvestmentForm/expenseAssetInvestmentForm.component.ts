@@ -277,7 +277,7 @@ export class ExpenseAssetInvestmentFormComponent {
     }
 
     this.calculateAll();
-
+    this.model.Total = this.grandTotal;
   }
 
   addItem() {
@@ -401,7 +401,7 @@ export class ExpenseAssetInvestmentFormComponent {
       });
 
     });
-
+    this.model.Total = this.grandTotal;
   }
 
   save() {

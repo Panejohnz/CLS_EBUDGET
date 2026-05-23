@@ -93,7 +93,7 @@ export class ExpenseEquipmentRepairComponent {
       };
 
     });
-
+    this.model.Total = this.grandTotal;
     this.calculateAll();
 
   }
@@ -219,7 +219,7 @@ export class ExpenseEquipmentRepairComponent {
           item.total
 
       });
-
+      this.model.Total = this.grandTotal;
     });
 
   }
@@ -236,7 +236,7 @@ export class ExpenseEquipmentRepairComponent {
     }
 
   }
-///
+  ///
   async save() {
 
     const userConfirmed =

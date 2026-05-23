@@ -91,7 +91,7 @@ export class ExpenseFuelLubricantComponent {
       };
 
     });
-
+    this.model.Total = this.getTotal;
   }
 
   add() {
@@ -186,7 +186,7 @@ export class ExpenseFuelLubricantComponent {
       });
 
     });
-
+    this.model.Total = this.getTotal;
   }
 
 }

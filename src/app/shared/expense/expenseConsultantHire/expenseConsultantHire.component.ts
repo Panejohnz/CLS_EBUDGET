@@ -452,7 +452,7 @@ export class ExpenseConsultantHireComponent {
     });
 
     this.projects[pIndex].supportTotal = total;
-
+    this.model.Total = this.projects[pIndex].supportTotal
     this.calculateTotal(pIndex);
 
   }

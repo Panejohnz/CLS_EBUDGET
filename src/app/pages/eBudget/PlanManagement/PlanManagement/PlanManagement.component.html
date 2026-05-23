@@ -12,7 +12,7 @@
                     <!-- หน่วยงาน -->
                     <div style="width:300px;" class="me-3">
                         <label class="form-label">หน่วยงาน</label>
-                        <select class="form-select" [(ngModel)]="selectedDepartmentId">
+                        <select class="form-select" [(ngModel)]="selectedDepartmentId" (change)="applyFilter()">
 
                             <option [ngValue]="null">
                                 -- เลือกหน่วยงาน --
@@ -70,7 +70,7 @@
 
 
                                 <td class="text-center">{{$index + 1}}</td>
-                                <td class="text-center">{{data.department}}</td>
+                                <td class="text-center">{{data.Department_Name}}</td>
 
                                 <td>
                                     {{data.Plan_Name }}
@@ -84,8 +84,8 @@
                                     {{data.Activity_Name}}
                                 </td>
 
-                                <td>{{data.Budget_Type_Name}}</td>
-                                <td>{{data.Expense_Name}}</td>
+                                <td>{{data.Budget_Type}}</td>
+                                <td>{{data.Expense_List}}</td>
 
                                 <td class=" text-end">
                                     {{data.Total | number:'1.2-2'}}
@@ -144,7 +144,7 @@
         </div>
     </div>
     <ng-template #fullDataModal let-modal>
-        <app-add-plan-management [modal]="modal" [project_budget]="project_budget">
+        <app-add-plan-management [model]="model" [modalRef]="modalRef" [project_budget]="project_budget">
         </app-add-plan-management>
     </ng-template>
 

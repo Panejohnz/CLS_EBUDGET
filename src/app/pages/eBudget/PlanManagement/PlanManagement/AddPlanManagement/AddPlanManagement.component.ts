@@ -6,7 +6,7 @@ import { ProjectPlanningComponent } from '../../Planing/projectPlanning/projectP
 @Component({
   selector: 'app-add-plan-management',
   templateUrl: './AddPlanManagement.component.html',
-  styles: ``
+  styleUrl: './AddPlanManagement.cpmponent.scss'
 })
 export class AddPlanManagementComponent {
 
@@ -40,7 +40,7 @@ export class AddPlanManagementComponent {
 
   targetList: any[] = [
     {
-      Request_Detail_Id: 0,
+      Plan_Detail_Id: 0,
       unit: '',
 
       oct: 0,
@@ -104,6 +104,7 @@ export class AddPlanManagementComponent {
 
   ngOnInit(): void {
 
+
     let model = {
       FUNC_CODE: "FUNC-GET_Mas_General",
       BgYear: "2569"
@@ -115,7 +116,7 @@ export class AddPlanManagementComponent {
       this.Mas_Plan_Lists = res.Mas_Plan_Lists || [];
       this.Mas_Expense_Lists = res.Mas_Expense_Lists || [];
 
-      if (this.model?.Budget_Request?.Request_Id) {
+      if (this.model?.Budget_Plan?.Plan_Id) {
 
         this.mapInitialData()
       }
@@ -126,7 +127,7 @@ export class AddPlanManagementComponent {
 
   ngOnChanges() {
 
-    if (this.model?.Budget_Request?.Request_Id) {
+    if (this.model?.Budget_Plan?.Plan_Id) {
 
       this.mapInitialData()
     }
@@ -152,38 +153,38 @@ export class AddPlanManagementComponent {
       this.model?.Project_Plan?.Department_Id;
 
     this.model.selectedPlanPropos =
-      this.model?.Budget_Request?.Fk_Plan_Id;
+      this.model?.Budget_Plan?.Fk_Plan_Id;
 
     this.model.selectedProductPropos =
-      this.model?.Budget_Request?.Fk_Product_Id;
+      this.model?.Budget_Plan?.Fk_Product_Id;
 
     this.model.selectedActivityPropos =
-      this.model?.Budget_Request?.Fk_Activity_Id;
+      this.model?.Budget_Plan?.Fk_Activity_Id;
 
     this.model.selectedBudgetPropos =
-      this.model?.Budget_Request?.Fk_Budget_Type;
+      this.model?.Budget_Plan?.Fk_Budget_Type;
 
     this.model.selectedGroupPropos =
-      this.model?.Budget_Request?.Fk_Expense_Type;
+      this.model?.Budget_Plan?.Fk_Expense_Type;
 
     this.model.selectedExpenseTypeId =
-      this.model?.Budget_Request?.Fk_Expense_List;
+      this.model?.Budget_Plan?.Fk_Expense_List;
 
     // 🔥 set readonly text
     this.model.selectedBudgetName =
-      this.model?.Budget_Request?.Budget_Type || '';
+      this.model?.Budget_Plan?.Budget_Type || '';
 
     this.model.selectedGroupName =
-      this.model?.Budget_Request?.Expense_Type || '';
+      this.model?.Budget_Plan?.Expense_Type || '';
 
     // 🔥 target detail
-    if (this.model?.Budget_Request_Detail?.length > 0) {
+    if (this.model?.Budget_Plan_Details?.length > 0) {
 
       this.targetList =
-        this.model.Budget_Request_Detail.map((d: any) => ({
+        this.model.Budget_Plan_Details.map((d: any) => ({
 
-          Request_Detail_Id:
-            d.Request_Detail_Id || 0,
+          Plan_Detail_Id:
+            d.Plan_Detail_Id || 0,
 
           unit:
             d.Unit_Name || '',
@@ -262,7 +263,7 @@ export class AddPlanManagementComponent {
 
         }));
       this.targetDetail =
-        [...this.model.Budget_Request_Detail];
+        [...this.model.Budget_Plan_Details];
     }
 
     if (this.model.selectedPlanPropos) {
@@ -334,7 +335,7 @@ export class AddPlanManagementComponent {
       }
     };
 
-    this.model.Budget_Request.Fk_Plan_Id =
+    this.model.Budget_Plan.Fk_Plan_Id =
       this.model.selectedPlanPropos;
 
     this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
@@ -342,10 +343,10 @@ export class AddPlanManagementComponent {
       this.Mas_Product =
         res.Mas_Product_Lists || [];
 
-      if (this.model.Budget_Request.Fk_Product_Id) {
+      if (this.model.Budget_Plan.Fk_Product_Id) {
 
         this.model.selectedProductPropos =
-          this.model.Budget_Request.Fk_Product_Id;
+          this.model.Budget_Plan.Fk_Product_Id;
       }
 
       if (this.model.selectedProductPropos) {
@@ -366,7 +367,7 @@ export class AddPlanManagementComponent {
       }
     };
 
-    this.model.Budget_Request.Fk_Product_Id =
+    this.model.Budget_Plan.Fk_Product_Id =
       this.model.selectedProductPropos;
 
     this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
@@ -377,7 +378,7 @@ export class AddPlanManagementComponent {
       if (this.model.Fk_Activity_Id) {
 
         this.model.selectedActivityPropos =
-          this.model.Budget_Request.Fk_Activity_Id;
+          this.model.Budget_Plan.Fk_Activity_Id;
       }
     });
   }
@@ -399,7 +400,7 @@ export class AddPlanManagementComponent {
 
     this.targetList.push({
 
-      Request_Detail_Id: 0,
+      Plan_Detail_Id: 0,
       unit: '',
 
       oct: 0,
@@ -424,12 +425,12 @@ export class AddPlanManagementComponent {
     const userConfirmed = await confirmAlert('info', 'ต้องการลบข้อมูล ?', '');
 
     if (userConfirmed) {
-      if (data.Request_Detail_Id) {
+      if (data.Plan_Detail_Id) {
 
         const model = {
-          FUNC_CODE: "FUNC-Delete_Budget_Request_Detail",
+          FUNC_CODE: "FUNC-Delete_Budget_Plan_Detail",
 
-          Request_Detail_Id: data.Request_Detail_Id
+          Plan_Detail_Id: data.Plan_Detail_Id
         };
 
         this.serviceebud.GatewayGetData(model).subscribe(async () => {
@@ -449,8 +450,8 @@ export class AddPlanManagementComponent {
     this.targetDetail =
       this.targetList.map((t: any) => ({
 
-        Request_Detail_Id:
-          t.Request_Detail_Id || 0,
+        Plan_Detail_Id:
+          t.Plan_Detail_Id || 0,
 
         Unit_Name:
           t.unit,
@@ -668,11 +669,11 @@ export class AddPlanManagementComponent {
 
       BgYear: "2569",
 
-      Request_Id:
-        this.model.Budget_Request.Request_Id,
+      Plan_Id:
+        this.model.Budget_Plan.Plan_Id,
 
       FK_Project_Plan_Id:
-        this.model.Budget_Request.FK_Project_Plan_Id,
+        this.model.Budget_Plan.FK_Project_Plan_Id,
 
       Total: this.model.Total,
       Department_Id:
@@ -718,31 +719,31 @@ export class AddPlanManagementComponent {
         selectedGroupObj?.Expense_Group_Name,
 
       Project_Name:
-        this.model.Budget_Request.Project_Name,
+        this.model.Budget_Plan.Project_Name,
 
       Used_BG:
-        this.model.Budget_Request.Used_BG,
+        this.model.Budget_Plan.Used_BG,
 
       Project_Type_Id:
-        this.model.Budget_Request.Project_Type_Id,
+        this.model.Budget_Plan.Project_Type_Id,
 
       Project_Year_Count:
-        this.model.Budget_Request.Project_Year_Count,
+        this.model.Budget_Plan.Project_Year_Count,
 
       Project_Year_Number:
-        this.model.Budget_Request.Project_Year_Number,
+        this.model.Budget_Plan.Project_Year_Number,
 
       Operation1:
-        this.model.Budget_Request.Operation1,
+        this.model.Budget_Plan.Operation1,
 
       Operation2:
-        this.model.Budget_Request.Operation2,
+        this.model.Budget_Plan.Operation2,
 
       Proposer_Name:
-        this.model.Budget_Request.Proposer_Name,
+        this.model.Budget_Plan.Proposer_Name,
 
       Proposer_Position:
-        this.model.Budget_Request.Proposer_Position,
+        this.model.Budget_Plan.Proposer_Position,
 
     };
 
@@ -864,22 +865,22 @@ export class AddPlanManagementComponent {
       const model = {
 
         FUNC_CODE:
-          this.model.Budget_Request.Request_Id > 0
-            ? "FUNC-Update_Budget_Request"
-            : "FUNC-Insert_Budget_Request",
+          this.model.Budget_Plan.Plan_Id > 0
+            ? "FUNC-Update_Budget_Plan_main"
+            : "FUNC-Insert_Budget_Plan_main",
 
         ...(this.model?.Project_Plan &&
           Object.keys(this.model.Project_Plan).length > 0 && {
           Project_Plan: payload_plan
         }),
 
-        Budget_Request: payload,
+        Budget_Plan: payload,
 
-        Budget_Request_Detail: Array.isArray(this.targetDetail)
+        Budget_Plan_Details: Array.isArray(this.targetDetail)
           ? this.targetDetail
           : [],
 
-        Budget_Request_Detail_Item:
+        Budget_Plan_Detail_Items:
           this.model.Budget_Request_Detail_Item,
 
         Project_Detail: {

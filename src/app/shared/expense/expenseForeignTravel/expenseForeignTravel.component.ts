@@ -238,7 +238,7 @@ export class ExpenseForeignTravelComponent {
       ];
 
     }
-
+    this.model.Total = this.grandTotal;
     this.calculateAll();
 
   }
@@ -402,7 +402,7 @@ export class ExpenseForeignTravelComponent {
       });
 
     });
-
+    this.model.Total = this.grandTotal;
   }
 
   // =========================================

@@ -24,6 +24,7 @@ export class ExpenseListSalaryComponent {
   file: any = null;
 
   ngOnInit() {
+    console.log('this.model.Budget_Request_Detail_Item', this.model.Budget_Request_Detail_Item);
 
     if (!this.model) return;
 
@@ -60,8 +61,11 @@ export class ExpenseListSalaryComponent {
 
   }
   oldRequestItemId: number = 0;
-
   newRequestItemId: number = 0;
+
+  oldPlanItemId: number = 0;
+  newPlanItemId: number = 0;
+
   bindData() {
 
     if (!this.model.Budget_Request_Detail_Item) return;
@@ -80,11 +84,19 @@ export class ExpenseListSalaryComponent {
           x.Expense_Detail == 'อัตราใหม่'
       );
 
+    // request id
     this.oldRequestItemId =
       oldData?.Request_Item_Id || 0;
 
     this.newRequestItemId =
       newData?.Request_Item_Id || 0;
+
+    // plan id
+    this.oldPlanItemId =
+      oldData?.Plan_Item_Id || 0;
+
+    this.newPlanItemId =
+      newData?.Plan_Item_Id || 0;
 
     this.model.oldQty =
       oldData?.Quantity || 0;
@@ -104,7 +116,7 @@ export class ExpenseListSalaryComponent {
     this.model.newYear =
       newData?.Per_Year || 0;
 
-    this.model.Total = this.totalAmount
+    this.model.Total = this.totalAmount;
 
   }
 
@@ -191,72 +203,78 @@ export class ExpenseListSalaryComponent {
   }
 
   // sync ลง array กลาง
-  updateDetailItems() {
+updateDetailItems() {
 
-    if (!this.model.Budget_Request_Detail_Item) {
+  if (!this.model.Budget_Request_Detail_Item) {
 
-      this.model.Budget_Request_Detail_Item = [];
-
-    }
-
-    // ลบของ expense type นี้ก่อน
-    this.model.Budget_Request_Detail_Item =
-      this.model.Budget_Request_Detail_Item.filter(
-        (x: any) =>
-          x.Fk_Expense_Id != this.model.selectedExpenseTypeId
-      );
-
-    this.model.Budget_Request_Detail_Item.push(
-
-      {
-        Request_Item_Id:
-          this.oldRequestItemId,
-
-        Fk_Expense_Id:
-          this.model.selectedExpenseTypeId,
-
-        Expense_Detail:
-          'อัตราเดิม',
-
-        Quantity:
-          this.model.oldQty,
-
-        Per_Month:
-          this.model.oldMonth,
-
-        Per_Year:
-          this.model.oldYear,
-
-        Total:
-          this.model.oldYear
-      },
-
-      {
-        Request_Item_Id:
-          this.newRequestItemId,
-
-        Fk_Expense_Id:
-          this.model.selectedExpenseTypeId,
-
-        Expense_Detail:
-          'อัตราใหม่',
-
-        Quantity:
-          this.model.newQty,
-
-        Per_Month:
-          this.model.newMonth,
-
-        Per_Year:
-          this.model.newYear,
-
-        Total:
-          this.model.newYear
-      }
-
-    );
+    this.model.Budget_Request_Detail_Item = [];
 
   }
+
+  // ลบเฉพาะ expense type นี้
+  this.model.Budget_Request_Detail_Item =
+    this.model.Budget_Request_Detail_Item.filter(
+      (x: any) =>
+        x.Fk_Expense_Id != this.model.selectedExpenseTypeId
+    );
+
+  this.model.Budget_Request_Detail_Item.push(
+
+    {
+      Request_Item_Id:
+        this.oldRequestItemId,
+
+      Plan_Item_Id:
+        this.oldPlanItemId,
+
+      Fk_Expense_Id:
+        this.model.selectedExpenseTypeId,
+
+      Expense_Detail:
+        'อัตราเดิม',
+
+      Quantity:
+        this.model.oldQty,
+
+      Per_Month:
+        this.model.oldMonth,
+
+      Per_Year:
+        this.model.oldYear,
+
+      Total:
+        this.model.oldYear
+    },
+
+    {
+      Request_Item_Id:
+        this.newRequestItemId,
+
+      Plan_Item_Id:
+        this.newPlanItemId,
+
+      Fk_Expense_Id:
+        this.model.selectedExpenseTypeId,
+
+      Expense_Detail:
+        'อัตราใหม่',
+
+      Quantity:
+        this.model.newQty,
+
+      Per_Month:
+        this.model.newMonth,
+
+      Per_Year:
+        this.model.newYear,
+
+      Total:
+        this.model.newYear
+    }
+
+  );
+
+}
 
   onFileChange(event: any) {
 

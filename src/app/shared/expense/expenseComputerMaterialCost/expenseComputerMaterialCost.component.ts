@@ -149,7 +149,7 @@ export class ExpenseComputerMaterialCostComponent {
         };
 
       });
-
+    this.model.Total = this.grandTotal;
     this.calculateAll();
 
   }
@@ -268,7 +268,7 @@ export class ExpenseComputerMaterialCostComponent {
       });
 
     });
-
+    this.model.Total = this.grandTotal;
   }
 
   save() {

@@ -173,7 +173,7 @@ export class ExpenseCommitteeComponent {
       });
 
     });
-
+    this.model.Total = this.grandTotal;
     this.calculateGrand();
 
   }
@@ -330,7 +330,7 @@ export class ExpenseCommitteeComponent {
       });
 
     });
-
+    this.model.Total = this.grandTotal;
   }
 
   getTypeName(type: string): string {

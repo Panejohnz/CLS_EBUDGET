@@ -99,7 +99,7 @@ export class ExpenseCopierRentComponent {
       };
 
     });
-
+    this.model.Total = this.grandTotal;
     this.calculateGrandTotal();
 
   }
@@ -182,26 +182,26 @@ export class ExpenseCopierRentComponent {
 
   formatNumber(value: any): string {
 
-  if (value === null || value === undefined || value === '') {
-    return '';
+    if (value === null || value === undefined || value === '') {
+      return '';
+    }
+
+    return Number(value).toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+
   }
 
-  return Number(value).toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
+  onPriceChange(value: string, item: any, i: number): void {
 
-}
+    const numericValue = value.replace(/,/g, '');
 
-onPriceChange(value: string, item: any, i: number): void {
+    item.price = parseFloat(numericValue) || 0;
 
-  const numericValue = value.replace(/,/g, '');
+    this.calculate(i);
 
-  item.price = parseFloat(numericValue) || 0;
-
-  this.calculate(i);
-
-}
+  }
 
   updateDetailItems() {
 
@@ -247,7 +247,7 @@ onPriceChange(value: string, item: any, i: number): void {
           item.total
 
       });
-
+      this.model.Total = this.grandTotal;
     });
 
   }

@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
+import { Component, Input, ElementRef, ViewChild, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { environment } from '../../../../../../environments/environment';
@@ -27,6 +27,9 @@ import { TabGuidelineComponent } from 'src/app/shared/planingtab/components/tab-
   templateUrl: './projectPlanning.component.html'
 })
 export class ProjectPlanningComponent {
+  @Input() modal: any;
+  @Input() expenseItem: any;
+  @Input() model: any;
   @ViewChild(TabGuidelineComponent)
   guidelineComp!: TabGuidelineComponent;
   emptyplan: any = {

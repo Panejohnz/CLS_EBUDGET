@@ -281,7 +281,7 @@ export class ExpenseConstructionFormComponent {
       });
 
     });
-
+    this.model.Total = this.grandTotal;
   }
 
   // =========================
@@ -409,7 +409,7 @@ export class ExpenseConstructionFormComponent {
         }));
 
     }
-
+    this.model.Total = this.grandTotal;
     this.calculateAll();
 
   }

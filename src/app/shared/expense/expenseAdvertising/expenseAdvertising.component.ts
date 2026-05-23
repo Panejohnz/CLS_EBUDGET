@@ -255,7 +255,7 @@ export class ExpenseAdvertisingComponent {
         g.total;
 
     });
-
+      this.model.Total = this.grandTotal;
   }
 
   updateDetailItems() {
@@ -315,6 +315,7 @@ export class ExpenseAdvertisingComponent {
             item.total
 
         });
+        this.model.Total = this.grandTotal;
 
       });
 

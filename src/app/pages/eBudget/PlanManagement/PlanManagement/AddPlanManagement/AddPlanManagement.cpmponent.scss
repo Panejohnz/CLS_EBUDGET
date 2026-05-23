@@ -1,0 +1,62 @@
+/* modal */
+::ng-deep .modal-dialog{
+    max-width: 98vw;
+    height: 95vh;
+    margin: 10px auto;
+}
+
+::ng-deep .modal-content{
+    height: 95vh;
+    overflow: visible;
+    border: 0;
+}
+
+/* body หลัก */
+.modal-body{
+    overflow: hidden !important;
+}
+
+/* card หลัก */
+.card.shadow-sm.bg-light{
+    position: relative;
+    height: calc(95vh - 260px);
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+::ng-deep .ng-dropdown-panel{
+    z-index: 99999 !important;
+}
+
+
+/* ส่วน content */
+.expense-body{
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    padding-bottom: 90px;
+}
+/* footer fix */
+.footer-fixed{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    width: 100%;
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+
+    padding: 12px 24px;
+
+    background: #fff;
+    border-top: 1px solid #ddd;
+
+    z-index: 1000;
+}

@@ -177,7 +177,7 @@ export class ExpenseCarRentalCostComponent {
     }
 
     this.calculateAll();
-
+    this.model.Total = this.grandTotal;
   }
 
   mapRow(row: any) {
@@ -419,7 +419,7 @@ export class ExpenseCarRentalCostComponent {
       });
 
     });
-
+    this.model.Total = this.grandTotal;
   }
 
   save() {

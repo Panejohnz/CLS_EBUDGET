@@ -159,7 +159,7 @@ export class ExpenseCeremonialComponent {
       }
 
     });
-
+    this.model.Total = this.grandTotal;
     this.groups =
       Object.values(groupedMap);
 
@@ -378,7 +378,7 @@ export class ExpenseCeremonialComponent {
       });
 
     });
-
+    this.model.Total = this.grandTotal;
   }
 
   async save() {

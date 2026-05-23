@@ -87,7 +87,8 @@ export class ExpenseCarAllowanceComponent {
 
         requestItemId:
           x.Request_Item_Id || 0,
-
+        planItemId:
+          x.Plan_Item_Id || 0,
         name:
           x.Other_Name || '',
 
@@ -104,7 +105,7 @@ export class ExpenseCarAllowanceComponent {
           x.Total || 0
 
       }));
-
+    this.model.Total = this.totalQty;
   }
 
   // =========================
@@ -115,6 +116,8 @@ export class ExpenseCarAllowanceComponent {
     this.list.push({
 
       requestItemId: 0,
+
+      planItemId: 0,
 
       name: '',
 
@@ -217,50 +220,65 @@ export class ExpenseCarAllowanceComponent {
   // =========================
   updateDetailItems() {
 
-    // ลบของ expense type นี้ก่อน
-    this.model.Budget_Request_Detail_Item =
+    if (!this.model.Budget_Request_Detail_Item) {
 
+      this.model.Budget_Request_Detail_Item = [];
+
+    }
+
+    // ลบเฉพาะของ component นี้
+    this.model.Budget_Request_Detail_Item =
       this.model.Budget_Request_Detail_Item.filter(
 
         (x: any) =>
 
-          x.Fk_Expense_Id !=
-          this.model.selectedExpenseTypeId
+          !(
+            x.Fk_Expense_Id ==
+            this.model.selectedExpenseTypeId &&
+
+            x.Expense_Detail ==
+            'ค่าเช่ารถประจำตำแหน่ง'
+          )
 
       );
 
     // push ใหม่
-    this.list.forEach((item: any) => {
+    const newItems = this.list.map((item: any) => ({
 
-      this.model.Budget_Request_Detail_Item.push({
+      Request_Item_Id:
+        item.requestItemId || 0,
 
-        Request_Item_Id:
-          item.requestItemId,
+      Plan_Item_Id:
+        item.planItemId || 0,
 
-        Fk_Expense_Id:
-          this.model.selectedExpenseTypeId,
+      Fk_Expense_Id:
+        this.model.selectedExpenseTypeId,
 
-        Expense_Detail:
-          'ค่าเช่ารถประจำตำแหน่ง',
+      Expense_Detail:
+        'ค่าเช่ารถประจำตำแหน่ง',
 
-        Other_Name:
-          item.name,
+      Other_Name:
+        item.name,
 
-        Position_Name:
-          item.position,
+      Position_Name:
+        item.position,
 
-        Quantity:
-          item.qty,
+      Quantity:
+        item.qty,
 
-        Per_Month:
-          item.rate,
+      Per_Month:
+        item.rate,
 
-        Total:
-          item.total
+      Total:
+        item.total
 
-      });
+    }));
 
-    });
+    this.model.Budget_Request_Detail_Item.push(
+      ...newItems
+    );
+
+    this.model.Total = this.totalYear;
 
   }
 
