@@ -1,5 +1,4 @@
-
-<div class="card-body rounded" style="background-color: #E0E8F0;"> 
+<div class="card-body rounded" style="background-color: #E0E8F0;">
     <div class="border-start border-4 border-primary ps-3 mb-2">
         <h6 class="fw-bold text-primary mb-2">
             1. หลักการและเหตุผล <span class="text-danger">*</span>
@@ -7,16 +6,12 @@
     </div>
 
     <div class="input-group border rounded p-3">
-        <textarea 
-            class="form-control" 
-            rows="5"
-            [(ngModel)]="projectDetail.Principle" 
-            name="principle">
+        <textarea class="form-control" rows="5" [(ngModel)]="projectDetail.Principle" name="principle">
         </textarea>
     </div>
 
 </div>
- <div style="height:15px"></div>
+<div style="height:15px"></div>
 
 <div class="card-body rounded" style="background-color: #E0E8F0;">
     <div class="border-start border-4 border-primary ps-3 mb-2">
@@ -37,198 +32,193 @@
         </div>
     </div>
 </div>
- <div style="height:15px"></div>
+<div style="height:15px"></div>
 
 <div class="card-body rounded" style="background-color: #E0E8F0;">
-<div class="border-start border-4 border-primary ps-3 mb-2">
-    <h6 class="fw-bold mb-2 text-primary">
-        3. เป้าหมายการดำเนินโครงการ
-        <span class="text-danger">*</span>
-    </h6>
-</div>
-
-<div class="card mb-4 shadow-sm">
-    <div class="card-header bg-light fw-bold">
-        3.1 เป้าหมายเชิงผลผลิต (Output)
+    <div class="border-start border-4 border-primary ps-3 mb-2">
+        <h6 class="fw-bold mb-2 text-primary">
+            3. เป้าหมายการดำเนินโครงการ
+            <span class="text-danger">*</span>
+        </h6>
     </div>
 
-    <div class="card-body">
-        <button class="btn btn-primary btn-sm mb-3" (click)="addOutput()">
-            + เพิ่มรายการ
-        </button>
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-light fw-bold">
+            3.1 เป้าหมายเชิงผลผลิต (Output)
+        </div>
 
-        <div *ngFor="let item of outputs; let i = index" class="border rounded p-3 bg-light">
-            <div class="row g-2">
+        <div class="card-body">
+            <button class="btn btn-primary btn-sm mb-3" (click)="addOutput()">
+                + เพิ่มรายการ
+            </button>
 
-                <div class="col-md-7">
-                    <input class="form-control" [(ngModel)]="item.Name" name="output_name_{{i}}">
-                </div>
+            <div *ngFor="let item of outputs; let i = index" class="border rounded p-3 bg-light">
+                <div class="row g-2">
 
-                <div class="col-md-2">
-                    <input class="form-control" [(ngModel)]="item.Target" name="output_target_{{i}}">
-                </div>
+                    <div class="col-md-7">
+                        <input class="form-control" [(ngModel)]="item.Name" name="output_name_{{i}}">
+                    </div>
 
-                <div class="col-md-2">
-                    <!-- <select class="form-select" [(ngModel)]="item.Unit" name="output_unit_{{i}}">
+                    <div class="col-md-2">
+                        <input class="form-control" [(ngModel)]="item.Target" name="output_target_{{i}}">
+                    </div>
+
+                    <div class="col-md-2">
+                        <!-- <select class="form-select" [(ngModel)]="item.Unit" name="output_unit_{{i}}">
                         <option value="">หน่วยนับ</option>
                         <option>1</option>
                         <option>2</option>
                         <option>3</option>
                     </select> -->
-                    <select class="form-select" [(ngModel)]="item.Unit" name="output_unit_{{i}}">
+                        <ng-select [items]="Mas_Unit_Lists" bindLabel="Unit_Name" bindValue="Unit_Id"
+                            [(ngModel)]="item.Unit" name="output_unit_{{i}}" placeholder="-- เลือกหน่วยนับ --"
+                            [clearable]="false">
+                        </ng-select>
+                    </div>
 
-                        <option [ngValue]="null" disabled>-- เลือกหน่วยนับ --</option>
-                        <option *ngFor="let item of Mas_Unit_Lists" [ngValue]="item.Unit_Id">
-                            {{ item.Unit_Name }}
-                        </option>
-                    </select>
+                    <div class="col-md-1 text-end">
+                        <button class="btn btn-danger" (click)="removeOutput(i,item)">
+                            <i class="bx bx-trash"></i>
+                        </button>
+                    </div>
+
                 </div>
-
-                <div class="col-md-1 text-end">
-                    <button class="btn btn-danger" (click)="removeOutput(i,item)">
-                        <i class="bx bx-trash"></i>
-                    </button>
-                </div>
-
             </div>
         </div>
     </div>
-</div>
 
-<div class="card mb-4 shadow-sm">
-    <div class="card-header bg-light fw-bold">
-        3.2 เป้าหมายเชิงผลลัพธ์ (Outcome)
-    </div>
-
-    <div class="card-body">
-        <button class="btn btn-primary btn-sm mb-3" (click)="addOutcome()">
-            + เพิ่มรายการ
-        </button>
-
-        <div *ngFor="let item of outcomes; let i = index" class="border rounded p-3 bg-light">
-            <div class="row g-2">
-
-                <div class="col-md-11">
-                    <input class="form-control" [(ngModel)]="item.Name" name="outcome_{{i}}">
-                </div>
-
-                <div class="col-md-1 text-end">
-                    <button class="btn btn-danger" (click)="removeOutcome(i,item)">
-                        <i class="bx bx-trash"></i>
-                    </button>
-                </div>
-
-            </div>
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-light fw-bold">
+            3.2 เป้าหมายเชิงผลลัพธ์ (Outcome)
         </div>
 
-    </div>
-</div>
-</div>
- <div style="height:15px"></div>
-
-<div class="card-body rounded" style="background-color: #E0E8F0;">
-<div class="border-start border-4 border-primary ps-3 mb-2">
-    <h6 class="fw-bold text-primary mb-2">
-        4. ผลที่คาดว่าจะได้รับ <span class="text-danger">*</span>
-    </h6>
-</div>
-
-<button class="btn btn-primary btn-sm mb-2" (click)="addExpectedResult()">+ เพิ่มรายการ</button>
-
-<div *ngFor="let item of expectedResults; let i = index" class="border rounded p-3 bg-light">
-    <div class="row g-2">
-        <div class="col-md-11">
-            <input class="form-control" [(ngModel)]="item.Name" name="expected_{{i}}">
-        </div>
-
-        <div class="col-md-1 text-end">
-            <button class="btn btn-danger" (click)="removeExpectedResult(i)">
-                <i class="bx bx-trash"></i>
+        <div class="card-body">
+            <button class="btn btn-primary btn-sm mb-3" (click)="addOutcome()">
+                + เพิ่มรายการ
             </button>
+
+            <div *ngFor="let item of outcomes; let i = index" class="border rounded p-3 bg-light">
+                <div class="row g-2">
+
+                    <div class="col-md-11">
+                        <input class="form-control" [(ngModel)]="item.Name" name="outcome_{{i}}">
+                    </div>
+
+                    <div class="col-md-1 text-end">
+                        <button class="btn btn-danger" (click)="removeOutcome(i,item)">
+                            <i class="bx bx-trash"></i>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
         </div>
     </div>
-</div></div>
- <div style="height:15px"></div>
+</div>
+<div style="height:15px"></div>
 
 <div class="card-body rounded" style="background-color: #E0E8F0;">
-<div class="border-start border-4 border-primary ps-3 mb-2">
-    <h6 class="fw-bold text-primary mb-2">
-        5. กลุ่มเป้าหมาย / ผู้ที่ได้รับผลประโยชน์ <span class="text-danger">*</span>
-    </h6>
+    <div class="border-start border-4 border-primary ps-3 mb-2">
+        <h6 class="fw-bold text-primary mb-2">
+            4. ผลที่คาดว่าจะได้รับ <span class="text-danger">*</span>
+        </h6>
+    </div>
+
+    <button class="btn btn-primary btn-sm mb-2" (click)="addExpectedResult()">+ เพิ่มรายการ</button>
+
+    <div *ngFor="let item of expectedResults; let i = index" class="border rounded p-3 bg-light">
+        <div class="row g-2">
+            <div class="col-md-11">
+                <input class="form-control" [(ngModel)]="item.Name" name="expected_{{i}}">
+            </div>
+
+            <div class="col-md-1 text-end">
+                <button class="btn btn-danger" (click)="removeExpectedResult(i)">
+                    <i class="bx bx-trash"></i>
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
+<div style="height:15px"></div>
 
-<button class="btn btn-primary btn-sm mb-2" (click)="addTargetGroup()">+ เพิ่มรายการ</button>
+<div class="card-body rounded" style="background-color: #E0E8F0;">
+    <div class="border-start border-4 border-primary ps-3 mb-2">
+        <h6 class="fw-bold text-primary mb-2">
+            5. กลุ่มเป้าหมาย / ผู้ที่ได้รับผลประโยชน์ <span class="text-danger">*</span>
+        </h6>
+    </div>
 
-<div *ngFor="let item of targetGroups; let i = index" class="border rounded p-3  bg-light">
-    <div class="row g-2">
+    <button class="btn btn-primary btn-sm mb-2" (click)="addTargetGroup()">+ เพิ่มรายการ</button>
 
-        <div class="col-md-7">
-            <input class="form-control" [(ngModel)]="item.Name" name="tg_name_{{i}}">
-        </div>
+    <div *ngFor="let item of targetGroups; let i = index" class="border rounded p-3  bg-light">
+        <div class="row g-2">
 
-        <div class="col-md-2">
-            <input class="form-control" [(ngModel)]="item.Amount" name="tg_amount_{{i}}">
-        </div>
+            <div class="col-md-7">
+                <input class="form-control" [(ngModel)]="item.Name" name="tg_name_{{i}}">
+            </div>
 
-        <div class="col-md-2">
-            <!-- <select class="form-select" [(ngModel)]="item.Unit" name="tg_unit_{{i}}">
+            <div class="col-md-2">
+                <input class="form-control" [(ngModel)]="item.Amount" name="tg_amount_{{i}}">
+            </div>
+
+            <div class="col-md-2">
+                <!-- <select class="form-select" [(ngModel)]="item.Unit" name="tg_unit_{{i}}">
                 <option value="">หน่วยนับ</option>
                 <option>1</option>
                 <option>2</option>
                 <option>3</option>
             </select> -->
-            <select class="form-select" [(ngModel)]="item.Unit" name="tg_unit_{{i}}">
+                <ng-select [items]="Mas_Unit_Lists" bindLabel="Unit_Name" bindValue="Unit_Id" [(ngModel)]="item.Unit"
+                    name="tg_unit_{{i}}" placeholder="-- เลือกหน่วยนับ --" [clearable]="false">
+                </ng-select>
+            </div>
 
-                <option [ngValue]="null" disabled>-- เลือกหน่วยนับ --</option>
-                <option *ngFor="let u of Mas_Unit_Lists" [ngValue]="u.Unit_Id">
-                    {{ u.Unit_Name }}
-                </option>
-            </select>
+            <div class="col-md-1 text-end">
+                <button class="btn btn-danger" (click)="removeTargetGroup(i,item)">
+                    <i class="bx bx-trash"></i>
+                </button>
+            </div>
+
         </div>
-
-        <div class="col-md-1 text-end">
-            <button class="btn btn-danger" (click)="removeTargetGroup(i,item)">
-                <i class="bx bx-trash"></i>
-            </button>
-        </div>
-
     </div>
 </div>
-</div>
- <div style="height:15px"></div>
+<div style="height:15px"></div>
 
 <div class="card-body rounded" style="background-color: #E0E8F0;">
-<div class="border-start border-4 border-primary ps-3 mb-2">
-    <h6 class="fw-bold text-primary mb-2 ">
-        6. พื้นที่การดำเนินการ <span class="text-danger">*</span>
-    </h6>
-</div>
-
-<div class="input-group mb-2 border rounded p-3 bg-light">
-    <textarea class="form-control mb-4" rows="3" [(ngModel)]="projectDetail.Area" name="area"></textarea>
-</div>
-</div>
- <div style="height:15px"></div>
-
-<div class="card-body rounded" style="background-color: #E0E8F0;">
-<div class="border-start border-4 border-primary ps-3 mb-4">
-    <h6 class="fw-bold text-primary mb-3">
-        7. ระยะเวลาในการดำเนินโครงการ <span class="text-danger">*</span>
-    </h6>
-</div>
-
-<div class="input-group mb-2 border rounded p-3 bg-light">
-    <div class="row g-3">
-
-        <div class="col-md-6">
-            <label>ตั้งแต่</label>
-            <input type="date" class="form-control" [(ngModel)]="projectDetail.Start_Date" name="Start_Date">
-        </div>
-
-        <div class="col-md-6">
-            <label>ถึงวันที่</label>
-            <input type="date" class="form-control" [(ngModel)]="projectDetail.End_Date" name="End_Date">
-        </div>
-
+    <div class="border-start border-4 border-primary ps-3 mb-2">
+        <h6 class="fw-bold text-primary mb-2 ">
+            6. พื้นที่การดำเนินการ <span class="text-danger">*</span>
+        </h6>
     </div>
-</div></div>
+
+    <div class="input-group mb-2 border rounded p-3 bg-light">
+        <textarea class="form-control mb-4" rows="3" [(ngModel)]="projectDetail.Area" name="area"></textarea>
+    </div>
+</div>
+<div style="height:15px"></div>
+
+<div class="card-body rounded" style="background-color: #E0E8F0;">
+    <div class="border-start border-4 border-primary ps-3 mb-4">
+        <h6 class="fw-bold text-primary mb-3">
+            7. ระยะเวลาในการดำเนินโครงการ <span class="text-danger">*</span>
+        </h6>
+    </div>
+
+    <div class="input-group mb-2 border rounded p-3 bg-light">
+        <div class="row g-3">
+
+            <div class="col-md-6">
+                <label>ตั้งแต่</label>
+                <input type="date" class="form-control" [(ngModel)]="projectDetail.Start_Date" name="Start_Date">
+            </div>
+
+            <div class="col-md-6">
+                <label>ถึงวันที่</label>
+                <input type="date" class="form-control" [(ngModel)]="projectDetail.End_Date" name="End_Date">
+            </div>
+
+        </div>
+    </div>
+</div>
