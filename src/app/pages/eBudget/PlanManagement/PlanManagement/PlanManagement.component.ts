@@ -15,7 +15,7 @@ import { BudgetYearService } from 'src/app/core/services/budget-year.service';
   styles: ``
 })
 export class PlanManagementComponent {
-  
+
   constructor(private modalService: NgbModal, public service: GridJsService
     , private sortService: PaginationService, public servicebud: EbudgetService
     , private authService: AuthenticationService, private budgetYearService: BudgetYearService) {
@@ -152,158 +152,341 @@ export class PlanManagementComponent {
 
 
   fullModal(modal: any, data: any) {
+
     if (!this.selectedDepartmentId && !data.Plan_Id) {
-      basicAlert('info', 'เลือกหน่วยงาน', '')
-      return
+
+      basicAlert(
+        'info',
+        'เลือกหน่วยงาน',
+        ''
+      );
+
+      return;
+
     }
+
     if (data?.Plan_Id) {
+
       let model = {
-        FUNC_CODE: "FUNC-GET_BUDGET_PLAN_BY_ID",
-        Plan_Id: data.Plan_Id,
+
+        FUNC_CODE:
+          "FUNC-GET_BUDGET_PLAN_BY_ID",
+
+        Plan_Id:
+          data.Plan_Id,
 
         ...(data?.FK_Project_Plan_Id && {
-          Project_Id: data.FK_Project_Plan_Id
+
+          Project_Id:
+            data.FK_Project_Plan_Id
+
         })
+
       };
-      this.servicebud.GatewayGetData(model)
+
+      this.servicebud
+        .GatewayGetData(model)
         .subscribe((res: any) => {
 
           this.model = {
-            Budget_Plan: res.Budget_Plan || {},
-            Budget_Request_Detail_Item: res.Budget_Plan_Detail_Items || {},
-            Budget_Plan_Detail: res.Budget_Plan_Detail || {},
-            Project_Plan: res.Project_Plan || {},
-            Project_Detail: res.Project_Detail || {},
-            Project_Objective: res.Project_Objective || [],
-            Project_Plan_Level1: res.Project_Plan_Level1 || [],
-            Project_Plan_Level1_Sub: res.Project_Plan_Level1_Sub || [],
-            Project_Cabinet: res.Project_Cabinet || [],
-            Project_Security: res.Project_Security || [],
-            Project_Plan_Level2: res.Project_Plan_Level2 || {},
-            Project_Plan_Level3: res.Project_Plan_Level3 || {},
-            Project_Coordinator: res.Project_Coordinator || [],
-            selectedDepartment: res.Project_Plan?.Department_Id,
-            projectType: res.Project_Plan?.Fk_Expense_Type,
-            selectedPlan: res.Project_Plan?.Fk_Plan_Id,
-            selectedProduct: res.Project_Plan?.Fk_Product_Id,
-            selectedActivity: res.Project_Plan?.Fk_Activity_Id,
-            selectedBudget: res.Project_Plan?.Fk_Budget_Type,
-            Project_Id: data.Project_Id,
-            Project_Output: res.Project_Output || [],
-            Project_Outcome: res.Project_Outcome || [],
-            Project_Expected: res.Project_Expected || [],
-            Project_TargetGroup: res.Project_TargetGroup || [],
+
+            Budget_Plan:
+              res.Budget_Plan || {},
+
+            Budget_Request_Detail_Item:
+              res.Budget_Plan_Detail_Items || [],
+
+            Budget_Plan_Detail:
+              res.Budget_Plan_Details || {},
+
+            Project_Plan:
+              res.Project_Plan || {},
+
+            Project_Detail:
+              res.Project_Detail || {},
+
+            Project_Objective:
+              res.Project_Objective || [],
+
+            Project_Plan_Level1:
+              res.Project_Plan_Level1 || [],
+
+            Project_Plan_Level1_Sub:
+              res.Project_Plan_Level1_Sub || [],
+
+            Project_Cabinet:
+              res.Project_Cabinet || [],
+
+            Project_Security:
+              res.Project_Security || [],
+
+            Project_Plan_Level2:
+              res.Project_Plan_Level2 || {},
+
+            Project_Plan_Level3:
+              res.Project_Plan_Level3 || {},
+
+            Project_Coordinator:
+              res.Project_Coordinator || [],
+
+            Project_Output:
+              res.Project_Output || [],
+
+            Project_Outcome:
+              res.Project_Outcome || [],
+
+            Project_Expected:
+              res.Project_Expected || [],
+
+            Project_TargetGroup:
+              res.Project_TargetGroup || [],
+
+            selectedDepartment:
+              res.Project_Plan?.Department_Id,
+
+            projectType:
+              res.Project_Plan?.Fk_Expense_Type,
+
+            selectedPlan:
+              res.Project_Plan?.Fk_Plan_Id,
+
+            selectedProduct:
+              res.Project_Plan?.Fk_Product_Id,
+
+            selectedActivity:
+              res.Project_Plan?.Fk_Activity_Id,
+
+            selectedBudget:
+              res.Project_Plan?.Fk_Budget_Type,
+
+            Project_Id:
+              data.Project_Id
+
           };
-          const details = res.Project_Plan_Detail || [];
-          const items = res.Project_Plan_Detail_Item || [];
+
+          const details =
+            res.Project_Plan_Detail || [];
+
+          const items =
+            res.Project_Plan_Detail_Item || [];
 
           details.forEach((d: any) => {
-            d.Project_Detail_Id = Number(d.Project_Detail_Id);
-            d.Parent_Id = d.Parent_Id ? Number(d.Parent_Id) : null;
+
+            d.Project_Detail_Id =
+              Number(
+                d.Project_Detail_Id
+              );
+
+            d.Parent_Id =
+              d.Parent_Id
+                ? Number(d.Parent_Id)
+                : null;
+
           });
 
-          const activities = this.mapPlanDetail(details);
-          this.mapItems(items, activities);
+          const activities =
+            this.mapPlanDetail(details);
 
-          this.project_planing.activities = activities;
+          this.mapItems(
+            items,
+            activities
+          );
+
+          this.model.activities =
+            JSON.parse(
+              JSON.stringify(
+                activities || []
+              )
+            );
+
+          this.project_planing.activities =
+            JSON.parse(
+              JSON.stringify(
+                activities || []
+              )
+            );
+
+          this.project_planing.model =
+            this.model;
+
         });
+
     } else {
+
       this.model = {
+
         Budget_Plan: {},
-        Department_Id: this.selectedDepartmentId,
+
+        Department_Id:
+          this.selectedDepartmentId,
+
+        Budget_Request_Detail_Item: [],
+
+        Budget_Plan_Detail: {},
+
         Project_Plan: {},
 
         Project_Detail: [],
+
         Project_Objective: [],
 
         Project_Plan_Level1: [],
+
         Project_Plan_Level1_Sub: [],
+
         Project_Plan_Level2: {},
+
         Project_Cabinet: [],
+
         Project_Security: [],
+
         Project_Plan_Level3: {
+
           Government_Policy_Id1: null,
           Government_Policy_Id2: null,
           Action_Plan_Id: null,
+
           Urgent1_Checked: false,
           Urgent1_Name: '',
+
           Urgent2_Checked: false,
           Urgent2_Name: '',
+
           Mid1_Checked: false,
           Mid1_Name: '',
+
           Mid2_Checked: false,
           Mid2_Name: '',
+
           ProjectPlaningAlignment: '',
+
           PpatPlanName: '',
+
           PpatStrategy_Id: '',
           PpatMeasure_Id: '',
           PpatIndicator_Id: '',
+
           Project_Plan_Id: null,
+
           Tactics_Id: null,
           Measure_Id: null,
           Indicators_Id: null,
+
           Plan5_Master_Plan_Id: null,
           Plan5_Goals_Id: null,
           Plan5_Indicator_Id: null,
+
           Plan5_Description: '',
+
           Project_Plan_Goals_Id5: null,
+
           Indicators_Id5: null,
+
           Goals_Guidelines_Id5: null,
+
           Plan5_Subplan_Id: null,
+
           Plan5_Target_Y1_Id: null,
+
           Plan5_Subplan_Desc: '',
+
           Plan5_Guideline_Id: null,
+
           Project_Plan_Id5: null,
+
           Plan5_ValueChain_Main_Id: null,
+
           Plan5_ValueChain_Factor_Main_Id: null,
+
           Plan5_ValueChain_Support_Id: null,
+
           Plan5_ValueChain_Factor_Support_Id: null,
 
           Master_Plan_Id: null,
+
           Plan_Goals_Id: null,
+
           Plan_Tactics_Id: null,
+
           Sub_Master_Plan_Id: null,
+
           Sub_Plan_Goals_Id: null,
+
           ValueChain_Main_Id: null,
+
           ValueChain_Factor_Main_Id: null,
+
           ValueChain_Support_Id: null,
+
           ValueChain_Factor_Support_Id: null,
 
           Plan5_Project_Plan_Id: null,
+
           Project_Plan_Goals_Id: null,
+
           Goals_Guidelines_Id: null,
+
           Guidelines_Id: null,
+
           Project_Plan_Id_5: null,
+
           Project_Plan_Goals_Id_5: null,
+
           Indicators_Id_5: null,
+
           Goals_Guidelines_Id_5: null
+
         },
+
         selectedDepartment: null,
+
         projectType: null,
+
         selectedPlan: null,
+
         selectedProduct: null,
+
         selectedActivity: null,
+
         selectedBudget: null,
 
+        activities: []
+
       };
+
     }
 
-    console.log('่ก่อน model', this.model);
+    this.modalRef =
+      this.modalService.open(modal, {
 
-    this.modalRef = this.modalService.open(modal, {
-      backdrop: 'static',
-      windowClass: 'modal-95'
-    });
+        backdrop: 'static',
+
+        windowClass: 'modal-95'
+
+      });
+
     this.modalRef.result.then(
+
       (result: any) => {
-        this.selectedDepartmentId = null
-        this.get_data()
+
+        this.selectedDepartmentId =
+          null;
+
+        this.get_data();
+
       },
+
       (reason: any) => {
-        this.selectedDepartmentId = null
-        this.get_data()
+
+        this.selectedDepartmentId =
+          null;
+
+        this.get_data();
+
       }
+
     );
+
   }
   mapItems(items: any[], activities: any[]) {
 
