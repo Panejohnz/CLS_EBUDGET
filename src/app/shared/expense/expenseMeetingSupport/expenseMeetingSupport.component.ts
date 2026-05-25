@@ -361,5 +361,15 @@ export class ExpenseMeetingSupportComponent {
     });
 
   }
+  onRateChange(value: any, role: any, index: number) {
 
+    const numberValue = String(value)
+      .replace(/,/g, '');
+
+    role.rate =
+      Number(numberValue) || 0;
+
+    this.calculate(index);
+
+  }
 }

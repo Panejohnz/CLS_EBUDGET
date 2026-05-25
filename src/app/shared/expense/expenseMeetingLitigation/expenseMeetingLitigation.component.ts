@@ -189,31 +189,31 @@ export class ExpenseMeetingLitigationComponent {
     const rate =
       Number(row.rate) || 0;
 
-    // สูตรหลัก
+    // รวมเบี้ยประชุม
     row.meetingTotal =
-
-      committee *
-
-      people *
-
-      times *
-
-      rate;
+      people * times * rate;
 
     // ค่าใช้จ่ายต่อคดี
     row.caseCost =
-      row.meetingTotal;
+      people * times * rate;
 
-    // รวมทั้งหมด
+    // รวมทั้งสิ้น
     row.total =
-      row.caseCost;
+      committee * row.meetingTotal;
 
-    this.calculateGrand();
-
-    this.updateDetailItems();
+    this.calculateGrandTotal();
 
   }
+  calculateGrandTotal() {
 
+    this.grandTotal =
+      this.meetingList.reduce(
+        (sum: number, row: any) =>
+          sum + (Number(row.total) || 0),
+        0
+      );
+
+  }
   // =========================
   // grand total
   // =========================
@@ -227,7 +227,17 @@ export class ExpenseMeetingLitigationComponent {
       );
 
   }
+  onRateChange(value: any, row: any) {
 
+    const numberValue =
+      String(value).replace(/,/g, '');
+
+    row.rate =
+      Number(numberValue) || 0;
+
+    this.calculate(row);
+
+  }
   // =========================
   // sync ลง model กลาง
   // =========================

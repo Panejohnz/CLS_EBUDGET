@@ -62,8 +62,8 @@
 
                         <td>
 
-                            <input type="number" class="form-control text-end" [(ngModel)]="item.Per_Year"
-                                (ngModelChange)="calculateTotal()">
+                            <input type="text" class="form-control text-end" [ngModel]="item.Per_Year | number:'1.0-2'"
+                                (ngModelChange)="onPerYearChange($event, item)">
 
                         </td>
 

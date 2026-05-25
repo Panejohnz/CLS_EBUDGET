@@ -104,7 +104,17 @@ export class ExpenseRentHouseComponent {
     this.calculateTotal();
 
   }
+  onPerYearChange(value: any, item: any) {
 
+    const numberValue = String(value)
+      .replace(/,/g, '');
+
+    item.Per_Year =
+      Number(numberValue) || 0;
+
+    this.calculateTotal();
+
+  }
   calculateTotal() {
 
     this.model.Budget_Request_Detail_Item.forEach((row: any) => {

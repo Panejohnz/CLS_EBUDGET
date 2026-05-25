@@ -4,7 +4,7 @@
 
         <span class="fw-bold">
 
-            แบบฟอร์มค่าอาหารทำการล่วงเวลา
+            แบบฟอร์มค่าทำการล่วงเวลา
 
         </span>
 
@@ -67,7 +67,7 @@
                     <ng-container *ngFor="let item of foodList; let i=index">
 
                         <!-- row หลัก -->
-                        <tr>
+                        <tr style="text-align: center;">
 
                             <td>
                                 {{i+1}}
@@ -75,18 +75,19 @@
 
                             <!-- วันทำการ -->
                             <td>
-                                <input type="number" class="form-control" [(ngModel)]="item.workPerson"
+                                <input type="number" class="form-control text-center" [(ngModel)]="item.workPerson"
                                     (ngModelChange)="calculate(i)">
                             </td>
 
                             <td>
-                                <input type="number" class="form-control" [(ngModel)]="item.workDay"
+                                <input type="number" class="form-control text-center" [(ngModel)]="item.workDay"
                                     (ngModelChange)="calculate(i)">
                             </td>
 
                             <td>
-                                <input type="number" class="form-control" [class.is-invalid]="item.workHour > 4"
-                                    [(ngModel)]="item.workHour" (ngModelChange)="calculate(i)">
+                                <input type="number" class="form-control text-center"
+                                    [class.is-invalid]="item.workHour > 4" [(ngModel)]="item.workHour"
+                                    (ngModelChange)="calculate(i)">
                                 <span class="text-danger small" *ngIf="item.workHour > 4">
 
                                     ห้ามเกิน 4ชั่วโมง/วัน
@@ -103,21 +104,22 @@
 
                             <!-- วันหยุด -->
                             <td>
-                                <input type="number" class="form-control" [(ngModel)]="item.holidayPerson"
+                                <input type="number" class="form-control text-center" [(ngModel)]="item.holidayPerson"
                                     (ngModelChange)="calculate(i)">
                             </td>
 
                             <td>
-                                <input type="number" class="form-control" [(ngModel)]="item.holidayDay"
+                                <input type="number" class="form-control text-center" [(ngModel)]="item.holidayDay"
                                     (ngModelChange)="calculate(i)">
                             </td>
 
                             <td>
-                                <input type="number" class="form-control" [class.is-invalid]="item.holidayHour > 8"
-                                    [(ngModel)]="item.holidayHour" (ngModelChange)="calculate(i)">
+                                <input type="number" class="form-control text-center"
+                                    [class.is-invalid]="item.holidayHour > 8" [(ngModel)]="item.holidayHour"
+                                    (ngModelChange)="calculate(i)">
                                 <span class="text-danger small" *ngIf="item.holidayHour > 8">
 
-                                 ห้ามเกิน 8ชั่วโมง/วัน
+                                    ห้ามเกิน 8ชั่วโมง/วัน
 
                                 </span>
                             </td>
@@ -149,8 +151,9 @@
 
                             <td colspan="10" class="text-start">
 
-                                <input class="form-control" placeholder="ระบุหมายเหตุ หรือรายละเอียดเพิ่มเติม"
-                                    [(ngModel)]="item.note" (ngModelChange)="updateDetailItems()">
+                                <input class="form-control text-center"
+                                    placeholder="ระบุหมายเหตุ หรือรายละเอียดเพิ่มเติม" [(ngModel)]="item.note"
+                                    (ngModelChange)="updateDetailItems()">
 
                             </td>
 
@@ -251,7 +254,7 @@
 
             </label>
 
-            <input type="number" class="form-control" [(ngModel)]="workRate">
+            <input type="number" class="form-control text-center" [(ngModel)]="workRate">
 
         </div>
 
@@ -263,7 +266,7 @@
 
             </label>
 
-            <input type="number" class="form-control" [(ngModel)]="holidayRate">
+            <input type="number" class="form-control text-center" [(ngModel)]="holidayRate">
 
         </div>
 

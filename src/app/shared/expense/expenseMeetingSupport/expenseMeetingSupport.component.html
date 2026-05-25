@@ -2,52 +2,47 @@
 
     <div class="card-header bg-light fw-bold">
 
-        แบบฟอร์มค่าเบี้ยประชุมคณะกรรมการ
 
     </div>
 
     <div class="card-body">
 
-        <div *ngFor="let item of committeeList; let i=index" class="border rounded bg-white mb-3">
+        <div *ngFor="let item of committeeList; let i=index" class="card shadow-sm border-0 mb-4">
 
             <!-- header -->
-            <div class="p-2 bg-light fw-bold d-flex justify-content-between align-items-center">
+            <div class="card-header bg-white border-bottom">
 
-                <span>
+                <div class="d-flex justify-content-between align-items-center gap-2">
 
-                    รายการ {{i+1}}
+                    <div class="flex-grow-1">
 
-                </span>
+                        <label class="form-label fw-bold mb-2">
 
-                <button class="btn btn-sm btn-outline-danger" (click)="removeRow(i)">
+                            รายชื่อคณะกรรมการ / คณะอนุกรรมการ
 
-                    <i class="bx bx-trash"></i>
+                        </label>
 
-                </button>
+                        <input class="form-control" [(ngModel)]="item.committeeName"
+                            (ngModelChange)="updateDetailItems()" placeholder="ระบุชื่อคณะกรรมการ">
+
+                    </div>
+
+                    <button class="btn btn-outline-danger btn-sm mt-4" (click)="removeRow(i)">
+
+                        <i class="bx bx-trash"></i>
+
+                    </button>
+
+                </div>
 
             </div>
 
             <!-- body -->
-            <div class="p-3">
+            <div class="card-body">
 
-                <!-- committee name -->
-                <div class="mb-3">
-
-                    <label class="form-label fw-bold">
-
-                        รายชื่อคณะกรรมการ / คณะอนุกรรมการ
-
-                    </label>
-
-                    <input class="form-control" [(ngModel)]="item.committeeName" (ngModelChange)="updateDetailItems()"
-                        placeholder="ระบุ คณะกรรมการ">
-
-                </div>
-
-                <!-- table -->
                 <div class="table-responsive">
 
-                    <table class="table table-bordered align-middle text-center bg-white">
+                    <table class="table table-bordered align-middle text-center mb-0">
 
                         <thead class="table-light">
 
@@ -65,19 +60,19 @@
 
                                 </th>
 
-                                <th style="width:120px">
+                                <th style="width:140px">
 
                                     จำนวนวัน/ครั้ง
 
                                 </th>
 
-                                <th style="width:150px">
+                                <th style="width:180px">
 
                                     ค่าตอบแทน (บาท)
 
                                 </th>
 
-                                <th style="width:150px">
+                                <th style="width:180px">
 
                                     รวม (บาท)
 
@@ -92,9 +87,9 @@
                             <tr *ngFor="let role of item.roles">
 
                                 <!-- role -->
-                                <td class="text-start fw-semibold">
+                                <td class="text-start fw-semibold align-middle">
 
-                                    {{role.name}}
+                                    {{ role.name }}
 
                                 </td>
 
@@ -117,15 +112,16 @@
                                 <!-- rate -->
                                 <td>
 
-                                    <input type="number" class="form-control text-end" [(ngModel)]="role.rate"
-                                        (ngModelChange)="calculate(i)">
+                                    <input type="text" class="form-control text-end"
+                                        [ngModel]="role.rate | number:'1.0-2'"
+                                        (ngModelChange)="onRateChange($event, role, i)">
 
                                 </td>
 
                                 <!-- total -->
-                                <td class="text-end fw-semibold bg-light">
+                                <td class="text-end fw-bold bg-light align-middle">
 
-                                    {{role.total | number:'1.2-2'}}
+                                    {{ role.total | number:'1.2-2' }}
 
                                 </td>
 
@@ -133,19 +129,19 @@
 
                         </tbody>
 
-                        <tfoot class="table-light fw-bold">
+                        <tfoot class="table-light">
 
                             <tr>
 
-                                <td colspan="4" class="text-end">
+                                <td colspan="4" class="text-end fw-bold">
 
-                                    รวม
+                                    รวมทั้งหมด
 
                                 </td>
 
-                                <td class="text-end">
+                                <td class="text-end fw-bold fs-6">
 
-                                    {{item.total | number:'1.2-2'}}
+                                    {{ item.total | number:'1.2-2' }}
 
                                 </td>
 
