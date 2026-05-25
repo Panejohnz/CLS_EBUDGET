@@ -42,13 +42,13 @@ export class ExpenseListSalaryComponent {
     this.model[field] =
       Number(numberValue) || 0;
 
-    if (field == 'oldYear') {
+    if (field == 'oldYear' || field == 'oldMonth') {
 
       this.calculateRowOld();
 
     }
 
-    if (field == 'newYear') {
+    if (field == 'newYear' || field == 'newMonth') {
 
       this.calculateRowNew();
 
@@ -143,12 +143,12 @@ export class ExpenseListSalaryComponent {
       Number(this.model.oldMonth) || 0;
 
     // expense type 5 = รายเดือน x 12
-    if (this.model.selectedExpenseTypeId == 5) {
+    // if (this.model.selectedExpenseTypeId == 5) {
 
-      this.model.oldYear =
-        qty * month * 12;
+    //   this.model.oldYear =
+    //     qty * month * 12;
 
-    }
+    // }
 
     this.updateSummary();
 
@@ -166,12 +166,12 @@ export class ExpenseListSalaryComponent {
       Number(this.model.newMonth) || 0;
 
     // expense type 5 = รายเดือน x 12
-    if (this.model.selectedExpenseTypeId == 5) {
+    // if (this.model.selectedExpenseTypeId == 5) {
 
-      this.model.newYear =
-        qty * month * 12;
+    //   this.model.newYear =
+    //     qty * month * 12;
 
-    }
+    // }
 
     this.updateSummary();
 
@@ -182,19 +182,19 @@ export class ExpenseListSalaryComponent {
   // ใช้ตอน init / edit
   calculateAll() {
 
-    if (this.model.selectedExpenseTypeId == 5) {
+    // if (this.model.selectedExpenseTypeId == 5) {
 
-      this.model.oldYear =
-        (Number(this.model.oldQty) || 0) *
-        (Number(this.model.oldMonth) || 0) *
-        12;
+    //   this.model.oldYear =
+    //     (Number(this.model.oldQty) || 0) *
+    //     (Number(this.model.oldMonth) || 0) *
+    //     12;
 
-      this.model.newYear =
-        (Number(this.model.newQty) || 0) *
-        (Number(this.model.newMonth) || 0) *
-        12;
+    //   this.model.newYear =
+    //     (Number(this.model.newQty) || 0) *
+    //     (Number(this.model.newMonth) || 0) *
+    //     12;
 
-    }
+    // }
 
     this.updateSummary();
 
@@ -203,78 +203,78 @@ export class ExpenseListSalaryComponent {
   }
 
   // sync ลง array กลาง
-updateDetailItems() {
+  updateDetailItems() {
 
-  if (!this.model.Budget_Request_Detail_Item) {
+    if (!this.model.Budget_Request_Detail_Item) {
 
-    this.model.Budget_Request_Detail_Item = [];
+      this.model.Budget_Request_Detail_Item = [];
 
-  }
-
-  // ลบเฉพาะ expense type นี้
-  this.model.Budget_Request_Detail_Item =
-    this.model.Budget_Request_Detail_Item.filter(
-      (x: any) =>
-        x.Fk_Expense_Id != this.model.selectedExpenseTypeId
-    );
-
-  this.model.Budget_Request_Detail_Item.push(
-
-    {
-      Request_Item_Id:
-        this.oldRequestItemId,
-
-      Plan_Item_Id:
-        this.oldPlanItemId,
-
-      Fk_Expense_Id:
-        this.model.selectedExpenseTypeId,
-
-      Expense_Detail:
-        'อัตราเดิม',
-
-      Quantity:
-        this.model.oldQty,
-
-      Per_Month:
-        this.model.oldMonth,
-
-      Per_Year:
-        this.model.oldYear,
-
-      Total:
-        this.model.oldYear
-    },
-
-    {
-      Request_Item_Id:
-        this.newRequestItemId,
-
-      Plan_Item_Id:
-        this.newPlanItemId,
-
-      Fk_Expense_Id:
-        this.model.selectedExpenseTypeId,
-
-      Expense_Detail:
-        'อัตราใหม่',
-
-      Quantity:
-        this.model.newQty,
-
-      Per_Month:
-        this.model.newMonth,
-
-      Per_Year:
-        this.model.newYear,
-
-      Total:
-        this.model.newYear
     }
 
-  );
+    // ลบเฉพาะ expense type นี้
+    this.model.Budget_Request_Detail_Item =
+      this.model.Budget_Request_Detail_Item.filter(
+        (x: any) =>
+          x.Fk_Expense_Id != this.model.selectedExpenseTypeId
+      );
 
-}
+    this.model.Budget_Request_Detail_Item.push(
+
+      {
+        Request_Item_Id:
+          this.oldRequestItemId,
+
+        Plan_Item_Id:
+          this.oldPlanItemId,
+
+        Fk_Expense_Id:
+          this.model.selectedExpenseTypeId,
+
+        Expense_Detail:
+          'อัตราเดิม',
+
+        Quantity:
+          this.model.oldQty,
+
+        Per_Month:
+          this.model.oldMonth,
+
+        Per_Year:
+          this.model.oldYear,
+
+        Total:
+          this.model.oldYear
+      },
+
+      {
+        Request_Item_Id:
+          this.newRequestItemId,
+
+        Plan_Item_Id:
+          this.newPlanItemId,
+
+        Fk_Expense_Id:
+          this.model.selectedExpenseTypeId,
+
+        Expense_Detail:
+          'อัตราใหม่',
+
+        Quantity:
+          this.model.newQty,
+
+        Per_Month:
+          this.model.newMonth,
+
+        Per_Year:
+          this.model.newYear,
+
+        Total:
+          this.model.newYear
+      }
+
+    );
+
+  }
 
   onFileChange(event: any) {
 

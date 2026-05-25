@@ -48,15 +48,14 @@
 
                     <td *ngIf="model.selectedExpenseTypeId == 5">
 
-                        <input type="number" class="form-control text-end" [(ngModel)]="model.oldMonth"
-                            (ngModelChange)="calculateRowOld()">
+                        <input type="text" class="form-control text-end" [ngModel]="model.oldMonth | number:'1.0-2'"
+                            (ngModelChange)="onAmountChange($event, 'oldMonth')">
 
                     </td>
 
                     <td>
                         <input type="text" class="form-control text-end" [ngModel]="model.oldYear | number:'1.0-2'"
-                            (ngModelChange)="onAmountChange($event, 'oldYear')"
-                            [readonly]="model.selectedExpenseTypeId == 5">
+                            (ngModelChange)="onAmountChange($event, 'oldYear')" [readonly]="false">
                     </td>
 
                 </tr>
@@ -77,16 +76,14 @@
 
                     <td *ngIf="model.selectedExpenseTypeId == 5">
 
-                        <input type="number" class="form-control text-end" [(ngModel)]="model.newMonth"
-                            (ngModelChange)="calculateRowNew()">
-
+                        <input type="text" class="form-control text-end" [ngModel]="model.newMonth | number:'1.0-2'"
+                            (ngModelChange)="onAmountChange($event, 'newMonth')">
                     </td>
 
                     <td>
 
                         <input type="text" class="form-control text-end" [ngModel]="model.newYear | number:'1.0-2'"
-                            (ngModelChange)="onAmountChange($event, 'newYear')"
-                            [readonly]="model.selectedExpenseTypeId == 5">
+                            (ngModelChange)="onAmountChange($event, 'newYear')" [readonly]="false">
 
                     </td>
 
