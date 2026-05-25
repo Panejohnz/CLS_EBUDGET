@@ -163,7 +163,17 @@ export class ExpenseCarAllowanceComponent {
     this.updateDetailItems();
 
   }
+  onRateChange(value: any, item: any) {
 
+    const numberValue =
+      String(value).replace(/,/g, '');
+
+    item.rate =
+      Number(numberValue) || 0;
+
+    this.calculate(item);
+
+  }
   // =========================
   // total qty
   // =========================

@@ -89,7 +89,7 @@
                                         รองเลขาธิการ ป.ป.ท.
                                     </option>
 
-                                     <option value="ผู้ช่วยเลขาธิการ ป.ป.ท.">
+                                    <option value="ผู้ช่วยเลขาธิการ ป.ป.ท.">
 
                                         ผู้ช่วยเลขาธิการ ป.ป.ท.
                                     </option>
@@ -109,8 +109,8 @@
                             <!-- month -->
                             <td>
 
-                                <input type="number" class="form-control text-end" [(ngModel)]="item.rate"
-                                    (ngModelChange)="calculate(item)">
+                                <input type="text" class="form-control text-end" [ngModel]="item.rate | number:'1.0-2'"
+                                    (ngModelChange)="onRateChange($event, item)">
 
                             </td>
 
