@@ -611,10 +611,6 @@ export class ProjectAllocationComponent implements OnInit {
 
   }
 
-  // =====================================
-  // RESET
-  // =====================================
-
   resetAllocate() {
 
     this.getAllItems().forEach((item: any) => {
@@ -629,18 +625,11 @@ export class ProjectAllocationComponent implements OnInit {
 
   }
 
-  // =====================================
-  // SAVE
-  // =====================================
 
   saveAdjust() {
 
     const items = this.getAllItems();
 
-
-    // =========================
-    // VALIDATE
-    // =========================
 
     const invalid = items.some((item: any) => {
 
@@ -703,7 +692,8 @@ export class ProjectAllocationComponent implements OnInit {
           item.Fk_Plan_Id,
 
         Fk_Product_Id:
-          item.Fk_Product_Id
+          item.Fk_Product_Id,
+        BgYear: this.currentYear
 
       };
 
@@ -713,10 +703,6 @@ export class ProjectAllocationComponent implements OnInit {
       'SAVE PAYLOAD',
       payload
     );
-
-    // =========================
-    // MODEL
-    // =========================
 
     const model = {
 
@@ -728,9 +714,6 @@ export class ProjectAllocationComponent implements OnInit {
 
     };
 
-    // =========================
-    // API
-    // =========================
 
     this.servicebud
       .GatewayGetData(model)
@@ -743,7 +726,7 @@ export class ProjectAllocationComponent implements OnInit {
             response
           );
 
-      
+
           basicAlert('success', 'บันทึกข้อมูล', '')
           // reload
           this.get_data();
@@ -768,9 +751,6 @@ export class ProjectAllocationComponent implements OnInit {
 
   }
 
-  // =====================================
-  // BACK
-  // =====================================
 
   backToTable() {
 
@@ -892,7 +872,6 @@ export class ProjectAllocationComponent implements OnInit {
 
     }
 
-    // product level
     if (node.activities) {
 
       node.activities.forEach((activity: any) => {
@@ -905,7 +884,6 @@ export class ProjectAllocationComponent implements OnInit {
 
     }
 
-    // plan level
     if (node.products) {
 
       node.products.forEach((product: any) => {

@@ -1798,17 +1798,17 @@ export class AddPlanManagementComponent
   }
 
   save() {
-
+    console.log('a',this.model);
+    
     this.model.Total =
       this.getAllBudget();
 
     this.model.Update_Amount =
       this.getAllBudget();
-
     const detailPayload = {
 
       Plan_Detail_Id:
-        this.model?.Budget_Plan_Detail?.Plan_Detail_Id || 0,
+        this.model?.Budget_Plan_Detail[0]?.Plan_Detail_Id || 0,
 
       Fk_Budget_Plan:
         this.model?.Budget_Plan?.Plan_Id || 0,
@@ -1989,15 +1989,161 @@ export class AddPlanManagementComponent
 
     });
 
+    const findById = (
+      list: any[],
+      key: string,
+      value: any
+    ) => list.find(x => x[key] == value);
+
+    const selectedPlanObj =
+      findById(
+        this.Mas_Plan_Lists,
+        'Plan_Id',
+        this.model.selectedPlanPropos
+      );
+
+    const selectedProductObj =
+      findById(
+        this.Mas_Product,
+        'Product_Id',
+        this.model.selectedProductPropos
+      );
+
+    const selectedActivityObj =
+      findById(
+        this.Mas_Activity,
+        'Activity_Id',
+        this.model.selectedActivityPropos
+      );
+
+    const selectedExpenseTypeIdObj =
+      findById(
+        this.expenseOptions,
+        'Expense_Id',
+        this.model.selectedExpenseTypeId
+      );
+
+    const selectedBudgetObj =
+      findById(
+        this.Mas_Budget_Types,
+        'Budget_Type_Id',
+        this.model.selectedBudgetPropos
+      );
+
+    const selectedGroupObj =
+      findById(
+        this.Mas_Expense_Group,
+        'Expense_Group_Id',
+        this.model.selectedGroupPropos
+      );
+
+    const selectedDepartmentObj =
+      findById(
+        this.Mas_Department_Lists,
+        'Department_Id',
+        this.model.Department_Id
+      );
+
+    const payload_plan = {
+
+      BgYear: "2569",
+
+      Plan_Id:
+        this.model.Budget_Plan.Plan_Id,
+
+      FK_Project_Plan_Id:
+        this.model.Budget_Plan.FK_Project_Plan_Id,
+
+      Total: this.model.Total,
+      Department_Id:
+        this.model.Department_Id,
+
+      Department_Name:
+        selectedDepartmentObj?.Department_Name,
+
+      Fk_Plan_Id:
+        this.model.selectedPlanPropos,
+
+      Plan_Name:
+        selectedPlanObj?.Plan_Name,
+
+      Fk_Product_Id:
+        this.model.selectedProductPropos,
+
+      Product_Name:
+        selectedProductObj?.Product_Name,
+
+      Fk_Activity_Id:
+        this.model.selectedActivityPropos,
+
+      Activity_Name:
+        selectedActivityObj?.Activity_Name,
+
+      Fk_Expense_List:
+        this.model.selectedExpenseTypeId,
+
+      Expense_List:
+        selectedExpenseTypeIdObj?.Expense_Name,
+
+      Fk_Budget_Type:
+        this.model.selectedBudgetPropos,
+
+      Budget_Type:
+        selectedBudgetObj?.Budget_Type_Name,
+
+      Fk_Expense_Type:
+        this.model.selectedGroupPropos,
+
+      Expense_Type:
+        selectedGroupObj?.Expense_Group_Name,
+
+      Project_Name:
+        this.model.Budget_Plan.Project_Name,
+
+      Used_BG:
+        this.model.Budget_Plan.Used_BG,
+
+      Project_Type_Id:
+        this.model.Budget_Plan.Project_Type_Id,
+
+      Project_Year_Count:
+        this.model.Budget_Plan.Project_Year_Count,
+
+      Project_Year_Number:
+        this.model.Budget_Plan.Project_Year_Number,
+
+      Operation1:
+        this.model.Budget_Plan.Operation1,
+
+      Operation2:
+        this.model.Budget_Plan.Operation2,
+
+      Proposer_Name:
+        this.model.Budget_Plan.Proposer_Name,
+
+      Proposer_Position:
+        this.model.Budget_Plan.Proposer_Position,
+
+    };
+
+    const getId = (obj: any, key: string) =>
+      typeof obj === 'object'
+        ? obj?.[key]
+        : obj;
+
+    const data =
+      this.model?.Project_Plan ||
+      this.model;
+
     const payload = {
 
       FUNC_CODE:
         this.model?.Budget_Plan?.Plan_Id > 0
-          ? 'FUNC-UPDATE_BUDGET_PLAN'
-          : 'FUNC-INSERT_BUDGET_PLAN',
+          ? 'FUNC-Update_Budget_Plan_main'
+          : 'FUNC-Insert_Budget_Plan_main',
 
       Budget_Plan:
-        this.model,
+        payload_plan,
 
       Budget_Plan_Detail:
         detailPayload,
