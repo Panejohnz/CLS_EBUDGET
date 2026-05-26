@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { EbudgetService } from 'src/app/core/services/ebudget.service';
 import { ProjectPlanService } from 'src/app/core/services/ProjectPlan.service';
+import { BudgetYearService } from 'src/app/core/services/budget-year.service';
 
 export interface ProjectPlan {
   projectType: string;
@@ -15,7 +16,8 @@ export class TabGeneralComponent {
 
   constructor(
     private ebudgetService: EbudgetService,
-    private ProjectPlanService: ProjectPlanService
+    private ProjectPlanService: ProjectPlanService,
+    private budgetYearService: BudgetYearService
   ) { }
 
   @Input() model: any;
@@ -51,14 +53,30 @@ export class TabGeneralComponent {
       a.Budget_Type_Id === b.Budget_Type_Id
     );
   }
-
+  currentYear: any
   ngOnInit(): void {
+    this.budgetYearService.yearChanged$
+      .subscribe(async year => {
 
+        if (year) {
+
+          if (year < 2500) {
+
+            year = year + 543;
+
+          }
+
+          this.currentYear = year;
+
+
+        }
+
+      });
 
 
     let model = {
       FUNC_CODE: "FUNC-GET_Mas_General",
-      BgYear: "2569"
+      BgYear: this.currentYear
     };
 
     this.ebudgetService.GatewayGetData(model).subscribe((res: any) => {
@@ -78,14 +96,30 @@ export class TabGeneralComponent {
 
   ngOnChanges() {
 
+    this.budgetYearService.yearChanged$
+      .subscribe(async year => {
 
+        if (year) {
+
+          if (year < 2500) {
+
+            year = year + 543;
+
+          }
+
+          this.currentYear = year;
+
+
+        }
+
+      });
 
     if (this.model) {
       this.setDefault();
     }
     let model = {
       FUNC_CODE: "FUNC-GET_Mas_General",
-      BgYear: "2569"
+      BgYear: this.currentYear
     };
 
     this.ebudgetService.GatewayGetData(model).subscribe((res: any) => {

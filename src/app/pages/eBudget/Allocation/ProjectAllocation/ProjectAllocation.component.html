@@ -274,8 +274,7 @@
                                             <!-- BUDGET -->
                                             <ng-container *ngFor="let budget of activity.budgets">
 
-                                                <tr class="table fw-bold"
-                                                    style="cursor:pointer; background-color: #a1e3f7;"
+                                                <tr class="table fw-bold" style="cursor:pointer; background-color: #a1e3f7;"
                                                     (click)="budget.expanded = !budget.expanded">
 
                                                     <!-- NAME -->
@@ -351,22 +350,22 @@
                                                         <!-- EXPENSE -->
                                                         <td class="ps-3 text-start">
                                                             <div style="padding-left: 100px;">
-                                                                - {{
+                                                                -  {{
                                                                 item.Expense_Name ||
                                                                 item.Expense_List ||
                                                                 '-'
                                                                 }}
                                                             </div>
-
+                                                        
                                                             <div class="small text-muted" style="padding-left: 100px;">
-
+                                                        
                                                                 {{
                                                                 item.Project_Name ||
                                                                 ''
                                                                 }}
-
+                                                        
                                                             </div>
-
+                                                        
                                                         </td>
 
                                                         <!-- TOTAL -->
@@ -381,8 +380,7 @@
 
                                                             <input type="number"
                                                                 class="form-control form-control-sm text-end border-danger"
-                                                                [ngModel]="item.Adjust1"
-                                                                (input)="item.Adjust1 = +$any($event.target).value">
+                                                                [(ngModel)]="item.Adjust1Temp">
 
                                                         </td>
 
@@ -391,8 +389,8 @@
 
                                                             <input type="number"
                                                                 class="form-control form-control-sm text-end border-danger"
-                                                                [ngModel]="item.Adjust2"
-                                                                (input)="item.Adjust2 = +$any($event.target).value">
+                                                                [(ngModel)]="item.Adjust2Temp">
+
                                                         </td>
 
                                                         <!-- ADJUST3 -->
@@ -400,8 +398,8 @@
 
                                                             <input type="number"
                                                                 class="form-control form-control-sm text-end border-danger"
-                                                                [ngModel]="item.Adjust3"
-                                                                (input)="item.Adjust3 = +$any($event.target).value">
+                                                                [(ngModel)]="item.Adjust3Temp">
+
                                                         </td>
 
                                                         <!-- TOTAL ALLOCATED -->
@@ -438,7 +436,7 @@
                 </tbody>
 
                 <!-- FOOTER -->
-                <tfoot class="table fw-bold" style="background-color: #556398; color: white;">
+             <tfoot class="table fw-bold" style="background-color: #556398; color: white;">
 
                     <tr>
 
@@ -491,8 +489,7 @@
 
                 </button>
 
-                <button class="btn btn-success" type="button" (mousedown)="$event.preventDefault()"
-                    (click)="saveAdjust()">
+                <button class="btn btn-success" (click)="saveAdjust()">
 
                     <i class="ri-save-line"></i>
                     บันทึก

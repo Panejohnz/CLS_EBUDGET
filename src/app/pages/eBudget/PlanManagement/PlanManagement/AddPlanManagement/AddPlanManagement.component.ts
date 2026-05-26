@@ -1125,6 +1125,7 @@ import {
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { EbudgetService } from 'src/app/core/services/ebudget.service';
+import { BudgetYearService } from 'src/app/core/services/budget-year.service';
 
 @Component({
   selector: 'app-add-plan-management',
@@ -1140,7 +1141,8 @@ export class AddPlanManagementComponent
 
   constructor(
     private modalService: NgbModal,
-    public serviceebud: EbudgetService
+    public serviceebud: EbudgetService,
+    private budgetYearService: BudgetYearService
   ) { }
 
   dropdown_select = false;
@@ -1204,11 +1206,27 @@ export class AddPlanManagementComponent
   Mas_Activity: any[] = [];
   Mas_Department_Lists: any[] = []
   Mas_Expense_Lists: any[] = []
+  currentYear: any
   ngOnInit(): void {
+    this.budgetYearService.yearChanged$
+      .subscribe(async year => {
 
+        if (year) {
+
+          if (year < 2500) {
+
+            year = year + 543;
+
+          }
+
+          this.currentYear = year;
+
+        }
+
+      });
     let model = {
       FUNC_CODE: "FUNC-GET_Mas_General",
-      BgYear: "2569"
+      BgYear: this.currentYear
     };
 
     this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
@@ -1798,8 +1816,8 @@ export class AddPlanManagementComponent
   }
 
   save() {
-    console.log('a',this.model);
-    
+    console.log('a', this.model);
+
     this.model.Total =
       this.getAllBudget();
 

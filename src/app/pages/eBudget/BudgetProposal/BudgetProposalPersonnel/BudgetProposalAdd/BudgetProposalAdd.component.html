@@ -94,10 +94,10 @@
                     placeholder="-- กรุณาเลือกรายการค่าใช้จ่าย --">
                 
                 </ng-select> -->
-                <ng-select appendTo="body" [disabled]="model.Budget_Request.Request_Id" [items]="expenseOptions" bindLabel="Expense_Name"
-                     bindValue="Expense_Id" [(ngModel)]="model.selectedExpenseTypeId" (ngModelChange)="onExpenseChange($event)" 
-                     placeholder="-- กรุณาเลือกรายการค่าใช้จ่าย --">
-                
+                <ng-select appendTo="body" [disabled]="model.Budget_Request.Request_Id" [items]="expenseOptions"
+                    bindLabel="Expense_Name" bindValue="Expense_Id" [(ngModel)]="model.selectedExpenseTypeId"
+                    (ngModelChange)="onExpenseChange($event)" placeholder="-- กรุณาเลือกรายการค่าใช้จ่าย --">
+
                 </ng-select>
 
             </div>
@@ -675,25 +675,25 @@
                 }
 
             </div>
-       <div style="height:15px"></div>
+            <div style="height:15px"></div>
 
- <!-- FIXED FOOTER -->
-     <div class="modal-footer footer-fixed">
+            <!-- FIXED FOOTER -->
+            <div class="modal-footer footer-fixed">
 
-        <button class="btn btn-light" (click)="closeModal()">
-            ยกเลิก
-        </button>
+                <button class="btn btn-light" (click)="closeModal()">
+                    ยกเลิก
+                </button>
 
-        <button class="btn btn-success" (click)="save()">
-            💾 บันทึก
-        </button>
+                <button class="btn btn-success" (click)="save()">
+                    💾 บันทึก
+                </button>
 
-    </div>
+            </div>
 
         </div>
 
 
     </div>
 
-   
+
 </div>

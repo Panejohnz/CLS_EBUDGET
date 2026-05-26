@@ -420,7 +420,6 @@ export class ProjectPlanningComponent {
   }
   Project_Plan: any
   async savePlan(modal: any) {
-    console.log('ก่อน save', this.project_planing);
 
     const getId = (obj: any, key: string) =>
       typeof obj === 'object' ? obj?.[key] : obj;
@@ -432,7 +431,7 @@ export class ProjectPlanningComponent {
 
     const payload = {
 
-      BgYear: "2569",
+      BgYear: this.currentYear,
 
       Project_Id: data.Project_Id,
 
@@ -518,7 +517,7 @@ export class ProjectPlanningComponent {
     if (!this.validateBeforeSave(this.project_planing.activities)) {
       return;
     }
-    
+
     const userConfirmed = await confirmAlert('info', 'ต้องการบันทึกข้อมูล ?', '');
 
     if (!userConfirmed) return;

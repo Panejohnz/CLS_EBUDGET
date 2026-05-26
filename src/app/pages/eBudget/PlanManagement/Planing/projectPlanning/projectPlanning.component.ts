@@ -423,7 +423,7 @@ export class ProjectPlanningComponent {
       typeof obj === 'object' ? obj?.[key] : obj;
 
     const payload = {
-      BgYear: "2569",
+      BgYear: this.currentYear,
       Project_Id: this.project_planing.Project_Id,
 
       Department_Id: getId(this.project_planing.selectedDepartment, 'Department_Id'),

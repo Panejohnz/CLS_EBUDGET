@@ -120,7 +120,6 @@ export class ProjectAllocationComponent implements OnInit {
 
   applyFilter() {
 
-    // ยังไม่เลือก
     if (!this.selectedDepartmentId) {
 
       this.table_display = false;
@@ -131,20 +130,19 @@ export class ProjectAllocationComponent implements OnInit {
 
     }
 
-    // เปิด table
     this.table_display = true;
 
-    // =====================================
-    // FILTER REQUEST
-    // =====================================
+    const rows = structuredClone(
 
-    const rows = this.allData.filter(
+      this.allData.filter(
 
-      (x: any) =>
+        (x: any) =>
 
-        x.Department_Id ==
+          x.Department_Id ==
 
-        this.selectedDepartmentId
+          this.selectedDepartmentId
+
+      )
 
     );
 
@@ -152,10 +150,6 @@ export class ProjectAllocationComponent implements OnInit {
       'ROWS',
       rows
     );
-
-    // =====================================
-    // GET BUDGET PLAN
-    // =====================================
 
     let model = {
 
@@ -182,10 +176,6 @@ export class ProjectAllocationComponent implements OnInit {
           'BUDGET PLAN',
           plans
         );
-
-        // =====================================
-        // MERGE PLAN
-        // =====================================
 
         rows.forEach((row: any) => {
 
@@ -217,40 +207,30 @@ export class ProjectAllocationComponent implements OnInit {
 
             );
 
-          // ถ้ามีข้อมูลเก่า
           if (oldPlan) {
 
+            row.Plan_Id =
+              oldPlan.Plan_Id || 0;
+
             row.Adjust1 =
-              oldPlan.Adjust1 || 0;
+              Number(oldPlan.Adjust1 || 0);
 
             row.Adjust2 =
-              oldPlan.Adjust2 || 0;
+              Number(oldPlan.Adjust2 || 0);
 
             row.Adjust3 =
-              oldPlan.Adjust3 || 0;
+              Number(oldPlan.Adjust3 || 0);
 
             row.Update_Amount =
-              oldPlan.Update_Amount || 0;
+              Number(oldPlan.Update_Amount || 0);
 
           }
 
         });
 
-        // =====================================
-        // RESET
-        // =====================================
-
         this.groupData = [];
 
-        // =====================================
-        // GROUP
-        // =====================================
-
         rows.forEach((row: any) => {
-
-          // =====================
-          // PLAN
-          // =====================
 
           let plan = this.groupData.find(
 
@@ -279,10 +259,6 @@ export class ProjectAllocationComponent implements OnInit {
 
           }
 
-          // =====================
-          // PRODUCT
-          // =====================
-
           let product = plan.products.find(
 
             (x: any) =>
@@ -309,10 +285,6 @@ export class ProjectAllocationComponent implements OnInit {
             plan.products.push(product);
 
           }
-
-          // =====================
-          // ACTIVITY
-          // =====================
 
           let activity = product.activities.find(
 
@@ -341,10 +313,6 @@ export class ProjectAllocationComponent implements OnInit {
 
           }
 
-          // =====================
-          // BUDGET
-          // =====================
-
           let budget = activity.budgets.find(
 
             (x: any) =>
@@ -372,75 +340,79 @@ export class ProjectAllocationComponent implements OnInit {
 
           }
 
-          // =====================
-          // ITEM
-          // =====================
+          const item =
+            structuredClone(row);
 
           budget.items.push({
 
-            // KEY
+            ...item,
+
             Plan_Id:
-              row.Plan_Id || 0,
+              item.Plan_Id || 0,
 
             FK_Request_Id:
-              row.Request_Id ||
-              row.FK_Request_Id ||
+              item.Request_Id ||
+              item.FK_Request_Id ||
               0,
 
-            // FK
             Department_Id:
-              row.Department_Id || 0,
+              item.Department_Id || 0,
 
             Department_Name:
-              row.Department_Name || '',
+              item.Department_Name || '',
 
             Fk_Activity_Id:
-              row.Fk_Activity_Id || 0,
+              item.Fk_Activity_Id || 0,
 
             Fk_Budget_Type:
-              row.Fk_Budget_Type || 0,
+              item.Fk_Budget_Type || 0,
 
             Fk_Expense_List:
-              row.Fk_Expense_List || 0,
+              item.Fk_Expense_List || 0,
 
             Fk_Plan_Id:
-              row.Fk_Plan_Id || 0,
+              item.Fk_Plan_Id || 0,
 
             Fk_Product_Id:
-              row.Fk_Product_Id || 0,
+              item.Fk_Product_Id || 0,
 
-            // DETAIL
             Expense_List:
-              row.Expense_List || '',
+              item.Expense_List || '',
 
             Project_Name:
-              row.Project_Name || '',
+              item.Project_Name || '',
 
             Expense_Name:
-              row.Expense_Name
-              || row.Expense_List
+              item.Expense_Name
+              || item.Expense_List
               || '',
 
             Expense_Detail:
-              row.Expense_Detail
-              || row.Project_Name
+              item.Expense_Detail
+              || item.Project_Name
               || '',
 
-            // AMOUNT
             Total:
-              Number(row.Total || 0),
+              Number(item.Total || 0),
 
             Adjust1:
-              Number(row.Adjust1 || 0),
+              Number(item.Adjust1 || 0),
 
             Adjust2:
-              Number(row.Adjust2 || 0),
+              Number(item.Adjust2 || 0),
 
             Adjust3:
-              Number(row.Adjust3 || 0),
+              Number(item.Adjust3 || 0),
+            Adjust1Temp:
+              Number(item.Adjust1 || 0),
 
+            Adjust2Temp:
+              Number(item.Adjust2 || 0),
+
+            Adjust3Temp:
+              Number(item.Adjust3 || 0),
             Update_Amount:
-              Number(row.Update_Amount || 0)
+              Number(item.Update_Amount || 0)
 
           });
 
@@ -473,7 +445,9 @@ export class ProjectAllocationComponent implements OnInit {
 
             budget.items.forEach((item: any) => {
 
-              items.push(item);
+              items.push({
+                ...item
+              });
 
             });
 
@@ -497,15 +471,15 @@ export class ProjectAllocationComponent implements OnInit {
 
     return (
 
-      (Number(item.Adjust1) || 0)
+      (Number(item.Adjust1Temp) || 0)
 
       +
 
-      (Number(item.Adjust2) || 0)
+      (Number(item.Adjust2Temp) || 0)
 
       +
 
-      (Number(item.Adjust3) || 0)
+      (Number(item.Adjust3Temp) || 0)
 
     );
 
@@ -630,7 +604,6 @@ export class ProjectAllocationComponent implements OnInit {
 
     const items = this.getAllItems();
 
-
     const invalid = items.some((item: any) => {
 
       return this.getRowTotal(item)
@@ -643,12 +616,15 @@ export class ProjectAllocationComponent implements OnInit {
 
     if (invalid) {
 
+      basicAlert(
+        'error',
+        'มียอดจัดสรรเกินคำของบ',
+        ''
+      );
 
-      basicAlert('error', 'มียอดจัดสรรเกินคำของบ', '')
       return;
 
     }
-
 
     const payload = items.map((item: any) => {
 
@@ -661,17 +637,16 @@ export class ProjectAllocationComponent implements OnInit {
           item.Plan_Id,
 
         Adjust1:
-          Number(item.Adjust1 || 0),
+          Number(item.Adjust1Temp || 0),
 
         Adjust2:
-          Number(item.Adjust2 || 0),
+          Number(item.Adjust2Temp || 0),
 
         Adjust3:
-          Number(item.Adjust3 || 0),
+          Number(item.Adjust3Temp  || 0),
 
         Update_Amount:
           this.getRowTotal(item),
-
 
         Department_Id:
           item.Department_Id,
@@ -693,7 +668,9 @@ export class ProjectAllocationComponent implements OnInit {
 
         Fk_Product_Id:
           item.Fk_Product_Id,
-        BgYear: this.currentYear
+
+        BgYear:
+          this.currentYear
 
       };
 
@@ -714,25 +691,24 @@ export class ProjectAllocationComponent implements OnInit {
 
     };
 
-
     this.servicebud
       .GatewayGetData(model)
       .subscribe({
 
-        next: (response: any) => {
+        next: async (response: any) => {
 
           console.log(
             'SAVE RESPONSE',
             response
           );
 
+          basicAlert(
+            'success',
+            'บันทึกข้อมูล',
+            ''
+          );
 
-          basicAlert('success', 'บันทึกข้อมูล', '')
-          // reload
-          this.get_data();
-
-          // refresh
-          this.applyFilter();
+          await this.reloadAfterSave();
 
         },
 
@@ -743,14 +719,49 @@ export class ProjectAllocationComponent implements OnInit {
             err
           );
 
+          basicAlert(
+            'error',
+            'บันทึกไม่สำเร็จ',
+            ''
+          );
 
-          basicAlert('error', 'บันทึกไม่สำเร็จ', '')
         }
 
       });
 
   }
+  async reloadAfterSave() {
 
+    let model = {
+
+      FUNC_CODE:
+        'FUNC-Get_Budget_Request',
+
+      BgYear:
+        this.currentYear
+
+    };
+
+    this.servicebud
+      .GatewayGetData(model)
+      .subscribe((response: any) => {
+
+        this.allData =
+          Array.isArray(
+            response.List_Budget_Request_Data_Table.Data
+          )
+            ? response.List_Budget_Request_Data_Table.Data
+            : [];
+
+        setTimeout(() => {
+
+          this.applyFilter();
+
+        }, 300);
+
+      });
+
+  }
 
   backToTable() {
 

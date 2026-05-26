@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EbudgetService } from 'src/app/core/services/ebudget.service'
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { BudgetYearService } from 'src/app/core/services/budget-year.service';
 
 @Component({
   selector: 'app-project-budget-proposal-add',
@@ -15,7 +16,8 @@ export class ProjectBudgetProposalAddPersonnelComponent {
 
   constructor(
     public serviceebud: EbudgetService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private budgetYearService: BudgetYearService
   ) { }
 
   closeModal() {
@@ -101,12 +103,17 @@ export class ProjectBudgetProposalAddPersonnelComponent {
   div_list(expenseItem: any) {
     this.div_modal = true
   }
-
+  currentYear: any
   ngOnInit(): void {
+    this.budgetYearService.yearChanged$.subscribe(year => {
+      if (year) {
+        this.currentYear = year
 
+      }
+    });
     let model = {
       FUNC_CODE: "FUNC-GET_Mas_General",
-      BgYear: "2569"
+      BgYear: this.currentYear
     };
 
     this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
@@ -666,7 +673,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
 
     const payload = {
 
-      BgYear: "2569",
+      BgYear: this.currentYear,
 
       Request_Id:
         this.model.Budget_Request.Request_Id,
@@ -757,7 +764,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
 
     const payload_plan = {
 
-      BgYear: "2569",
+      BgYear: this.currentYear,
 
       ...(data?.Project_Id && {
         Project_Id: data.Project_Id
