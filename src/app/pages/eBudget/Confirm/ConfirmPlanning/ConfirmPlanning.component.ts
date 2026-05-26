@@ -20,12 +20,12 @@ import { FormsModule } from '@angular/forms';
 import { BudgetYearService } from 'src/app/core/services/budget-year.service';
 
 @Component({
-  selector: 'app-sing-off-planing',
+  selector: 'app-confirm-planning',
   providers: [GridJsService, DecimalPipe, EbudgetService],
-  templateUrl: './singOffPlaning.component.html',
+  templateUrl: './ConfirmPlanning.component.html',
   styles: ``
 })
-export class SingOffPlaningComponent {
+export class ConfirmPlanningComponent {
   constructor(private modalService: NgbModal, public service: GridJsService
     , private sortService: PaginationService, public serviceebud: EbudgetService
     , private authService: AuthenticationService,private budgetYearService: BudgetYearService) {
@@ -65,11 +65,10 @@ export class SingOffPlaningComponent {
     Plan_Name: '',
     Active: 1
   };
-
-   currentYear : any
+  currentYear : any
   ngOnInit(): void {
 
-     this.budgetYearService.yearChanged$.subscribe(async year => {
+ this.budgetYearService.yearChanged$.subscribe(async year => {
       if (year) {
         if (year < 2500) {
           year = year + 543
@@ -80,11 +79,12 @@ export class SingOffPlaningComponent {
       }
     });
 
-  }
 
+
+  }
   get_data() {
     let model = {
-      FUNC_CODE: "FUNC-Get_Project_plan_Sign_Off",
+      FUNC_CODE: "FUNC-Get_Project_plan_Confirm",
       BgYear :  this.currentYear
     }
     var getData = this.serviceebud.GatewayGetData(model);
@@ -119,8 +119,8 @@ export class SingOffPlaningComponent {
       item.selected = checked;
     });
   }
-  async CancelSignoff() {
-    const userConfirmed = await confirmAlert('info', 'ต้องการ Cancel Sign off โครงการ ?', '');
+  async CancelConfirm() {
+    const userConfirmed = await confirmAlert('info', 'ต้องการยกเลิกการยืนยันโครงการ ?', '');
 
     if (!userConfirmed) return;
 
@@ -138,8 +138,8 @@ export class SingOffPlaningComponent {
       }));
 
       let model = {
-        FUNC_CODE: "FUNC-Cancel_SignOff_Project_Plan",
-        List_Project_Plan : payload
+        FUNC_CODE: "FUNC-Cancel_Confirm_Project_Plan",
+        List_Project_Plan: payload
       };
       this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
         basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
@@ -147,9 +147,9 @@ export class SingOffPlaningComponent {
       });
     }
   }
-  async SignOff() {
+  async Confirm() {
 
-    const userConfirmed = await confirmAlert('info', 'ต้องการ Sign off โครงการ ?', '');
+    const userConfirmed = await confirmAlert('info', 'ต้องการยืนยันข้อมูลโครงการ ?', '');
 
     if (!userConfirmed) return;
 
@@ -166,8 +166,8 @@ export class SingOffPlaningComponent {
     }));
 
     let model = {
-      FUNC_CODE: "FUNC-SignOff_Project_Plan",
-      List_Project_Plan : payload
+      FUNC_CODE: "FUNC-Confirm_Project_Plan",
+      List_Project_Plan: payload
     };
 
     this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
