@@ -7,10 +7,10 @@
             <div>
                 <h5 class="fw-bold">โอนเปลี่ยนแปลงงบประมาณ</h5>
 
-                <div class="d-flex align-items-center gap-2 mt-2">
+                <!-- <div class="d-flex align-items-center gap-2 mt-2">
                     <label class="mb-0 text-nowrap">หน่วยงาน</label>
                     <input class="form-control" style="width: 400px;" [(ngModel)]="department">
-                </div>
+                </div> -->
             </div>
 
             <div class="d-flex align-items-center gap-2">
@@ -27,10 +27,12 @@
             <thead class="table-secondary">
                 <tr>
                     <th>ลำดับ</th>
+                    <th>วันที่โอน</th>
                     <th>หน่วยงานที่โอน</th>
+                    <th>รายการที่โอน</th>
                     <th>หน่วยงานที่รับโอน</th>
-                    <th>รายการ</th>
-                    <th>เพิ่ม/ลด</th>
+                    <th>รายการที่รับโอน</th>
+                    <th>จำนวนเงินโอน</th>
                     <th>แก้ไข</th>
                     <th>ลบ</th>
                 </tr>
@@ -39,24 +41,18 @@
             <tbody>
                 <tr *ngFor="let row of rows; let i = index">
                     <td>{{ i + 1 }}</td>
-
+                    <td>{{ row.transferDate | date:'dd/MM/yyyy' }}</td>
                     <td>{{ row.fromDept }}</td>
+                    <td>{{ row.expense }}</td>
                     <td>{{ row.toDept }}</td>
                     <td>{{ row.expense }}</td>
-
+                     <td>10,000.00</td>
                     <td>
-                        <span [class.text-success]="row.type === 'increase'"
-                            [class.text-danger]="row.type === 'decrease'">
-                            {{ row.type === 'increase' ? 'เพิ่ม' : 'ลด' }}
-                        </span>
+                        <button class="btn btn-warning btn-sm" (click)="openEdit(formModal, row, i)">   <i class="ri-pencil-line"></i></button>
                     </td>
 
                     <td>
-                        <button class="btn btn-warning btn-sm" (click)="openEdit(formModal, row, i)">✏️</button>
-                    </td>
-
-                    <td>
-                        <button class="btn btn-danger btn-sm" (click)="remove(i)">🗑</button>
+                        <button class="btn btn-danger btn-sm" (click)="remove(i)">  <i class="ri-delete-bin-line"></i></button>
                     </td>
                 </tr>
             </tbody>
@@ -97,7 +93,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label>โอนจากโครงการ :</label>
+                                <label>โอนจากรายการ/โครงการ :</label>
 
                                 <ng-container *ngIf="!isEdit; else viewProject">
                                     <input class="form-control" [(ngModel)]="form.project">
@@ -109,7 +105,7 @@
                             </div>
 
                             <div class="col-md-6 mt-2">
-                                <label>จำนวนเงินโครงการ :</label>
+                                <label>จำนวนเงินงบประมาณ :</label>
 
                                 <ng-container *ngIf="!isEdit; else viewBudget">
                                     <input type="number" class="form-control" [(ngModel)]="form.projectBudget">
@@ -176,27 +172,13 @@
                             </div>
 
                             <div class="col-md-6 mt-3">
-                                <label>โอนไปโครงการ :</label>
+                                <label>โอนไปรายการ/โครงการ :</label>
                                 <select class="form-control" [(ngModel)]="form.toProject">
                                     <option value="">Select an Option</option>
                                 </select>
                             </div>
 
-                            <div class="col-md-6 mt-3">
-                                <label>รายการค่าใช้จ่าย :</label>
-                                <input class="form-control" [(ngModel)]="form.expense">
-                            </div>
-
-                            <div class="col-md-6 mt-3 d-flex align-items-end gap-3">
-                                <label>
-                                    <input type="radio" [(ngModel)]="form.type" value="increase"> เพิ่ม
-                                </label>
-
-                                <label>
-                                    <input type="radio" [(ngModel)]="form.type" value="decrease"> ลด
-                                </label>
-                            </div>
-
+                        
                             <div class="col-md-6 mt-3">
                                 <label>จำนวนเงินที่โอน :</label>
                                 <div class="d-flex">
