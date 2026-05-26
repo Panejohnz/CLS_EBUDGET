@@ -10,10 +10,6 @@
                     โอนเปลี่ยนแปลงงบประมาณ
                 </h5>
 
-                <!-- <div class="d-flex align-items-center gap-2 mt-2">
-                    <label class="mb-0 text-nowrap">หน่วยงาน</label>
-                    <input class="form-control" style="width: 400px;" [(ngModel)]="department">
-                </div> -->
             </div>
 
             <div class="d-flex align-items-center gap-2">
@@ -39,35 +35,67 @@
             <thead class="table-secondary">
 
                 <tr>
-                    <th>ลำดับ</th>
-                    <th>วันที่โอน</th>
-                    <th>หน่วยงานที่โอน</th>
-                    <th>รายการที่โอน</th>
-                    <th>หน่วยงานที่รับโอน</th>
-                    <th>รายการที่รับโอน</th>
-                    <th>จำนวนเงินโอน</th>
-                    <th>แก้ไข</th>
-                    <th>ลบ</th>
+
+                    <th>
+                        ลำดับ
+                    </th>
+
+                    <th>
+                        วันที่ทำรายการ
+                    </th>
+
+                    <th>
+                        ครั้งที่โอน
+                    </th>
+
+                    <th>
+                        หน่วยงานต้นทาง
+                    </th>
+
+                    <th>
+                        โครงการต้นทาง
+                    </th>
+
+                    <th>
+                        หน่วยงานปลายทาง
+                    </th>
+
+                    <th>
+                        โครงการปลายทาง
+                    </th>
+
+                    <th>
+                        จำนวนเงิน
+                    </th>
+
+                    <th>
+                        แก้ไข
+                    </th>
+
+                    <th>
+                        ลบ
+                    </th>
+
                 </tr>
 
             </thead>
 
             <tbody>
 
-                <tr *ngFor="let row of rows; let i = index">
-                    <td>{{ i + 1 }}</td>
-                    <td>{{ row.transferDate | date:'dd/MM/yyyy' }}</td>
-                    <td>{{ row.fromDept }}</td>
-                    <td>{{ row.expense }}</td>
-                    <td>{{ row.toDept }}</td>
-                    <td>{{ row.expense }}</td>
-                     <td>10,000.00</td>
+                <tr *ngFor="let row of filteredRows; let i = index">
                     <td>
-                        <button class="btn btn-warning btn-sm" (click)="openEdit(formModal, row, i)">   <i class="ri-pencil-line"></i></button>
+                        {{ i + 1 }}
                     </td>
 
                     <td>
-                        <button class="btn btn-danger btn-sm" (click)="remove(i)">  <i class="ri-delete-bin-line"></i></button>
+                        {{ row.Transfer_Date_Display }} </td>
+
+                    <td>
+                        {{ row.Transfer_Count }}
+                    </td>
+
+                    <td>
+                        {{ row.From_Department_Name }}
                     </td>
 
                     <td>
@@ -76,6 +104,10 @@
 
                     <td>
                         {{ row.To_Department_Name }}
+                    </td>
+
+                    <td>
+                        {{ row.To_Plan_Name }}
                     </td>
 
                     <td class="text-end">
@@ -91,7 +123,7 @@
 
                         <button class="btn btn-warning btn-sm" (click)="openEdit(formModal, row, i)">
 
-                            ✏️
+                            <i class="ri-pencil-line"></i>
 
                         </button>
 
@@ -99,9 +131,9 @@
 
                     <td>
 
-                        <button class="btn btn-danger btn-sm" (click)="remove(i)">
+                        <button class="btn btn-danger btn-sm" (click)="remove(row)">
 
-                            🗑
+                            <i class="ri-delete-bin-line"></i>
 
                         </button>
 
@@ -121,8 +153,8 @@
 
                     {{
                     isEdit
-                    ? 'แก้ไข ข้อมูลการโอนงบประมาณ'
-                    : 'เพิ่ม ข้อมูลการโอนงบประมาณ'
+                    ? 'แก้ไขข้อมูลการโอนงบประมาณ'
+                    : 'เพิ่มข้อมูลการโอนงบประมาณ'
                     }}
 
                 </h5>
@@ -140,7 +172,7 @@
                     <div class="mb-3">
 
                         <span class="badge bg-warning text-dark">
-                            ข้อมูลงบประมาณ
+                            ข้อมูลต้นทาง
                         </span>
 
                         <div class="row mt-2">
@@ -151,39 +183,83 @@
                                     โอนจากหน่วยงาน :
                                 </label>
 
-                                <input class="form-control" [(ngModel)]="form.From_Department_Name">
+                                <ng-select [items]="departments" bindLabel="Department_Name" bindValue="Department_Id"
+                                    [(ngModel)]="form.From_Department_Id" (change)="onChangeFromDepartment()"
+                                    appendTo="body" placeholder="-- เลือกหน่วยงาน --">
+
+                                </ng-select>
 
                             </div>
 
                             <div class="col-md-6">
-                                <label>โอนจากรายการ/โครงการ :</label>
 
                                 <label>
                                     โอนจากโครงการ :
                                 </label>
 
-                                <input class="form-control" [(ngModel)]="form.From_Plan_Name">
+                                <ng-select [items]="plans" bindLabel="Project_Name" bindValue="Project_Id"
+                                    [(ngModel)]="form.From_Plan_Id" (change)="onChangeFromPlan()" appendTo="body"
+                                    placeholder="-- เลือกโครงการ --">
 
-                            </div>
-
-                            <div class="col-md-6 mt-2">
-                                <label>จำนวนเงินงบประมาณ :</label>
-
-                                <label>
-                                    รหัสหน่วยงาน :
-                                </label>
-
-                                <input type="number" class="form-control" [(ngModel)]="form.From_Department_Id">
+                                </ng-select>
 
                             </div>
 
                             <div class="col-md-6 mt-2">
 
                                 <label>
-                                    รหัสโครงการ :
+                                    จำนวนเงินโครงการ :
                                 </label>
 
-                                <input type="number" class="form-control" [(ngModel)]="form.From_Plan_Id">
+                                <ng-container *ngIf="!isEdit; else viewBudget">
+
+                                    <input type="number" class="form-control" [(ngModel)]="form.projectBudget">
+
+                                </ng-container>
+
+                                <ng-template #viewBudget>
+
+                                    <span class="ms-2">
+
+                                        {{
+                                        form.projectBudget || 0
+                                        | number:'1.2-2'
+                                        }}
+
+                                        บาท
+
+                                    </span>
+
+                                </ng-template>
+
+                            </div>
+
+                            <div class="col-md-6 mt-2">
+
+                                <label>
+                                    จำนวนเงินคงเหลือ :
+                                </label>
+
+                                <ng-container *ngIf="!isEdit; else viewBalance">
+
+                                    <input type="number" class="form-control" [(ngModel)]="form.balance">
+
+                                </ng-container>
+
+                                <ng-template #viewBalance>
+
+                                    <span class="ms-2">
+
+                                        {{
+                                        form.balance || 0
+                                        | number:'1.2-2'
+                                        }}
+
+                                        บาท
+
+                                    </span>
+
+                                </ng-template>
 
                             </div>
 
@@ -242,33 +318,28 @@
                             </div>
 
                             <div class="col-md-12 mt-2">
-                                <label>รายละเอียดการโอน :</label>
-                                <textarea class="form-control" [(ngModel)]="form.detail"></textarea>
+
+                                <label>
+                                    รายละเอียดการโอน :
+                                </label>
+
+                                <textarea rows="3" class="form-control" [(ngModel)]="form.Transfer_Description">
+
+                                </textarea>
+
                             </div>
 
-                            <div class="col-md-6 mt-3">
-                                <label>โอนไปหน่วยงาน :</label>
-                                <select class="form-control" [(ngModel)]="form.toDept">
-                                    <option value="">Select an Option</option>
-                                    <option *ngFor="let d of departments" [value]="d">{{ d }}</option>
-                                </select>
-                            </div>
-
-                            <div class="col-md-6 mt-3">
-                                <label>โอนไปรายการ/โครงการ :</label>
-                                <select class="form-control" [(ngModel)]="form.toProject">
-                                    <option value="">Select an Option</option>
-                                </select>
-                            </div>
-
-                        
                             <div class="col-md-6 mt-3">
 
                                 <label>
                                     โอนไปหน่วยงาน :
                                 </label>
 
-                                <input class="form-control" [(ngModel)]="form.To_Department_Name">
+                                <ng-select [items]="departments" bindLabel="Department_Name" bindValue="Department_Id"
+                                    [(ngModel)]="form.To_Department_Id" (change)="onChangeToDepartment()"
+                                    appendTo="body" placeholder="-- เลือกหน่วยงาน --">
+
+                                </ng-select>
 
                             </div>
 
@@ -278,27 +349,11 @@
                                     โอนไปโครงการ :
                                 </label>
 
-                                <input class="form-control" [(ngModel)]="form.To_Plan_Name">
+                                <ng-select [items]="plans" bindLabel="Project_Name" bindValue="Project_Id"
+                                    [(ngModel)]="form.To_Plan_Id" (change)="onChangeToPlan()" appendTo="body"
+                                    placeholder="-- เลือกโครงการ --">
 
-                            </div>
-
-                            <div class="col-md-6 mt-3">
-
-                                <label>
-                                    รหัสหน่วยงานปลายทาง :
-                                </label>
-
-                                <input type="number" class="form-control" [(ngModel)]="form.To_Department_Id">
-
-                            </div>
-
-                            <div class="col-md-6 mt-3">
-
-                                <label>
-                                    รหัสโครงการปลายทาง :
-                                </label>
-
-                                <input type="number" class="form-control" [(ngModel)]="form.To_Plan_Id">
+                                </ng-select>
 
                             </div>
 
@@ -308,15 +363,7 @@
                                     จำนวนเงินที่โอน :
                                 </label>
 
-                                <div class="d-flex">
-
-                                    <input type="number" class="form-control w-50" [(ngModel)]="form.Transfer_Amount">
-
-                                    <span class="ms-2 align-self-center">
-                                        บาท
-                                    </span>
-
-                                </div>
+                                <input type="number" class="form-control" [(ngModel)]="form.Transfer_Amount">
 
                             </div>
 

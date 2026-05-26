@@ -27,6 +27,10 @@ import {
   AuthenticationService
 } from 'src/app/core/services/auth.service';
 
+import {
+  BudgetYearService
+} from 'src/app/core/services/budget-year.service';
+
 @Component({
   selector: 'app-project-transfer',
   providers: [
@@ -45,10 +49,9 @@ export class ProjectTransferComponent
     public service: GridJsService,
     private sortService: PaginationService,
     public servicebud: EbudgetService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private budgetYearService: BudgetYearService
   ) { }
-
-  department = '';
 
   keyword = '';
 
@@ -58,15 +61,34 @@ export class ProjectTransferComponent
 
   plans: any[] = [];
 
-  form: any = {};
+  form: any;
 
   isEdit = false;
 
   editIndex = -1;
 
+  currentYear: any;
+
   ngOnInit(): void {
 
-    this.getData();
+    this.budgetYearService.yearChanged$
+      .subscribe(async year => {
+
+        if (year) {
+
+          if (year < 2500) {
+
+            year = year + 543;
+
+          }
+
+          this.currentYear = year;
+
+          this.getData();
+
+        }
+
+      });
 
   }
 
@@ -75,7 +97,10 @@ export class ProjectTransferComponent
     let model = {
 
       FUNC_CODE:
-        'FUNC-GET_TRANSFER'
+        'FUNC-GET_Budget_Plan_Transfer',
+
+      BgYear:
+        this.currentYear
 
     };
 
@@ -83,12 +108,32 @@ export class ProjectTransferComponent
       .GatewayGetData(model)
       .subscribe((response: any) => {
 
-        this.rows =
+        this.rows = (
 
           response
-            ?.Budget_Plan_Transfer ||
+            ?.List_Budget_Plan_Transfer_Data_Table?.Data ||
 
-          [];
+          []
+
+        ).map((item: any) => {
+
+          return {
+
+            ...item,
+
+            Transfer_Date:
+              this.convertDateInput(
+                item.Transfer_Date
+              ),
+
+            Transfer_Doc_Date:
+              this.convertDateInput(
+                item.Transfer_Doc_Date
+              )
+
+          };
+
+        });
 
         this.departments =
 
@@ -100,7 +145,7 @@ export class ProjectTransferComponent
         this.plans =
 
           response
-            ?.Mas_Plan_Lists ||
+            ?.List_Project_Plan ||
 
           [];
 
@@ -143,9 +188,40 @@ export class ProjectTransferComponent
 
     this.form = {
 
-      ...row
+      ...row,
+
+      From_Department_Id:
+        Number(row.From_Department_Id),
+
+      To_Department_Id:
+        Number(row.To_Department_Id),
+
+      From_Plan_Id:
+        Number(row.From_Plan_Id),
+
+      To_Plan_Id:
+        Number(row.To_Plan_Id),
+
+      Transfer_Date:
+        this.convertDateInput(
+          row.Transfer_Date
+        ),
+
+      Transfer_Doc_Date:
+        this.convertDateInput(
+          row.Transfer_Doc_Date
+        )
 
     };
+    console.log('this.form', this.form);
+
+    this.onChangeFromDepartment();
+
+    this.onChangeToDepartment();
+
+    this.onChangeFromPlan();
+
+    this.onChangeToPlan();
 
     this.modalService.open(
       modal,
@@ -154,6 +230,115 @@ export class ProjectTransferComponent
         backdrop: 'static'
       }
     );
+
+  }
+  convertDateInput(date: any): string {
+
+    if (!date) return '';
+
+    if (
+      typeof date === 'string'
+      &&
+      date.includes('/')
+    ) {
+
+      const splitDate =
+        date.split(' ')[0];
+
+      const parts =
+        splitDate.split('/');
+
+      if (parts.length === 3) {
+
+        const day =
+          parts[0].padStart(2, '0');
+
+        const month =
+          parts[1].padStart(2, '0');
+
+        const year =
+          parts[2];
+
+        return `${year}-${month}-${day}`;
+
+      }
+
+    }
+
+    return date;
+
+  }
+  onChangeFromDepartment() {
+
+    const dep =
+      this.departments.find(
+        (x: any) =>
+          Number(x.Department_Id)
+          ===
+          Number(
+            this.form.From_Department_Id
+          )
+      );
+
+    this.form.From_Department_Name =
+      dep?.Department_Name || '';
+
+  }
+
+  onChangeToDepartment() {
+
+    const dep =
+      this.departments.find(
+        (x: any) =>
+          Number(x.Department_Id)
+          ===
+          Number(
+            this.form.To_Department_Id
+          )
+      );
+
+    this.form.To_Department_Name =
+      dep?.Department_Name || '';
+
+  }
+
+  onChangeFromPlan() {
+
+    const plan =
+      this.plans.find(
+        (x: any) =>
+          Number(x.Project_Id)
+          ===
+          Number(
+            this.form.From_Plan_Id
+          )
+      );
+
+    this.form.From_Plan_Name =
+      plan?.Project_Name || '';
+
+    this.form.projectBudget =
+      Number(plan?.Total || 0);
+
+    this.form.balance =
+      Number(plan?.Total || 0);
+
+  }
+
+  onChangeToPlan() {
+
+    const plan =
+      this.plans.find(
+        (x: any) =>
+          Number(x.Project_Id)
+          ===
+          Number(
+            this.form.To_Plan_Id
+          )
+      );
+
+    this.form.To_Plan_Name =
+      plan?.Project_Name || '';
 
   }
 
@@ -165,7 +350,7 @@ export class ProjectTransferComponent
         this.form.Transfer_Id || 0,
 
       BgYear:
-        this.form.BgYear || 2569,
+        this.currentYear,
 
       Transfer_Date:
         this.form.Transfer_Date,
@@ -226,9 +411,9 @@ export class ProjectTransferComponent
 
         this.isEdit
 
-          ? 'FUNC-UPDATE_TRANSFER'
+          ? 'FUNC-Update_Budget_Transfer'
 
-          : 'FUNC-INSERT_TRANSFER',
+          : 'FUNC-Insert_Budget_Transfer',
 
       Budget_Plan_Transfer:
         payload
@@ -274,32 +459,124 @@ export class ProjectTransferComponent
 
   }
 
-  async remove(index: number) {
-    const userConfirmed = await confirmAlert('info', 'ต้องการลบข้อมูล ?', '');
+  async remove(index: any) {
+
+    const userConfirmed =
+      await confirmAlert(
+        'info',
+        'ต้องการลบข้อมูล ?',
+        ''
+      );
 
     if (userConfirmed) {
 
       const model = {
-        FUNC_CODE: "FUNC-Delete_Transfer",
 
-        Transfer_Id: index
+        FUNC_CODE:
+          "FUNC-Delete_Transfer",
+
+        Transfer_Id:
+          index.Transfer_Id
+
       };
 
-      this.servicebud.GatewayGetData(model).subscribe(async () => {
-        basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
+      this.servicebud
+        .GatewayGetData(model)
+        .subscribe(async () => {
 
-      });
+          basicAlert(
+            'success',
+            'ลบข้อมูลสำเร็จ',
+            ''
+          );
+
+          this.getData();
+
+        });
+
     }
 
   }
+  get filteredRows() {
 
+    if (!this.keyword) {
+
+      return this.rows;
+
+    }
+
+    const keyword =
+      this.keyword.toLowerCase();
+
+    return this.rows.filter((row: any) => {
+
+      return (
+
+        String(
+          row.Transfer_Date_Display || ''
+        ).toLowerCase().includes(keyword)
+
+        ||
+
+        String(
+          row.Transfer_Count || ''
+        ).toLowerCase().includes(keyword)
+
+        ||
+
+        String(
+          row.From_Department_Name || ''
+        ).toLowerCase().includes(keyword)
+
+        ||
+
+        String(
+          row.From_Plan_Name || ''
+        ).toLowerCase().includes(keyword)
+
+        ||
+
+        String(
+          row.To_Department_Name || ''
+        ).toLowerCase().includes(keyword)
+
+        ||
+
+        String(
+          row.To_Plan_Name || ''
+        ).toLowerCase().includes(keyword)
+
+        ||
+
+        String(
+          row.Transfer_Doc_Number || ''
+        ).toLowerCase().includes(keyword)
+
+        ||
+
+        String(
+          row.Transfer_Description || ''
+        ).toLowerCase().includes(keyword)
+
+        ||
+
+        String(
+          row.Transfer_Amount || ''
+        ).toLowerCase().includes(keyword)
+
+      );
+
+    });
+
+  }
   reset() {
 
     this.form = {
 
       Transfer_Id: 0,
 
-      BgYear: 2569,
+      BgYear:
+        this.currentYear,
 
       Transfer_Date: '',
 
@@ -309,25 +586,29 @@ export class ProjectTransferComponent
 
       Transfer_Count: '',
 
-      From_Department_Id: 0,
+      From_Department_Id: null,
 
       From_Department_Name: '',
 
-      From_Plan_Id: 0,
+      From_Plan_Id: null,
 
       From_Plan_Name: '',
 
-      To_Department_Id: 0,
+      To_Department_Id: null,
 
       To_Department_Name: '',
 
-      To_Plan_Id: 0,
+      To_Plan_Id: null,
 
       To_Plan_Name: '',
 
       Transfer_Description: '',
 
       Transfer_Amount: 0,
+
+      projectBudget: 0,
+
+      balance: 0,
 
       Active: true
 
