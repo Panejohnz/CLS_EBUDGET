@@ -64,12 +64,7 @@
                     </div>
 
                     <div class="col-md-2">
-                        <!-- <select class="form-select" [(ngModel)]="item.Unit" name="output_unit_{{i}}">
-                        <option value="">หน่วยนับ</option>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                    </select> -->
+
                         <ng-select [items]="Mas_Unit_Lists" bindLabel="Unit_Name" bindValue="Unit_Id"
                             [(ngModel)]="item.Unit" name="output_unit_{{i}}" placeholder="-- เลือกหน่วยนับ --"
                             [clearable]="false">
@@ -164,12 +159,7 @@
             </div>
 
             <div class="col-md-2">
-                <!-- <select class="form-select" [(ngModel)]="item.Unit" name="tg_unit_{{i}}">
-                <option value="">หน่วยนับ</option>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-            </select> -->
+
                 <ng-select [items]="Mas_Unit_Lists" bindLabel="Unit_Name" bindValue="Unit_Id" [(ngModel)]="item.Unit"
                     name="tg_unit_{{i}}" placeholder="-- เลือกหน่วยนับ --" [clearable]="false">
                 </ng-select>
@@ -211,12 +201,32 @@
 
             <div class="col-md-6">
                 <label>ตั้งแต่</label>
-                <input type="date" class="form-control" [(ngModel)]="projectDetail.Start_Date" name="Start_Date">
+                <div class="input-group">
+                    <input class="form-control" placeholder="วว/ดด/ปปปป" name="Start_Date" ngbDatepicker
+                        #startDp="ngbDatepicker" [(ngModel)]="projectDetail.Start_Date"
+                        (ngModelChange)="syncProjectDetailDate()">
+
+                    <button class="btn btn-outline-secondary" type="button" (click)="startDp.toggle()">
+
+                        <i class="ri-calendar-line"></i>
+
+                    </button>
+                </div>
             </div>
 
             <div class="col-md-6">
                 <label>ถึงวันที่</label>
-                <input type="date" class="form-control" [(ngModel)]="projectDetail.End_Date" name="End_Date">
+                <div class="input-group">
+                    <input class="form-control" placeholder="วว/ดด/ปปปป" name="End_Date" ngbDatepicker
+                        #endDp="ngbDatepicker" [(ngModel)]="projectDetail.End_Date"
+                        (ngModelChange)="syncProjectDetailDate()">
+
+                    <button class="btn btn-outline-secondary" type="button" (click)="endDp.toggle()">
+
+                        <i class="ri-calendar-line"></i>
+
+                    </button>
+                </div>
             </div>
 
         </div>

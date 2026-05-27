@@ -86,7 +86,7 @@ import { TabCoordinatorComponent } from '../shared/planingtab/components/tab-coo
 import { TabGuidelineComponent } from '../shared/planingtab/components/tab-guideline/tab-guideline.component';
 import { OtherExpenseProjectComponent } from '../shared/planingtab/components/tab-guideline/other-expense-project/other-expense-project.component';
 
-
+import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
 @NgModule({
   declarations: [
@@ -168,7 +168,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
     NgbDropdownModule,
     SlickCarouselModule,
     CountUpModule,
-    NgSelectModule
+    NgSelectModule, NgbDatepickerModule
+
   ],
   exports: [BreadcrumbsComponent,
     ClientLogoComponent,

@@ -119,12 +119,18 @@ export class ProjectPlanningComponent {
     })
   }
 
-  Total: number = 0;
+  get Total(): number {
 
-  calculateTotal() {
-    this.Total = this.griddata.reduce((sum: number, item: any) => {
-      return sum + (item.Total || 0);
-    }, 0);
+    return this.griddata.reduce(
+
+      (sum: number, item: any) =>
+
+        sum + Number(item.Total || 0),
+
+      0
+
+    );
+
   }
 
   filterSearch() {

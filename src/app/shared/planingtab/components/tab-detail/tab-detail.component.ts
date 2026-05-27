@@ -1,11 +1,35 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { EbudgetService } from 'src/app/core/services/ebudget.service';
+import {
+  NgbDateParserFormatter,
+  NgbDateStruct
+} from '@ng-bootstrap/ng-bootstrap';
+import { LOCALE_ID } from '@angular/core';
+import { ThaiDateFormatter } from '../../../../thai-date-formatter';
+import {
+  NgbDatepickerI18n
+} from '@ng-bootstrap/ng-bootstrap';
 
-
+import { ThaiDatepickerI18n }
+  from '../../../../thai-datepicker-i18n';
 @Component({
   selector: 'app-tab-detail',
   templateUrl: './tab-detail.component.html',
-  styleUrl: './tab-detail.component.scss'
+  styleUrl: './tab-detail.component.scss',
+  providers: [
+    {
+      provide: NgbDateParserFormatter,
+      useClass: ThaiDateFormatter
+    },
+    {
+      provide: NgbDatepickerI18n,
+      useClass: ThaiDatepickerI18n
+    },
+    {
+      provide: LOCALE_ID,
+      useValue: 'th'
+    }
+  ]
 })
 export class TabDetailComponent implements OnInit, OnChanges {
   constructor(public serviceebud: EbudgetService) {
@@ -45,7 +69,11 @@ export class TabDetailComponent implements OnInit, OnChanges {
       };
     }
 
-    this.projectDetail = this.model.Project_Detail;
+    this.projectDetail = {
+
+      ...this.model.Project_Detail
+
+    };
     this.projectDetail.Start_Date =
       this.convertJsonDateToInput(this.projectDetail.Start_Date);
 
@@ -125,18 +153,22 @@ export class TabDetailComponent implements OnInit, OnChanges {
 
 
   }
-  convertJsonDateToInput(dateStr: string): string {
+  convertJsonDateToInput(
+    dateStr: string
+  ): NgbDateStruct | null {
 
-    if (!dateStr) return '';
+    if (!dateStr) return null;
 
-    const timestamp = Number(dateStr.replace(/[^0-9]/g, ''));
+    const timestamp =
+      Number(dateStr.replace(/[^0-9]/g, ''));
+
     const date = new Date(timestamp);
 
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-
-    return `${year}-${month}-${day}`;
+    return {
+      year: date.getFullYear(),
+      month: date.getMonth() + 1,
+      day: date.getDate()
+    };
   }
   addObjective() {
 
@@ -152,6 +184,34 @@ export class TabDetailComponent implements OnInit, OnChanges {
     this.model.Project_Objective = [...this.objectives];
   }
 
+  convertToApiDate(
+    date: NgbDateStruct | null
+  ): string {
+
+    if (!date) return '';
+
+    const year = date.year;
+
+    const month =
+      String(date.month).padStart(2, '0');
+
+    const day =
+      String(date.day).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  }
+  syncProjectDetailDate() {
+
+    this.model.Project_Detail.Start_Date =
+      this.convertToApiDate(
+        this.projectDetail.Start_Date
+      );
+
+    this.model.Project_Detail.End_Date =
+      this.convertToApiDate(
+        this.projectDetail.End_Date
+      );
+  }
   removeObjective(i: number, item: any) {
     if (!item.Project_Objectives_Id) {
       this.objectives.splice(i, 1);

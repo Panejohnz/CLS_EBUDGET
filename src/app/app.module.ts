@@ -40,8 +40,9 @@ import { TodoEffects } from './store/Todo/todo_effect';
 import { ApplicationEffects } from './store/Jobs/jobs_effect';
 import { ApikeyEffects } from './store/APIKey/apikey_effect';
 import { AuthenticationEffects } from './store/Authentication/authentication.effects';
-
-
+import { registerLocaleData } from '@angular/common';
+import localeTh from '@angular/common/locales/th';
+registerLocaleData(localeTh);
 export function createTranslateLoader(http: HttpClient): any {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
@@ -55,9 +56,11 @@ if (environment.defaultauth === 'firebase') {
 @NgModule({
   declarations: [
     AppComponent,
-    LoadingComponent
+    LoadingComponent,
+
   ],
   imports: [
+
     TranslateModule.forRoot({
       defaultLanguage: 'en',
       loader: {
@@ -68,6 +71,7 @@ if (environment.defaultauth === 'firebase') {
     }),
     BrowserAnimationsModule,
     HttpClientModule,
+
     BrowserModule,
     AppRoutingModule,
     LayoutsModule,
@@ -90,6 +94,7 @@ if (environment.defaultauth === 'firebase') {
       TodoEffects,
       ApplicationEffects,
       ApikeyEffects]),
+
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
@@ -97,6 +102,6 @@ if (environment.defaultauth === 'firebase') {
     { provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: FakeBackendInterceptor, multi: true },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent,]
 })
 export class AppModule { }
