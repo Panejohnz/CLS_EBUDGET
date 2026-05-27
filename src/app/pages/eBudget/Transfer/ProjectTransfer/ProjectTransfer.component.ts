@@ -399,11 +399,11 @@ export class ProjectTransferComponent
   }
 
   onChangeToPlan() {
-
+debugger
     const plan =
       this.plans.find(
         (x: any) =>
-          Number(x.Project_Id)
+          Number(x.Plan_Id)
           ===
           Number(
             this.form.To_Plan_Id

@@ -328,8 +328,8 @@
                                 <label>
                                     โอนไปรายการ/โครงการ :
                                 </label>
-                                <ng-select [items]="plans" bindValue="Project_Id" [(ngModel)]="form.To_Plan_Id"
-                                    (change)="onChangeFromPlan()" appendTo="body" placeholder="-- เลือกโครงการ --">
+                                <ng-select [items]="plans" bindValue="Plan_Id" [(ngModel)]="form.To_Plan_Id"
+                                    (change)="onChangeToPlan()" appendTo="body" placeholder="-- เลือกโครงการ --">
 
                                     <!-- ตอนเลือกแล้ว -->
                                     <ng-template ng-label-tmp let-item="item">
