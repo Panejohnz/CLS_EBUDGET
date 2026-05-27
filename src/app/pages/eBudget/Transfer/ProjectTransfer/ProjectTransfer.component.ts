@@ -60,6 +60,7 @@ export class ProjectTransferComponent
   departments: any[] = [];
 
   plans: any[] = [];
+  allPlans: any[] = [];
 
   form: any;
 
@@ -142,13 +143,9 @@ export class ProjectTransferComponent
 
           [];
 
-        this.plans =
-
-          response
-            ?.List_Project_Plan ||
-
-          [];
-
+        this.allPlans =
+          response?.List_Project_Plan || [];
+        this.plans = [];
         console.log(
           'TRANSFER',
           this.rows
@@ -233,70 +230,70 @@ export class ProjectTransferComponent
 
   }
 
-formatNumber(value: any): string {
+  formatNumber(value: any): string {
 
-  if (value === null || value === undefined || value === '') {
-    return '';
+    if (value === null || value === undefined || value === '') {
+      return '';
+    }
+
+    const number = Number(value.toString().replace(/,/g, ''));
+
+    if (isNaN(number)) {
+      return '';
+    }
+
+    return number.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+
   }
 
-  const number = Number(value.toString().replace(/,/g, ''));
+  displayAmount: string = '';
 
-  if (isNaN(number)) {
-    return '';
+  formatCurrency(event: any): void {
+
+    let value = event.target.value;
+
+    // เอา comma ออก
+    value = value.replace(/,/g, '');
+
+    // อนุญาตเฉพาะเลขกับ .
+    value = value.replace(/[^0-9.]/g, '');
+
+    // กัน . ซ้ำ
+    const parts = value.split('.');
+
+    if (parts.length > 2) {
+      return;
+    }
+
+    let integerPart = parts[0];
+    const decimalPart = parts[1];
+
+    // ใส่ comma
+    integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+    // รวมกลับ
+    this.displayAmount =
+      decimalPart !== undefined
+        ? `${integerPart}.${decimalPart}`
+        : integerPart;
+
+    // เก็บค่าจริงแบบไม่มี comma
+    this.form.Transfer_Amount = value;
+
   }
 
-  return number.toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
+  onAmountChange(value: string): void {
 
-}
+    // เอา comma ออก
+    const numericValue = value.replace(/,/g, '');
 
-displayAmount: string = '';
+    // เก็บค่า
+    this.form.Transfer_Amount = parseFloat(numericValue) || 0;
 
-formatCurrency(event: any): void {
-
-  let value = event.target.value;
-
-  // เอา comma ออก
-  value = value.replace(/,/g, '');
-
-  // อนุญาตเฉพาะเลขกับ .
-  value = value.replace(/[^0-9.]/g, '');
-
-  // กัน . ซ้ำ
-  const parts = value.split('.');
-
-  if (parts.length > 2) {
-    return;
   }
-
-  let integerPart = parts[0];
-  const decimalPart = parts[1];
-
-  // ใส่ comma
-  integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-  // รวมกลับ
-  this.displayAmount =
-    decimalPart !== undefined
-      ? `${integerPart}.${decimalPart}`
-      : integerPart;
-
-  // เก็บค่าจริงแบบไม่มี comma
-  this.form.Transfer_Amount = value;
-
-}
-
-onAmountChange(value: string): void {
-
-  // เอา comma ออก
-  const numericValue = value.replace(/,/g, '');
-
-  // เก็บค่า
-  this.form.Transfer_Amount = parseFloat(numericValue) || 0;
-
-}
 
   convertDateInput(date: any): string {
 
@@ -335,19 +332,28 @@ onAmountChange(value: string): void {
 
   }
   onChangeFromDepartment() {
-
+debugger
     const dep =
       this.departments.find(
         (x: any) =>
           Number(x.Department_Id)
           ===
-          Number(
-            this.form.From_Department_Id
-          )
+          Number(this.form.From_Department_Id)
       );
 
     this.form.From_Department_Name =
       dep?.Department_Name || '';
+
+    // reset plan
+    this.form.From_Plan_Id = null;
+
+    // filter plans ตาม Department_Id
+    this.plans = this.allPlans.filter(
+      (x: any) =>
+        Number(x.Department_Id)
+        ===
+        Number(this.form.From_Department_Id)
+    );
 
   }
 
