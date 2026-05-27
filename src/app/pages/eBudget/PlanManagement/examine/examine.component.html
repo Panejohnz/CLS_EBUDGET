@@ -78,7 +78,7 @@
                     <!-- PLAN -->
                     <ng-container *ngFor="let plan of groupData">
 
-                        <tr class="table-primary fw-bold" style="cursor:pointer; background-color: #7bff86;"
+                        <tr class="table fw-bold" style="cursor:pointer; background-color: #7bff86;"
                             (click)="plan.expanded = !plan.expanded">
 
                             <td>
@@ -127,7 +127,7 @@
 
                             </td>
 
-                            <td class="text-end text-primary">
+                            <td class="text-end fw-bold">
 
                                 {{
                                 sumAllocate(plan)
@@ -143,7 +143,7 @@
                             <!-- PRODUCT -->
                             <ng-container *ngFor="let product of plan.products">
 
-                                <tr class="table-info fw-bold" style="cursor:pointer; background-color: #f1b0f7;"
+                                <tr class="table fw-bold" style="cursor:pointer; background-color: #f1b0f7;"
                                     (click)="product.expanded = !product.expanded">
 
                                     <td class="ps-4">
@@ -192,7 +192,7 @@
 
                                     </td>
 
-                                    <td class="text-end text-primary">
+                                    <td class="text-end fw-bold">
 
                                         {{
                                         sumAllocate(plan)
@@ -208,7 +208,7 @@
                                     <!-- ACTIVITY -->
                                     <ng-container *ngFor="let activity of product.activities">
 
-                                        <tr class="table-light fw-bold" style="cursor:pointer; background-color: #f8f187;"
+                                        <tr class="table fw-bold" style="cursor:pointer; background-color: #f8f187;"
                                             (click)="activity.expanded = !activity.expanded">
 
                                             <td class="ps-5">
@@ -257,7 +257,7 @@
 
                                             </td>
 
-                                            <td class="text-end text-primary">
+                                            <td class="text-end fw-bold">
 
                                                 {{
                                                 sumAllocate(plan)
@@ -273,11 +273,12 @@
                                             <!-- BUDGET -->
                                             <ng-container *ngFor="let budget of activity.budgets">
 
-                                                <tr class="bg-light fw-bold" style="cursor:pointer; background-color: #a1e3f7;"
+                                                <tr class="table fw-bold" style="cursor:pointer; background-color: #a1e3f7;"
                                                     (click)="budget.expanded = !budget.expanded">
 
-                                                    <!-- NAME -->
-                                                    <td class="ps-5">
+
+                                                     <!-- NAME -->
+                                                    <td style="padding-left: 80px;">
 
                                                         <i class="ri-arrow-right-s-line me-1"
                                                             *ngIf="!budget.expanded"></i>
@@ -330,7 +331,7 @@
                                                     </td>
 
                                                     <!-- TOTAL ALLOCATE -->
-                                                    <td class="text-end text-primary">
+                                                    <td class="text-end fw-bold">
 
                                                         {{
                                                         sumBudgetAllocate(budget.items)
@@ -346,16 +347,17 @@
                                                     <!-- ITEM -->
                                                     <tr *ngFor="let item of budget.items">
 
-                                                        <!-- EXPENSE -->
-                                                        <td class="ps-5 text-start">
+                                                             <!-- EXPENSE -->
+                                                        <td class="ps-3 text-start">
+                                                            <div style="padding-left: 100px;">
+                                                                - {{
+                                                                item.Expense_Name ||
+                                                                item.Expense_List ||
+                                                                '-'
+                                                                }}
+                                                            </div>
 
-                                                            - {{
-                                                            item.Expense_Name ||
-                                                            item.Expense_List ||
-                                                            '-'
-                                                            }}
-
-                                                            <div class="small text-muted">
+                                                            <div class="small text-muted" style="padding-left: 100px;">
 
                                                                 {{
                                                                 item.Project_Name ||
@@ -396,7 +398,7 @@
 
                                                         </td>
                                                         <!-- TOTAL ALLOCATED -->
-                                                        <td class="text-end fw-bold text-primary">
+                                                        <td class="text-end fw-bold">
 
                                                             {{
                                                             (
@@ -438,7 +440,7 @@
                         </td>
 
                         <!-- TOTAL REQUEST -->
-                        <td class="text-end">
+                        <td class="text-end fw-bold">
 
                             {{ totalRequest | number:'1.2-2' }}
 
@@ -451,7 +453,7 @@
                         <td></td>
 
                         <!-- TOTAL ALLOCATED -->
-                        <td class="text-end text-primary">
+                        <td class="text-end fw-bold">
 
                             {{ totalAllocated | number:'1.2-2' }}
 
