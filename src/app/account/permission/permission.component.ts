@@ -316,9 +316,6 @@ export class PermissionComponent implements OnInit, OnDestroy {
     this.checkTokenAndAuthenticate();
   }
 
-  /**
-   * แปลงข้อมูลจาก backend เป็น menu structure
-   */
   private convertToMenuStructure(menuData: MenuDataResponse): MenuItem[] {
     const menuItems: MenuItem[] = [];
     const groupMap = new Map<number, MenuItem>();
@@ -358,7 +355,8 @@ export class PermissionComponent implements OnInit, OnDestroy {
         parentId: parseInt(menu.menu_group), // ระบุ parent group
         isTitle: false,
         isCollapsed: menu.isCollapsed || false,
-        isLayout: false
+        isLayout: false,
+        sort_index: menu.sort_index
       };
 
       // หา parent group และเพิ่ม menu
@@ -405,14 +403,12 @@ export class PermissionComponent implements OnInit, OnDestroy {
     return menuItems;
   }
 
-  /**
-   * เรียงลำดับ menu items ตาม sort_index
-   */
+ 
   private sortMenuItems(menuItems: MenuItem[]): void {
     menuItems.forEach(item => {
       if (item.subItems && item.subItems.length > 0) {
         // เรียงลำดับ subItems ตาม id (ซึ่งควรจะสอดคล้องกับ sort_index)
-        item.subItems.sort((a: MenuItem, b: MenuItem) => (a.id || 0) - (b.id || 0));
+        item.subItems.sort((a: MenuItem, b: MenuItem) => (a.sort_index || 0) - (b.sort_index || 0));
 
         // เรียกใช้ฟังก์ชันซ้ำสำหรับ subItems
         this.sortMenuItems(item.subItems);
