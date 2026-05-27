@@ -611,27 +611,27 @@ export class ProjectAllocationComponent implements OnInit {
 
     const items = this.getAllItems();
 
-    const invalid = items.some((item: any) => {
+    // const invalid = items.some((item: any) => {
 
-      return this.getRowTotal(item)
+    //   return this.getRowTotal(item)
 
-        >
+    //     >
 
-        Number(item.Total || 0);
+    //     Number(item.Total || 0);
 
-    });
+    // });
 
-    if (invalid) {
+    // if (invalid) {
 
-      basicAlert(
-        'error',
-        'มียอดจัดสรรเกินคำของบ',
-        ''
-      );
+    //   basicAlert(
+    //     'error',
+    //     'มียอดจัดสรรเกินคำของบ',
+    //     ''
+    //   );
 
-      return;
+    //   return;
 
-    }
+    // }
 
     const payload = items.map((item: any) => {
 
