@@ -274,7 +274,8 @@
                                             <!-- BUDGET -->
                                             <ng-container *ngFor="let budget of activity.budgets">
 
-                                                <tr class="table fw-bold" style="cursor:pointer; background-color: #a1e3f7;"
+                                                <tr class="table fw-bold"
+                                                    style="cursor:pointer; background-color: #a1e3f7;"
                                                     (click)="budget.expanded = !budget.expanded">
 
                                                     <!-- NAME -->
@@ -350,22 +351,22 @@
                                                         <!-- EXPENSE -->
                                                         <td class="ps-3 text-start">
                                                             <div style="padding-left: 100px;">
-                                                                -  {{
+                                                                - {{
                                                                 item.Expense_Name ||
                                                                 item.Expense_List ||
                                                                 '-'
                                                                 }}
                                                             </div>
-                                                        
+
                                                             <div class="small text-muted" style="padding-left: 100px;">
-                                                        
+
                                                                 {{
                                                                 item.Project_Name ||
                                                                 ''
                                                                 }}
-                                                        
+
                                                             </div>
-                                                        
+
                                                         </td>
 
                                                         <!-- TOTAL -->
@@ -407,9 +408,9 @@
 
                                                             {{
                                                             (
-                                                            (item.Adjust1 || 0) +
-                                                            (item.Adjust2 || 0) +
-                                                            (item.Adjust3 || 0)
+                                                            (item.Adjust1Temp || 0) +
+                                                            (item.Adjust2Temp || 0) +
+                                                            (item.Adjust3Temp || 0)
                                                             ) | number:'1.2-2'
                                                             }}
 
@@ -436,7 +437,7 @@
                 </tbody>
 
                 <!-- FOOTER -->
-             <tfoot class="table fw-bold" style="background-color: #556398; color: white;">
+                <tfoot class="table fw-bold" style="background-color: #556398; color: white;">
 
                     <tr>
 
