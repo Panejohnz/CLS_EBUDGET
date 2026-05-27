@@ -146,18 +146,13 @@ export class ProjectAllocationComponent implements OnInit {
 
     );
 
-    console.log(
-      'ROWS',
-      rows
-    );
+    console.log('ROWS', rows);
 
     let model = {
 
-      FUNC_CODE:
-        'FUNC-Get_Budget_Plan',
+      FUNC_CODE: 'FUNC-Get_Budget_Plan_Tabel',
 
-      Department_Id:
-        this.selectedDepartmentId
+      Department_Id: this.selectedDepartmentId
 
     };
 
@@ -172,38 +167,31 @@ export class ProjectAllocationComponent implements OnInit {
             ? response.List_Budget_Plan_Data_Table.Data
             : [];
 
-        console.log(
-          'BUDGET PLAN',
-          plans
-        );
+        console.log('BUDGET PLAN', plans);
+
+        // =========================
+        // MAP OLD PLAN
+        // =========================
 
         rows.forEach((row: any) => {
 
           const oldPlan = plans
             .filter((p: any) =>
 
-              Number(p.Fk_Plan_Id || 0) ===
-              Number(row.Fk_Plan_Id || 0)
+              Number(
+                p.FK_Request_Id ??
+                p.Fk_Request_Id ??
+                p.Request_Id ??
+                0
+              )
 
-              &&
+              ===
 
-              Number(p.Fk_Product_Id || 0) ===
-              Number(row.Fk_Product_Id || 0)
-
-              &&
-
-              Number(p.Fk_Activity_Id || 0) ===
-              Number(row.Fk_Activity_Id || 0)
-
-              &&
-
-              Number(p.Fk_Budget_Type || 0) ===
-              Number(row.Fk_Budget_Type || 0)
-
-              &&
-
-              Number(p.Fk_Expense_List || 0) ===
-              Number(row.Fk_Expense_List || 0)
+              Number(
+                row.Request_Id ??
+                row.FK_Request_Id ??
+                0
+              )
 
             )
             .sort((a: any, b: any) =>
@@ -214,16 +202,45 @@ export class ProjectAllocationComponent implements OnInit {
 
             )[0];
 
+          console.log('OLD PLAN', oldPlan);
+
           if (oldPlan) {
 
-            const adjust1 =
-              Number(oldPlan.Adjust1 || 0);
+            const adjust1 = Number(
 
-            const adjust2 =
-              Number(oldPlan.Adjust2 || 0);
+              oldPlan.Adjust1 ??
 
-            const adjust3 =
-              Number(oldPlan.Adjust3 || 0);
+              oldPlan.adjust1 ??
+
+              oldPlan.ADJUST1 ??
+
+              0
+
+            );
+
+            const adjust2 = Number(
+
+              oldPlan.Adjust2 ??
+
+              oldPlan.adjust2 ??
+
+              oldPlan.ADJUST2 ??
+
+              0
+
+            );
+
+            const adjust3 = Number(
+
+              oldPlan.Adjust3 ??
+
+              oldPlan.adjust3 ??
+
+              oldPlan.ADJUST3 ??
+
+              0
+
+            );
 
             row.Plan_Id =
               oldPlan.Plan_Id || 0;
@@ -232,18 +249,30 @@ export class ProjectAllocationComponent implements OnInit {
             row.Adjust2 = adjust2;
             row.Adjust3 = adjust3;
 
-            // สำคัญมาก
             row.Adjust1Temp = adjust1;
             row.Adjust2Temp = adjust2;
             row.Adjust3Temp = adjust3;
 
             row.Update_Amount =
-              Number(oldPlan.Update_Amount || 0);
+              Number(
+                oldPlan.Update_Amount ??
+                oldPlan.update_amount ??
+                0
+              );
 
           }
+
         });
 
+        // =========================
+        // RESET GROUP
+        // =========================
+
         this.groupData = [];
+
+        // =========================
+        // GROUP DATA
+        // =========================
 
         rows.forEach((row: any) => {
 
@@ -353,8 +382,7 @@ export class ProjectAllocationComponent implements OnInit {
 
           }
 
-          const item =
-            structuredClone(row);
+          const item = structuredClone(row);
 
           budget.items.push({
 
@@ -406,36 +434,34 @@ export class ProjectAllocationComponent implements OnInit {
               || '',
 
             Total:
-              Number(item.Total || 0),
+              Number(item.Total ?? 0),
 
             Adjust1:
-              Number(item.Adjust1 || 0),
+              Number(item.Adjust1 ?? 0),
 
             Adjust2:
-              Number(item.Adjust2 || 0),
+              Number(item.Adjust2 ?? 0),
 
             Adjust3:
-              Number(item.Adjust3 || 0),
+              Number(item.Adjust3 ?? 0),
 
             Adjust1Temp:
-              Number(item.Adjust1Temp || item.Adjust1 || 0),
+              Number(item.Adjust1Temp ?? item.Adjust1 ?? 0),
 
             Adjust2Temp:
-              Number(item.Adjust2Temp || item.Adjust2 || 0),
+              Number(item.Adjust2Temp ?? item.Adjust2 ?? 0),
 
             Adjust3Temp:
-              Number(item.Adjust3Temp || item.Adjust3 || 0),
+              Number(item.Adjust3Temp ?? item.Adjust3 ?? 0),
+
             Update_Amount:
-              Number(item.Update_Amount || 0)
+              Number(item.Update_Amount ?? 0)
 
           });
 
         });
 
-        console.log(
-          'GROUP DATA',
-          this.groupData
-        );
+        console.log('GROUP DATA', this.groupData);
 
       });
 

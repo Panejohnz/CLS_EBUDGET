@@ -97,7 +97,7 @@ export class ExamineComponent {
 
     let model = {
 
-      FUNC_CODE: 'FUNC-Get_Budget_Request',
+      FUNC_CODE: 'FUNC-Get_Budget_Request_List',
 
       BgYear: this.currentYear
 
@@ -178,7 +178,7 @@ export class ExamineComponent {
     let model = {
 
       FUNC_CODE:
-        'FUNC-Get_Budget_Plan',
+        'FUNC-Get_Budget_Plan_Tabel',
 
       Department_Id:
         this.selectedDepartmentId

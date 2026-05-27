@@ -144,7 +144,7 @@ export class ProjectTransferComponent
           [];
 
         this.allPlans =
-          response?.List_Project_Plan || [];
+          response?.List_Budget_Plan || [];
         this.plans = [];
         console.log(
           'TRANSFER',
@@ -332,7 +332,7 @@ export class ProjectTransferComponent
 
   }
   onChangeFromDepartment() {
-debugger
+    debugger
     const dep =
       this.departments.find(
         (x: any) =>
@@ -375,11 +375,12 @@ debugger
   }
 
   onChangeFromPlan() {
-
+    console.log('plans',this.plans);
+    debugger
     const plan =
       this.plans.find(
         (x: any) =>
-          Number(x.Project_Id)
+          Number(x.Plan_Id)
           ===
           Number(
             this.form.From_Plan_Id
@@ -387,13 +388,13 @@ debugger
       );
 
     this.form.From_Plan_Name =
-      plan?.Project_Name || '';
+      plan?.Project_Name || plan?.Expense_List;
 
     this.form.projectBudget =
-      Number(plan?.Total || 0);
+      Number(plan?.Total_Plan || 0);
 
     this.form.balance =
-      Number(plan?.Total || 0);
+      Number(plan?.Total_Plan || 0);
 
   }
 
