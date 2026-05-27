@@ -411,7 +411,7 @@ debugger
       );
 
     this.form.To_Plan_Name =
-      plan?.Project_Name || '';
+      plan?.Project_Name || plan?.Expense_List;
 
   }
 
