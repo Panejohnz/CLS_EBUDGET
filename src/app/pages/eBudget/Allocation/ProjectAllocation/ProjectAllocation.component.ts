@@ -179,53 +179,68 @@ export class ProjectAllocationComponent implements OnInit {
 
         rows.forEach((row: any) => {
 
-          const oldPlan =
-            plans.find((p: any) =>
+          const oldPlan = plans
+            .filter((p: any) =>
 
-              p.Fk_Plan_Id ==
-              row.Fk_Plan_Id
-
-              &&
-
-              p.Fk_Product_Id ==
-              row.Fk_Product_Id
+              Number(p.Fk_Plan_Id || 0) ===
+              Number(row.Fk_Plan_Id || 0)
 
               &&
 
-              p.Fk_Activity_Id ==
-              row.Fk_Activity_Id
+              Number(p.Fk_Product_Id || 0) ===
+              Number(row.Fk_Product_Id || 0)
 
               &&
 
-              p.Fk_Budget_Type ==
-              row.Fk_Budget_Type
+              Number(p.Fk_Activity_Id || 0) ===
+              Number(row.Fk_Activity_Id || 0)
 
               &&
 
-              p.Fk_Expense_List ==
-              row.Fk_Expense_List
+              Number(p.Fk_Budget_Type || 0) ===
+              Number(row.Fk_Budget_Type || 0)
 
-            );
+              &&
+
+              Number(p.Fk_Expense_List || 0) ===
+              Number(row.Fk_Expense_List || 0)
+
+            )
+            .sort((a: any, b: any) =>
+
+              Number(b.Plan_Id || 0)
+              -
+              Number(a.Plan_Id || 0)
+
+            )[0];
 
           if (oldPlan) {
+
+            const adjust1 =
+              Number(oldPlan.Adjust1 || 0);
+
+            const adjust2 =
+              Number(oldPlan.Adjust2 || 0);
+
+            const adjust3 =
+              Number(oldPlan.Adjust3 || 0);
 
             row.Plan_Id =
               oldPlan.Plan_Id || 0;
 
-            row.Adjust1 =
-              Number(oldPlan.Adjust1 || 0);
+            row.Adjust1 = adjust1;
+            row.Adjust2 = adjust2;
+            row.Adjust3 = adjust3;
 
-            row.Adjust2 =
-              Number(oldPlan.Adjust2 || 0);
-
-            row.Adjust3 =
-              Number(oldPlan.Adjust3 || 0);
+            // สำคัญมาก
+            row.Adjust1Temp = adjust1;
+            row.Adjust2Temp = adjust2;
+            row.Adjust3Temp = adjust3;
 
             row.Update_Amount =
               Number(oldPlan.Update_Amount || 0);
 
           }
-
         });
 
         this.groupData = [];
@@ -317,9 +332,7 @@ export class ProjectAllocationComponent implements OnInit {
 
             (x: any) =>
 
-              x.Budget_Type ==
-
-              row.Budget_Type_Name
+              x.Budget_Type == row.Budget_Type_Name
 
           );
 
@@ -403,14 +416,15 @@ export class ProjectAllocationComponent implements OnInit {
 
             Adjust3:
               Number(item.Adjust3 || 0),
+
             Adjust1Temp:
-              Number(item.Adjust1 || 0),
+              Number(item.Adjust1Temp || item.Adjust1 || 0),
 
             Adjust2Temp:
-              Number(item.Adjust2 || 0),
+              Number(item.Adjust2Temp || item.Adjust2 || 0),
 
             Adjust3Temp:
-              Number(item.Adjust3 || 0),
+              Number(item.Adjust3Temp || item.Adjust3 || 0),
             Update_Amount:
               Number(item.Update_Amount || 0)
 
@@ -445,9 +459,7 @@ export class ProjectAllocationComponent implements OnInit {
 
             budget.items.forEach((item: any) => {
 
-              items.push({
-                ...item
-              });
+              items.push(item);
 
             });
 
@@ -531,15 +543,15 @@ export class ProjectAllocationComponent implements OnInit {
 
         sum +
 
-        (Number(item.Adjust1) || 0)
+        (Number(item.Adjust1Temp) || 0)
 
         +
 
-        (Number(item.Adjust2) || 0)
+        (Number(item.Adjust2Temp) || 0)
 
         +
 
-        (Number(item.Adjust3) || 0),
+        (Number(item.Adjust3Temp) || 0),
 
       0
 
@@ -575,11 +587,9 @@ export class ProjectAllocationComponent implements OnInit {
 
         / 3;
 
-      item.Adjust1 = avg;
-
-      item.Adjust2 = avg;
-
-      item.Adjust3 = avg;
+      item.Adjust1Temp = avg;
+      item.Adjust2Temp = avg;
+      item.Adjust3Temp = avg;
 
     });
 
@@ -589,12 +599,9 @@ export class ProjectAllocationComponent implements OnInit {
 
     this.getAllItems().forEach((item: any) => {
 
-      item.Adjust1 = 0;
-
-      item.Adjust2 = 0;
-
-      item.Adjust3 = 0;
-
+      item.Adjust1Temp = 0;
+      item.Adjust2Temp = 0;
+      item.Adjust3Temp = 0;
     });
 
   }
@@ -643,7 +650,7 @@ export class ProjectAllocationComponent implements OnInit {
           Number(item.Adjust2Temp || 0),
 
         Adjust3:
-          Number(item.Adjust3Temp  || 0),
+          Number(item.Adjust3Temp || 0),
 
         Update_Amount:
           this.getRowTotal(item),
@@ -702,14 +709,36 @@ export class ProjectAllocationComponent implements OnInit {
             response
           );
 
+          items.forEach((item: any) => {
+
+            item.Adjust1 = Number(item.Adjust1Temp || 0);
+            item.Adjust2 = Number(item.Adjust2Temp || 0);
+            item.Adjust3 = Number(item.Adjust3Temp || 0);
+
+          });
+
           basicAlert(
             'success',
             'บันทึกข้อมูล',
             ''
           );
 
-          await this.reloadAfterSave();
+          // await this.reloadAfterSave();
+          items.forEach((item: any) => {
 
+            item.Adjust1 =
+              Number(item.Adjust1Temp || 0);
+
+            item.Adjust2 =
+              Number(item.Adjust2Temp || 0);
+
+            item.Adjust3 =
+              Number(item.Adjust3Temp || 0);
+
+            item.Update_Amount =
+              this.getRowTotal(item);
+
+          });
         },
 
         error: (err: any) => {
@@ -732,7 +761,8 @@ export class ProjectAllocationComponent implements OnInit {
   }
   async reloadAfterSave() {
 
-    let model = {
+    // โหลด request ใหม่
+    let requestModel = {
 
       FUNC_CODE:
         'FUNC-Get_Budget_Request',
@@ -743,7 +773,7 @@ export class ProjectAllocationComponent implements OnInit {
     };
 
     this.servicebud
-      .GatewayGetData(model)
+      .GatewayGetData(requestModel)
       .subscribe((response: any) => {
 
         this.allData =
@@ -753,11 +783,91 @@ export class ProjectAllocationComponent implements OnInit {
             ? response.List_Budget_Request_Data_Table.Data
             : [];
 
-        setTimeout(() => {
+        // โหลด plan ใหม่ด้วย
+        let planModel = {
 
-          this.applyFilter();
+          FUNC_CODE:
+            'FUNC-Get_Budget_Plan',
 
-        }, 300);
+          Department_Id:
+            this.selectedDepartmentId
+
+        };
+
+        this.servicebud
+          .GatewayGetData(planModel)
+          .subscribe((planResponse: any) => {
+
+            const plans =
+              Array.isArray(
+                planResponse.List_Budget_Plan_Data_Table.Data
+              )
+                ? planResponse.List_Budget_Plan_Data_Table.Data
+                : [];
+
+            // sync กลับเข้า allData
+            this.allData.forEach((row: any) => {
+
+              const oldPlan =
+                plans.find((p: any) =>
+
+                  p.Fk_Plan_Id ==
+                  row.Fk_Plan_Id
+
+                  &&
+
+                  p.Fk_Product_Id ==
+                  row.Fk_Product_Id
+
+                  &&
+
+                  p.Fk_Activity_Id ==
+                  row.Fk_Activity_Id
+
+                  &&
+
+                  p.Fk_Budget_Type ==
+                  row.Fk_Budget_Type
+
+                  &&
+
+                  p.Fk_Expense_List ==
+                  row.Fk_Expense_List
+
+                );
+
+              if (oldPlan) {
+
+                row.Plan_Id =
+                  oldPlan.Plan_Id || 0;
+
+                row.Adjust1 =
+                  Number(oldPlan.Adjust1 || 0);
+
+                row.Adjust2 =
+                  Number(oldPlan.Adjust2 || 0);
+
+                row.Adjust3 =
+                  Number(oldPlan.Adjust3 || 0);
+                row.Adjust1Temp =
+                  Number(oldPlan.Adjust1 || 0);
+
+                row.Adjust2Temp =
+                  Number(oldPlan.Adjust2 || 0);
+
+                row.Adjust3Temp =
+                  Number(oldPlan.Adjust3 || 0);
+              }
+
+            });
+
+            setTimeout(() => {
+
+              this.applyFilter();
+
+            }, 100);
+
+          });
 
       });
 
@@ -807,7 +917,7 @@ export class ProjectAllocationComponent implements OnInit {
 
       (sum: number, item: any) =>
 
-        sum + Number(item.Adjust1 || 0),
+        sum + Number(item.Adjust1Temp || 0),
 
       0
 
@@ -820,7 +930,7 @@ export class ProjectAllocationComponent implements OnInit {
 
       (sum: number, item: any) =>
 
-        sum + Number(item.Adjust2 || 0),
+        sum + Number(item.Adjust2Temp || 0),
 
       0
 
@@ -833,7 +943,7 @@ export class ProjectAllocationComponent implements OnInit {
 
       (sum: number, item: any) =>
 
-        sum + Number(item.Adjust3 || 0),
+        sum + Number(item.Adjust3Temp || 0),
 
       0
 
@@ -848,11 +958,11 @@ export class ProjectAllocationComponent implements OnInit {
 
         sum +
 
-        Number(item.Adjust1 || 0) +
+        Number(item.Adjust1Temp || 0) +
 
-        Number(item.Adjust2 || 0) +
+        Number(item.Adjust2Temp || 0) +
 
-        Number(item.Adjust3 || 0),
+        Number(item.Adjust3Temp || 0),
 
       0
 
@@ -919,7 +1029,7 @@ export class ProjectAllocationComponent implements OnInit {
 
           sum +
 
-          Number(item.Adjust1 || 0),
+          Number(item.Adjust1Temp || 0),
 
         0
 
@@ -935,7 +1045,7 @@ export class ProjectAllocationComponent implements OnInit {
 
           sum +
 
-          Number(item.Adjust2 || 0),
+          Number(item.Adjust2Temp || 0),
 
         0
 
@@ -951,7 +1061,7 @@ export class ProjectAllocationComponent implements OnInit {
 
           sum +
 
-          Number(item.Adjust3 || 0),
+          Number(item.Adjust3Temp || 0),
 
         0
 
@@ -967,11 +1077,11 @@ export class ProjectAllocationComponent implements OnInit {
 
           sum +
 
-          Number(item.Adjust1 || 0) +
+          Number(item.Adjust1Temp || 0) +
 
-          Number(item.Adjust2 || 0) +
+          Number(item.Adjust2Temp || 0) +
 
-          Number(item.Adjust3 || 0),
+          Number(item.Adjust3Temp || 0),
 
         0
 
