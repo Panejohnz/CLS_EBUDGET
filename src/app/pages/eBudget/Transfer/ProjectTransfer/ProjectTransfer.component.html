@@ -30,54 +30,25 @@
 
         </div>
 
-        <table class="table table-bordered text-center align-middle">
+            <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
 
-            <thead class="table-secondary">
+    <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+        <!-- sticky header -->
+        <thead class="text-center text-white sticky-header" style="background-color: #556398;">
+ <tr class="text-center">
 
-                <tr>
-
-                    <th>
-                        ลำดับ
-                    </th>
-
-                    <th>
-                        วันที่ทำรายการ
-                    </th>
-
-                    <th>
-                        ครั้งที่โอน
-                    </th>
-
-                    <th>
-                        หน่วยงานต้นทาง
-                    </th>
-
-                    <th>
-                        โครงการต้นทาง
-                    </th>
-
-                    <th>
-                        หน่วยงานปลายทาง
-                    </th>
-
-                    <th>
-                        โครงการปลายทาง
-                    </th>
-
-                    <th>
-                        จำนวนเงิน
-                    </th>
-
-                    <th>
-                        แก้ไข
-                    </th>
-
-                    <th>
-                        ลบ
-                    </th>
-
-                </tr>
-
+                                <th style="width:5%">ลำดับ</th>
+                                <th style="width:10%">วันที่ทำรายการ</th>
+                                <th style="width:10%">ครั้งที่โอน</th>
+                                <th style="width:15%">โอนจากหน่วยงาน</th>
+                                <th style="width:15%">โอนจากรายการ</th>
+                                <th style="width:15%">โอนไปหน่วยงาน</th>
+                                <th style="width:15%">โอนไปรายการ</th>
+                                <th style="width:10%">จำนวนเงิน</th>
+                                <th style="width:5%">แก้ไข</th>
+                                <th style="width:5%">ลบ</th>
+                            </tr>
+                
             </thead>
 
             <tbody>
@@ -144,7 +115,7 @@
             </tbody>
 
         </table>
-
+</div>
         <ng-template #formModal let-modal>
 
             <div class="modal-header bg-light">
@@ -194,7 +165,7 @@
                             <div class="col-md-6">
 
                                 <label>
-                                    โอนจากโครงการ :
+                                    โอนจากรายการ/โครงการ :
                                 </label>
 
                                 <ng-select [items]="plans" bindLabel="Project_Name" bindValue="Project_Id"
@@ -346,7 +317,7 @@
                             <div class="col-md-6 mt-3">
 
                                 <label>
-                                    โอนไปโครงการ :
+                                    โอนไปรายการ/โครงการ :
                                 </label>
 
                                 <ng-select [items]="plans" bindLabel="Project_Name" bindValue="Project_Id"
