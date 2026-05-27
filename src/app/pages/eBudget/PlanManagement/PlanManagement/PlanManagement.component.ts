@@ -548,6 +548,19 @@ export class PlanManagementComponent {
     );
 
   }
+  get Total_Plan(): number {
+
+    return this.griddata.reduce(
+
+      (sum: number, item: any) =>
+
+        sum + Number(item.Total_Plan || 0),
+
+      0
+
+    );
+
+  }
   mapPlanDetail(data: any[]) {
 
     return data.map(x => ({
