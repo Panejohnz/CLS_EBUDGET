@@ -20,12 +20,12 @@ import { FormsModule } from '@angular/forms';
 import { BudgetYearService } from 'src/app/core/services/budget-year.service';
 
 @Component({
-  selector: 'app-sing-off-planing',
+  selector: 'app-signoff-ministry-planning',
   providers: [GridJsService, DecimalPipe, EbudgetService],
-  templateUrl: './singOffPlaning.component.html',
+  templateUrl: './singOffMinistryPlanning.component.html',
   styles: ``
 })
-export class SingOffPlaningComponent {
+export class SignoffMinistryPlanningComponent {
   constructor(private modalService: NgbModal, public service: GridJsService
     , private sortService: PaginationService, public serviceebud: EbudgetService
     , private authService: AuthenticationService,private budgetYearService: BudgetYearService) {
@@ -65,11 +65,10 @@ export class SingOffPlaningComponent {
     Plan_Name: '',
     Active: 1
   };
-
-   currentYear : any
+  currentYear : any
   ngOnInit(): void {
 
-     this.budgetYearService.yearChanged$.subscribe(async year => {
+ this.budgetYearService.yearChanged$.subscribe(async year => {
       if (year) {
         if (year < 2500) {
           year = year + 543
@@ -80,11 +79,12 @@ export class SingOffPlaningComponent {
       }
     });
 
-  }
 
+
+  }
   get_data() {
     let model = {
-      FUNC_CODE: "FUNC-Get_Project_plan_Sign_Off",
+      FUNC_CODE: "FUNC-Get_Project_plan_Sign_Off_Ministry",
       BgYear :  this.currentYear
     }
     var getData = this.serviceebud.GatewayGetData(model);
@@ -112,14 +112,22 @@ export class SingOffPlaningComponent {
         .includes(keyword)
     );
   }
-    toggleAll(event: any) {
+  // toggleAll(event: any) {
+  //   const checked = event.target.checked;
+
+  //   this.griddata.forEach(item => {
+  //     item.selected = checked;
+  //   });
+  // }
+
+  toggleAll(event: any) {
 
   const checked = event.target.checked;
 
   this.griddata.forEach((item: any) => {
 
-    // ไม่เลือกแถวที่ status = 3
-    if (item.Status_Id != 3) {
+    // ไม่เลือกแถวที่ status = 7
+    if (item.Status_Id != 7) {
       item.selected = checked;
     }
 
@@ -127,7 +135,7 @@ export class SingOffPlaningComponent {
 
 }
 
-  async CancelSignoff(projectId: number) {
+async CancelSignOff(projectId: number) {
 
   const userConfirmed = await confirmAlert(
     'info',
@@ -145,7 +153,7 @@ export class SingOffPlaningComponent {
   ];
 
   let model = {
-    FUNC_CODE: "FUNC-Cancel_SignOff_Project_Plan",
+    FUNC_CODE: "FUNC-Cancel_SignOff_Ministry_Project_Plan",
     List_Project_Plan: payload
   };
 
@@ -159,8 +167,8 @@ export class SingOffPlaningComponent {
 
 }
 
-  // async CancelSignoff() {
-  //   const userConfirmed = await confirmAlert('info', 'ต้องการ Cancel Sign off โครงการ ?', '');
+  // async CancelSignOff() {
+  //   const userConfirmed = await confirmAlert('info', 'ต้องการยกเลิกการยืนยันโครงการ ?', '');
 
   //   if (!userConfirmed) return;
 
@@ -178,8 +186,8 @@ export class SingOffPlaningComponent {
   //     }));
 
   //     let model = {
-  //       FUNC_CODE: "FUNC-Cancel_SignOff_Project_Plan",
-  //       List_Project_Plan : payload
+  //       FUNC_CODE: "FUNC-Cancel_SignOff_Ministry_Project_Plan",
+  //       List_Project_Plan: payload
   //     };
   //     this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
   //       basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
@@ -206,8 +214,8 @@ export class SingOffPlaningComponent {
     }));
 
     let model = {
-      FUNC_CODE: "FUNC-SignOff_Project_Plan",
-      List_Project_Plan : payload
+      FUNC_CODE: "FUNC-SignOff_Ministry_Project_Plan",
+      List_Project_Plan: payload
     };
 
     this.serviceebud.GatewayGetData(model).subscribe((res: any) => {

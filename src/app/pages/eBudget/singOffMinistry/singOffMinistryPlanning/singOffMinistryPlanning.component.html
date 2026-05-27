@@ -2,7 +2,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title mb-0 flex-grow-1">sign off ข้อมูลโครงการผู้อำนวยการกอง</h4>
+                <h4 class="card-title mb-0 flex-grow-1">sign off โครงการสำหรับเลขาธิการ ปปท.</h4>
             </div>
 
             <div class="card-body">
@@ -15,26 +15,26 @@
                     </div>
 
                     <div>
-                        <!-- <button class="btn btn-light me-2" (click)="CancelSignoff()">
-                            ยกเลิกการ sign off ข้อมูล
+                        <!-- <button class="btn btn-light me-2" (click)="CancelSignOff()">
+                            ยกเลิกการยืนยันข้อมูล
                         </button> -->
 
                         <button class="btn btn-success text-black" (click)="SignOff()">
-                            sign off ข้อมูล
+                            Sign Off โครงการ
                         </button>
                     </div>
 
                 </div>
-               <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+                <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
 
-    <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
-        <!-- sticky header -->
-        <thead class="text-center text-white sticky-header" style="background-color: #556398;">
+                    <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+                        <!-- sticky header -->
+                        <thead class="text-center text-white sticky-header" style="background-color: #556398;">
                             <tr class="text-center">
                                 <th style="width:5%">
                                     <input type="checkbox" (change)="toggleAll($event)">
                                 </th>
-                                 <th style="width:5%">ลำดับ</th>
+                                <th style="width:5%">ลำดับ</th>
                                 <th style="width:10%">หน่วยงาน</th>
                                 <th style="width:10%">แผนงาน</th>
                                 <th style="width:10%">ผลผลิต</th>
@@ -43,20 +43,20 @@
                                 <th style="width:15%">โครงการ</th>
                                 <th style="width:10%">งบประมาณ</th>
                                 <th style="width:10%">สถานะ</th>
-                                    <th style="width:5%">ยกเลิกยืนยัน</th>
+                                <th style="width:5%">ยกเลิกยืนยัน</th>
                             </tr>
                         </thead>
 
                         <tbody>
                             @for(data of griddata; track $index){
                             <tr>
-                                  <td class="text-center">
-                                    <input type="checkbox" [(ngModel)]="data.selected" [disabled]="data.Status_Id == 3"
-                                        [style.accent-color]="data.Status_Id == 3 ? '#bfbfbf' : ''"
-                                        [style.opacity]="data.Status_Id == 3 ? '0.5' : '1'"
-                                        [style.cursor]="data.Status_Id == 3 ? 'not-allowed' : 'pointer'">
+                                <td class="text-center">
+                                    <input type="checkbox" [(ngModel)]="data.selected" [disabled]="data.Status_Id == 7"
+                                        [style.accent-color]="data.Status_Id == 7 ? '#bfbfbf' : ''"
+                                        [style.opacity]="data.Status_Id == 7 ? '0.5' : '1'"
+                                        [style.cursor]="data.Status_Id == 7 ? 'not-allowed' : 'pointer'">
                                 </td>
-                                       <td>{{$index + 1}}</td>
+                                <td>{{$index + 1}}</td>
                                 <td class="text-center">{{data.Department_Name}}</td>
                                 <td class="text-center">
                                     <ngb-highlight [result]="data.Plan_Name"
@@ -78,7 +78,7 @@
                                 <td class="text-end">
                                     {{data.Total | number:'1.2-2'}}
                                 </td>
-                                 <td>
+                                <td>
                                     <span style="
             display:inline-block;
             padding:4px 8px;
@@ -91,19 +91,19 @@
                                         {{ data.Status_Name }}
                                     </span>
                                 </td>
-                               
- <td class="text-center">
+                              <td class="text-center">
     <button
         class="btn btn-sm btn-danger"
-        (click)="CancelSignoff(data.Project_Id)"
-        [disabled]="data.Status_Id != 3"
-        [style.opacity]="data.Status_Id != 3 ? '0.5' : '1'">
+        (click)="CancelSignOff(data.Project_Id)"
+        [disabled]="data.Status_Id == 6"
+        [style.opacity]="data.Status_Id == 6 ? '0.5' : '1'">
 
         ยกเลิก sign off
 
     </button>
 </td>
-                               
+
+
                             </tr>
                             }
                         </tbody>
@@ -120,8 +120,8 @@
                     </div>
                     <div class="col-sm-12 col-md-5">
                         <div class="text-md-right float-md-end gridjs-pagination">
-                            <ngb-pagination [collectionSize]="(total$ | async)!" [(page)]="service.page"
-                                [pageSize]="service.pageSize">
+                            <ngb-pagination [collectionSize]="(total$ | async)!" [page]="service.page"
+                                (pageChange)="service.page = $event">
                             </ngb-pagination>
                         </div>
                     </div>
