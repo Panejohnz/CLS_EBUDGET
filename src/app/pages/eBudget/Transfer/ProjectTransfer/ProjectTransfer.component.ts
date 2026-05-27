@@ -232,6 +232,72 @@ export class ProjectTransferComponent
     );
 
   }
+
+formatNumber(value: any): string {
+
+  if (value === null || value === undefined || value === '') {
+    return '';
+  }
+
+  const number = Number(value.toString().replace(/,/g, ''));
+
+  if (isNaN(number)) {
+    return '';
+  }
+
+  return number.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+}
+
+displayAmount: string = '';
+
+formatCurrency(event: any): void {
+
+  let value = event.target.value;
+
+  // เอา comma ออก
+  value = value.replace(/,/g, '');
+
+  // อนุญาตเฉพาะเลขกับ .
+  value = value.replace(/[^0-9.]/g, '');
+
+  // กัน . ซ้ำ
+  const parts = value.split('.');
+
+  if (parts.length > 2) {
+    return;
+  }
+
+  let integerPart = parts[0];
+  const decimalPart = parts[1];
+
+  // ใส่ comma
+  integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  // รวมกลับ
+  this.displayAmount =
+    decimalPart !== undefined
+      ? `${integerPart}.${decimalPart}`
+      : integerPart;
+
+  // เก็บค่าจริงแบบไม่มี comma
+  this.form.Transfer_Amount = value;
+
+}
+
+onAmountChange(value: string): void {
+
+  // เอา comma ออก
+  const numericValue = value.replace(/,/g, '');
+
+  // เก็บค่า
+  this.form.Transfer_Amount = parseFloat(numericValue) || 0;
+
+}
+
   convertDateInput(date: any): string {
 
     if (!date) return '';

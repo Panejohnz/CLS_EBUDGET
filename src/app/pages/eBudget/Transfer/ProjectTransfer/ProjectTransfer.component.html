@@ -30,92 +30,92 @@
 
         </div>
 
-            <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+        <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
 
-    <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
-        <!-- sticky header -->
-        <thead class="text-center text-white sticky-header" style="background-color: #556398;">
- <tr class="text-center">
+            <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+                <!-- sticky header -->
+                <thead class="text-center text-white sticky-header" style="background-color: #556398;">
+                    <tr class="text-center">
 
-                                <th style="width:5%">ลำดับ</th>
-                                <th style="width:10%">วันที่ทำรายการ</th>
-                                <th style="width:10%">ครั้งที่โอน</th>
-                                <th style="width:15%">โอนจากหน่วยงาน</th>
-                                <th style="width:15%">โอนจากรายการ</th>
-                                <th style="width:15%">โอนไปหน่วยงาน</th>
-                                <th style="width:15%">โอนไปรายการ</th>
-                                <th style="width:10%">จำนวนเงิน</th>
-                                <th style="width:5%">แก้ไข</th>
-                                <th style="width:5%">ลบ</th>
-                            </tr>
-                
-            </thead>
+                        <th style="width:5%">ลำดับ</th>
+                        <th style="width:10%">วันที่ทำรายการ</th>
+                        <th style="width:10%">ครั้งที่โอน</th>
+                        <th style="width:15%">โอนจากหน่วยงาน</th>
+                        <th style="width:15%">โอนจากรายการ</th>
+                        <th style="width:15%">โอนไปหน่วยงาน</th>
+                        <th style="width:15%">โอนไปรายการ</th>
+                        <th style="width:10%">จำนวนเงิน</th>
+                        <th style="width:5%">แก้ไข</th>
+                        <th style="width:5%">ลบ</th>
+                    </tr>
 
-            <tbody>
+                </thead>
 
-                <tr *ngFor="let row of filteredRows; let i = index">
-                    <td>
-                        {{ i + 1 }}
-                    </td>
+                <tbody>
 
-                    <td>
-                        {{ row.Transfer_Date_Display }} </td>
+                    <tr *ngFor="let row of filteredRows; let i = index">
+                        <td>
+                            {{ i + 1 }}
+                        </td>
 
-                    <td>
-                        {{ row.Transfer_Count }}
-                    </td>
+                        <td>
+                            {{ row.Transfer_Date_Display }} </td>
 
-                    <td>
-                        {{ row.From_Department_Name }}
-                    </td>
+                        <td>
+                            {{ row.Transfer_Count }}
+                        </td>
 
-                    <td>
-                        {{ row.From_Plan_Name }}
-                    </td>
+                        <td>
+                            {{ row.From_Department_Name }}
+                        </td>
 
-                    <td>
-                        {{ row.To_Department_Name }}
-                    </td>
+                        <td>
+                            {{ row.From_Plan_Name }}
+                        </td>
 
-                    <td>
-                        {{ row.To_Plan_Name }}
-                    </td>
+                        <td>
+                            {{ row.To_Department_Name }}
+                        </td>
 
-                    <td class="text-end">
+                        <td>
+                            {{ row.To_Plan_Name }}
+                        </td>
 
-                        {{
-                        row.Transfer_Amount
-                        | number:'1.2-2'
-                        }}
+                        <td class="text-end">
 
-                    </td>
+                            {{
+                            row.Transfer_Amount
+                            | number:'1.2-2'
+                            }}
 
-                    <td>
+                        </td>
 
-                        <button class="btn btn-warning btn-sm" (click)="openEdit(formModal, row, i)">
+                        <td>
 
-                            <i class="ri-pencil-line"></i>
+                            <button class="btn btn-warning btn-sm" (click)="openEdit(formModal, row, i)">
 
-                        </button>
+                                <i class="ri-pencil-line"></i>
 
-                    </td>
+                            </button>
 
-                    <td>
+                        </td>
 
-                        <button class="btn btn-danger btn-sm" (click)="remove(row)">
+                        <td>
 
-                            <i class="ri-delete-bin-line"></i>
+                            <button class="btn btn-danger btn-sm" (click)="remove(row)">
 
-                        </button>
+                                <i class="ri-delete-bin-line"></i>
 
-                    </td>
+                            </button>
 
-                </tr>
+                        </td>
 
-            </tbody>
+                    </tr>
 
-        </table>
-</div>
+                </tbody>
+
+            </table>
+        </div>
         <ng-template #formModal let-modal>
 
             <div class="modal-header bg-light">
@@ -327,14 +327,18 @@
                                 </ng-select>
 
                             </div>
-
-                            <div class="col-md-6 mt-3">
+                            <div class="col-md-3 mt-3">
 
                                 <label>
                                     จำนวนเงินที่โอน :
                                 </label>
 
-                                <input type="number" class="form-control" [(ngModel)]="form.Transfer_Amount">
+                          <input
+    type="text"
+    class="form-control  text-end"
+    [value]="displayAmount"
+    (input)="formatCurrency($event)"
+    inputmode="decimal">
 
                             </div>
 
