@@ -23,18 +23,18 @@ export class BudgetYearService {
     }
   }
   private yearChangeSubject = new BehaviorSubject<number>(
-    new Date().getFullYear()
+    new Date().getFullYear() + 543
   );
 
   yearChanged$ = this.yearChangeSubject.asObservable();
 
- setYear(year: number) {
-  if (year < 2500) {
-    year += 543;
-  }
+  setYear(year: number) {
+    if (year < 2500) {
+      year += 543;
+    }
 
-  this.yearChangeSubject.next(year);
-}
+    this.yearChangeSubject.next(year);
+  }
 
   getBgyear(): number {
     return this.yearChangeSubject.value < 2500
