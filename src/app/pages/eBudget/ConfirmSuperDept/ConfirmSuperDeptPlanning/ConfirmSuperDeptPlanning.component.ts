@@ -112,41 +112,81 @@ export class ConfirmSuperDeptPlanningComponent {
         .includes(keyword)
     );
   }
-  toggleAll(event: any) {
-    const checked = event.target.checked;
+    toggleAll(event: any) {
 
-    this.griddata.forEach(item => {
+  const checked = event.target.checked;
+
+  this.griddata.forEach((item: any) => {
+
+    // ไม่เลือกแถวที่ status = 5
+    if (item.Status_Id != 5) {
       item.selected = checked;
-    });
-  }
-  async CancelConfirm() {
-    const userConfirmed = await confirmAlert('info', 'ต้องการยกเลิกการยืนยันโครงการ ?', '');
-
-    if (!userConfirmed) return;
-
-    const selectedRows = this.griddata.filter(x => x.selected);
-
-    if (selectedRows.length === 0) {
-      basicAlert('warning', 'กรุณาเลือกรายการ', '');
-      return;
     }
 
-    if (userConfirmed) {
-      const payload = selectedRows.map(x => ({
-        Project_Id: x.Project_Id,
-        Status_Number: 8
-      }));
+  });
 
-      let model = {
-        FUNC_CODE: "FUNC-Cancel_Confirm_SuperDept_Project_Plan",
-        List_Project_Plan: payload
-      };
-      this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
-        basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
-        this.get_data();
-      });
+}
+  // async CancelConfirm() {
+  //   const userConfirmed = await confirmAlert('info', 'ต้องการยกเลิกการยืนยันโครงการ ?', '');
+
+  //   if (!userConfirmed) return;
+
+  //   const selectedRows = this.griddata.filter(x => x.selected);
+
+  //   if (selectedRows.length === 0) {
+  //     basicAlert('warning', 'กรุณาเลือกรายการ', '');
+  //     return;
+  //   }
+
+  //   if (userConfirmed) {
+  //     const payload = selectedRows.map(x => ({
+  //       Project_Id: x.Project_Id,
+  //       Status_Number: 8
+  //     }));
+
+  //     let model = {
+  //       FUNC_CODE: "FUNC-Cancel_Confirm_SuperDept_Project_Plan",
+  //       List_Project_Plan: payload
+  //     };
+  //     this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
+  //       basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
+  //       this.get_data();
+  //     });
+  //   }
+  // }
+
+    async CancelConfirm(projectId: number) {
+
+  const userConfirmed = await confirmAlert(
+    'info',
+    'ต้องการยกเลิกการยืนยันโครงการ ?',
+    ''
+  );
+
+  if (!userConfirmed) return;
+
+  const payload = [
+    {
+      Project_Id: projectId,
+      Status_Number: 8
     }
-  }
+  ];
+
+  let model = {
+    FUNC_CODE: "FUNC-Cancel_Confirm_SuperDept_Project_Plan",
+    List_Project_Plan: payload
+  };
+
+  this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
+
+    basicAlert('success', 'ยกเลิกการยืนยันแล้ว', '');
+
+    this.get_data();
+
+  });
+
+}
+
   async Confirm() {
 
     const userConfirmed = await confirmAlert('info', 'ต้องการยืนยันข้อมูลโครงการ ?', '');

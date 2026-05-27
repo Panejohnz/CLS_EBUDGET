@@ -15,9 +15,9 @@
                     </div>
 
                     <div>
-                        <button class="btn btn-light me-2" (click)="CancelConfirm()">
+                        <!-- <button class="btn btn-light me-2" (click)="CancelConfirm()">
                             ยกเลิกการยืนยันข้อมูล
-                        </button>
+                        </button> -->
 
                         <button class="btn btn-success text-black" (click)="Confirm()">
                             ยืนยันข้อมูล
@@ -43,14 +43,18 @@
                                 <th style="width:15%">โครงการ</th>
                                 <th style="width:10%">งบประมาณ</th>
                                 <th style="width:10%">สถานะ</th>
+                                        <th style="width:5%">ยกเลิกยืนยัน</th>
                             </tr>
                         </thead>
 
                         <tbody>
                             @for(data of griddata; track $index){
                             <tr>
-                                <td class="text-center">
-                                    <input type="checkbox" [(ngModel)]="data.selected">
+                          <td class="text-center">
+                                    <input type="checkbox" [(ngModel)]="data.selected" [disabled]="data.Status_Id == 5"
+                                        [style.accent-color]="data.Status_Id == 5 ? '#bfbfbf' : ''"
+                                        [style.opacity]="data.Status_Id == 5 ? '0.5' : '1'"
+                                        [style.cursor]="data.Status_Id == 5 ? 'not-allowed' : 'pointer'">
                                 </td>
                                        <td>{{$index + 1}}</td>
                                 <td class="text-center">{{data.Department_Name}}</td>
@@ -88,6 +92,17 @@
                                     </span>
                                 </td>
                                
+ <td class="text-center">
+    <button
+        class="btn btn-sm btn-danger"
+        (click)="CancelConfirm(data.Project_Id)"
+        [disabled]="data.Status_Id != 5"
+        [style.opacity]="data.Status_Id != 5 ? '0.5' : '1'">
+
+        ยกเลิก sign off
+
+    </button>
+</td>
 
                                
                             </tr>
