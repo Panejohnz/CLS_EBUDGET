@@ -660,23 +660,23 @@ export class ExamineComponent {
     // VALIDATE
     // =========================
 
-    const invalid = items.some((item: any) => {
+    // const invalid = items.some((item: any) => {
 
-      return this.getRowTotal(item)
+    //   return this.getRowTotal(item)
 
-        >
+    //     >
 
-        Number(item.Total || 0);
+    //     Number(item.Total || 0);
 
-    });
+    // });
 
-    if (invalid) {
+    // if (invalid) {
 
 
-      basicAlert('error', 'มียอดจัดสรรเกินคำของบ', '')
-      return;
+    //   basicAlert('error', 'มียอดจัดสรรเกินคำของบ', '')
+    //   return;
 
-    }
+    // }
 
 
     const payload = items.map((item: any) => {

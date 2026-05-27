@@ -33,6 +33,9 @@ export class BudgetYearService {
   }
 
   getBgyear(): number {
+    if(this.yearChangeSubject.value < 2500){
+      this.yearChangeSubject.value + 543
+    }
     return this.yearChangeSubject.value;
   }
 
