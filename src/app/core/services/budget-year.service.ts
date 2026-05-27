@@ -28,15 +28,18 @@ export class BudgetYearService {
 
   yearChanged$ = this.yearChangeSubject.asObservable();
 
-  setYear(year: number) {
-    this.yearChangeSubject.next(year);
+ setYear(year: number) {
+  if (year < 2500) {
+    year += 543;
   }
 
+  this.yearChangeSubject.next(year);
+}
+
   getBgyear(): number {
-    if(this.yearChangeSubject.value < 2500){
-      this.yearChangeSubject.value + 543
-    }
-    return this.yearChangeSubject.value;
+    return this.yearChangeSubject.value < 2500
+      ? this.yearChangeSubject.value + 543
+      : this.yearChangeSubject.value;
   }
 
   getListYear(): any[] {

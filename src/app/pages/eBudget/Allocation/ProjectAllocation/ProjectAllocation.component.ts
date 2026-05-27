@@ -79,7 +79,7 @@ export class ProjectAllocationComponent implements OnInit {
 
     let model = {
 
-      FUNC_CODE: 'FUNC-Get_Budget_Request',
+      FUNC_CODE: 'FUNC-Get_Budget_Request_List',
 
       BgYear: this.currentYear
 
