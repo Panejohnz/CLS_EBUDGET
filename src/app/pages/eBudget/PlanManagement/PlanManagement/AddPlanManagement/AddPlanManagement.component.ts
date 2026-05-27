@@ -1665,34 +1665,9 @@ export class AddPlanManagementComponent
 
   }
 
-  getTotalMultiplier(item: any): number {
+  getTotalMultiplier(item: any): any {
 
-    return (item.otherExpenses || [])
-      .reduce(
-
-        (sum: number, x: any) => {
-
-          return sum +
-
-            Number(
-
-              x.Total ||
-
-              (
-                Number(x.Quantity || 0)
-                *
-                Number(x.Price || 0)
-                *
-                Number(x.Rate || 1)
-              )
-
-            );
-
-        },
-
-        0
-
-      );
+    return this.model?.Budget_Plan.Total_Plan
 
   }
 
@@ -1816,13 +1791,18 @@ export class AddPlanManagementComponent
   }
 
   save() {
-    console.log('a', this.model);
+
 
     this.model.Total =
       this.getAllBudget();
 
     this.model.Update_Amount =
       this.getAllBudget();
+
+    if (this.model.Budget_Plan.Total_Plan != this.model.Total) {
+      basicAlert('info', 'จำนวนเงินไม่ตรงกัน', '')
+      return
+    }
     const detailPayload = {
 
       Plan_Detail_Id:
@@ -2073,6 +2053,7 @@ export class AddPlanManagementComponent
         this.model.Budget_Plan.FK_Project_Plan_Id,
 
       Total: this.model.Total,
+      Total_Plan: this.model.Budget_Plan.Total_Plan,
       Department_Id:
         this.model.Department_Id,
 
