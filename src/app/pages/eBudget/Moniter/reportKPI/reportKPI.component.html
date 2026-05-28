@@ -76,16 +76,26 @@
 <!-- ================================================= -->
 <!-- MODAL -->
 <!-- ================================================= -->
-
 <ng-template #reportModal let-modal>
 
-    <div class="modal-header bg-light">
+    <!-- HEADER -->
+    <div class="modal-header border-0 pb-0">
 
-        <h5 class="modal-title">
+        <div>
 
-            รายงานผลตัวชี้วัด
+            <h4 class="modal-title fw-bold mb-1">
 
-        </h5>
+                รายงานผลตัวชี้วัด
+
+            </h4>
+
+            <small class="text-muted">
+
+                บันทึกผลการดำเนินงานตามไตรมาส
+
+            </small>
+
+        </div>
 
         <button class="btn-close" (click)="modal.dismiss()">
 
@@ -93,116 +103,145 @@
 
     </div>
 
-    <div class="modal-body">
+    <!-- BODY -->
+    <div class="modal-body pt-3">
 
         <div *ngIf="selectedKpi">
 
-            <!-- KPI INFO -->
-            <div class="alert alert-light border mb-4">
+            <!-- KPI CARD -->
+            <div class="card border-0 shadow-sm mb-4 bg-light">
 
-                <div class="fw-bold mb-1">
+                <div class="card-body">
 
-                    ตัวชี้วัด
+                    <div class="d-flex align-items-start gap-3">
 
-                </div>
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center"
+                            style="width:50px;height:50px;">
 
-                <div>
+                            <i class="ri-bar-chart-box-line text-primary fs-4"></i>
 
-                    {{selectedKpi.Indicators_Name}}
+                        </div>
+
+                        <div>
+
+                            <div class="text-muted small mb-1">
+
+                                ตัวชี้วัด
+
+                            </div>
+
+                            <div class="fw-bold fs-6">
+
+                                {{selectedKpi.Indicators_Name}}
+
+                            </div>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
             </div>
 
             <!-- QUARTER -->
-            <div class="row mb-3 align-items-center">
+            <div class="card border-0 shadow-sm mb-4">
 
-                <div class="col-md-3 fw-semibold">
+                <div class="card-body">
 
-                    ไตรมาส
+                    <div class="row align-items-center">
 
-                </div>
+                        <div class="col-md-3">
 
-                <div class="col-md-9">
+                            <label class="fw-semibold mb-2 mb-md-0">
 
-                    <ng-select [items]="Tri_lists" bindLabel="name" bindValue="Trimas_Id" [(ngModel)]="selectedTri"
-                        (change)="onChangeQuarter()" appendTo="body" [clearable]="true" [searchable]="false"
-                        placeholder="-- เลือกไตรมาส --">
+                                ไตรมาส
 
-                    </ng-select>
-                </div>
+                            </label>
 
-            </div>
+                        </div>
 
-            <!-- PROGRESS -->
-            <div class="row mb-3 align-items-center">
+                        <div class="col-md-9">
 
-                <div class="col-md-3 fw-semibold">
+                            <ng-select [items]="Tri_lists" bindLabel="name" bindValue="Trimas_Id"
+                                [(ngModel)]="selectedTri" (change)="onChangeQuarter()" appendTo="body"
+                                [clearable]="true" [searchable]="false" placeholder="-- เลือกไตรมาส --">
 
-                    ความก้าวหน้า
+                            </ng-select>
 
-                </div>
+                        </div>
 
-                <div class="col-md-9">
-
-                    <input class="form-control" [(ngModel)]="form.Progress">
+                    </div>
 
                 </div>
 
             </div>
 
-            <!-- RESULT -->
-            <div class="row mb-3">
+            <!-- FORM -->
+            <div class="card border-0 shadow-sm">
 
-                <div class="col-md-3 fw-semibold">
+                <div class="card-body">
 
-                    ผลการดำเนินงานตามตัวชี้วัด
+                    <!-- PROGRESS -->
+                    <div class="mb-4">
 
-                </div>
+                        <label class="fw-semibold mb-2">
 
-                <div class="col-md-9">
+                            ความก้าวหน้า
 
-                    <textarea rows="4" class="form-control" [(ngModel)]="form.Indicators_Result">
+                        </label>
 
-                    </textarea>
+                        <input class="form-control" placeholder="กรอกความก้าวหน้า" [(ngModel)]="form.Progress">
 
-                </div>
+                    </div>
 
-            </div>
+                    <!-- RESULT -->
+                    <div class="mb-4">
 
-            <!-- PROBLEM -->
-            <div class="row mb-3">
+                        <label class="fw-semibold mb-2">
 
-                <div class="col-md-3 fw-semibold">
+                            ผลการดำเนินงานตามตัวชี้วัด
 
-                    ปัญหา / อุปสรรค
+                        </label>
 
-                </div>
+                        <textarea rows="4" class="form-control" placeholder="กรอกผลการดำเนินงาน"
+                            [(ngModel)]="form.Indicators_Result">
 
-                <div class="col-md-9">
+                        </textarea>
 
-                    <textarea rows="4" class="form-control" [(ngModel)]="form.Problems">
+                    </div>
 
-                    </textarea>
+                    <!-- PROBLEM -->
+                    <div class="mb-4">
 
-                </div>
+                        <label class="fw-semibold mb-2">
 
-            </div>
+                            ปัญหา / อุปสรรค
 
-            <!-- SUGGEST -->
-            <div class="row mb-3">
+                        </label>
 
-                <div class="col-md-3 fw-semibold">
+                        <textarea rows="4" class="form-control" placeholder="กรอกปัญหา / อุปสรรค"
+                            [(ngModel)]="form.Problems">
 
-                    ข้อเสนอแนะ
+                        </textarea>
 
-                </div>
+                    </div>
 
-                <div class="col-md-9">
+                    <!-- SUGGESTION -->
+                    <div>
 
-                    <textarea rows="4" class="form-control" [(ngModel)]="form.Suggestions">
+                        <label class="fw-semibold mb-2">
 
-                    </textarea>
+                            ข้อเสนอแนะ
+
+                        </label>
+
+                        <textarea rows="4" class="form-control" placeholder="กรอกข้อเสนอแนะ"
+                            [(ngModel)]="form.Suggestions">
+
+                        </textarea>
+
+                    </div>
 
                 </div>
 
@@ -213,19 +252,19 @@
     </div>
 
     <!-- FOOTER -->
-    <div class="modal-footer">
+    <div class="modal-footer border-0 pt-0">
 
-        <button class="btn btn-primary" (click)="save(); modal.close()">
+        <button class="btn btn-light px-4" (click)="modal.dismiss()">
+
+            ปิด
+
+        </button>
+
+        <button class="btn btn-primary px-4" (click)="save(); modal.close()">
 
             <i class="ri-save-line me-1"></i>
 
             บันทึก
-
-        </button>
-
-        <button class="btn btn-secondary" (click)="modal.dismiss()">
-
-            ปิด
 
         </button>
 
