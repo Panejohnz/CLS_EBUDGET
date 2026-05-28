@@ -2,7 +2,18 @@ import {
   Component,
   OnInit
 } from '@angular/core';
+import {
+  NgbDateParserFormatter,
+  NgbDateStruct
+} from '@ng-bootstrap/ng-bootstrap';
+import { LOCALE_ID } from '@angular/core';
+import { ThaiDateFormatter } from '../../../../thai-date-formatter';
+import {
+  NgbDatepickerI18n
+} from '@ng-bootstrap/ng-bootstrap';
 
+import { ThaiDatepickerI18n }
+  from '../../../../thai-datepicker-i18n';
 import {
   NgbModal
 } from '@ng-bootstrap/ng-bootstrap';
@@ -36,7 +47,19 @@ import {
   providers: [
     GridJsService,
     DecimalPipe,
-    EbudgetService
+    EbudgetService,
+    {
+      provide: NgbDateParserFormatter,
+      useClass: ThaiDateFormatter
+    },
+    {
+      provide: NgbDatepickerI18n,
+      useClass: ThaiDatepickerI18n
+    },
+    {
+      provide: LOCALE_ID,
+      useValue: 'th'
+    }
   ],
   templateUrl: './ProjectTransfer.component.html',
   styles: ``
@@ -67,7 +90,9 @@ export class ProjectTransferComponent
   isEdit = false;
 
   editIndex = -1;
+  fromPlans: any[] = [];
 
+  toPlans: any[] = [];
   currentYear: any;
 
   ngOnInit(): void {
@@ -200,19 +225,17 @@ export class ProjectTransferComponent
         Number(row.To_Plan_Id),
 
       Transfer_Date:
-        this.convertDateInput(
-          row.Transfer_Date
-        ),
+        row.Transfer_Date,
 
       Transfer_Doc_Date:
-        this.convertDateInput(
-          row.Transfer_Doc_Date
-        )
-
+        row.Transfer_Doc_Date
     };
-    console.log('this.form', this.form);
+    this.displayAmount =
+      this.formatNumber(
+        row.Transfer_Amount
+      );
 
-    this.onChangeFromDepartment();
+    this.onChangeFromDepartment(true);
 
     this.onChangeToDepartment();
 
@@ -295,13 +318,31 @@ export class ProjectTransferComponent
 
   }
 
-  convertDateInput(date: any): string {
+  convertDateInput(date: any): NgbDateStruct | null {
 
-    if (!date) return '';
+    if (!date) return null;
 
+    // yyyy-mm-dd
     if (
-      typeof date === 'string'
-      &&
+      typeof date === 'string' &&
+      date.includes('-')
+    ) {
+
+      const parts = date.split('T')[0].split('-');
+
+      return {
+
+        year: Number(parts[0]),
+        month: Number(parts[1]),
+        day: Number(parts[2])
+
+      };
+
+    }
+
+    // dd/mm/yyyy
+    if (
+      typeof date === 'string' &&
       date.includes('/')
     ) {
 
@@ -313,26 +354,22 @@ export class ProjectTransferComponent
 
       if (parts.length === 3) {
 
-        const day =
-          parts[0].padStart(2, '0');
+        return {
 
-        const month =
-          parts[1].padStart(2, '0');
+          day: Number(parts[0]),
+          month: Number(parts[1]),
+          year: Number(parts[2])
 
-        const year =
-          parts[2];
-
-        return `${year}-${month}-${day}`;
+        };
 
       }
 
     }
 
-    return date;
+    return null;
 
   }
-  onChangeFromDepartment() {
-    debugger
+  onChangeFromDepartment(isEditMode = false) {
     const dep =
       this.departments.find(
         (x: any) =>
@@ -344,11 +381,14 @@ export class ProjectTransferComponent
     this.form.From_Department_Name =
       dep?.Department_Name || '';
 
-    // reset plan
-    this.form.From_Plan_Id = null;
+    if (!isEditMode) {
+
+      this.form.From_Plan_Id = null;
+
+    }
 
     // filter plans ตาม Department_Id
-    this.plans = this.allPlans.filter(
+    this.fromPlans = this.allPlans.filter(
       (x: any) =>
         Number(x.Department_Id)
         ===
@@ -371,14 +411,19 @@ export class ProjectTransferComponent
 
     this.form.To_Department_Name =
       dep?.Department_Name || '';
-
+    this.toPlans = this.allPlans.filter(
+      (x: any) =>
+        Number(x.Department_Id)
+        ===
+        Number(this.form.To_Department_Id)
+    );
   }
 
   onChangeFromPlan() {
-    console.log('plans',this.plans);
+    console.log('plans', this.plans);
     debugger
     const plan =
-      this.plans.find(
+      this.fromPlans.find(
         (x: any) =>
           Number(x.Plan_Id)
           ===
@@ -399,7 +444,7 @@ export class ProjectTransferComponent
   }
 
   onChangeToPlan() {
-debugger
+    debugger
     const plan =
       this.plans.find(
         (x: any) =>
@@ -416,7 +461,19 @@ debugger
   }
 
   save() {
+    const fromPlan = this.fromPlans.find(
+      (x: any) =>
+        Number(x.Plan_Id)
+        ===
+        Number(this.form.From_Plan_Id)
+    );
 
+    const toPlan = this.toPlans.find(
+      (x: any) =>
+        Number(x.Plan_Id)
+        ===
+        Number(this.form.To_Plan_Id)
+    );
     const payload = {
 
       Transfer_Id:
@@ -426,14 +483,17 @@ debugger
         this.currentYear,
 
       Transfer_Date:
-        this.form.Transfer_Date,
+        this.convertToApiDate(
+          this.form.Transfer_Date
+        ),
 
       Transfer_Doc_Number:
         this.form.Transfer_Doc_Number,
 
       Transfer_Doc_Date:
-        this.form.Transfer_Doc_Date,
-
+        this.convertToApiDate(
+          this.form.Transfer_Doc_Date
+        ),
       Transfer_Count:
         this.form.Transfer_Count,
 
@@ -447,7 +507,18 @@ debugger
         this.form.From_Plan_Id || 0,
 
       From_Plan_Name:
-        this.form.From_Plan_Name || '',
+        fromPlan?.Project_Name
+        ||
+        fromPlan?.Expense_List
+        ||
+        '',
+
+      To_Plan_Name:
+        toPlan?.Project_Name
+        ||
+        toPlan?.Expense_List
+        ||
+        '',
 
       To_Department_Id:
         this.form.To_Department_Id || 0,
@@ -458,8 +529,7 @@ debugger
       To_Plan_Id:
         this.form.To_Plan_Id || 0,
 
-      To_Plan_Name:
-        this.form.To_Plan_Name || '',
+    
 
       Transfer_Description:
         this.form.Transfer_Description || '',
@@ -568,6 +638,35 @@ debugger
         });
 
     }
+
+  }
+  convertToApiDate(
+    date: NgbDateStruct | null
+  ): string {
+
+    if (!date) return '';
+
+    const year = date.year;
+
+    const month =
+      String(date.month).padStart(2, '0');
+
+    const day =
+      String(date.day).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  }
+  syncProjectDetailDate() {
+
+    this.form.Transfer_Date_API =
+      this.convertToApiDate(
+        this.form.Transfer_Date
+      );
+
+    this.form.Transfer_Doc_Date_API =
+      this.convertToApiDate(
+        this.form.Transfer_Doc_Date
+      );
 
   }
   get filteredRows() {

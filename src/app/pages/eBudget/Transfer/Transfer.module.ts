@@ -21,6 +21,7 @@ import { SharedModule } from '../../../shared/shared.module';
 import { ProjectTransferComponent } from './ProjectTransfer/ProjectTransfer.component';
 import { EbudgetMasterRoutingModule } from './Transfer-rountion.module';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     url: 'https://httpbin.org/post',
     maxFilesize: 50,
@@ -53,7 +54,8 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
         NgbAccordionModule,
         SharedModule,
         EbudgetMasterRoutingModule,
-        
+        NgbDatepickerModule
+
     ],
     providers: [
         provideNgxMask(),

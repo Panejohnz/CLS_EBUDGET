@@ -168,7 +168,7 @@
                                     โอนจากรายการ/โครงการ :
                                 </label>
 
-                                <ng-select [items]="plans" bindValue="Plan_Id" [(ngModel)]="form.From_Plan_Id"
+                                <ng-select [items]="fromPlans" bindValue="Plan_Id" [(ngModel)]="form.From_Plan_Id"
                                     (change)="onChangeFromPlan()" appendTo="body" placeholder="-- เลือกโครงการ --">
 
                                     <!-- ตอนเลือกแล้ว -->
@@ -263,8 +263,16 @@
                                     วันที่ทำรายการ :
                                 </label>
 
-                                <input type="date" class="form-control" [(ngModel)]="form.Transfer_Date">
+                                <div class="input-group">
+                                    <input class="form-control" placeholder="วว/ดด/ปปปป" name="End_Date" ngbDatepicker
+                                        #endDp="ngbDatepicker" [(ngModel)]="form.Transfer_Date">
 
+                                    <button class="btn btn-outline-secondary" type="button" (click)="endDp.toggle()">
+
+                                        <i class="ri-calendar-line"></i>
+
+                                    </button>
+                                </div>
                             </div>
 
                             <div class="col-md-6">
@@ -283,8 +291,18 @@
                                     วันที่เอกสาร :
                                 </label>
 
-                                <input type="date" class="form-control" [(ngModel)]="form.Transfer_Doc_Date">
+                                <div class="input-group">
 
+                                    <input class="form-control" placeholder="วว/ดด/ปปปป" name="TransferDocDate"
+                                        ngbDatepicker #docDp="ngbDatepicker" [(ngModel)]="form.Transfer_Doc_Date">
+
+                                    <button class="btn btn-outline-secondary" type="button" (click)="docDp.toggle()">
+
+                                        <i class="ri-calendar-line"></i>
+
+                                    </button>
+
+                                </div>
                             </div>
 
                             <div class="col-md-6 mt-2">
@@ -328,7 +346,7 @@
                                 <label>
                                     โอนไปรายการ/โครงการ :
                                 </label>
-                                <ng-select [items]="plans" bindValue="Plan_Id" [(ngModel)]="form.To_Plan_Id"
+                                <ng-select [items]="toPlans" bindValue="Plan_Id" [(ngModel)]="form.To_Plan_Id"
                                     (change)="onChangeToPlan()" appendTo="body" placeholder="-- เลือกโครงการ --">
 
                                     <!-- ตอนเลือกแล้ว -->
