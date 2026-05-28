@@ -2,7 +2,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title mb-0 flex-grow-1">Sign off คำของบประมาณ (ผู้อำนวยการกอง)</h4>
+                <h4 class="card-title mb-0 flex-grow-1">ยืนยันข้อมูลคำของบประมาณ (หน่วยงาน)</h4>
             </div>
 
             <div class="card-body">
@@ -15,12 +15,12 @@
                     </div>
 
                     <div>
-                        <!-- <button class="btn btn-light me-2" (click)="CancelSignoff()">
-                            ยกเลิกการ sign off ข้อมูล
+                        <!-- <button class="btn btn-light me-2" (click)="CancelConfirm()">
+                            ยกเลิกการยืนยันข้อมูล
                         </button> -->
 
-                        <button class="btn btn-success text-black" (click)="SignOff()">
-                            sign off ข้อมูล
+                        <button class="btn btn-success text-black" (click)="Confirm()">
+                            ยืนยันข้อมูล
                         </button>
                     </div>
 
@@ -43,18 +43,18 @@
                                 <th style="width:15%">โครงการ</th>
                                 <th style="width:10%">งบประมาณ</th>
                                 <th style="width:10%">สถานะ</th>
-                                    <th style="width:5%">ยกเลิกยืนยัน</th>
+                                        <th style="width:5%">ยกเลิกยืนยัน</th>
                             </tr>
                         </thead>
 
                         <tbody>
                             @for(data of griddata; track $index){
                             <tr>
-                                  <td class="text-center">
-                                    <input type="checkbox" [(ngModel)]="data.selected" [disabled]="data.Status_Id == 3"
-                                        [style.accent-color]="data.Status_Id == 3 ? '#bfbfbf' : ''"
-                                        [style.opacity]="data.Status_Id == 3 ? '0.5' : '1'"
-                                        [style.cursor]="data.Status_Id == 3 ? 'not-allowed' : 'pointer'">
+                                   <td class="text-center">
+                                    <input type="checkbox" [(ngModel)]="data.selected" [disabled]="data.Status_Id == 2"
+                                        [style.accent-color]="data.Status_Id == 2 ? '#bfbfbf' : ''"
+                                        [style.opacity]="data.Status_Id == 2 ? '0.5' : '1'"
+                                        [style.cursor]="data.Status_Id ==2 ? 'not-allowed' : 'pointer'">
                                 </td>
                                        <td>{{$index + 1}}</td>
                                 <td class="text-center">{{data.Department_Name}}</td>
@@ -95,9 +95,9 @@
  <td class="text-center">
     <button
         class="btn btn-sm btn-danger"
-        (click)="CancelSignoff(data.Request_Id)"
-        [disabled]="data.Status_Id != 3"
-        [style.opacity]="data.Status_Id != 3 ? '0.5' : '1'">
+        (click)="CancelConfirm(data.Request_Id)"
+        [disabled]="data.Status_Id != 2"
+        [style.opacity]="data.Status_Id != 2 ? '0.5' : '1'">
 
         ยกเลิก sign off
 

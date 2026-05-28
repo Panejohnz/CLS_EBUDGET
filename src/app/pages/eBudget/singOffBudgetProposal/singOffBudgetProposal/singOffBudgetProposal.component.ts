@@ -17,6 +17,7 @@ import Swal from 'sweetalert2';
 import { EbudgetService } from 'src/app/core/services/ebudget.service';
 import { AuthenticationService } from 'src/app/core/services/auth.service';
 import { FormsModule } from '@angular/forms';
+import { BudgetYearService } from 'src/app/core/services/budget-year.service';
 
 @Component({
   selector: 'app-sing-off-budget-proposal',
@@ -27,10 +28,10 @@ import { FormsModule } from '@angular/forms';
 export class SingOffBudgetProposalComponent {
   constructor(private modalService: NgbModal, public service: GridJsService
     , private sortService: PaginationService, public serviceebud: EbudgetService
-    , private authService: AuthenticationService,) {
+    , private authService: AuthenticationService, private budgetYearService: BudgetYearService) {
   }
   allData: any[] = [];
-  griddata = [
+  griddata: any[] = [
     {
       selected: false,
       department: 'สำนักยุทธศาสตร์',
@@ -64,11 +65,36 @@ export class SingOffBudgetProposalComponent {
     Plan_Name: '',
     Active: 1
   };
+
+  currentYear: any
   ngOnInit(): void {
-    this.allData = Array.isArray(this.griddata)
-      ? this.griddata
-      : [];
-    this.griddata = [...this.allData];
+
+    this.budgetYearService.yearChanged$.subscribe(async year => {
+      if (year) {
+        if (year < 2500) {
+          year = year + 543
+        }
+        this.currentYear = year
+
+        this.get_data()
+      }
+    });
+
+  }
+
+  get_data() {
+    let model = {
+      FUNC_CODE: "FUNC-Get_Budget_Request_Sign_Off",
+      BgYear: this.currentYear
+    }
+    var getData = this.serviceebud.GatewayGetData(model);
+    getData.subscribe((response: any) => {
+      this.allData = Array.isArray(response.List_Budget_Request_SignOff.Data)
+        ? response.List_Budget_Request_SignOff.Data
+        : [];
+      this.griddata = [...this.allData];
+
+    })
   }
   filterSearch() {
 
@@ -87,25 +113,81 @@ export class SingOffBudgetProposalComponent {
     );
   }
   toggleAll(event: any) {
+
     const checked = event.target.checked;
 
-    this.griddata.forEach(item => {
-      item.selected = checked;
+    this.griddata.forEach((item: any) => {
+
+      // ไม่เลือกแถวที่ status = 3
+      if (item.Status_Id != 3) {
+        item.selected = checked;
+      }
+
     });
-  }
-  async CancelSignoff() {
-    const userConfirmed = await confirmAlert('info', 'ต้องการ Cancel Singoff โครงการ ?', '');
 
-    if (userConfirmed) {
-      basicAlert('success', 'บันทึกข้อมูลแล้ว', '')
-    }
   }
+
+  async CancelSignoff(Request_Id: number) {
+
+    const userConfirmed = await confirmAlert(
+      'info',
+      'ต้องการยกเลิก Sign off ข้อมูลคำของบประมาณ ?',
+      ''
+    );
+
+    if (!userConfirmed) return;
+
+    const payload = [
+      {
+        Request_Id: Request_Id,
+        Status_Number: 8
+      }
+    ];
+
+    let model = {
+      FUNC_CODE: "FUNC-Cancel_SignOff_Budget_Request",
+      List_Budget_Request: payload
+    };
+
+    this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
+
+      basicAlert('success', 'ยกเลิกการ Sign off ข้อมูลคำของบประมาณแล้ว', '');
+
+      this.get_data();
+
+    });
+
+  }
+
+
   async SignOff() {
-    const userConfirmed = await confirmAlert('info', 'ต้องการ Singoff โครงการ ?', '');
 
-    if (userConfirmed) {
-      basicAlert('success', 'บันทึกข้อมูลแล้ว', '')
+    const userConfirmed = await confirmAlert('info', 'ต้องการ Sign off ข้อมูลคำของบประมาณ ?', '');
+
+    if (!userConfirmed) return;
+
+    const selectedRows = this.griddata.filter(x => x.selected);
+
+    if (selectedRows.length === 0) {
+      basicAlert('warning', 'กรุณาเลือกรายการ', '');
+      return;
     }
+
+    const payload = selectedRows.map(x => ({
+      Request_Id: x.Request_Id,
+      Status_Number: 8
+    }));
+
+    let model = {
+      FUNC_CODE: "FUNC-SignOff_Budget_Request",
+      List_Budget_Request: payload
+    };
+
+    this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
+      basicAlert('success', 'บันทึก Sign off ข้อมูลคำของบประมาณแล้ว', '');
+      this.get_data(); // reload
+    });
+
   }
 
   fullModal(modal: any, data: any) {
