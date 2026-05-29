@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { SingOffPlaningComponent } from './singOffAcion/singOffAcion.component';
+import { SingOffActionComponent } from './singOffAction/singOffAcion.component';
 
 const routes: Routes = [
     {
         path: "",
-        component: SingOffPlaningComponent
+        component: SingOffActionComponent
     },
 
 

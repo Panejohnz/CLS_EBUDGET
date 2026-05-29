@@ -20,12 +20,12 @@ import { FormsModule } from '@angular/forms';
 import { BudgetYearService } from 'src/app/core/services/budget-year.service';
 
 @Component({
-    selector: 'app-confirm-super-dept-budget-proposal',
+    selector: 'app-sing-off-ministry-action',
     providers: [GridJsService, DecimalPipe, EbudgetService],
-    templateUrl: './ConfirmSuperDeptBudgetProposal.component.html',
-    styleUrls: ['./ConfirmSuperDeptBudgetProposal.component.scss']
+    templateUrl: './singOffMinistryAction.component.html',
+    styles: ``
 })
-export class ConfirmSuperDeptBudgetProposalComponent {
+export class SingOffMinistryActionComponent {
     constructor(private modalService: NgbModal, public service: GridJsService
         , private sortService: PaginationService, public serviceebud: EbudgetService
         , private authService: AuthenticationService, private budgetYearService: BudgetYearService) {
@@ -79,16 +79,18 @@ export class ConfirmSuperDeptBudgetProposalComponent {
             }
         });
 
+
+
     }
     get_data() {
         let model = {
-            FUNC_CODE: "FUNC-Get_Budget_Request_Confirm_SuperDept_Proposal",
+            FUNC_CODE: "FUNC-Get_Budget_Plan_Sign_Off_MinistryAction",
             BgYear: this.currentYear
         }
         var getData = this.serviceebud.GatewayGetData(model);
         getData.subscribe((response: any) => {
-            this.allData = Array.isArray(response.List_Budget_Request_Main.Data)
-                ? response.List_Budget_Request_Main.Data
+            this.allData = Array.isArray(response.List_Budget_Plan_Main.Data)
+                ? response.List_Budget_Plan_Main.Data
                 : [];
             this.griddata = [...this.allData];
 
@@ -110,21 +112,61 @@ export class ConfirmSuperDeptBudgetProposalComponent {
                 .includes(keyword)
         );
     }
+    // toggleAll(event: any) {
+    //   const checked = event.target.checked;
+
+    //   this.griddata.forEach(item => {
+    //     item.selected = checked;
+    //   });
+    // }
+
     toggleAll(event: any) {
 
         const checked = event.target.checked;
 
         this.griddata.forEach((item: any) => {
 
-            // ไม่เลือกแถวที่ status = 5
-            if (item.Status_Id != 5) {
+            // ไม่เลือกแถวที่ status = 7
+            if (item.Status_Id != 7) {
                 item.selected = checked;
             }
 
         });
 
     }
-    // async CancelConfirm() {
+
+    async CancelSignOff(Plan_Id: number) {
+
+        const userConfirmed = await confirmAlert(
+            'info',
+            'ต้องการยกเลิก Sign off แผนปฎิบัติการ (ปปท) ?',
+            ''
+        );
+
+        if (!userConfirmed) return;
+
+        const payload = [
+            {
+                Plan_Id: Plan_Id,
+            }
+        ];
+
+        let model = {
+            FUNC_CODE: "FUNC-Cancel_Sign_Off_MinistryAction_Budget_Plan",
+            List_Budget_Plan: payload
+        };
+
+        this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
+
+            basicAlert('success', 'ยกเลิกการ Sign off แผนปฎิบัติการ (ปปท) แล้ว', '');
+
+            this.get_data();
+
+        });
+
+    }
+
+    // async CancelSignOff() {
     //   const userConfirmed = await confirmAlert('info', 'ต้องการยกเลิกการยืนยันโครงการ ?', '');
 
     //   if (!userConfirmed) return;
@@ -143,7 +185,7 @@ export class ConfirmSuperDeptBudgetProposalComponent {
     //     }));
 
     //     let model = {
-    //       FUNC_CODE: "FUNC-Cancel_Confirm_SuperDept_Project_Plan",
+    //       FUNC_CODE: "FUNC-Cancel_SignOff_Ministry_Project_Plan",
     //       List_Project_Plan: payload
     //     };
     //     this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
@@ -152,67 +194,31 @@ export class ConfirmSuperDeptBudgetProposalComponent {
     //     });
     //   }
     // }
+    async SignOff() {
 
-
-
-    async Confirm() {
-
-        const userConfirmed = await confirmAlert('info', 'ต้องการยืนยันข้อมูลคำของบประมาณ ?', '');
+        const userConfirmed = await confirmAlert('info', 'ต้องการ Sign off แผนปฎิบัติการ (ปปท) ?', '');
 
         if (!userConfirmed) return;
 
         const selectedRows = this.griddata.filter(x => x.selected);
 
         if (selectedRows.length === 0) {
-            basicAlert('warning', 'กรุณาเลือกรายการ', '');
+            basicAlert('warning', 'กรุณาเลือกแผนปฎิบัติการ (ปปท)', '');
             return;
         }
 
         const payload = selectedRows.map(x => ({
-            Request_Id: x.Request_Id,
-            Status_Number: 8
+            Plan_Id: x.Plan_Id,
         }));
 
         let model = {
-            FUNC_CODE: "FUNC-Confirm_Budget_Request_SuperDept_Proposal",
-            List_Budget_Request: payload
+            FUNC_CODE: "FUNC-Sign_Off_MinistryAction_Budget_Plan",
+            List_Budget_Plan: payload
         };
 
         this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
-            basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
+            basicAlert('success', 'บันทึก Sign off แผนปฎิบัติการ (ปปท) แล้ว', '');
             this.get_data(); // reload
-        });
-
-    }
-
-    async CancelConfirm(Request_Id: number) {
-
-        const userConfirmed = await confirmAlert(
-            'info',
-            'ต้องการยกเลิกการยืนยันข้อมูลคำของบประมาณ ?',
-            ''
-        );
-
-        if (!userConfirmed) return;
-
-        const payload = [
-            {
-                Request_Id: Request_Id,
-                Status_Number: 8
-            }
-        ];
-
-        let model = {
-            FUNC_CODE: "FUNC-Cancel_Confirm_Budget_Request_SuperDept_Proposal",
-            List_Budget_Request: payload
-        };
-
-        this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
-
-            basicAlert('success', 'ยกเลิกการยืนยันข้อมูลคำของบประมาณแล้ว', '');
-
-            this.get_data();
-
         });
 
     }

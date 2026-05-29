@@ -2,7 +2,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title mb-0 flex-grow-1">ยืนยันข้อมูลแผนปฎิบัติการ (กยผ)</h4>
+                <h4 class="card-title mb-0 flex-grow-1">Sign off แผนปฎิบัติการ (กยผ)</h4>
             </div>
 
             <div class="card-body">
@@ -10,7 +10,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
 
                     <div style="width:300px;">
-                        <input type="text" class="form-control" placeholder="ค้นหาโครงการ..."
+                        <input type="text" class="form-control" placeholder="ค้นหาแผนปฎิบัติการ..."
                             [(ngModel)]="service.searchTerm" (input)="filterSearch()">
                     </div>
 
@@ -20,7 +20,7 @@
                         </button> -->
 
                         <button class="btn btn-success text-black" (click)="SignOff()">
-                            Sign off คำของบประมาณ
+                            Sign Off แผนปฎิบัติการ (กยผ)
                         </button>
                     </div>
 
@@ -93,11 +93,11 @@
                                 </td>
 
                                 <td class="text-center">
-                                <button class="btn btn-sm btn-danger" (click)="CancelSignOff(data.Request_Id)"
+                                <button class="btn btn-sm btn-danger" (click)="CancelSignOff(data.Plan_Id)"
                                     [disabled]="data.Status_Id == 5"
                                     [style.opacity]="data.Status_Id == 5 ? '0.5' : '1'">
 
-                                    ยกเลิกยืนยัน
+                                    ยกเลิก Sign off แผนปฎิบัติการ (กยผ)
 
                                 </button>
                                 </td>
