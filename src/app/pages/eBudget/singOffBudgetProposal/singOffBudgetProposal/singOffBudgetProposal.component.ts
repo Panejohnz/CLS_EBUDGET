@@ -89,8 +89,8 @@ export class SingOffBudgetProposalComponent {
     }
     var getData = this.serviceebud.GatewayGetData(model);
     getData.subscribe((response: any) => {
-      this.allData = Array.isArray(response.List_Budget_Request_SignOff.Data)
-        ? response.List_Budget_Request_SignOff.Data
+      this.allData = Array.isArray(response.List_Budget_Request_Main.Data)
+        ? response.List_Budget_Request_Main.Data
         : [];
       this.griddata = [...this.allData];
 

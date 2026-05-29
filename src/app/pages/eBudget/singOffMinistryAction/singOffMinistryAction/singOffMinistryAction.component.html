@@ -2,7 +2,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title mb-0 flex-grow-1">ยืนยันข้อมูลแผนปฎิบัติการ (กยผ)</h4>
+                <h4 class="card-title mb-0 flex-grow-1">Sign off แผนปฎิบัติการ (ปปท)</h4>
             </div>
 
             <div class="card-body">
@@ -10,7 +10,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
 
                     <div style="width:300px;">
-                        <input type="text" class="form-control" placeholder="ค้นหาโครงการ..."
+                        <input type="text" class="form-control" placeholder="ค้นหาแผนปฎิบัติการ..."
                             [(ngModel)]="service.searchTerm" (input)="filterSearch()">
                     </div>
 
@@ -20,7 +20,7 @@
                         </button> -->
 
                         <button class="btn btn-success text-black" (click)="SignOff()">
-                            Sign off คำของบประมาณ
+                            Sign Off แผนปฎิบัติการ (ปปท)
                         </button>
                     </div>
 
@@ -51,10 +51,10 @@
                             @for(data of griddata; track $index){
                             <tr>
                                 <td class="text-center">
-                                    <input type="checkbox" [(ngModel)]="data.selected" [disabled]="data.Status_Id == 6"
-                                        [style.accent-color]="data.Status_Id == 6 ? '#bfbfbf' : ''"
-                                        [style.opacity]="data.Status_Id == 6 ? '0.5' : '1'"
-                                        [style.cursor]="data.Status_Id == 6 ? 'not-allowed' : 'pointer'">
+                                    <input type="checkbox" [(ngModel)]="data.selected" [disabled]="data.Status_Id == 7"
+                                        [style.accent-color]="data.Status_Id == 7 ? '#bfbfbf' : ''"
+                                        [style.opacity]="data.Status_Id == 7 ? '0.5' : '1'"
+                                        [style.cursor]="data.Status_Id == 7 ? 'not-allowed' : 'pointer'">
                                 </td>
                                 <td>{{$index + 1}}</td>
                                 <td class="text-center">{{data.Department_Name}}</td>
@@ -91,16 +91,18 @@
                                         {{ data.Status_Name }}
                                     </span>
                                 </td>
+                              <td class="text-center">
+    <button
+        class="btn btn-sm btn-danger"
+        (click)="CancelSignOff(data.Plan_Id)"
+        [disabled]="data.Status_Id == 6"
+        [style.opacity]="data.Status_Id == 6 ? '0.5' : '1'">
 
-                                <td class="text-center">
-                                <button class="btn btn-sm btn-danger" (click)="CancelSignOff(data.Request_Id)"
-                                    [disabled]="data.Status_Id == 5"
-                                    [style.opacity]="data.Status_Id == 5 ? '0.5' : '1'">
+        ยกเลิก Sign off แผนปฎิบัติการ (ปปท)
 
-                                    ยกเลิกยืนยัน
+    </button>
+</td>
 
-                                </button>
-                                </td>
 
                             </tr>
                             }

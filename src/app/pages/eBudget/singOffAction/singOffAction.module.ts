@@ -18,8 +18,8 @@ import { AutocompleteLibModule } from 'angular-ng-autocomplete';
 import { defineElement } from '@lordicon/element';
 import lottie from 'lottie-web';
 import { SharedModule } from '../../../shared/shared.module';
-import { EmonitorMasterRoutingModule } from './singOffAcion-rountion.module';
-import { SingOffPlaningComponent } from './singOffAcion/singOffAcion.component';
+import { EmonitorMasterRoutingModule } from './singOffAction-rountion.module';
+import { SingOffActionComponent } from './singOffAction/singOffAcion.component';
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     url: 'https://httpbin.org/post',
@@ -29,7 +29,7 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
 
 @NgModule({
     declarations: [
-        SingOffPlaningComponent
+        SingOffActionComponent
     ],
     imports: [
         CommonModule,

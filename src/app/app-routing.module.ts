@@ -25,15 +25,19 @@ const routes: Routes = [
   { path: 'ProjectBudgetProposal', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/BudgetProposal/BudgetProposal.module').then(m => m.EmonitorMasterModule), },
   { path: 'singOffBudgetProposal', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/singOffBudgetProposal/singOffBudgetProposal.module').then(m => m.EmonitorMasterModule), },
   { path: 'singOffSuperDeptBudgetProposal', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/singOffSuperDeptBudgetProposal/singOffSuperDeptBudgetProposal.module').then(m => m.EmonitorMasterModule), },
+  { path: 'singOffMinistryBudgetProposal', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/singOffMinistryBudgetProposal/singOffMinistryBudgetProposal.module').then(m => m.EmonitorMasterModule), },
   { path: 'Allocation', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/Allocation/Allocation.module').then(m => m.EmonitorMasterModule), },
   { path: 'PlanManagement', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/PlanManagement/PlanManagement.module').then(m => m.EmonitorMasterModule), },
   { path: 'Transfer', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/Transfer/Transfer.module').then(m => m.EmonitorMasterModule), },
   { path: 'Dashboard', component: LayoutComponent, loadChildren: () => import('./pages/dashboards/dashboards.module').then(m => m.DashboardsModule), },
   { path: 'Moniter', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/Moniter/Moniter.module').then(m => m.EmonitorMasterModule), },
-  { path: 'singOffAction', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/singOffAcion/singOffAcion.module').then(m => m.EmonitorMasterModule), },
+
   { path: 'MasterData', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/MasterData/MasterData.module').then(m => m.PagesModule), },
-
-
+  { path: 'ConfirmAction', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/ConfirmAction/ConfirmAction.module').then(m => m.EmonitorMasterModule), },
+  { path: 'singOffAction', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/singOffAction/singOffAction.module').then(m => m.EmonitorMasterModule), },
+  { path: 'ConfirmSuperDeptAction', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/ConfirmSuperDeptAction/ConfirmSuperDeptAction.module').then(m => m.EmonitorMasterModule), },
+  { path: 'singOffSuperDeptAction', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/singOffSuperDeptAction/singOffSuperDeptAction.module').then(m => m.EmonitorMasterModule), },
+  { path: 'singOffMinistryAction', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/singOffMinistryAction/singOffMinistryAction.module').then(m => m.EmonitorMasterModule), },
 ];
 
 @NgModule({
