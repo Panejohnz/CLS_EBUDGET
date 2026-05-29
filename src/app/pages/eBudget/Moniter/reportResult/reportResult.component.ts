@@ -1,49 +1,21 @@
-import {
-  Component,
-  OnInit
-} from '@angular/core';
-
-import {
-  NgbModal
-} from '@ng-bootstrap/ng-bootstrap';
-
-import {
-  GridJsService
-} from '../../../tables/gridjs/gridjs.service';
-
-import {
-  PaginationService
-} from 'src/app/core/services/pagination.service';
-
-import {
-  DecimalPipe
-} from '@angular/common';
-
-import {
-  EbudgetService
-} from 'src/app/core/services/ebudget.service';
-
-import {
-  AuthenticationService
-} from 'src/app/core/services/auth.service';
-
-import {
-  BudgetYearService
-} from 'src/app/core/services/budget-year.service';
+import { Component, OnInit } from '@angular/core'; import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { GridJsService } from '../../../tables/gridjs/gridjs.service';
+import { PaginationService } from 'src/app/core/services/pagination.service';
+import { DecimalPipe } from '@angular/common';
+import { EbudgetService } from 'src/app/core/services/ebudget.service';
+import { AuthenticationService } from 'src/app/core/services/auth.service';
+import { BudgetYearService } from 'src/app/core/services/budget-year.service';
 
 @Component({
   selector: 'app-report-result',
-
   providers: [
     GridJsService,
     DecimalPipe,
     EbudgetService
   ],
-
   templateUrl:
     './reportResult.component.html'
 })
-
 export class ReportResultComponent
   implements OnInit {
 
@@ -55,59 +27,25 @@ export class ReportResultComponent
     private authService: AuthenticationService,
     private budgetYearService: BudgetYearService
   ) { }
-
-  // =====================================
-  // VARIABLE
-  // =====================================
-
   currentYear: any;
-
   department: any[] = [];
-
   selectedDepartmentId: any = null;
-
   allData: any[] = [];
-
   griddata: any[] = [];
-
   griddataTemp: any[] = [];
-
   selectedItem: any = null;
-
   modalRef: any;
-
   selectedMonth: any = null;
-
-  // เดือนตามไตรมาส
   quarterMonths = [
 
     ['ต.ค.', 'พ.ย.', 'ธ.ค.'],
-
     ['ม.ค.', 'ก.พ.', 'มี.ค.'],
-
     ['เม.ย.', 'พ.ค.', 'มิ.ย.'],
-
     ['ก.ค.', 'ส.ค.', 'ก.ย.']
-
   ];
-  steps = [
-    { no: 1, name: 'ร่าง TOR' },
-    { no: 2, name: 'ประกาศ' },
-    { no: 3, name: '' },
-    { no: 4, name: '' },
-    { no: 5, name: '' },
-    { no: 6, name: '' },
-    { no: 7, name: '' },
-    { no: 8, name: '' },
-    { no: 9, name: '' }
-  ];
-  // data รายงาน
+  steps: any[] = []
   reportData: any[] = [];
-
-  // =====================================
-  // INIT
-  // =====================================
-
+  currentStepIndex = -1;
   ngOnInit(): void {
 
     this.budgetYearService.yearChanged$
@@ -131,17 +69,10 @@ export class ReportResultComponent
 
   }
 
-  // =====================================
-  // GET DATA
-  // =====================================
-
   get_data() {
-
     const model = {
-
       FUNC_CODE:
         'FUNC-Get_Budget_Plan_Moniter',
-
       BgYear:
         this.currentYear,
 
@@ -152,7 +83,6 @@ export class ReportResultComponent
         7
 
     };
-
     this.servicebud
       .GatewayGetData(model)
       .subscribe((response: any) => {
@@ -198,8 +128,6 @@ export class ReportResultComponent
       });
 
   }
-
-
   applyFilter() {
 
     const model = {
@@ -251,8 +179,6 @@ export class ReportResultComponent
       });
 
   }
-
-
   createQuarter() {
 
     return [
@@ -530,10 +456,35 @@ export class ReportResultComponent
                       investList.some(
                         (x: any) =>
                           +x.Invest_Id === +step.Invest_Id
+                          && +x.Is_Proceed === 1
                       );
 
                   });
+                  this.currentStepIndex =
+                    this.reportSteps.findIndex(
+                      (x: any) => x.checked
+                    );
+                  const currentIndex =
+                    this.reportSteps.findIndex(
+                      (x: any) => x.checked
+                    );
 
+                  this.steps =
+                    this.reportSteps.map(
+                      (x: any, index: number) => ({
+
+                        no: index + 1,
+
+                        name: x.Invest_Name,
+
+                        active:
+                          index === currentIndex,
+
+                        done:
+                          index < currentIndex
+
+                      })
+                    );
                   this.modalRef =
                     this.modalService.open(
                       modal,
@@ -602,10 +553,20 @@ export class ReportResultComponent
     );
 
   }
-  // =====================================
-  // TOTAL PLAN
-  // =====================================
+  onSelectInvest(selected: any) {
 
+    this.reportSteps.forEach((x: any) => {
+      x.checked = false;
+    });
+
+    selected.checked = true;
+
+    this.currentStepIndex =
+      this.reportSteps.findIndex(
+        (x: any) => x.checked
+      );
+
+  }
   getTotalPlan(item: any) {
 
     return item.quarters
@@ -915,18 +876,22 @@ export class ReportResultComponent
 
       List_Report_Budget_Plan_Detail_Month:
         this.buildMonthData(),
-
       List_Report_Budget_Plan_Investment:
 
         this.selectedItem?.Fk_Budget_Type == 3
 
-          ? this.reportSteps
-            .filter(x => x.checked)
-            .map(x => ({
-              Invest_Id: x.Invest_Id,
-              Invest_Name: x.Invest_Name,
-              Is_Proceed: 1
-            }))
+          ? this.reportSteps.map(x => ({
+
+            Invest_Id:
+              x.Invest_Id,
+
+            Invest_Name:
+              x.Invest_Name,
+
+            Is_Proceed:
+              x.checked ? 1 : 0
+
+          }))
 
           : []
 
@@ -968,35 +933,58 @@ export class ReportResultComponent
   }
   fullModalreport(modal: any, data: any) {
 
-    const model = {
+    if (!this.reportSteps?.length) {
 
-      FUNC_CODE:
-        'FUNC-Get_Mas_Report_Investment',
+      const model = {
 
-    };
+        FUNC_CODE:
+          'FUNC-Get_Mas_Report_Investment',
 
-    this.servicebud
-      .GatewayGetData(model)
-      .subscribe((response: any) => {
+      };
 
-        this.reportSteps = response.List_Mas_Report_Investment
+      this.servicebud
+        .GatewayGetData(model)
+        .subscribe((response: any) => {
 
+          this.reportSteps =
+            response.List_Mas_Report_Investment || [];
 
-      });
+          this.modalRef =
+            this.modalService.open(
+              modal,
+              {
+                backdrop: 'static',
+                windowClass: 'modal-75'
+              }
+            );
 
+        });
 
-    this.modalRef = this.modalService.open(modal, {
-      backdrop: 'static',
-      windowClass: 'modal-75'
-    });
+    } else {
+
+      this.modalRef =
+        this.modalService.open(
+          modal,
+          {
+            backdrop: 'static',
+            windowClass: 'modal-75'
+          }
+        );
+
+    }
+
   }
   reportSteps: any[] = []
-
   saveReport(modal: any) {
-    const checkedList = this.reportSteps
-      .filter(x => x.checked)
-      .map(x => x.label);
+
+    const checkedList =
+      this.reportSteps
+        .filter(x => x.checked)
+        .map(x => x.Invest_Name);
+
+    console.log(checkedList);
 
     modal.close();
+
   }
 }
