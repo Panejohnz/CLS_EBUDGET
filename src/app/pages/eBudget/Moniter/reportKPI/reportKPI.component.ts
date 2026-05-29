@@ -32,13 +32,14 @@ export class ReportKPIComponent implements OnInit {
     private modalService: NgbModal
   ) { }
 
+  // =====================================
+  // VARIABLE
+  // =====================================
 
   kpis: any[] = [];
 
-  reportList: any[] = [];
-
   currentYear: any;
-  quarterDraft: any = {};
+
   selectedKpi: any = null;
 
   selectedTri: any = null;
@@ -69,6 +70,9 @@ export class ReportKPIComponent implements OnInit {
 
   ];
 
+  // =====================================
+  // INIT
+  // =====================================
 
   ngOnInit(): void {
 
@@ -93,6 +97,9 @@ export class ReportKPIComponent implements OnInit {
 
   }
 
+  // =====================================
+  // GET KPI LIST
+  // =====================================
 
   getData() {
 
@@ -115,25 +122,18 @@ export class ReportKPIComponent implements OnInit {
           response
             ?.List_Mas_Indicator || [];
 
-        this.reportList =
-
-          response
-            ?.List_Report_Project_Indicators_Data_Table
-            ?.Data || [];
-
         console.log(
           'KPI',
           this.kpis
         );
 
-        console.log(
-          'REPORT LIST',
-          this.reportList
-        );
-
       });
 
   }
+
+  // =====================================
+  // OPEN MODAL
+  // =====================================
 
   openForm(
     modal: any,
@@ -146,16 +146,53 @@ export class ReportKPIComponent implements OnInit {
 
     this.resetForm();
 
+    this.modalService.open(
+      modal,
+      {
+        size: 'lg',
+        backdrop: 'static'
+      }
+    );
+
+  }
+
+  // =====================================
+  // CHANGE QUARTER
+  // =====================================
+
+  onChangeQuarter() {
+
+    // reset ทุกครั้ง
+    // เพราะแต่ละไตรมาสเป็นคนละ record
+
+    this.resetForm();
+
+    if (!this.selectedTri) {
+
+      return;
+
+    }
+
+    this.getReportData();
+
+  }
+
+  // =====================================
+  // GET REPORT DATA
+  // =====================================
+
+  getReportData() {
+
     const model = {
 
       FUNC_CODE:
         'FUNC-GET_Report_Project_Indicators_By_Id',
 
-      BgYear:
-        this.currentYear,
-
       Fk_Indicators:
-        item.Indicators_Id
+        this.selectedKpi.Indicators_Id,
+
+      Trimas_Id:
+        this.selectedTri
 
     };
 
@@ -171,18 +208,25 @@ export class ReportKPIComponent implements OnInit {
         const data =
 
           response
-            ?.Report_Project_Indicator || [];
+            ?.Report_Project_Indicator
+          ||
+          null;
 
-        this.form = data
+        console.log(
+          'REPORT DATA',
+          data
+        );
 
-        if (this.form) {
-          this.selectedTri =
-            data.Trimas_Id || null;
+        // =================================
+        // เคยบันทึกแล้ว
+        // =================================
+
+        if (data) {
+
           this.form = {
 
             Report_Id:
               data.Report_Id || 0,
-
 
             Progress:
               data.Progress || '',
@@ -200,185 +244,13 @@ export class ReportKPIComponent implements OnInit {
 
         }
 
-        else {
-
-          this.resetForm();
-
-        }
-
-        this.modalService.open(
-          modal,
-          {
-            size: 'lg',
-            backdrop: 'static'
-          }
-        );
-
       });
 
   }
 
-  // =========================================
-  // CHANGE QUARTER
-  // =========================================
-  onChangeQuarter() {
-
-    if (!this.selectedTri) {
-
-      return;
-
-    }
-
-    // save current draft
-    this.quarterDraft[this.selectedTri] = {
-
-      ...this.form
-
-    };
-
-    this.getReportData();
-
-  }
-getReportData() {
-
-  const model = {
-
-    FUNC_CODE:
-      'FUNC-GET_Report_Project_Indicators_By_Id',
-
-    BgYear:
-      this.currentYear,
-
-    Fk_Indicators:
-      this.selectedKpi.Indicators_Id,
-
-    Trimas_Id:
-      this.selectedTri
-
-  };
-
-  console.log(
-    'GET REPORT',
-    model
-  );
-
-  this.servicebud
-    .GatewayGetData(model)
-    .subscribe((response: any) => {
-
-      const data =
-
-        response
-          ?.Report_Project_Indicator
-        ||
-        null;
-
-      console.log(
-        'REPORT DATA',
-        data
-      );
-
-      if (data) {
-
-        this.form = {
-
-          Report_Id:
-            data.Report_Id || 0,
-
-          Progress:
-            data.Progress || '',
-
-          Indicators_Result:
-            data.Indicators_Result || '',
-
-          Problems:
-            data.Problems || '',
-
-          Suggestions:
-            data.Suggestions || ''
-
-        };
-
-      }
-
-      // =====================================
-      // ยังไม่เคยบันทึก
-      // =====================================
-
-      else {
-
-        // reset เฉพาะ id
-        // ไม่ล้างค่าที่ user กำลังพิมพ์
-
-        this.form.Report_Id = 0;
-
-      }
-
-    });
-
-}
-
-  loadQuarterData() {
-
-    const oldData = this.reportList.find(
-
-      (x: any) =>
-
-        Number(x.Fk_Indicators)
-
-        ===
-
-        Number(this.selectedKpi.Indicators_Id)
-
-        &&
-
-        Number(x.Trimas_Id)
-
-        ===
-
-        Number(this.selectedTri)
-
-    );
-
-    console.log(
-      'OLD DATA',
-      oldData
-    );
-
-    if (oldData) {
-
-      this.form = {
-
-        Report_Id:
-          oldData.Report_Id || 0,
-
-        Progress:
-          oldData.Progress || '',
-
-        Indicators_Result:
-          oldData.Indicators_Result || '',
-
-        Problems:
-          oldData.Problems || '',
-
-        Suggestions:
-          oldData.Suggestions || ''
-
-      };
-
-    }
-
-    else {
-
-      this.resetForm();
-
-    }
-
-  }
-
-  // =========================================
+  // =====================================
   // RESET FORM
-  // =========================================
+  // =====================================
 
   resetForm() {
 
@@ -398,9 +270,9 @@ getReportData() {
 
   }
 
-  // =========================================
+  // =====================================
   // SAVE
-  // =========================================
+  // =====================================
 
   save() {
 
@@ -419,10 +291,15 @@ getReportData() {
     const quarterName =
 
       this.Tri_lists.find(
+
         (x: any) =>
+
           Number(x.Trimas_Id)
+
           ===
+
           Number(this.selectedTri)
+
       )?.name || '';
 
     const payload = {
@@ -494,8 +371,6 @@ getReportData() {
             'บันทึกสำเร็จ',
             ''
           );
-
-          this.getData();
 
         },
 

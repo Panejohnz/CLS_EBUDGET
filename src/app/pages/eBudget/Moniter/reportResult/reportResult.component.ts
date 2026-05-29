@@ -1,253 +1,496 @@
-import { Component } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import {
+  Component,
+  OnInit
+} from '@angular/core';
+
+import {
+  NgbModal
+} from '@ng-bootstrap/ng-bootstrap';
+
+import {
+  GridJsService
+} from '../../../tables/gridjs/gridjs.service';
+
+import {
+  PaginationService
+} from 'src/app/core/services/pagination.service';
+
+import {
+  DecimalPipe
+} from '@angular/common';
+
+import {
+  EbudgetService
+} from 'src/app/core/services/ebudget.service';
+
+import {
+  AuthenticationService
+} from 'src/app/core/services/auth.service';
+
+import {
+  BudgetYearService
+} from 'src/app/core/services/budget-year.service';
 
 @Component({
   selector: 'app-report-result',
-  templateUrl: './reportResult.component.html'
+
+  providers: [
+    GridJsService,
+    DecimalPipe,
+    EbudgetService
+  ],
+
+  templateUrl:
+    './reportResult.component.html'
 })
 
+export class ReportResultComponent
+  implements OnInit {
 
-export class ReportResultComponent {
-  constructor(private modalService: NgbModal) { }
-  list = [
-    {
-      no: 1,
-      plan: 'แผน A',
-      output: 'ผลผลิต A',
-      activity: 'กิจกรรม A',
-      category: 'งบดำเนินงาน',
-      name: 'ค่าเบี้ยประชุมกรรมการ (งานสนับสนุน)  ',
-      planAmount: 100000,
-      used: 2000,
-      balance: 44000
-    }
-    , {
-      no: 2,
-      plan: 'แผน B',
-      output: 'ผลผลิต B',
-      activity: 'กิจกรรม B',
-      category: 'งบดำเนินงาน',
-      name: 'โครงการพัฒนาระบบบริหารงานคลัง งบประมาณและสินทรัพย์ สำนักงาน ป.ป.ท.',
-      planAmount: 560000,
-      used: 86000,
-      balance: 10000
-    }, {
-      no: 3,
-      plan: 'แผน C',
-      output: 'ผลผลิต C',
-      activity: 'กิจกรรม C',
-      category: 'งบลงทุน',
-      name: 'ค่าครุภัณฑ์คอมพิวเตอร์',
-      planAmount: 890000,
-      used: 80500,
-      balance: 20030
-    }
-  ];
+  constructor(
+    private modalService: NgbModal,
+    public service: GridJsService,
+    private sortService: PaginationService,
+    public servicebud: EbudgetService,
+    private authService: AuthenticationService,
+    private budgetYearService: BudgetYearService
+  ) { }
 
-  selected: any;
-  div = false
-  selectItem(item: any) {
-    this.selected = item;
-    this.div = true
-  }
-  months = ['ต.ค.', 'พ.ย.', 'ธ.ค.'];
+  // =====================================
+  // VARIABLE
+  // =====================================
 
-  list2 = [
-    {
-      activity: 'ประชุมเชิงปฏิบัติการพัฒนามาตรการกำกับดูแลผลิตภัณฑ์สุขภาพและการติดตามหลังออกสู่ตลาดตามแนวทาง WHO GBT',
-      quarters: [
-        // Q1
-        [
-          { plan: 0, actual: 0, resbill: 0 },        // ต.ค.
-          { plan: 0, actual: 0, resbill: 0 },        // พ.ย.
-          { plan: 0, actual: 187750 }    // ธ.ค.
-        ],
-        // Q2
-        [
-          { plan: 0, actual: -10475 },   // ม.ค.
-          { plan: 188000, actual: 0 },   // ก.พ.
-          { plan: 0, actual: 0, resbill: 0 }         // มี.ค.
-        ],
-        // Q3
-        [
-          { plan: 0, actual: 0, resbill: 0 },        // เม.ย.
-          { plan: 0, actual: 0, resbill: 0 },        // พ.ค.
-          { plan: 0, actual: 0, resbill: 0 }         // มิ.ย.
-        ],
-        // Q4
-        [
-          { plan: 0, actual: 0, resbill: 0 },        // ก.ค.
-          { plan: 0, actual: 0, resbill: 0 },        // ส.ค.
-          { plan: 0, actual: 0, resbill: 0 }         // ก.ย.
-        ]
-      ]
-    },
+  currentYear: any;
 
-    {
-      activity: 'ประชุมติดตามความก้าวหน้าการดำเนินงานตามแผนพัฒนาการกำกับดูแลผลิตภัณฑ์สุขภาพตามมาตรฐานสากล',
-      quarters: [
-        // Q1
-        [
-          { plan: 0, actual: 0, resbill: 0 },
-          { plan: 0, actual: 0, resbill: 0 },
-          { plan: 0, actual: 0, resbill: 0 }
-        ],
-        // Q2
-        [
-          { plan: 3800, actual: 0 },
-          { plan: 3800, actual: 0 },
-          { plan: 3800, actual: 0 }
-        ],
-        // Q3
-        [
-          { plan: 0, actual: 0, resbill: 0 },
-          { plan: 0, actual: 0, resbill: 0 },
-          { plan: 0, actual: 0, resbill: 0 }
-        ],
-        // Q4
-        [
-          { plan: 0, actual: 0, resbill: 0 },
-          { plan: 0, actual: 0, resbill: 0 },
-          { plan: 0, actual: 0, resbill: 0 }
-        ]
-      ]
-    }
-  ];
-  steps = [
-    { no: 1, name: 'ร่าง TOR' },
-    { no: 2, name: 'ประกาศ' },
-    { no: 3, name: '' },
-    { no: 4, name: '' },
-    { no: 5, name: '' },
-    { no: 6, name: '' },
-    { no: 7, name: '' },
-    { no: 8, name: '' },
-    { no: 9, name: '' }
-  ];
-  status = '';
-  noteOk = '';
-  noteNotOk = '';
-  output = '';
-  outcome = '';
+  department: any[] = [];
 
-  target = 100;
+  selectedDepartmentId: any = null;
 
-  isAchieve = false;
-  isNotAchieve = false;
+  allData: any[] = [];
 
-  progress = 0;
+  griddata: any[] = [];
 
-  problem = '';
-  solution = '';
-  summary = '';
-  suggest = '';
-  createQuarter() {
-    return [
-      { plan: 0, actual: 0, resbill: 0 },
-      { plan: 0, actual: 0, resbill: 0 },
-      { plan: 0, actual: 0, resbill: 0 }
-    ];
-  }
-  selectedDepartment: any = '';
+  griddataTemp: any[] = [];
 
-  departments = [
-    { id: 1, name: 'หน่วยงาน 1' },
-    { id: 2, name: 'หน่วยงาน 2' },
-    { id: 3, name: 'หน่วยงาน 3' }
-  ];
-  getTotalPlan(item: any) {
-    return item.quarters.flat().reduce((s: any, x: any) => s + (+x.plan || 0), 0);
-  }
+  selectedItem: any = null;
 
-  getTotalActual(item: any) {
-    return item.quarters.flat().reduce((s: any, x: any) => s + (+x.actual || 0), 0);
-  }
+  modalRef: any;
 
-  getGrandPlan() {
-    return this.list2.reduce((s: any, i: any) => s + this.getTotalPlan(i), 0);
-  }
-  getGrandActual() {
-    return this.list2.reduce((s: any, i: any) => s + this.getTotalActual(i), 0);
-  }
-
-  onStatusChange() {
-    this.noteOk = '';
-    this.noteNotOk = '';
-  }
   selectedMonth: any = null;
-  openMonthModal(modal: any, item: any, qIndex: number, mIndex: number) {
-    this.selectedMonth = {
-      item,
-      quarterIndex: qIndex,
-      monthIndex: mIndex
+
+  // เดือนตามไตรมาส
+  quarterMonths = [
+
+    ['ต.ค.', 'พ.ย.', 'ธ.ค.'],
+
+    ['ม.ค.', 'ก.พ.', 'มี.ค.'],
+
+    ['เม.ย.', 'พ.ค.', 'มิ.ย.'],
+
+    ['ก.ค.', 'ส.ค.', 'ก.ย.']
+
+  ];
+
+  // data รายงาน
+  reportData: any[] = [];
+
+  // =====================================
+  // INIT
+  // =====================================
+
+  ngOnInit(): void {
+
+    this.budgetYearService.yearChanged$
+      .subscribe(async year => {
+
+        if (year) {
+
+          if (year < 2500) {
+
+            year = year + 543;
+
+          }
+
+          this.currentYear = year;
+
+          this.get_data();
+
+        }
+
+      });
+
+  }
+
+  // =====================================
+  // GET DATA
+  // =====================================
+
+  get_data() {
+
+    const model = {
+
+      FUNC_CODE:
+        'FUNC-Get_Budget_Plan_Moniter',
+
+      BgYear:
+        this.currentYear,
+
+      Department_Id:
+        this.selectedDepartmentId || 0,
+
+      Status_Id:
+        7
+
     };
 
-    this.modalService.open(modal, {
-      backdrop: 'static'
-    });
+    this.servicebud
+      .GatewayGetData(model)
+      .subscribe((response: any) => {
+
+        this.allData =
+
+          Array.isArray(
+            response
+              ?.List_Budget_Plan_Data_Table
+              ?.Data
+          )
+
+            ? response
+              .List_Budget_Plan_Data_Table
+              .Data
+
+            : [];
+
+        this.griddataTemp = [
+
+          ...this.allData
+
+        ];
+
+        this.griddata = [
+
+          ...this.allData
+
+        ];
+
+        this.department =
+
+          Array.isArray(
+            response
+              ?.Mas_Department_Lists
+          )
+
+            ? response
+              .Mas_Department_Lists
+
+            : [];
+
+      });
+
   }
-  closeMonthDetail() {
-    this.selectedMonth = null;
+
+  // =====================================
+  // FILTER
+  // =====================================
+
+  applyFilter() {
+
+    const model = {
+
+      FUNC_CODE:
+        'FUNC-Get_Budget_Plan_Moniter',
+
+      BgYear:
+        this.currentYear,
+
+      Department_Id:
+        this.selectedDepartmentId || 0,
+
+      Status_Id:
+        7
+
+    };
+
+    this.servicebud
+      .GatewayGetData(model)
+      .subscribe((response: any) => {
+
+        this.allData =
+
+          Array.isArray(
+            response
+              ?.List_Budget_Plan_Data_Table
+              ?.Data
+          )
+
+            ? response
+              .List_Budget_Plan_Data_Table
+              .Data
+
+            : [];
+
+        this.griddataTemp = [
+
+          ...this.allData
+
+        ];
+
+        this.griddata = [
+
+          ...this.allData
+
+        ];
+
+      });
+
   }
-  selectedItem: any
-  modalRef: any
-  fullModal(modal: any, data: any) {
+
+  // =====================================
+  // CREATE EMPTY QUARTER
+  // =====================================
+
+  createQuarter() {
+
+    return [
+
+      {
+        plan: 0,
+        actual: 0,
+        resbill: 0
+      },
+
+      {
+        plan: 0,
+        actual: 0,
+        resbill: 0
+      },
+
+      {
+        plan: 0,
+        actual: 0,
+        resbill: 0
+      }
+
+    ];
+
+  }
+
+  // =====================================
+  // OPEN MAIN MODAL
+  // =====================================
+
+  fullModal(
+    modal: any,
+    data: any
+  ) {
+
     this.selectedItem = data;
 
-    this.modalRef = this.modalService.open(modal, {
-      backdrop: 'static',
-      windowClass: 'modal-95'
+    // reset report
+    this.reportData = [];
+
+    // ตัวอย่างสร้าง 1 activity
+    // จริงๆค่อย bind api ทีหลัง
+
+    this.reportData.push({
+
+      activity:
+        data.Activity_Name || '',
+
+      remark: '',
+
+      quarters: [
+
+        this.createQuarter(),
+
+        this.createQuarter(),
+
+        this.createQuarter(),
+
+        this.createQuarter()
+
+      ]
+
     });
-  }
-  fullModalreport(modal: any, data: any) {
 
-    this.modalRef = this.modalService.open(modal, {
-      backdrop: 'static',
-      windowClass: 'modal-75'
-    });
-  }
-  reportSteps = [
-    { label: 'จัดทำคณะกรรมการร่าง TOR', checked: false },
-    { label: 'TOR', checked: false },
-    { label: 'ประกาศราคากลาง', checked: false },
-    { label: 'จัดทำแผน', checked: false },
-    { label: 'จัดทำรายงานขอซื้อขอจ้างและตั้งคณะกรรมการ', checked: false },
-    { label: 'เผยแพร่ร่าง TOR', checked: false },
-    { label: 'ขออนุมัติประกาศเชิญชวน', checked: false },
-    { label: 'เผยแพร่ประกาศเชิญชวน', checked: false },
-    { label: 'เสนอราคา', checked: false },
-    { label: 'พิจารณาผล', checked: false },
-    { label: 'แจ้งผลพิจารณา', checked: false },
-    { label: 'อนุมัติสั่งซื้อสั่งจ้าง', checked: false },
-    { label: 'เผยแพร่ประกาศผู้ชนะ', checked: false },
-    { label: 'ผูกพันงบประมาณ(PO)', checked: false },
-    { label: 'ใบสั่งซื้อสั่งจ้าง/สัญญา', checked: false },
-    { label: 'ตรวจรับ', checked: false },
-    { label: 'ทะเบียนคุมสินทรัพย์', checked: false },
-    { label: 'จบโครงการ', checked: false }
-  ];
-
-  saveReport(modal: any) {
-    const checkedList = this.reportSteps
-      .filter(x => x.checked)
-      .map(x => x.label);
-
-    console.log('ที่เลือก:', checkedList);
-
-    modal.close(); // 🔥 ปิด modal
-  }
-  close() {
+    this.modalRef =
+      this.modalService.open(
+        modal,
+        {
+          backdrop: 'static',
+          windowClass: 'modal-95'
+        }
+      );
 
   }
+
+  // =====================================
+  // MONTH DETAIL
+  // =====================================
+
+  openMonthModal(
+    modal: any,
+    item: any,
+    qIndex: number,
+    mIndex: number
+  ) {
+
+    this.selectedMonth = {
+
+      item,
+
+      quarterIndex:
+        qIndex,
+
+      monthIndex:
+        mIndex
+
+    };
+
+    this.modalService.open(
+      modal,
+      {
+        backdrop: 'static'
+      }
+    );
+
+  }
+
+  // =====================================
+  // TOTAL PLAN
+  // =====================================
+
+  getTotalPlan(item: any) {
+
+    return item.quarters
+      .flat()
+      .reduce(
+
+        (sum: any, x: any) =>
+
+          sum + (+x.plan || 0),
+
+        0
+
+      );
+
+  }
+
+  // =====================================
+  // TOTAL ACTUAL
+  // =====================================
+
+  getTotalActual(item: any) {
+
+    return item.quarters
+      .flat()
+      .reduce(
+
+        (sum: any, x: any) =>
+
+          sum + (+x.actual || 0),
+
+        0
+
+      );
+
+  }
+
+  // =====================================
+  // GRAND PLAN
+  // =====================================
+
+  getGrandPlan() {
+
+    return this.reportData
+      .reduce(
+
+        (sum: any, item: any) =>
+
+          sum +
+          this.getTotalPlan(item),
+
+        0
+
+      );
+
+  }
+
+  // =====================================
+  // GRAND ACTUAL
+  // =====================================
+
+  getGrandActual() {
+
+    return this.reportData
+      .reduce(
+
+        (sum: any, item: any) =>
+
+          sum +
+          this.getTotalActual(item),
+
+        0
+
+      );
+
+  }
+
+  // =====================================
+  // SAVE
+  // =====================================
 
   async save(modal: any) {
-    const userConfirmed = await confirmAlert('info', 'ต้องการบันทึกข้อมูล ?', '');
 
-    if (userConfirmed) {
+    const userConfirmed =
 
-      basicAlert('success', 'บันทึกข้อมูลแล้ว', '')
-      modal.dismiss();
+      await confirmAlert(
+        'info',
+        'ต้องการบันทึกข้อมูล ?',
+        ''
+      );
+
+    if (!userConfirmed) {
+
+      return;
 
     }
+
+    const payload = {
+
+      Budget_Plan_Id:
+        this.selectedItem
+          ?.Plan_Id || 0,
+
+      BgYear:
+        this.currentYear,
+
+      Report_Data:
+        this.reportData,
+
+      Create_User:
+        this.authService
+          ?.currentUserValue
+          ?.UserName || ''
+
+    };
+
+    console.log(
+      'SAVE REPORT',
+      payload
+    );
+
+    // TODO:
+    // CALL API SAVE
+
+    basicAlert(
+      'success',
+      'บันทึกข้อมูลแล้ว',
+      ''
+    );
+
+    modal.dismiss();
+
   }
+
 }
