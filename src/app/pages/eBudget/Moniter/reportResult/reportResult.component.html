@@ -1,3 +1,108 @@
+<style>
+    .card-soft {
+        background: #fff;
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .table thead th {
+        background: #f3f5f7;
+        font-weight: 600;
+        font-size: 13px;
+    }
+
+    .table td {
+        vertical-align: middle;
+        font-size: 13px;
+    }
+
+    .btn-report {
+        background: #4c8bf5;
+        color: #fff;
+        border-radius: 6px;
+        font-size: 12px;
+        padding: 4px 10px;
+    }
+
+    .remark-box {
+        border-left: 3px solid #4c8bf5;
+        padding-left: 10px;
+        font-size: 13px;
+    }
+
+    .custom-dropdown {
+        border-radius: 8px;
+    }
+
+    .step-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 10px;
+        overflow-x: auto;
+        padding-bottom: 5px;
+    }
+
+    .step-item {
+        text-align: center;
+        flex: 1;
+        min-width: 70px;
+        position: relative;
+    }
+
+    .step-item .circle {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #d9d9d9;
+        color: #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .step-item .label {
+        font-size: 12px;
+        margin-top: 6px;
+        color: #666;
+    }
+
+    /* เส้นเชื่อม */
+    .step-item::after {
+        content: '';
+        position: absolute;
+        top: 18px;
+        right: -50%;
+        width: 100%;
+        height: 2px;
+        background: #d9d9d9;
+        z-index: -1;
+    }
+
+    .step-item:last-child::after {
+        display: none;
+    }
+
+    /* active (วงปัจจุบัน) */
+    .step-item.active .circle {
+        background: #4CAF50;
+        color: #fff;
+    }
+
+    /* done (ผ่านแล้ว) */
+    .step-item.done .circle {
+        background: #4CAF50;
+        color: #fff;
+    }
+
+    .step-item.done::after {
+        background: #4CAF50;
+    }
+</style>
 <div class="bg-light p-3">
 
     <!-- FILTER -->
@@ -234,7 +339,33 @@
             <div class="modal-body">
 
                 <div class="table-responsive">
+                    @if(selectedItem.Fk_Budget_Type == 3){
+                    <div class="d-flex justify-content-between align-items-center mb-3">
 
+
+
+                        <button class="btn btn-primary" (click)="fullModalreport(reportModal, null)">
+                            รายงานผลลงทุน
+                        </button>
+
+                    </div>
+                    <div class="step-wrapper mb-3">
+
+                        <div class="step-item" *ngFor="let step of steps; let i = index" [class.active]="i === 0"
+                            [class.done]="i < 0">
+
+                            <div class="circle">
+                                {{ step.no }}
+                            </div>
+
+                            <div class="label">
+                                {{ step.name }}
+                            </div>
+
+                        </div>
+
+                    </div>
+                    }
                     <table class="table table-bordered align-middle text-center">
 
                         <!-- HEADER -->
@@ -242,7 +373,7 @@
 
                             <tr>
 
-                              
+
 
                                 <th colspan="4">
 
@@ -279,8 +410,13 @@
                                     ผลการใช้จ่าย
 
                                 </th>
+                                <th rowspan="2">
 
-                            
+                                    ผลการเบิกจ่าย
+
+                                </th>
+
+
 
                             </tr>
 
@@ -326,7 +462,7 @@
                                 <tr *ngFor="let m of quarterMonths[0]; let mi = index">
 
                                     <!-- ACTIVITY -->
-                                
+
 
                                     <!-- QUARTERS -->
                                     <ng-container *ngFor="let q of item.quarters; let qIndex = index">
@@ -336,6 +472,12 @@
                                             (click)="openMonthModal(monthModal,item,qIndex,mi)">
 
                                             {{ quarterMonths[qIndex][mi] }}
+
+                                            <i *ngIf="
+            q[mi].planRemark ||
+            q[mi].noPlanRemark
+        " class="ri-file-text-line text-success ms-1">
+                                            </i>
 
                                         </td>
 
@@ -378,9 +520,12 @@
                                         {{ getTotalActual(item) | number }}
 
                                     </td>
+                                    <td *ngIf="mi === 0" [attr.rowspan]="3">
 
+                                        {{ getTotalWithdraw(item) | number }}
+                                    </td>
                                     <!-- REMARK -->
-                                  
+
                                 </tr>
 
                             </ng-container>
@@ -394,23 +539,23 @@
 
                                 </td>
 
-                                <td *ngFor="let i of [].constructor(16)">
+                                <td *ngFor="let i of [].constructor(15)">
 
                                 </td>
 
                                 <td>
-
                                     {{ getGrandPlan() | number }}
-
                                 </td>
 
                                 <td>
-
                                     {{ getGrandActual() | number }}
-
                                 </td>
 
-                               
+                                <td>
+                                    {{ getGrandWithdraw() | number }}
+                                </td>
+
+
                             </tr>
 
                         </tbody>
@@ -449,6 +594,9 @@
 <!-- ================================================= -->
 <!-- MONTH DETAIL MODAL -->
 <!-- ================================================= -->
+<!-- ================================================= -->
+<!-- MONTH DETAIL MODAL -->
+<!-- ================================================= -->
 
 <ng-template #monthModal let-modal>
 
@@ -467,7 +615,6 @@
         </h5>
 
         <button type="button" class="btn-close" (click)="modal.dismiss()">
-
         </button>
 
     </div>
@@ -484,8 +631,12 @@
 
                 </label>
 
-                <textarea rows="5" class="form-control">
-
+                <textarea rows="6" class="form-control" [(ngModel)]="
+                        selectedMonth.item.quarters
+                        [selectedMonth.quarterIndex]
+                        [selectedMonth.monthIndex]
+                        .planRemark
+                    ">
                 </textarea>
 
             </div>
@@ -498,14 +649,65 @@
 
                 </label>
 
-                <textarea rows="5" class="form-control">
-
+                <textarea rows="6" class="form-control" [(ngModel)]="
+                        selectedMonth.item.quarters
+                        [selectedMonth.quarterIndex]
+                        [selectedMonth.monthIndex]
+                        .noPlanRemark
+                    ">
                 </textarea>
 
             </div>
 
         </div>
 
+    </div>
+
+    <div class="modal-footer">
+
+        <button type="button" class="btn btn-light" (click)="modal.dismiss()">
+
+            ปิด
+
+        </button>
+
+        <button type="button" class="btn btn-primary" (click)="modal.close()">
+
+            บันทึก
+
+        </button>
+
+    </div>
+
+</ng-template>
+
+<ng-template #reportModal let-modal>
+
+    <div class="modal-header">
+        <h5 class="modal-title">รายงานผลลงทุน</h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
+    </div>
+
+    <div style="padding-left :20px" class="row">
+
+        <div class="col-md-6" *ngFor="let item of reportSteps; let i = index">
+
+            <div class="form-check custom-check mb-2">
+                <input class="form-check-input" type="checkbox" [(ngModel)]="item.checked" [id]="'check'+i">
+
+                <label class="form-check-label" [for]="'check'+i">
+                    {{ item.Invest_Name }}
+                </label>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="text-end mt-3">
+        <button class="btn btn-success" (click)="saveReport(modal)">
+            บันทึก
+        </button>
     </div>
 
 </ng-template>
