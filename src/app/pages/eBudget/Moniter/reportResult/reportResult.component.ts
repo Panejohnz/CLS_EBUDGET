@@ -36,6 +36,38 @@ export class ReportResultComponent
   selectedItem: any = null;
   modalRef: any;
   selectedMonth: any = null;
+  Output_Result: any
+  Outcome_Result: any
+  Progress_Percent: any
+  Problems: any
+  Solutions: any
+  Summary_Result: any
+  Suggestions: any
+  Progress_Id: any
+  selectedTri = null;
+  Tri_lists = [
+
+    {
+      Trimas_Id: 1,
+      name: 'ไตรมาส 1'
+    },
+
+    {
+      Trimas_Id: 2,
+      name: 'ไตรมาส 2'
+    },
+
+    {
+      Trimas_Id: 3,
+      name: 'ไตรมาส 3'
+    },
+
+    {
+      Trimas_Id: 4,
+      name: 'ไตรมาส 4'
+    }
+
+  ];
   quarterMonths = [
 
     ['ต.ค.', 'พ.ย.', 'ธ.ค.'],
@@ -128,6 +160,7 @@ export class ReportResultComponent
       });
 
   }
+
   applyFilter() {
 
     const model = {
@@ -245,10 +278,6 @@ export class ReportResultComponent
     modal: any,
     data: any
   ) {
-    console.log('data', data);
-
-
-
     this.selectedItem = data;
 
     const createPayload = {
@@ -342,62 +371,37 @@ export class ReportResultComponent
             const investList =
               res?.List_Report_Budget_Plan_Investment || [];
 
-
+            let Progress_list = res.Report_Budget_Plan_Progress
+            this.Output_Result = Progress_list.Output_Result
+            this.Outcome_Result = Progress_list.Outcome_Result
+            this.Progress_Percent = Progress_list.Progress_Percent
+            this.Problems = Progress_list.Problems
+            this.Solutions = Progress_list.Solutions
+            this.Summary_Result = Progress_list.Summary_Result
+            this.Suggestions = Progress_list.Suggestions
+            this.Progress_Id = Progress_list.Progress_Id
+            this.selectedTri = Progress_list.Trimas_Id
             if (detailList.length > 0) {
+              const detail = detailList[0];
 
-              const detail =
-                detailList[0];
+              const months = [
+                'Oct', 'Nov', 'Dec',
+                'Jan', 'Feb', 'Mar',
+                'Apr', 'May', 'Jun',
+                'Jul', 'Aug', 'Sep'
+              ];
 
-              quarters[0][0].plan = detail.Oct_Target || 0;
-              quarters[0][1].plan = detail.Nov_Target || 0;
-              quarters[0][2].plan = detail.Dec_Target || 0;
+              months.forEach((month, index) => {
+                const q = Math.floor(index / 3);
+                const m = index % 3;
 
-              quarters[1][0].plan = detail.Jan_Target || 0;
-              quarters[1][1].plan = detail.Feb_Target || 0;
-              quarters[1][2].plan = detail.Mar_Target || 0;
-
-              quarters[2][0].plan = detail.Apr_Target || 0;
-              quarters[2][1].plan = detail.May_Target || 0;
-              quarters[2][2].plan = detail.Jun_Target || 0;
-
-              quarters[3][0].plan = detail.Jul_Target || 0;
-              quarters[3][1].plan = detail.Aug_Target || 0;
-              quarters[3][2].plan = detail.Sep_Target || 0;
-
-              // ACTUAL
-              quarters[0][0].actual = detail.Oct_Amount || 0;
-              quarters[0][1].actual = detail.Nov_Amount || 0;
-              quarters[0][2].actual = detail.Dec_Amount || 0;
-
-              quarters[1][0].actual = detail.Jan_Amount || 0;
-              quarters[1][1].actual = detail.Feb_Amount || 0;
-              quarters[1][2].actual = detail.Mar_Amount || 0;
-
-              quarters[2][0].actual = detail.Apr_Amount || 0;
-              quarters[2][1].actual = detail.May_Amount || 0;
-              quarters[2][2].actual = detail.Jun_Amount || 0;
-
-              quarters[3][0].actual = detail.Jul_Amount || 0;
-              quarters[3][1].actual = detail.Aug_Amount || 0;
-              quarters[3][2].actual = detail.Sep_Amount || 0;
-
-              // WITHDRAW
-              quarters[0][0].resbill = detail.Oct_Withdraw_Amount || 0;
-              quarters[0][1].resbill = detail.Nov_Withdraw_Amount || 0;
-              quarters[0][2].resbill = detail.Dec_Withdraw_Amount || 0;
-
-              quarters[1][0].resbill = detail.Jan_Withdraw_Amount || 0;
-              quarters[1][1].resbill = detail.Feb_Withdraw_Amount || 0;
-              quarters[1][2].resbill = detail.Mar_Withdraw_Amount || 0;
-
-              quarters[2][0].resbill = detail.Apr_Withdraw_Amount || 0;
-              quarters[2][1].resbill = detail.May_Withdraw_Amount || 0;
-              quarters[2][2].resbill = detail.Jun_Withdraw_Amount || 0;
-
-              quarters[3][0].resbill = detail.Jul_Withdraw_Amount || 0;
-              quarters[3][1].resbill = detail.Aug_Withdraw_Amount || 0;
-              quarters[3][2].resbill = detail.Sep_Withdraw_Amount || 0;
-
+                quarters[q][m] = {
+                  ...quarters[q][m],
+                  plan: detail[`${month}_Target`] || 0,
+                  actual: detail[`${month}_Amount`] || 0,
+                  resbill: detail[`${month}_Withdraw_Amount`] || 0
+                };
+              });
             }
 
             monthList.forEach((m: any) => {
@@ -512,7 +516,6 @@ export class ReportResultComponent
           });
 
       });
-
   }
   openMonthModal(
     modal: any,
@@ -634,110 +637,42 @@ export class ReportResultComponent
 
   }
   buildDetailData() {
+    const months = [
+      'Oct', 'Nov', 'Dec',
+      'Jan', 'Feb', 'Mar',
+      'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep'
+    ];
 
-    const details: any[] = [];
+    return this.reportData.map(item => {
+      const allMonths = item.quarters.flat();
 
-    this.reportData.forEach(item => {
+      const detail: any = {
+        BgYear: this.currentYear,
+        Fk_Activity_Id: item.activityId,
+        Activity_Name: item.activity,
+        Sum_Used_Amount: 0
+      };
 
-      const allMonths =
-        item.quarters.flat();
+      ['Target', 'Amount', 'Used_Amount', 'Withdraw_Amount']
+        .forEach(type => {
+          months.forEach((month, i) => {
+            const data = allMonths[i] || {};
 
-      details.push({
+            detail[`${month}_${type}`] =
+              type === 'Target' ? data.plan || 0 :
+                type === 'Amount' ? data.actual || 0 :
+                  type === 'Withdraw_Amount' ? data.resbill || 0 :
+                    0;
+          });
+        });
 
-        BgYear:
-          this.currentYear,
+      detail.Sum_Target = allMonths.reduce((s: any, x: any) => s + (+x?.plan || 0), 0);
+      detail.Sum_Amount = allMonths.reduce((s: any, x: any) => s + (+x?.actual || 0), 0);
+      detail.Sum_Withdraw_Amount = allMonths.reduce((s: any, x: any) => s + (+x?.resbill || 0), 0);
 
-        Fk_Activity_Id:
-          item.activityId,
-
-        Activity_Name:
-          item.activity,
-
-        // TARGET
-        Oct_Target: allMonths[0]?.plan || 0,
-        Nov_Target: allMonths[1]?.plan || 0,
-        Dec_Target: allMonths[2]?.plan || 0,
-        Jan_Target: allMonths[3]?.plan || 0,
-        Feb_Target: allMonths[4]?.plan || 0,
-        Mar_Target: allMonths[5]?.plan || 0,
-        Apr_Target: allMonths[6]?.plan || 0,
-        May_Target: allMonths[7]?.plan || 0,
-        Jun_Target: allMonths[8]?.plan || 0,
-        Jul_Target: allMonths[9]?.plan || 0,
-        Aug_Target: allMonths[10]?.plan || 0,
-        Sep_Target: allMonths[11]?.plan || 0,
-
-        Sum_Target:
-          allMonths.reduce(
-            (s: number, x: any) =>
-              s + (+x.plan || 0),
-            0
-          ),
-
-        // ACTUAL
-        Oct_Amount: allMonths[0]?.actual || 0,
-        Nov_Amount: allMonths[1]?.actual || 0,
-        Dec_Amount: allMonths[2]?.actual || 0,
-        Jan_Amount: allMonths[3]?.actual || 0,
-        Feb_Amount: allMonths[4]?.actual || 0,
-        Mar_Amount: allMonths[5]?.actual || 0,
-        Apr_Amount: allMonths[6]?.actual || 0,
-        May_Amount: allMonths[7]?.actual || 0,
-        Jun_Amount: allMonths[8]?.actual || 0,
-        Jul_Amount: allMonths[9]?.actual || 0,
-        Aug_Amount: allMonths[10]?.actual || 0,
-        Sep_Amount: allMonths[11]?.actual || 0,
-
-        Sum_Amount:
-          allMonths.reduce(
-            (s: number, x: any) =>
-              s + (+x.actual || 0),
-            0
-          ),
-
-        // USED
-        Oct_Used_Amount: 0,
-        Nov_Used_Amount: 0,
-        Dec_Used_Amount: 0,
-        Jan_Used_Amount: 0,
-        Feb_Used_Amount: 0,
-        Mar_Used_Amount: 0,
-        Apr_Used_Amount: 0,
-        May_Used_Amount: 0,
-        Jun_Used_Amount: 0,
-        Jul_Used_Amount: 0,
-        Aug_Used_Amount: 0,
-        Sep_Used_Amount: 0,
-
-        Sum_Used_Amount: 0,
-
-        // WITHDRAW
-        Oct_Withdraw_Amount: allMonths[0]?.resbill || 0,
-        Nov_Withdraw_Amount: allMonths[1]?.resbill || 0,
-        Dec_Withdraw_Amount: allMonths[2]?.resbill || 0,
-        Jan_Withdraw_Amount: allMonths[3]?.resbill || 0,
-        Feb_Withdraw_Amount: allMonths[4]?.resbill || 0,
-        Mar_Withdraw_Amount: allMonths[5]?.resbill || 0,
-        Apr_Withdraw_Amount: allMonths[6]?.resbill || 0,
-        May_Withdraw_Amount: allMonths[7]?.resbill || 0,
-        Jun_Withdraw_Amount: allMonths[8]?.resbill || 0,
-        Jul_Withdraw_Amount: allMonths[9]?.resbill || 0,
-        Aug_Withdraw_Amount: allMonths[10]?.resbill || 0,
-        Sep_Withdraw_Amount: allMonths[11]?.resbill || 0,
-
-        Sum_Withdraw_Amount:
-          allMonths.reduce(
-            (s: number, x: any) =>
-              s + (+x.resbill || 0),
-            0
-          )
-
-      });
-
+      return detail;
     });
-
-    return details;
-
   }
   buildMonthData() {
 
@@ -793,11 +728,30 @@ export class ReportResultComponent
       );
 
   }
+  onQuarterChange() {
 
-  // =====================================
-  // GRAND ACTUAL
-  // =====================================
+    const model = {
+      FUNC_CODE: 'FUNC-Get_Report_Budget_Plan_Progress',
+      Fk_Plan_Id: this.selectedItem.Plan_Id,
+      Trimas_Id: this.selectedTri
+    };
 
+    this.servicebud
+      .GatewayGetData(model)
+      .subscribe((res: any) => {
+
+        this.Output_Result = res.Report_Budget_Plan_Progress.Output_Result;
+        this.Outcome_Result = res.Report_Budget_Plan_Progress.Outcome_Result;
+        this.Progress_Percent = res.Report_Budget_Plan_Progress.Progress_Percent;
+        this.Problems = res.Report_Budget_Plan_Progress.Problems;
+        this.Solutions = res.Report_Budget_Plan_Progress.Solutions;
+        this.Summary_Result = res.Report_Budget_Plan_Progress.Summary_Result;
+        this.Suggestions = res.Report_Budget_Plan_Progress.Suggestions;
+        this.Progress_Id = res.Report_Budget_Plan_Progress.Progress_Id;
+
+      });
+
+  }
   getGrandActual() {
 
     return this.reportData
@@ -864,6 +818,20 @@ export class ReportResultComponent
         this.authService?.currentUserValue?.UserName || ''
     };
 
+    const Plan_Progress = {
+      Output_Result: this.Output_Result,
+      Outcome_Result: this.Outcome_Result,
+      Progress_Percent: this.Progress_Percent,
+      Problems: this.Problems,
+      Solutions: this.Solutions,
+      Summary_Result: this.Summary_Result,
+      Suggestions: this.Suggestions,
+      BgYear: this.currentYear,
+      Progress_Id: this.Progress_Id || 0,
+      Active: true,
+      Trimas_Id: this.selectedTri
+    }
+
     const model = {
 
       FUNC_CODE:
@@ -894,7 +862,8 @@ export class ReportResultComponent
           }))
 
           : []
-
+      ,
+      Report_Budget_Plan_Progress: Plan_Progress
     };
 
 
