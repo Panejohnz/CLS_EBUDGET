@@ -28,7 +28,7 @@ import { BudgetYearService } from 'src/app/core/services/budget-year.service';
 export class ConfirmPlanningComponent {
   constructor(private modalService: NgbModal, public service: GridJsService
     , private sortService: PaginationService, public serviceebud: EbudgetService
-    , private authService: AuthenticationService,private budgetYearService: BudgetYearService) {
+    , private authService: AuthenticationService, private budgetYearService: BudgetYearService) {
   }
   allData: any[] = [];
   griddata: any[] = [
@@ -65,10 +65,10 @@ export class ConfirmPlanningComponent {
     Plan_Name: '',
     Active: 1
   };
-  currentYear : any
+  currentYear: any
   ngOnInit(): void {
 
- this.budgetYearService.yearChanged$.subscribe(async year => {
+    this.budgetYearService.yearChanged$.subscribe(async year => {
       if (year) {
         if (year < 2500) {
           year = year + 543
@@ -85,12 +85,12 @@ export class ConfirmPlanningComponent {
   get_data() {
     let model = {
       FUNC_CODE: "FUNC-Get_Project_plan_Confirm",
-      BgYear :  this.currentYear
+      BgYear: this.currentYear
     }
     var getData = this.serviceebud.GatewayGetData(model);
     getData.subscribe((response: any) => {
-      this.allData = Array.isArray(response.List_Project_Plan_Confirm.Data)
-        ? response.List_Project_Plan_Confirm.Data
+      this.allData = Array.isArray(response.List_Project_Plan_Main.Data)
+        ? response.List_Project_Plan_Main.Data
         : [];
       this.griddata = [...this.allData];
 
@@ -112,52 +112,52 @@ export class ConfirmPlanningComponent {
         .includes(keyword)
     );
   }
-   toggleAll(event: any) {
+  toggleAll(event: any) {
 
-  const checked = event.target.checked;
+    const checked = event.target.checked;
 
-  this.griddata.forEach((item: any) => {
+    this.griddata.forEach((item: any) => {
 
-    // ไม่เลือกแถวที่ status = 2
-    if (item.Status_Id != 2) {
-      item.selected = checked;
-    }
+      // ไม่เลือกแถวที่ status = 2
+      if (item.Status_Id != 2) {
+        item.selected = checked;
+      }
 
-  });
+    });
 
-}
+  }
 
   async CancelConfirm(projectId: number) {
 
-  const userConfirmed = await confirmAlert(
-    'info',
-    'ต้องการยกเลิกการยืนยันโครงการ ?',
-    ''
-  );
+    const userConfirmed = await confirmAlert(
+      'info',
+      'ต้องการยกเลิกการยืนยันโครงการ ?',
+      ''
+    );
 
-  if (!userConfirmed) return;
+    if (!userConfirmed) return;
 
-  const payload = [
-    {
-      Project_Id: projectId,
-      Status_Number: 8
-    }
-  ];
+    const payload = [
+      {
+        Project_Id: projectId,
+        Status_Number: 8
+      }
+    ];
 
-  let model = {
-    FUNC_CODE: "FUNC-Cancel_Confirm_Project_Plan",
-    List_Project_Plan: payload
-  };
+    let model = {
+      FUNC_CODE: "FUNC-Cancel_Confirm_Project_Plan",
+      List_Project_Plan: payload
+    };
 
-  this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
+    this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
 
-    basicAlert('success', 'ยกเลิกยืนยันข้อมูลโครงการแล้ว', '');
+      basicAlert('success', 'ยกเลิกยืนยันข้อมูลโครงการแล้ว', '');
 
-    this.get_data();
+      this.get_data();
 
-  });
+    });
 
-}
+  }
 
   // async CancelConfirm() {
   //   const userConfirmed = await confirmAlert('info', 'ต้องการยกเลิกการยืนยันโครงการ ?', '');

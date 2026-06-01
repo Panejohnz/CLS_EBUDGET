@@ -84,13 +84,13 @@ export class ConfirmBudgetProposalComponent {
     }
     get_data() {
         let model = {
-            FUNC_CODE: "FUNC-Get_Budget_Plan_Confirm",
+            FUNC_CODE: "FUNC-Get_Budget_Request_Confirm",
             BgYear: this.currentYear
         }
         var getData = this.serviceebud.GatewayGetData(model);
         getData.subscribe((response: any) => {
-            this.allData = Array.isArray(response.List_Budget_Plan_Main.Data)
-                ? response.List_Budget_Plan_Main.Data
+            this.allData = Array.isArray(response.List_Budget_Request_Main.Data)
+                ? response.List_Budget_Request_Main.Data
                 : [];
             this.griddata = [...this.allData];
 
