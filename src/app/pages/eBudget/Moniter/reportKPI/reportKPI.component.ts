@@ -97,9 +97,6 @@ export class ReportKPIComponent implements OnInit {
 
   }
 
-  // =====================================
-  // GET KPI LIST
-  // =====================================
 
   getData() {
 
@@ -131,10 +128,6 @@ export class ReportKPIComponent implements OnInit {
 
   }
 
-  // =====================================
-  // OPEN MODAL
-  // =====================================
-
   openForm(
     modal: any,
     item: any
@@ -156,14 +149,9 @@ export class ReportKPIComponent implements OnInit {
 
   }
 
-  // =====================================
-  // CHANGE QUARTER
-  // =====================================
 
   onChangeQuarter() {
 
-    // reset ทุกครั้ง
-    // เพราะแต่ละไตรมาสเป็นคนละ record
 
     this.resetForm();
 
@@ -177,9 +165,6 @@ export class ReportKPIComponent implements OnInit {
 
   }
 
-  // =====================================
-  // GET REPORT DATA
-  // =====================================
 
   getReportData() {
 
@@ -196,10 +181,6 @@ export class ReportKPIComponent implements OnInit {
 
     };
 
-    console.log(
-      'GET REPORT',
-      model
-    );
 
     this.servicebud
       .GatewayGetData(model)
