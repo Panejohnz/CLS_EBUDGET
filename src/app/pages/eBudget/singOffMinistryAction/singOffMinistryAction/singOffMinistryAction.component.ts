@@ -139,7 +139,7 @@ export class SingOffMinistryActionComponent {
 
         const userConfirmed = await confirmAlert(
             'info',
-            'ต้องการยกเลิก Sign off แผนปฎิบัติการ (ปปท) ?',
+            'ต้องการยกเลิก Sign off แผนปฎิบัติการ ?',
             ''
         );
 
@@ -196,14 +196,14 @@ export class SingOffMinistryActionComponent {
     // }
     async SignOff() {
 
-        const userConfirmed = await confirmAlert('info', 'ต้องการ Sign off แผนปฎิบัติการ (ปปท) ?', '');
+        const userConfirmed = await confirmAlert('info', 'ต้องการ Sign off แผนปฎิบัติการ ?', '');
 
         if (!userConfirmed) return;
 
         const selectedRows = this.griddata.filter(x => x.selected);
 
         if (selectedRows.length === 0) {
-            basicAlert('warning', 'กรุณาเลือกแผนปฎิบัติการ (ปปท)', '');
+            basicAlert('warning', 'กรุณาเลือกแผนปฎิบัติการ', '');
             return;
         }
 
@@ -217,7 +217,7 @@ export class SingOffMinistryActionComponent {
         };
 
         this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
-            basicAlert('success', 'บันทึก Sign off แผนปฎิบัติการ (ปปท) แล้ว', '');
+            basicAlert('success', 'บันทึก Sign off แผนปฎิบัติการ แล้ว', '');
             this.get_data(); // reload
         });
 

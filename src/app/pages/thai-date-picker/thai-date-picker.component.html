@@ -1,0 +1,104 @@
+<div class="date-picker-container" #calendarRef [class.picker-compact]="compact">
+
+    <div class="input-wrapper">
+      <input
+        #inputRef
+        type="text"
+        class="form-control"
+        [class.form-control-sm]="compact"
+        [value]="inputValue"
+        (input)="onInput($event)"
+        (keydown)="onKeyDown($event)"
+        (focus)="showCalendar = true"
+        (blur)="onBlur()"
+        (paste)="onPaste($event)"
+        [placeholder]="showTime ? 'วว/ดด/ปปปป ชม:นาที' : 'วว/ดด/ปปปป'"
+        [attr.maxlength]="showTime ? 16 : 10"
+      />
+    </div>
+  
+    <div *ngIf="showCalendar" #popupRef class="calendar-popup" [ngStyle]="popupStyle">
+      
+      <div class="calendar-header">
+        <button (click)="handlePrevYear()">«</button>
+        <button (click)="handlePrevMonth()">‹</button>
+  
+        <button class="header-title" (click)="toggleView()">
+          {{ getHeaderLabel() }}
+        </button>
+  
+        <button (click)="handleNextMonth()">›</button>
+        <button (click)="handleNextYear()">»</button>
+      </div>
+  
+      <ng-container *ngIf="viewMode === 'days'">
+        <div class="day-name-grid">
+          <div *ngFor="let n of dayNames">{{ n }}</div>
+        </div>
+  
+        <div class="day-grid">
+          <div *ngFor="let e of emptyCells"></div>
+  
+          <button
+            *ngFor="let day of daysInMonthArray"
+            type="button"
+            [ngClass]="{
+              'active-day': isSelectedDay(day),
+              'today': isToday(day),
+              'normal': !isSelectedDay(day) && !isToday(day)
+            }"
+            (click)="handleDateClick(day)"
+          >
+            {{ day }}
+          </button>
+        </div>
+  
+        <div *ngIf="showTime" class="time-picker-section">
+          <div class="time-label">เวลา:</div>
+          
+          <div class="time-input-group">
+              <select [(ngModel)]="selectedHour" (change)="handleTimeChange()" class="time-select">
+                <option *ngFor="let h of hours" [value]="h">{{ h | number:'2.0' }}</option>
+              </select>
+              <span class="colon">:</span>
+              <select [(ngModel)]="selectedMinute" (change)="handleTimeChange()" class="time-select">
+                <option *ngFor="let m of minutes" [value]="m">{{ m | number:'2.0' }}</option>
+              </select>
+          </div>
+        </div>
+      </ng-container>
+  
+      <ng-container *ngIf="viewMode === 'months'">
+        <div class="month-grid">
+          <button
+            *ngFor="let m of thaiMonthsShort; let i = index"
+            type="button"
+            [ngClass]="{ 'active-month': currentMonth === i }"
+            (click)="handleMonthClick(i)"
+          >
+            {{ m }}
+          </button>
+        </div>
+      </ng-container>
+  
+      <ng-container *ngIf="viewMode === 'years'">
+        <div class="year-grid">
+          <button
+            *ngFor="let y of yearGrid"
+            type="button"
+            [ngClass]="{ 'active-year': currentYear === y }"
+            (click)="handleYearClick(y)"
+          >
+            {{ y + 543 }}
+          </button>
+        </div>
+      </ng-container>
+  
+      <div class="bottom-buttons">
+        <button class="btn-today" (click)="setToday()">วันนี้</button>
+        <button class="btn-clear" (click)="clearDate()">ล้าง</button>
+        <!-- <button *ngIf="showTime" class="btn-ok" (click)="showCalendar = false">ตกลง</button> -->
+      </div>
+  
+    </div>
+  </div>

@@ -25,7 +25,7 @@ import { MasExpenseDetailComponent } from './MasExpenseDetail/MasExpenseDetail.c
 
     MasBusinessLevelComponent,
     MasProjectPlanComponent,
-    MasExpenseDetailComponent
+    MasExpenseDetailComponent,
   ],
   imports: [
     CommonModule,
@@ -41,7 +41,7 @@ import { MasExpenseDetailComponent } from './MasExpenseDetail/MasExpenseDetail.c
     SlickCarouselModule,
     LightboxModule,
     NgPipesModule,
-    
+
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

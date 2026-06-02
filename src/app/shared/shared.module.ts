@@ -88,6 +88,7 @@ import { OtherExpenseProjectComponent } from '../shared/planingtab/components/ta
 
 import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { ThaiDatePickerComponent } from '../pages/thai-date-picker/thai-date-picker.component';
 @NgModule({
   declarations: [
     BreadcrumbsComponent,
@@ -158,7 +159,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
     TabDetailComponent,
     TabCoordinatorComponent,
     TabGuidelineComponent,
-    OtherExpenseProjectComponent
+    OtherExpenseProjectComponent,
+    ThaiDatePickerComponent
   ],
   imports: [
     FormsModule,
@@ -239,7 +241,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
     TabDetailComponent,
     TabCoordinatorComponent,
     TabGuidelineComponent,
-    OtherExpenseProjectComponent
+    OtherExpenseProjectComponent,
+    ThaiDatePickerComponent
   ]
 })
 export class SharedModule { }

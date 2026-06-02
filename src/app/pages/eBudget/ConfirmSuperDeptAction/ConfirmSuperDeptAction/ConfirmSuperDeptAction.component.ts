@@ -156,7 +156,7 @@ export class ConfirmSuperDeptActionComponent {
 
     async Confirm() {
 
-        const userConfirmed = await confirmAlert('info', 'ต้องการยืนยันข้อมูลแผนปฎิบัติการ (กยผ) ?', '');
+        const userConfirmed = await confirmAlert('info', 'ต้องการยืนยันข้อมูลแผนปฎิบัติการ ?', '');
 
         if (!userConfirmed) return;
 
@@ -177,7 +177,7 @@ export class ConfirmSuperDeptActionComponent {
         };
 
         this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
-            basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
+            basicAlert('success', 'บันทึกข้อมูลแผนปฎิบัติการแล้ว', '');
             this.get_data(); // reload
         });
 
@@ -187,7 +187,7 @@ export class ConfirmSuperDeptActionComponent {
 
         const userConfirmed = await confirmAlert(
             'info',
-            'ต้องการยกเลิกการยืนยันแผนปฎิบัติการ (กยผ) ?',
+            'ต้องการยกเลิกการยืนยันแผนปฎิบัติการ ?',
             ''
         );
 
@@ -206,7 +206,7 @@ export class ConfirmSuperDeptActionComponent {
 
         this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
 
-            basicAlert('success', 'ยกเลิกการยืนยันแผนปฎิบัติการ (กยผ) แล้ว', '');
+            basicAlert('success', 'ยกเลิกการยืนยันแผนปฎิบัติการ แล้ว', '');
 
             this.get_data();
 

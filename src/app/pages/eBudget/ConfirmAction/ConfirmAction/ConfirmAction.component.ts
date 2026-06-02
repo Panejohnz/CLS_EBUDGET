@@ -159,7 +159,7 @@ export class ConfirmActionComponent {
 
         const userConfirmed = await confirmAlert(
             'info',
-            'ต้องการยกเลิกการยืนยันโครงการ ?',
+            'ต้องการยกเลิกการยืนยันแผนปฎิบัติการ?',
             ''
         );
 
@@ -178,7 +178,7 @@ export class ConfirmActionComponent {
 
         this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
 
-            basicAlert('success', 'ยกเลิกการยืนยันแล้ว', '');
+            basicAlert('success', 'ยกเลิกการยืนยันแผนปฎิบัติการแล้ว', '');
 
             this.get_data();
 
@@ -188,7 +188,7 @@ export class ConfirmActionComponent {
 
     async Confirm() {
 
-        const userConfirmed = await confirmAlert('info', 'ต้องการยืนยันข้อมูลโครงการ ?', '');
+        const userConfirmed = await confirmAlert('info', 'ต้องการยืนยันข้อมูลแผนปฎิบัติการ ?', '');
 
         if (!userConfirmed) return;
 
@@ -209,7 +209,7 @@ export class ConfirmActionComponent {
         };
 
         this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
-            basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
+            basicAlert('success', 'บันทึกข้อมูลแผนปฎิบัติการแล้ว', '');
             this.get_data(); // reload
         });
 

@@ -167,7 +167,7 @@ export class SingOffSuperDeptActionComponent {
 
         const userConfirmed = await confirmAlert(
             'info',
-            'ต้องการยกเลิก Sign off ข้อมูลโครงการ ?',
+            'ต้องการยกเลิก Sign off แผนปฎิบัติการ ?',
             ''
         );
 
@@ -186,7 +186,7 @@ export class SingOffSuperDeptActionComponent {
 
         this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
 
-            basicAlert('success', 'ยกเลิกการ Sign off แผนปฎิบัติการ (กยผ) แล้ว', '');
+            basicAlert('success', 'ยกเลิกการ Sign off แผนปฎิบัติการ แล้ว', '');
 
             this.get_data();
 
@@ -195,7 +195,7 @@ export class SingOffSuperDeptActionComponent {
     }
     async SignOff() {
 
-        const userConfirmed = await confirmAlert('info', 'ต้องการ Sign off แผนปฎิบัติการ (กยผ) ?', '');
+        const userConfirmed = await confirmAlert('info', 'ต้องการ Sign off แผนปฎิบัติการ ?', '');
 
         if (!userConfirmed) return;
 
@@ -216,7 +216,7 @@ export class SingOffSuperDeptActionComponent {
         };
 
         this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
-            basicAlert('success', 'บันทึก Sign off แผนปฎิบัติการ (กยผ) แล้ว', '');
+            basicAlert('success', 'บันทึก Sign off แผนปฎิบัติการ แล้ว', '');
             this.get_data(); // reload
         });
 
