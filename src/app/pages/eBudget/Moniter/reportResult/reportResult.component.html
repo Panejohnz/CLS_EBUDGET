@@ -1,300 +1,274 @@
 <style>
-   /* ===========================
-   INVESTMENT STEP WORKFLOW
-=========================== */
+    .step-wrapper {
 
-.step-wrapper {
+        display: flex;
+        align-items: flex-start;
 
-    display: flex;
-    align-items: flex-start;
+        overflow-x: auto;
 
-    overflow-x: auto;
+        padding: 15px 10px 25px;
 
-    padding: 15px 10px 25px;
+        gap: 0;
 
-    gap: 0;
-
-    scrollbar-width: thin;
-
-}
-
-.step-item {
-
-    position: relative;
-
-    flex: 1;
-
-    min-width: 140px;
-
-    text-align: center;
-
-}
-
-/* เส้นเชื่อม */
-
-.step-item::after {
-
-    content: '';
-
-    position: absolute;
-
-    top: 28px;
-
-    left: 50%;
-
-    width: 100%;
-
-    height: 3px;
-
-    background: #dee2e6;
-
-    z-index: 0;
-
-}
-
-.step-item:last-child::after {
-
-    display: none;
-
-}
-
-/* วงกลม */
-
-.step-item .circle {
-
-    position: relative;
-
-    z-index: 2;
-
-    width: 56px;
-
-    height: 56px;
-
-    border-radius: 50%;
-
-    margin: 0 auto;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    font-weight: 700;
-
-    font-size: 15px;
-
-    background: #e9ecef;
-
-    color: #6c757d;
-
-    border: 3px solid #dee2e6;
-
-    transition: all .3s ease;
-
-    overflow: hidden;
-
-}
-
-/* ชื่อ Step */
-
-.step-item .label {
-
-    margin-top: 10px;
-
-    font-size: 12px;
-
-    line-height: 1.4;
-
-    color: #6c757d;
-
-    font-weight: 500;
-
-    min-height: 36px;
-
-    padding: 0 8px;
-
-}
-
-/* ===========================
-   DONE
-=========================== */
-
-.step-item.done .circle {
-
-    background: #198754;
-
-    border-color: #198754;
-
-    color: white;
-
-    box-shadow:
-        0 0 12px rgba(25,135,84,.35);
-
-}
-
-.step-item.done::after {
-
-    background: #198754;
-
-}
-
-.step-item.done .label {
-
-    color: #198754;
-
-    font-weight: 600;
-
-}
-
-/* ===========================
-   ACTIVE
-=========================== */
-
-.step-item.active .circle {
-
-    background: #0d6efd;
-
-    border-color: #7fb3ff;
-
-    color: white;
-
-    animation:
-        pulseGlow 2s infinite;
-
-}
-
-.step-item.active .label {
-
-    color: #0d6efd;
-
-    font-weight: 700;
-
-}
-
-/* แสงวิ่ง */
-
-.step-item.active .circle::before {
-
-    content: '';
-
-    position: absolute;
-
-    top: -60%;
-
-    left: -120%;
-
-    width: 45%;
-
-    height: 220%;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            rgba(255,255,255,.95),
-            transparent
-        );
-
-    transform: rotate(25deg);
-
-    animation:
-        shine 2.2s infinite;
-
-}
-
-/* ===========================
-   PENDING
-=========================== */
-
-.step-item:not(.done):not(.active) .circle {
-
-    background: #f8f9fa;
-
-    color: #6c757d;
-
-}
-
-.step-item:not(.done):not(.active) .label {
-
-    color: #868e96;
-
-}
-
-/* ===========================
-   EFFECT
-=========================== */
-
-@keyframes pulseGlow {
-
-    0% {
-
-        box-shadow:
-            0 0 0 0 rgba(13,110,253,.7);
+        scrollbar-width: thin;
 
     }
-
-    70% {
-
-        box-shadow:
-            0 0 0 18px rgba(13,110,253,0);
-
-    }
-
-    100% {
-
-        box-shadow:
-            0 0 0 0 rgba(13,110,253,0);
-
-    }
-
-}
-
-@keyframes shine {
-
-    from {
-
-        left: -120%;
-
-    }
-
-    to {
-
-        left: 180%;
-
-    }
-
-}
-
-/* Responsive */
-
-@media (max-width: 768px) {
 
     .step-item {
 
-        min-width: 120px;
+        position: relative;
+
+        flex: 1;
+
+        min-width: 140px;
+
+        text-align: center;
 
     }
 
+
+    .step-item::after {
+
+        content: '';
+
+        position: absolute;
+
+        top: 28px;
+
+        left: 50%;
+
+        width: 100%;
+
+        height: 3px;
+
+        background: #dee2e6;
+
+        z-index: 0;
+
+    }
+
+    .step-item:last-child::after {
+
+        display: none;
+
+    }
+
+
     .step-item .circle {
 
-        width: 48px;
+        position: relative;
 
-        height: 48px;
+        z-index: 2;
+
+        width: 56px;
+
+        height: 56px;
+
+        border-radius: 50%;
+
+        margin: 0 auto;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        font-weight: 700;
+
+        font-size: 15px;
+
+        background: #e9ecef;
+
+        color: #6c757d;
+
+        border: 3px solid #dee2e6;
+
+        transition: all .3s ease;
+
+        overflow: hidden;
 
     }
 
     .step-item .label {
 
-        font-size: 11px;
+        margin-top: 10px;
+
+        font-size: 12px;
+
+        line-height: 1.4;
+
+        color: #6c757d;
+
+        font-weight: 500;
+
+        min-height: 36px;
+
+        padding: 0 8px;
 
     }
 
-}
+
+    .step-item.done .circle {
+
+        background: #198754;
+
+        border-color: #198754;
+
+        color: white;
+
+        box-shadow:
+            0 0 12px rgba(25, 135, 84, .35);
+
+    }
+
+    .step-item.done::after {
+
+        background: #198754;
+
+    }
+
+    .step-item.done .label {
+
+        color: #198754;
+
+        font-weight: 600;
+
+    }
+
+    .step-item.active .circle {
+
+        background: #0d6efd;
+
+        border-color: #7fb3ff;
+
+        color: white;
+
+        animation:
+            pulseGlow 2s infinite;
+
+    }
+
+    .step-item.active .label {
+
+        color: #0d6efd;
+
+        font-weight: 700;
+
+    }
+
+
+    .step-item.active .circle::before {
+
+        content: '';
+
+        position: absolute;
+
+        top: -60%;
+
+        left: -120%;
+
+        width: 45%;
+
+        height: 220%;
+
+        background:
+            linear-gradient(90deg,
+                transparent,
+                rgba(255, 255, 255, .95),
+                transparent);
+
+        transform: rotate(25deg);
+
+        animation:
+            shine 2.2s infinite;
+
+    }
+
+    .step-item:not(.done):not(.active) .circle {
+
+        background: #f8f9fa;
+
+        color: #6c757d;
+
+    }
+
+    .step-item:not(.done):not(.active) .label {
+
+        color: #868e96;
+
+    }
+
+
+    @keyframes pulseGlow {
+
+        0% {
+
+            box-shadow:
+                0 0 0 0 rgba(13, 110, 253, .7);
+
+        }
+
+        70% {
+
+            box-shadow:
+                0 0 0 18px rgba(13, 110, 253, 0);
+
+        }
+
+        100% {
+
+            box-shadow:
+                0 0 0 0 rgba(13, 110, 253, 0);
+
+        }
+
+    }
+
+    @keyframes shine {
+
+        from {
+
+            left: -120%;
+
+        }
+
+        to {
+
+            left: 180%;
+
+        }
+
+    }
+
+    /* Responsive */
+
+    @media (max-width: 768px) {
+
+        .step-item {
+
+            min-width: 120px;
+
+        }
+
+        .step-item .circle {
+
+            width: 48px;
+
+            height: 48px;
+
+        }
+
+        .step-item .label {
+
+            font-size: 11px;
+
+        }
+
+    }
 </style>
 <div class="bg-light p-3">
 
-    <!-- FILTER -->
     <div class="d-flex justify-content-between align-items-end mb-3">
 
         <div style="width: 400px;">
@@ -325,7 +299,6 @@
 
     </div>
 
-    <!-- TABLE -->
     <div class="card border-0 shadow-sm">
 
         <div class="table-responsive">
@@ -528,7 +501,7 @@
             <div class="modal-body">
 
                 <div class="table-responsive">
-                    @if(selectedItem.Fk_Budget_Type == 3){
+                    @if (!['64', '70', '73', '74', '75'].includes(selectedItem.Fk_Expense_List)) {
                     <div class="d-flex justify-content-between align-items-center mb-3">
 
 
@@ -566,6 +539,11 @@
                         </div>
 
                     </div>
+
+
+
+
+
                     }
                     <table class="table table-bordered align-middle text-center">
 
@@ -762,7 +740,82 @@
                         </tbody>
 
                     </table>
+                    @if (['64', '70', '73', '74', '75'].includes(selectedItem.Fk_Expense_List)) {
 
+                    <div class="card border-0 shadow-sm p-4 bg-light">
+
+                        <h5 class="fw-bold mb-4">รายงานผลกรณีโครงการ</h5>
+
+                        <div class="col-md-3">
+
+                            <label class="fw-semibold mb-2 mb-md-0">
+
+                                ไตรมาส
+
+                            </label>
+
+                        </div>
+
+                        <div class="col-md-9">
+
+                            <ng-select [items]="Tri_lists" bindLabel="name" bindValue="Trimas_Id"
+                                [(ngModel)]="selectedTri" appendTo="body" (change)="onQuarterChange()"
+                                [clearable]="true" [searchable]="false" placeholder="-- เลือกไตรมาส --">
+
+                            </ng-select>
+
+                        </div>
+                        <div class="mb-3">
+                            <label class="fw-semibold">เป้าหมายผลผลิต (Output)</label>
+                            <textarea class="form-control" rows="2" [(ngModel)]="Output_Result"></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="fw-semibold">เป้าหมายผลลัพธ์ (Outcome)</label>
+                            <textarea class="form-control" rows="2" [(ngModel)]="Outcome_Result"></textarea>
+                        </div>
+
+                        <div class="card p-3 mb-3 border-0 shadow-sm">
+
+                            <label class="fw-semibold mb-1">
+                                ร้อยละความก้าวหน้าในการดำเนินการเมื่อเทียบกับแผน
+                            </label>
+
+                            <input type="number" class="form-control mb-2" [(ngModel)]="Progress_Percent">
+
+                            <small class="text-muted">
+                                (เป็นตัวเลข)
+                            </small>
+
+                        </div>
+
+                        <div class="card p-3 mb-3 border-0 shadow-sm">
+                            <label class="fw-semibold">ปัญหาและอุปสรรคในการดำเนินงาน</label>
+                            <textarea class="form-control" [(ngModel)]="Problems"></textarea>
+                        </div>
+
+                        <div class="card p-3 mb-3 border-0 shadow-sm">
+                            <label class="fw-semibold">แนวทางแก้ไขที่ดำเนินการไปแล้ว</label>
+                            <textarea class="form-control" [(ngModel)]="Solutions"></textarea>
+                        </div>
+
+                        <div class="card p-3 mb-3 border-0 shadow-sm">
+                            <label class="fw-semibold">สรุปผลการดำเนินงาน</label>
+                            <textarea class="form-control" [(ngModel)]="Summary_Result"></textarea>
+                        </div>
+
+                        <div class="card p-3 mb-3 border-0 shadow-sm">
+                            <label class="fw-semibold">ข้อเสนอแนะเพื่อการพัฒนา</label>
+                            <textarea class="form-control" [(ngModel)]="Suggestions"></textarea>
+                        </div>
+
+                        <div class="card p-3 border-0 shadow-sm">
+                            <label class="fw-semibold">ไฟล์แนบ (ถ้ามี)</label>
+                            <input type="file" class="form-control">
+                        </div>
+
+                    </div>
+                    }
                 </div>
 
             </div>
@@ -792,12 +845,6 @@
 
 </ng-template>
 
-<!-- ================================================= -->
-<!-- MONTH DETAIL MODAL -->
-<!-- ================================================= -->
-<!-- ================================================= -->
-<!-- MONTH DETAIL MODAL -->
-<!-- ================================================= -->
 
 <ng-template #monthModal let-modal>
 
