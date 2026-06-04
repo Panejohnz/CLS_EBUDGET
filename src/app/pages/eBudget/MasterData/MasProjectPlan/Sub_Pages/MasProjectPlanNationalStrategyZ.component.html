@@ -49,13 +49,14 @@
                 <th style="width:10%">ชื่อย่อ</th>
                 <th style="width:5%">เรียงลำดับ</th>
                 <th style="width:8%">จัดการ</th>
+                <th style="width:8%">ลบข้อมูล</th>
               </tr>
             </thead>
 
             <tbody>
               @for(data of List_Mas_Strategic; track $index){
               <tr>
-                <td>{{$index + 1}}</td>
+                <td>{{ strategicPagination.startIndex + $index }}</td>
                 <td class="text-center">{{data.BgYear_Start}}</td>
                 <td class="text-center">{{data.BgYear_End}}</td>
                 <td class="text-center">{{data.Strategic_Name}}</td>
@@ -67,10 +68,31 @@
                     <i class="ri-pencil-line"></i>
                   </button>
                 </td>
+                <td>
+                  <button type="button" class="btn btn-danger btn-sm" (click)="Delete_Mas_Strategic(data)">
+                    <i class="ri-delete-bin-line"></i>
+                  </button>
+                </td>
               </tr>
               }
             </tbody>
           </table>
+        </div>
+        <div class="row justify-content-md-between align-items-md-center mt-2">
+          <div class="col col-sm-6">
+            <div class="dataTables_info mb-2">
+              แสดง {{ strategicPagination.startIndex }} ถึง {{ strategicPagination.endIndex }}
+              จากทั้งหมด {{ strategicPagination.total }} รายการ
+            </div>
+          </div>
+          <div class="col col-sm-6">
+            <div class="text-sm-end">
+              <ngb-pagination [collectionSize]="strategicPagination.total" [(page)]="strategicPagination.page"
+                [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
+                (pageChange)="onStrategicPageChange($event)">
+              </ngb-pagination>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -100,12 +122,13 @@
                 <th style="width:10%">ชื่อย่อ</th>
                 <th style="width:5%">เรียงลำดับ</th>
                 <th style="width:8%">จัดการ</th>
+                <th style="width:8%">ลบข้อมูล</th>
               </tr>
             </thead>
             <tbody>
               @for(data of List_Mas_Strategic_Issue; track $index){
               <tr>
-                <td>{{ $index + 1 }}</td>
+                <td>{{ issuePagination.startIndex + $index }}</td>
                 <td class="text-center">{{ data.BgYear_Start }}</td>
                 <td class="text-center">{{ data.BgYear_End }}</td>
                 <td class="text-center">{{ data.Strategic_Issues_Name }}</td>
@@ -117,10 +140,31 @@
                     <i class="ri-pencil-line"></i>
                   </button>
                 </td>
+                <td>
+                  <button type="button" class="btn btn-danger btn-sm" (click)="Delete_Mas_Strategic_Issue(data)">
+                    <i class="ri-delete-bin-line"></i>
+                  </button>
+                </td>
               </tr>
               }
             </tbody>
           </table>
+        </div>
+        <div class="row justify-content-md-between align-items-md-center mt-2">
+          <div class="col col-sm-6">
+            <div class="dataTables_info mb-2">
+              แสดง {{ issuePagination.startIndex }} ถึง {{ issuePagination.endIndex }}
+              จากทั้งหมด {{ issuePagination.total }} รายการ
+            </div>
+          </div>
+          <div class="col col-sm-6">
+            <div class="text-sm-end">
+              <ngb-pagination [collectionSize]="issuePagination.total" [(page)]="issuePagination.page"
+                [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
+                (pageChange)="onIssuePageChange($event)">
+              </ngb-pagination>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -150,12 +194,13 @@
                 <th style="width:10%">ชื่อย่อ</th>
                 <th style="width:5%">เรียงลำดับ</th>
                 <th style="width:8%">จัดการ</th>
+                <th style="width:8%">ลบข้อมูล</th>
               </tr>
             </thead>
             <tbody>
               @for(data of List_Mas_Strategic_Sub_Issue; track $index){
               <tr>
-                <td>{{ $index + 1 }}</td>
+                <td>{{ subIssuePagination.startIndex + $index }}</td>
                 <td class="text-center">{{ data.BgYear_Start }}</td>
                 <td class="text-center">{{ data.BgYear_End }}</td>
                 <td class="text-center">{{ data.Strategic_Sub_Issues_Name }}</td>
@@ -167,10 +212,31 @@
                     <i class="ri-pencil-line"></i>
                   </button>
                 </td>
+                <td>
+                  <button type="button" class="btn btn-danger btn-sm" (click)="Delete_Mas_Strategic_Sub_Issue(data)">
+                    <i class="ri-delete-bin-line"></i>
+                  </button>
+                </td>
               </tr>
               }
             </tbody>
           </table>
+        </div>
+        <div class="row justify-content-md-between align-items-md-center mt-2">
+          <div class="col col-sm-6">
+            <div class="dataTables_info mb-2">
+              แสดง {{ subIssuePagination.startIndex }} ถึง {{ subIssuePagination.endIndex }}
+              จากทั้งหมด {{ subIssuePagination.total }} รายการ
+            </div>
+          </div>
+          <div class="col col-sm-6">
+            <div class="text-sm-end">
+              <ngb-pagination [collectionSize]="subIssuePagination.total" [(page)]="subIssuePagination.page"
+                [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
+                (pageChange)="onSubIssuePageChange($event)">
+              </ngb-pagination>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -226,11 +292,10 @@
     <div class="row g-3">
       <div class="col-md-12">
         <label class="form-label">ยุทธศาสตร์ชาติด้าน <span class="text-danger">*</span></label>
-        <select class="form-select" [(ngModel)]="Mas_Strategic_Issue.FK_Strategic_Id"
-          [required]="!isEditModeIssue">
-          <option [ngValue]="null">-- เลือก --</option>
-          <option *ngFor="let s of listMasStrategicAll" [ngValue]="s.Strategic_Id">{{ s.Strategic_Name }}</option>
-        </select>
+        <ng-select [items]="listMasStrategicAll" bindLabel="Strategic_Name" bindValue="Strategic_Id"
+          [(ngModel)]="Mas_Strategic_Issue.FK_Strategic_Id" [searchable]="true" [clearable]="true"
+          appendTo="body" placeholder="-- เลือก --">
+        </ng-select>
       </div>
       <div class="col-md-6">
         <label class="form-label">ปีที่เริ่ม</label>
@@ -273,21 +338,24 @@
     <div class="row g-3">
       <div class="col-md-12">
         <label class="form-label">ยุทธศาสตร์ชาติด้าน <span class="text-danger">*</span></label>
-        <select class="form-select" [(ngModel)]="subIssueModalStrategicId"
-          (ngModelChange)="onSubIssueStrategicChange()" [required]="!isEditModeSubIssue">
-          <option [ngValue]="null">-- เลือก --</option>
-          <option *ngFor="let s of listMasStrategicAll" [ngValue]="s.Strategic_Id">{{ s.Strategic_Name }}</option>
-        </select>
+        <small class="text-muted d-block mb-1">ตั้งค่าอัตโนมัติจากประเด็นยุทธศาสตร์ที่เลือก</small>
+        @for (key of [subIssueStrategicSelectKey]; track key) {
+        <ng-select [items]="listMasStrategicAll" bindLabel="Strategic_Name"
+          [ngModel]="subIssueModalStrategic" (ngModelChange)="onSubIssueStrategicObjectChange($event)"
+          [compareWith]="compareStrategicItem" [searchable]="true" [clearable]="true"
+          appendTo="body" placeholder="-- เลือก --">
+        </ng-select>
+        }
       </div>
       <div class="col-md-12">
         <label class="form-label">ประเด็นยุทธศาสตร์ <span class="text-danger">*</span></label>
-        <select class="form-select" [(ngModel)]="Mas_Strategic_Sub_Issue.FK_Strategic_Issues_Id"
-          [required]="!isEditModeSubIssue" [disabled]="!subIssueModalStrategicId">
-          <option [ngValue]="null">-- เลือก --</option>
-          <option *ngFor="let i of filteredIssueListForSubIssue" [ngValue]="i.Issues_Id">
-            {{ i.Strategic_Issues_Name }}
-          </option>
-        </select>
+        @for (key of [subIssueIssueSelectKey]; track key) {
+        <ng-select [items]="subIssueIssueOptions" bindLabel="Strategic_Issues_Name"
+          [ngModel]="subIssueModalIssue" (ngModelChange)="onSubIssueIssueObjectChange($event)"
+          [compareWith]="compareIssueItem" [searchable]="true" [clearable]="true"
+          appendTo="body" placeholder="-- เลือก --">
+        </ng-select>
+        }
       </div>
       <div class="col-md-6">
         <label class="form-label">ปีที่เริ่ม</label>

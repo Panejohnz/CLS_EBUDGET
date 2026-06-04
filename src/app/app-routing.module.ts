@@ -38,6 +38,9 @@ const routes: Routes = [
   { path: 'ConfirmSuperDeptAction', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/ConfirmSuperDeptAction/ConfirmSuperDeptAction.module').then(m => m.EmonitorMasterModule), },
   { path: 'singOffSuperDeptAction', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/singOffSuperDeptAction/singOffSuperDeptAction.module').then(m => m.EmonitorMasterModule), },
   { path: 'singOffMinistryAction', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/singOffMinistryAction/singOffMinistryAction.module').then(m => m.EmonitorMasterModule), },
+
+  { path: 'Report_R001', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/Report/Report_R001/Report_R001.module').then(m => m.EmonitorMasterModule), },
+  { path: 'Report_R002', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/Report/Report_R002/Report_R002.module').then(m => m.EmonitorMasterModule), },
 ];
 
 @NgModule({

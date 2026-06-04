@@ -1,7 +1,7 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NgbToastModule, NgbProgressbarModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbToastModule, NgbProgressbarModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { FlatpickrModule } from 'angularx-flatpickr';
 import { CountUpModule } from 'ngx-countup';
@@ -10,6 +10,7 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { SimplebarAngularModule } from 'simplebar-angular';
 import { NgPipesModule } from 'ngx-pipes';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { SlickCarouselModule } from 'ngx-slick-carousel'
 import { LightboxModule } from 'ngx-lightbox';
 import { defineElement } from '@lordicon/element';
@@ -35,6 +36,7 @@ import { MasProjectPlanMasterPlanYComponent } from './MasProjectPlan/Sub_Pages/M
     CommonModule,
     FormsModule,
     NgbToastModule,
+    NgbPaginationModule,
     FlatpickrModule.forRoot(),
     CountUpModule,
     NgApexchartsModule,
@@ -45,6 +47,7 @@ import { MasProjectPlanMasterPlanYComponent } from './MasProjectPlan/Sub_Pages/M
     SlickCarouselModule,
     LightboxModule,
     NgPipesModule,
+    NgSelectModule,
 
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
