@@ -217,10 +217,10 @@ export class TopbarComponent implements OnInit {
    */
   logout() {
 
-    // window.location.href("https://privus.fda.moph.go.th/");
+    // window.location.href("https://app.celestsoft.com/CLS_ERP_MANANGEMENT_FRONT/");
 
     this.authService.logout();
-    window.location.href = "https://privus.fda.moph.go.th/";
+    window.location.href = "https://app.celestsoft.com/CLS_ERP_MANANGEMENT_FRONT/";
     // this.router.navigate(['/auth/permission']);
   }
 
