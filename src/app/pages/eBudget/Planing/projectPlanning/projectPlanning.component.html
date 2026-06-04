@@ -16,29 +16,39 @@
                         </div>
                     </div>
 
-                    <div class="col-lg-4">
+                    <div class="col-lg-5">
 
 
                     </div>
+                    <div class="col-lg-3 text-end">
+                        <div class="d-flex justify-content-end gap-2">
 
-                    <div class="col-lg-4 text-end">
-                        <button class="btn" style="background-color:#556398; color:white; border:none;"
-                            data-bs-toggle="modal" data-bs-target="#exampleModalgrid"
-                            (click)="fullModal(fullDataModal,emptyplan)">
+                            <button class="btn" style="background-color:#556398; color:white; border:none;"
+                                data-bs-toggle="modal" data-bs-target="#exampleModalgrid"
+                                (click)="fullModal(fullDataModal,emptyplan)">
 
-                            <i class="ri-add-line me-1"></i>
-                            เพิ่มโครงการ
-                        </button>
+                                <i class="ri-add-line me-1"></i>
+                                เพิ่มโครงการ
+                            </button>
+
+                            <button class="btn" style="background-color:#d1c300; color:black; border:none;"
+                                data-bs-toggle="modal" data-bs-target="#exampleModalgrid"
+                                (click)="copyModal(copyProjectModal)">
+
+                                <i class="ri-file-3-line me-1"></i>
+                                คัดลอกโครงการ
+                            </button>
+
+                        </div>
                     </div>
 
-  
                 </div>
 
-             <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+                <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
 
-    <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
-        <!-- sticky header -->
-        <thead class="text-center text-white sticky-header" style="background-color: #556398;">
+                    <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+                        <!-- sticky header -->
+                        <thead class="text-center text-white sticky-header" style="background-color: #556398;">
                             <tr>
                                 <th style="width:5%">ลำดับ</th>
                                 <th style="width:10%">หน่วยงาน</th>
@@ -85,7 +95,7 @@
                                     {{data.Total | number:'1.2-2'}}
                                 </td>
 
-                              <td>
+                                <td>
                                     <span style="
             display:inline-block;
             padding:4px 8px;
@@ -223,6 +233,142 @@
         <button class="btn btn-light" (click)="modal.dismiss()">
             ยกเลิก
         </button>
+    </div>
+
+</ng-template>
+<ng-template #copyProjectModal let-modal>
+
+    <div class="modal-header">
+        <h5 class="modal-title">
+            <i class="ri-file-copy-line me-2"></i>
+            คัดลอกโครงการ
+        </h5>
+
+        <button type="button" class="btn-close" (click)="modal.dismiss()">
+        </button>
+    </div>
+
+    <div class="modal-body">
+
+        <!-- Search -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+
+                <div class="search-box">
+                    <input type="text" class="form-control" placeholder="ค้นหาโครงการ..." [(ngModel)]="copySearch">
+
+                    <i class="ri-search-line search-icon"></i>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-responsive" style="max-height:500px;overflow-y:auto;">
+
+            <table class="table table-bordered align-middle text-center">
+
+                <thead class="sticky-header text-white" style="background:#556398;">
+
+                    <tr>
+                        <th width="5%">
+                            เลือก
+                        </th>
+
+                        <th width="5%">
+                            ลำดับ
+                        </th>
+
+                        <th width="15%">
+                            หน่วยงาน
+                        </th>
+
+                        <th width="15%">
+                            แผนงาน
+                        </th>
+
+                        <th width="15%">
+                            ผลผลิต
+                        </th>
+
+                        <th width="25%">
+                            โครงการ
+                        </th>
+
+                        <th width="10%">
+                            งบประมาณ
+                        </th>
+
+                        <th width="10%">
+                            สถานะ
+                        </th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @for(item of copyProjectList; track item.Project_Id){
+
+                    <tr>
+
+                        <td>
+
+                            <input type="radio" class="form-check-input" name="selectedProject"
+                                [value]="item.Project_Id" [(ngModel)]="selectedCopyProjectId">
+
+                        </td>
+
+                        <td>{{$index + 1}}</td>
+
+                        <td>{{item.Department_Name}}</td>
+
+                        <td>{{item.Plan_Name}}</td>
+
+                        <td>{{item.Product_Name}}</td>
+
+                        <td class="text-start">
+                            {{item.Project_Name}}
+                        </td>
+
+                        <td class="text-end">
+                            {{item.Total | number:'1.2-2'}}
+                        </td>
+
+                        <td>
+
+                            <span class="badge bg-info">
+                                {{item.Status_Name}}
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+        <button class="btn btn-light" (click)="modal.dismiss()">
+            ยกเลิก
+        </button>
+
+        <button class="btn btn-warning" [disabled]="!selectedCopyProjectId" (click)="confirmCopyProject(modal)">
+
+            <i class="ri-file-copy-line me-1"></i>
+
+            คัดลอกโครงการ
+
+        </button>
+
     </div>
 
 </ng-template>

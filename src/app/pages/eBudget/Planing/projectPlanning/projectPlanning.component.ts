@@ -282,6 +282,50 @@ export class ProjectPlanningComponent {
       windowClass: 'modal-95'
     });
   }
+  copyProjectList: any[] = [];
+  copySearch: string = '';
+  selectedCopyProjectId: number | null = null;
+  copyModal(content: any) {
+
+    let model = {
+      FUNC_CODE: "FUNC-Get_Project_Plan_7",
+      BgYear: this.currentYear
+    }
+    var getData = this.serviceebud.GatewayGetData(model);
+    getData.subscribe((response: any) => {
+
+      let allData = Array.isArray(response.List_Project_Plan)
+        ? response.List_Project_Plan
+        : [];
+      let griddata = [...allData]
+      this.copyProjectList = [...griddata];
+
+      this.selectedCopyProjectId = null;
+
+      this.modalService.open(content, {
+        size: 'xl',
+        backdrop: 'static'
+      });
+    })
+
+
+  }
+  confirmCopyProject(copyModal: any) {
+
+    if (!this.selectedCopyProjectId) {
+      return;
+    }
+    let model = {
+      FUNC_CODE: "FUNC-Project_Plan_Copy",
+      Project_Id: this.selectedCopyProjectId
+    }
+    var getData = this.serviceebud.GatewayGetData(model);
+    getData.subscribe((response: any) => {
+      basicAlert('success', 'คัดลอกรายการแล้ว', '')
+    })
+
+
+  }
   mapPlanDetail(data: any[]) {
 
     return data.map(x => ({
