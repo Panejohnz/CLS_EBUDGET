@@ -31,12 +31,14 @@ import { ToastsContainer } from './dashboards/dashboard/toasts-container.compone
 import { DashboardsModule } from "./dashboards/dashboards.module";
 import { AppsModule } from "./apps/apps.module";
 import { EcommerceModule } from "./ecommerce/ecommerce.module";
+import { ThaiDatePickerComponent } from './thai-date-picker/thai-date-picker.component';
 // import { ReportSubInventoryComponent } from "./ReportSubInventory/ReportSubInventory.component";
 
 @NgModule({
   declarations: [
     DashboardComponent,
     ToastsContainer,
+    // ThaiDatePickerComponent
     // ReportSubInventoryComponent,
    ],
   imports: [

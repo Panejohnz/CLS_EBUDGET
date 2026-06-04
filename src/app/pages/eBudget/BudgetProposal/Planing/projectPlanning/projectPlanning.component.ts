@@ -121,6 +121,8 @@ export class ProjectPlanningComponent {
       this.griddata = [...this.allData];
       this.currentTab = 1
       this.firstLoad = true;
+
+      
     })
   }
 

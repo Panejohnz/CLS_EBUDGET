@@ -55,6 +55,7 @@ export class TabGeneralComponent {
   }
   currentYear: any
   ngOnInit(): void {
+
     this.budgetYearService.yearChanged$
       .subscribe(async year => {
 

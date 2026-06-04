@@ -203,7 +203,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       "id": 25,
       "label": "หน้าหลัก",
       "icon": "bx bx-home-alt",
-      "link": null,
+      "link": "/Dashboard",
       "subItems": [],
       "isTitle": false,
       "isCollapsed": true,

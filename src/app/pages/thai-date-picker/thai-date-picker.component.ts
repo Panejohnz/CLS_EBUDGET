@@ -71,14 +71,14 @@ export class ThaiDatePickerComponent implements OnInit, OnChanges, AfterViewChec
         }
     }
 
-    @HostListener('window:scroll', ['$event'])
+    @HostListener('window:scroll')
     onScroll() {
         if (this.showCalendar) {
             this.updatePopupPosition();
         }
     }
 
-    @HostListener('window:resize', ['$event'])
+    @HostListener('window:resize')
     onResize() {
         if (this.showCalendar) {
             this.updatePopupPosition();

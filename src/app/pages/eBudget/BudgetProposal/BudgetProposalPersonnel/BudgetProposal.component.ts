@@ -150,6 +150,8 @@ export class ProjectBudgetProposalComponent {
   }
 
   fullModal(modal: any, data: any) {
+    console.log('data', data);
+
     if (!this.selectedDepartmentId && !data.Request_Id) {
       basicAlert('info', 'เลือกหน่วยงาน', '')
       return
@@ -158,15 +160,13 @@ export class ProjectBudgetProposalComponent {
       let model = {
         FUNC_CODE: "FUNC-GET_BUDGET_REQUEST_BY_ID",
         Request_Id: data.Request_Id,
-
-        ...(data?.FK_Project_Plan_Id && {
-          Project_Id: data.FK_Project_Plan_Id
-        })
+        Project_Id: data.FK_Project_Plan_Id || data.FK_Project_Plan_Id_copy || 0
       };
       this.servicebud.GatewayGetData(model)
         .subscribe((res: any) => {
 
           this.model = {
+            Budget_Type : 1,
             Budget_Request: res.Budget_Request || {},
             Budget_Request_Detail_Item: res.Budget_Request_Detail_Item || {},
             Budget_Request_Detail: res.Budget_Request_Detail || {},
@@ -203,7 +203,7 @@ export class ProjectBudgetProposalComponent {
           const activities = this.mapPlanDetail(details);
           this.mapItems(items, activities);
 
-          this.project_planing.activities = activities;
+          this.model.activities = activities;
         });
     } else {
       this.model = {
@@ -302,6 +302,53 @@ export class ProjectBudgetProposalComponent {
         this.get_data()
       }
     );
+  }
+  projectSearchTerm = '';
+
+  selectedProjectId: number | null = null;
+
+  copyProjectList: any[] = [];
+
+  copyProjectListTemp: any[] = [];
+  copyModal(content: any) {
+    let model = {
+      FUNC_CODE: "FUNC-Get_Project_Plan_7",
+      BgYear: this.currentYear
+    }
+    var getData = this.servicebud.GatewayGetData(model);
+    getData.subscribe((response: any) => {
+
+      let allData = Array.isArray(response.List_Project_Plan)
+        ? response.List_Project_Plan
+        : [];
+      let griddata = [...allData]
+      this.copyProjectList = [...griddata];
+
+      this.selectedProjectId = null;
+
+      this.modalService.open(content, {
+        size: 'xl',
+        backdrop: 'static'
+      });
+    })
+  }
+  copyProjectToRequest(copyModal: any) {
+
+    if (!this.selectedProjectId) {
+      return;
+    }
+    let model = {
+      FUNC_CODE: "FUNC-Project_Plan_Copy",
+      Project_Id: this.selectedProjectId
+    }
+    var getData = this.servicebud.GatewayGetData(model);
+    getData.subscribe((response: any) => {
+      basicAlert('success', 'คัดลอกรายการแล้ว', '')
+      this.get_data()
+    })
+
+
+
   }
   mapItems(items: any[], activities: any[]) {
 
