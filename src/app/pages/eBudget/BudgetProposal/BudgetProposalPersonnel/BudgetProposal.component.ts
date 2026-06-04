@@ -311,14 +311,14 @@ export class ProjectBudgetProposalComponent {
   copyProjectListTemp: any[] = [];
   copyModal(content: any) {
     let model = {
-      FUNC_CODE: "FUNC-Get_Budget_Request_7",
+      FUNC_CODE: "FUNC-Get_Project_Plan_7",
       BgYear: this.currentYear
     }
     var getData = this.servicebud.GatewayGetData(model);
     getData.subscribe((response: any) => {
 
-      let allData = Array.isArray(response.List_Budget_Request)
-        ? response.List_Budget_Request
+      let allData = Array.isArray(response.List_Project_Plan)
+        ? response.List_Project_Plan
         : [];
       let griddata = [...allData]
       this.copyProjectList = [...griddata];
@@ -337,7 +337,7 @@ export class ProjectBudgetProposalComponent {
       return;
     }
     let model = {
-      FUNC_CODE: "FUNC-Budget_Request_Copy",
+      FUNC_CODE: "FUNC-Project_Plan_Copy",
       Request_Id: this.selectedProjectId
     }
     var getData = this.servicebud.GatewayGetData(model);
