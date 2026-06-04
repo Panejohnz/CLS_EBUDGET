@@ -725,31 +725,31 @@ export class ProjectBudgetProposalAddPersonnelComponent {
         selectedGroupObj?.Expense_Group_Name,
 
       Project_Name:
-        this.model.Budget_Request.Project_Name,
+        this.model.Project_Plan.Project_Name,
 
       Used_BG:
-        this.model.Budget_Request.Used_BG,
+        this.model.Project_Plan.Used_BG,
 
       Project_Type_Id:
-        this.model.Budget_Request.Project_Type_Id,
+        this.model.Project_Plan.Project_Type_Id,
 
       Project_Year_Count:
-        this.model.Budget_Request.Project_Year_Count,
+        this.model.Project_Plan.Project_Year_Count,
 
       Project_Year_Number:
-        this.model.Budget_Request.Project_Year_Number,
+        this.model.Project_Plan.Project_Year_Number,
 
       Operation1:
-        this.model.Budget_Request.Operation1,
+        this.model.Project_Plan.Operation1,
 
       Operation2:
-        this.model.Budget_Request.Operation2,
+        this.model.Project_Plan.Operation2,
 
       Proposer_Name:
-        this.model.Budget_Request.Proposer_Name,
+        this.model.Project_Plan.Proposer_Name,
 
       Proposer_Position:
-        this.model.Budget_Request.Proposer_Position,
+        this.model.Project_Plan.Proposer_Position,
 
     };
 
