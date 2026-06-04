@@ -166,7 +166,7 @@ export class SignoffSuperDeptBudgetProposalComponent {
 
         const userConfirmed = await confirmAlert(
             'info',
-            'ต้องการยกเลิก Sign off ข้อมูลคำของบประมาณ ?',
+            'ต้องการยกเลิก Sign Off ข้อมูลคำของบประมาณ ?',
             ''
         );
 
@@ -186,7 +186,7 @@ export class SignoffSuperDeptBudgetProposalComponent {
 
         this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
 
-            basicAlert('success', 'ยกเลิกการ Sign off ข้อมูลคำของบประมาณแล้ว', '');
+            basicAlert('success', 'ยกเลิกการ Sign Off ข้อมูลคำของบประมาณแล้ว', '');
 
             this.get_data();
 
@@ -195,7 +195,7 @@ export class SignoffSuperDeptBudgetProposalComponent {
     }
     async SignOff() {
 
-        const userConfirmed = await confirmAlert('info', 'ต้องการ Sign off ข้อมูลคำของบประมาณ ?', '');
+        const userConfirmed = await confirmAlert('info', 'ต้องการ Sign Off ข้อมูลคำของบประมาณ ?', '');
 
         if (!userConfirmed) return;
 
@@ -217,7 +217,7 @@ export class SignoffSuperDeptBudgetProposalComponent {
         };
 
         this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
-            basicAlert('success', 'บันทึก Sign off ข้อมูลคำของบประมาณแล้ว', '');
+            basicAlert('success', 'บันทึก Sign Off ข้อมูลคำของบประมาณแล้ว', '');
             this.get_data(); // reload
         });
 

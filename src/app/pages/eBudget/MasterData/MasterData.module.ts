@@ -18,6 +18,8 @@ import { PagesRoutingModule } from "./MasterData-routing.module";
 import { MasBusinessLevelComponent } from './MasBusinessLevel/MasBusinessLevel.component';
 import { MasProjectPlanComponent } from './MasProjectPlan/MasProjectPlan.component';
 import { MasExpenseDetailComponent } from './MasExpenseDetail/MasExpenseDetail.component';
+import { MasProjectPlanNationalStrategyZComponent } from './MasProjectPlan/Sub_Pages/MasProjectPlanNationalStrategyZ.component';
+import { MasProjectPlanMasterPlanYComponent } from './MasProjectPlan/Sub_Pages/MasProjectPlanMasterPlanY.component';
 
 
 @NgModule({
@@ -26,6 +28,8 @@ import { MasExpenseDetailComponent } from './MasExpenseDetail/MasExpenseDetail.c
     MasBusinessLevelComponent,
     MasProjectPlanComponent,
     MasExpenseDetailComponent,
+    MasProjectPlanNationalStrategyZComponent,
+    MasProjectPlanMasterPlanYComponent,
   ],
   imports: [
     CommonModule,

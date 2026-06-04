@@ -4,6 +4,318 @@
     <button type="button" class="btn btn-outline-secondary btn-sm" (click)="goBackToPlan()">กลับหน้าแผนงาน</button>
   </div>
   <div class="card-body">
-    <p class="mb-0">หน้าสำหรับจัดการข้อมูลยุทธศาสตร์ชาติที่เกี่ยวข้องโดยตรง (Z)</p>
+    <ul class="nav nav-tabs mb-3">
+      <li class="nav-item">
+        <button type="button" class="nav-link" [class.active]="currentTab === 1" (click)="goTab(1)">
+          ยุทธ์ศาสตร์ชาติด้าน
+        </button>
+      </li>
+      <li class="nav-item">
+        <button type="button" class="nav-link" [class.active]="currentTab === 2" (click)="goTab(2)">
+          ประเด็นยุทธศาสตร์
+        </button>
+      </li>
+      <li class="nav-item">
+        <button type="button" class="nav-link" [class.active]="currentTab === 3" (click)="goTab(3)">
+          ประเด็นย่อย
+        </button>
+      </li>
+    </ul>
+
+    <div class="border rounded p-3 bg-light" *ngIf="currentTab === 1">
+      <div class="card-body">
+        <br />
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div style="width:300px;">
+            <input type="text" class="form-control" placeholder="ค้นหายุทธศาสตร์ชาติด้าน..."
+              [(ngModel)]="service.searchTerm" (input)="filterSearch()">
+          </div>
+
+          <div>
+            <button class="btn btn-success text-black" (click)="openAddModal(addStrategicModal)">
+              เพิ่มข้อมูล
+            </button>
+          </div>
+        </div>
+
+        <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+          <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+            <thead class="text-center text-white sticky-header" style="background-color: #556398;">
+              <tr class="text-center">
+                <th style="width:5%">ลำดับ</th>
+                <th style="width:5%">ปีที่เริ่ม</th>
+                <th style="width:5%">ปีที่สิ้นสุด</th>
+                <th style="width:20%">ชื่อ</th>
+                <th style="width:10%">ชื่อย่อ</th>
+                <th style="width:5%">เรียงลำดับ</th>
+                <th style="width:8%">จัดการ</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              @for(data of List_Mas_Strategic; track $index){
+              <tr>
+                <td>{{$index + 1}}</td>
+                <td class="text-center">{{data.BgYear_Start}}</td>
+                <td class="text-center">{{data.BgYear_End}}</td>
+                <td class="text-center">{{data.Strategic_Name}}</td>
+                <td class="text-center">{{data.Strategic_Short_Name}}</td>
+                <td class="text-center">{{data.Order_Seq}}</td>
+                <td>
+                  <button type="button" class="btn btn-warning btn-sm"
+                    (click)="openEditModal(addStrategicModal, data)">
+                    <i class="ri-pencil-line"></i>
+                  </button>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="border rounded p-3 bg-light" *ngIf="currentTab === 2">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div style="width:300px;">
+            <input type="text" class="form-control" placeholder="ค้นหาประเด็นยุทธศาสตร์..."
+              [(ngModel)]="searchIssueTerm" (input)="filterIssueSearch()">
+          </div>
+          <div>
+            <button class="btn btn-success text-black" (click)="openAddIssueModal(addIssueModal)">
+              เพิ่มข้อมูล
+            </button>
+          </div>
+        </div>
+
+        <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+          <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+            <thead class="text-center text-white sticky-header" style="background-color: #556398;">
+              <tr class="text-center">
+                <th style="width:5%">ลำดับ</th>
+                <th style="width:5%">ปีที่เริ่ม</th>
+                <th style="width:5%">ปีที่สิ้นสุด</th>
+                <th style="width:20%">ชื่อ</th>
+                <th style="width:10%">ชื่อย่อ</th>
+                <th style="width:5%">เรียงลำดับ</th>
+                <th style="width:8%">จัดการ</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for(data of List_Mas_Strategic_Issue; track $index){
+              <tr>
+                <td>{{ $index + 1 }}</td>
+                <td class="text-center">{{ data.BgYear_Start }}</td>
+                <td class="text-center">{{ data.BgYear_End }}</td>
+                <td class="text-center">{{ data.Strategic_Issues_Name }}</td>
+                <td class="text-center">{{ data.Strategic_Issues_Short_Name }}</td>
+                <td class="text-center">{{ data.Order_Seq }}</td>
+                <td>
+                  <button type="button" class="btn btn-warning btn-sm"
+                    (click)="openEditIssueModal(addIssueModal, data)">
+                    <i class="ri-pencil-line"></i>
+                  </button>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="border rounded p-3 bg-light" *ngIf="currentTab === 3">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div style="width:300px;">
+            <input type="text" class="form-control" placeholder="ค้นหาประเด็นย่อย..."
+              [(ngModel)]="searchSubIssueTerm" (input)="filterSubIssueSearch()">
+          </div>
+          <div>
+            <button class="btn btn-success text-black" (click)="openAddSubIssueModal(addSubIssueModal)">
+              เพิ่มข้อมูล
+            </button>
+          </div>
+        </div>
+
+        <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+          <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+            <thead class="text-center text-white sticky-header" style="background-color: #556398;">
+              <tr class="text-center">
+                <th style="width:5%">ลำดับ</th>
+                <th style="width:5%">ปีที่เริ่ม</th>
+                <th style="width:5%">ปีที่สิ้นสุด</th>
+                <th style="width:20%">ชื่อ</th>
+                <th style="width:10%">ชื่อย่อ</th>
+                <th style="width:5%">เรียงลำดับ</th>
+                <th style="width:8%">จัดการ</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for(data of List_Mas_Strategic_Sub_Issue; track $index){
+              <tr>
+                <td>{{ $index + 1 }}</td>
+                <td class="text-center">{{ data.BgYear_Start }}</td>
+                <td class="text-center">{{ data.BgYear_End }}</td>
+                <td class="text-center">{{ data.Strategic_Sub_Issues_Name }}</td>
+                <td class="text-center">{{ data.Strategic_Sub_Issues_Short_Name }}</td>
+                <td class="text-center">{{ data.Order_Seq }}</td>
+                <td>
+                  <button type="button" class="btn btn-warning btn-sm"
+                    (click)="openEditSubIssueModal(addSubIssueModal, data)">
+                    <i class="ri-pencil-line"></i>
+                  </button>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+
+<ng-template #addStrategicModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">{{ isEditMode ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลยุทธศาสตร์ชาติด้าน</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+
+  <div class="modal-body">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">ปีที่เริ่ม</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Strategic.BgYear_Start">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีสิ้นสุด</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Strategic.BgYear_End">
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">ชื่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Strategic.Strategic_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ชื่อย่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Strategic.Strategic_Short_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">เรียงลำดับ</label>
+        <input type="number" class="form-control" [(ngModel)]="Mas_Strategic.Order_Seq">
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="BtnSave()">บันทึก</button>
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">ยกเลิก</button>
+  </div>
+</ng-template>
+
+<ng-template #addIssueModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">{{ isEditModeIssue ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลประเด็นยุทธศาสตร์</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+
+  <div class="modal-body">
+    <div class="row g-3">
+      <div class="col-md-12">
+        <label class="form-label">ยุทธศาสตร์ชาติด้าน <span class="text-danger">*</span></label>
+        <select class="form-select" [(ngModel)]="Mas_Strategic_Issue.FK_Strategic_Id"
+          [required]="!isEditModeIssue">
+          <option [ngValue]="null">-- เลือก --</option>
+          <option *ngFor="let s of listMasStrategicAll" [ngValue]="s.Strategic_Id">{{ s.Strategic_Name }}</option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีที่เริ่ม</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Strategic_Issue.BgYear_Start">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีสิ้นสุด</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Strategic_Issue.BgYear_End">
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">ชื่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Strategic_Issue.Strategic_Issues_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ชื่อย่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Strategic_Issue.Strategic_Issues_Short_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">เรียงลำดับ</label>
+        <input type="number" class="form-control" [(ngModel)]="Mas_Strategic_Issue.Order_Seq">
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="BtnSaveIssue()">บันทึก</button>
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">ยกเลิก</button>
+  </div>
+</ng-template>
+
+<ng-template #addSubIssueModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">{{ isEditModeSubIssue ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลประเด็นย่อย</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+
+  <div class="modal-body">
+    <div class="row g-3">
+      <div class="col-md-12">
+        <label class="form-label">ยุทธศาสตร์ชาติด้าน <span class="text-danger">*</span></label>
+        <select class="form-select" [(ngModel)]="subIssueModalStrategicId"
+          (ngModelChange)="onSubIssueStrategicChange()" [required]="!isEditModeSubIssue">
+          <option [ngValue]="null">-- เลือก --</option>
+          <option *ngFor="let s of listMasStrategicAll" [ngValue]="s.Strategic_Id">{{ s.Strategic_Name }}</option>
+        </select>
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">ประเด็นยุทธศาสตร์ <span class="text-danger">*</span></label>
+        <select class="form-select" [(ngModel)]="Mas_Strategic_Sub_Issue.FK_Strategic_Issues_Id"
+          [required]="!isEditModeSubIssue" [disabled]="!subIssueModalStrategicId">
+          <option [ngValue]="null">-- เลือก --</option>
+          <option *ngFor="let i of filteredIssueListForSubIssue" [ngValue]="i.Issues_Id">
+            {{ i.Strategic_Issues_Name }}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีที่เริ่ม</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Strategic_Sub_Issue.BgYear_Start">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีสิ้นสุด</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Strategic_Sub_Issue.BgYear_End">
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">ชื่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Strategic_Sub_Issue.Strategic_Sub_Issues_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ชื่อย่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Strategic_Sub_Issue.Strategic_Sub_Issues_Short_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">เรียงลำดับ</label>
+        <input type="number" class="form-control" [(ngModel)]="Mas_Strategic_Sub_Issue.Order_Seq">
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="BtnSaveSubIssue()">บันทึก</button>
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">ยกเลิก</button>
+  </div>
+</ng-template>

@@ -139,7 +139,7 @@ export class SignoffMinistryPlanningComponent {
 
     const userConfirmed = await confirmAlert(
       'info',
-      'ต้องการยกเลิก Sign off ข้อมูลโครงการ ?',
+      'ต้องการยกเลิก Sign Off ข้อมูลโครงการ ?',
       ''
     );
 
@@ -159,7 +159,7 @@ export class SignoffMinistryPlanningComponent {
 
     this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
 
-      basicAlert('success', 'ยกเลิกการ Sign off ข้อมูลโครงการแล้ว', '');
+      basicAlert('success', 'ยกเลิกการ Sign Off ข้อมูลโครงการแล้ว', '');
 
       this.get_data();
 
@@ -197,7 +197,7 @@ export class SignoffMinistryPlanningComponent {
   // }
   async SignOff() {
 
-    const userConfirmed = await confirmAlert('info', 'ต้องการ Sign off ข้อมูลโครงการ ?', '');
+    const userConfirmed = await confirmAlert('info', 'ต้องการ Sign Off ข้อมูลโครงการ ?', '');
 
     if (!userConfirmed) return;
 
@@ -219,7 +219,7 @@ export class SignoffMinistryPlanningComponent {
     };
 
     this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
-      basicAlert('success', 'บันทึก Sign off ข้อมูลโครงการแล้ว', '');
+      basicAlert('success', 'บันทึก Sign Off ข้อมูลโครงการแล้ว', '');
       this.get_data(); // reload
     });
 

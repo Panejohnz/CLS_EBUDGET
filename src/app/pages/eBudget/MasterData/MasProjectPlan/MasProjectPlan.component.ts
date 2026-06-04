@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Router } from '@angular/router';
 @Component({
   selector: 'MasProjectPlan',
   templateUrl: './MasProjectPlan.component.html',
@@ -21,7 +22,14 @@ export class MasProjectPlanComponent {
     Active: 1
   };
 
-  constructor(private modalService: NgbModal) { }
+  constructor(
+    private modalService: NgbModal,
+    private router: Router
+  ) { }
+
+  goToSubPage(path: string) {
+    this.router.navigateByUrl(path);
+  }
 
   fullModal(modal: any, data: any) {
 
