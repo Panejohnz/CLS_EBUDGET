@@ -160,7 +160,7 @@ export class ProjectBudgetProposalComponent {
       let model = {
         FUNC_CODE: "FUNC-GET_BUDGET_REQUEST_BY_ID",
         Request_Id: data.Request_Id,
-        Project_Id: data.FK_Project_Plan_Id || data.FK_Project_Plan_Id_copy
+        Project_Id: data.FK_Project_Plan_Id || data.FK_Project_Plan_Id_copy || 0
       };
       this.servicebud.GatewayGetData(model)
         .subscribe((res: any) => {
