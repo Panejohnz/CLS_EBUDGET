@@ -147,7 +147,7 @@ export class PermissionComponent implements OnInit, OnDestroy {
 
       if (!this.token) {
         // No token provided, redirect to FDA website
-        window.location.href = 'https://privus.fda.moph.go.th/';
+        window.location.href = 'https://app.celestsoft.com/CLS_ERP_MANANGEMENT_FRONT/';
         return;
       }
 
@@ -235,7 +235,7 @@ export class PermissionComponent implements OnInit, OnDestroy {
   }
 
   selectPermission(permission: PersonalGroupPermission): void {
-    
+
     this.selectedGroup = permission;
     this.loadingService.show('กำลังโหลดเมนู...');
     this.error = '';
@@ -403,7 +403,7 @@ export class PermissionComponent implements OnInit, OnDestroy {
     return menuItems;
   }
 
- 
+
   private sortMenuItems(menuItems: MenuItem[]): void {
     menuItems.forEach(item => {
       if (item.subItems && item.subItems.length > 0) {
