@@ -1,103 +1,105 @@
 <div class="border rounded p-3" style="background-color: #E0E8F0;">
 
     <div class="row g-3" *ngIf="model">
+        <div class="row g-3" *ngIf="model.Budget_Type != 1">
+            <div class="col-md-6">
 
-        <div class="col-md-6">
+                <label class="form-label">
+                    หน่วยงาน
+                </label>
 
-            <label class="form-label">
-                หน่วยงาน
-            </label>
+                <span class="text-danger"> *</span>
 
-            <span class="text-danger"> *</span>
+                <ng-select [items]="Mas_Department_Lists" bindLabel="Department_Name"
+                    [(ngModel)]="model.selectedDepartment" name="selectedDepartment" [compareWith]="compareById"
+                    appendTo="body" placeholder="-- เลือกหน่วยงาน --" (ngModelChange)="Onchange_type_Department()">
 
-            <ng-select [items]="Mas_Department_Lists" bindLabel="Department_Name" [(ngModel)]="model.selectedDepartment"
-                name="selectedDepartment" [compareWith]="compareById" appendTo="body" placeholder="-- เลือกหน่วยงาน --"
-                (ngModelChange)="Onchange_type_Department()">
+                </ng-select>
 
-            </ng-select>
+            </div>
 
+            <div class="col-md-6">
+
+                <label class="form-label">
+                    ประเภทโครงการ
+                </label>
+
+                <span class="text-danger"> *</span>
+
+                <ng-select [items]="Mas_Expense_Lists" bindLabel="Expense_Name" [(ngModel)]="model.projectType"
+                    name="projectType" [compareWith]="compareById" appendTo="body"
+                    placeholder="-- เลือกประเภทโครงการ --" (ngModelChange)="Onchange_type()">
+
+                </ng-select>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <label class="form-label">
+                    แผนงาน
+                </label>
+
+                <span class="text-danger"> *</span>
+
+                <ng-select [items]="Mas_Plan_Lists" bindLabel="Plan_Name" [(ngModel)]="model.selectedPlan"
+                    name="selectedPlan" [compareWith]="compareById" appendTo="body" placeholder="-- เลือกแผนงาน --"
+                    (ngModelChange)="Onchange_type_Plan()">
+
+                </ng-select>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <label class="form-label">
+                    ผลผลิต
+                </label>
+
+                <span class="text-danger"> *</span>
+
+                <ng-select [items]="Mas_Product" bindLabel="Product_Name" [(ngModel)]="model.selectedProduct"
+                    name="selectedProduct" [compareWith]="compareById" appendTo="body" placeholder="-- เลือกผลผลิต --"
+                    (ngModelChange)="Onchange_type_Product()">
+
+                </ng-select>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <label class="form-label">
+                    กิจกรรม
+                </label>
+
+                <span class="text-danger"> *</span>
+
+                <ng-select [items]="Mas_Activity" bindLabel="Activity_Name" [(ngModel)]="model.selectedActivity"
+                    name="selectedActivity" [compareWith]="compareById" appendTo="body" placeholder="-- เลือกกิจกรรม --"
+                    (ngModelChange)="onActivityChange($event)">
+
+                </ng-select>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <label class="form-label">
+                    หมวดงบ
+                </label>
+
+                <span class="text-danger"> *</span>
+
+                <ng-select [items]="Mas_Budget_Types" bindLabel="Budget_Type_Name" [(ngModel)]="model.selectedBudget"
+                    name="selectedBudget" [compareWith]="compareById" appendTo="body" placeholder="-- เลือกหมวดงบ --"
+                    [clearable]="false" [searchable]="true" [disabled]="Mas_Budget_Types.length === 1"
+                    (ngModelChange)="onBudgetChange($event)">
+
+                </ng-select>
+
+            </div>
         </div>
 
-        <div class="col-md-6">
-
-            <label class="form-label">
-                ประเภทโครงการ
-            </label>
-
-            <span class="text-danger"> *</span>
-
-            <ng-select [items]="Mas_Expense_Lists" bindLabel="Expense_Name" [(ngModel)]="model.projectType"
-                name="projectType" [compareWith]="compareById" appendTo="body" placeholder="-- เลือกประเภทโครงการ --"
-                (ngModelChange)="Onchange_type()">
-
-            </ng-select>
-
-        </div>
-
-        <div class="col-md-6">
-
-            <label class="form-label">
-                แผนงาน
-            </label>
-
-            <span class="text-danger"> *</span>
-
-            <ng-select [items]="Mas_Plan_Lists" bindLabel="Plan_Name" [(ngModel)]="model.selectedPlan"
-                name="selectedPlan" [compareWith]="compareById" appendTo="body" placeholder="-- เลือกแผนงาน --"
-                (ngModelChange)="Onchange_type_Plan()">
-
-            </ng-select>
-
-        </div>
-
-        <div class="col-md-6">
-
-            <label class="form-label">
-                ผลผลิต
-            </label>
-
-            <span class="text-danger"> *</span>
-
-            <ng-select [items]="Mas_Product" bindLabel="Product_Name" [(ngModel)]="model.selectedProduct"
-                name="selectedProduct" [compareWith]="compareById" appendTo="body" placeholder="-- เลือกผลผลิต --"
-                (ngModelChange)="Onchange_type_Product()">
-
-            </ng-select>
-
-        </div>
-
-        <div class="col-md-6">
-
-            <label class="form-label">
-                กิจกรรม
-            </label>
-
-            <span class="text-danger"> *</span>
-
-            <ng-select [items]="Mas_Activity" bindLabel="Activity_Name" [(ngModel)]="model.selectedActivity"
-                name="selectedActivity" [compareWith]="compareById" appendTo="body" placeholder="-- เลือกกิจกรรม --"
-                (ngModelChange)="onActivityChange($event)">
-
-            </ng-select>
-
-        </div>
-
-        <div class="col-md-6">
-
-            <label class="form-label">
-                หมวดงบ
-            </label>
-
-            <span class="text-danger"> *</span>
-
-            <ng-select [items]="Mas_Budget_Types" bindLabel="Budget_Type_Name" [(ngModel)]="model.selectedBudget"
-                name="selectedBudget" [compareWith]="compareById" appendTo="body" placeholder="-- เลือกหมวดงบ --"
-                [clearable]="false" [searchable]="true" [disabled]="Mas_Budget_Types.length === 1"
-                (ngModelChange)="onBudgetChange($event)">
-
-            </ng-select>
-
-        </div>
 
         <div class="col-md-12">
 

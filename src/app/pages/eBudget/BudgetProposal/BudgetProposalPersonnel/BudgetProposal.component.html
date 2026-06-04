@@ -215,14 +215,14 @@
 
                 <tbody>
 
-                    @for(item of copyProjectList; track item.Request_Id){
+                    @for(item of copyProjectList; track item.Project_Id){
 
                     <tr>
 
                         <td class="text-center">
 
                             <input class="form-check-input" type="radio" name="selectedProject"
-                                [value]="item.Request_Id" [(ngModel)]="selectedProjectId">
+                                [value]="item.Project_Id" [(ngModel)]="selectedProjectId">
 
                         </td>
 

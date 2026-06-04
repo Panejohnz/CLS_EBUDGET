@@ -615,6 +615,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
 
   async save() {
 
+console.log(',',this.model);
 
     const findById = (
       list: any[],
@@ -681,7 +682,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
       FK_Project_Plan_Id:
         this.model.Budget_Request.FK_Project_Plan_Id,
 
-      Total: this.model.Total,
+      Total: this.model.Total || this.model.Project_Plan.Total,
       Department_Id:
         this.model.Department_Id,
 

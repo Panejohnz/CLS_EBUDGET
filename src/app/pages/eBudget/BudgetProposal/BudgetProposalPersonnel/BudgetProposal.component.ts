@@ -166,6 +166,7 @@ export class ProjectBudgetProposalComponent {
         .subscribe((res: any) => {
 
           this.model = {
+            Budget_Type : 1,
             Budget_Request: res.Budget_Request || {},
             Budget_Request_Detail_Item: res.Budget_Request_Detail_Item || {},
             Budget_Request_Detail: res.Budget_Request_Detail || {},
@@ -202,7 +203,7 @@ export class ProjectBudgetProposalComponent {
           const activities = this.mapPlanDetail(details);
           this.mapItems(items, activities);
 
-          this.project_planing.activities = activities;
+          this.model.activities = activities;
         });
     } else {
       this.model = {
@@ -338,11 +339,12 @@ export class ProjectBudgetProposalComponent {
     }
     let model = {
       FUNC_CODE: "FUNC-Project_Plan_Copy",
-      Request_Id: this.selectedProjectId
+      Project_Id: this.selectedProjectId
     }
     var getData = this.servicebud.GatewayGetData(model);
     getData.subscribe((response: any) => {
       basicAlert('success', 'คัดลอกรายการแล้ว', '')
+      this.get_data()
     })
 
 
