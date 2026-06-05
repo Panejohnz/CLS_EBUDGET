@@ -14,11 +14,7 @@ import Swal from 'sweetalert2';
   selector: 'MasProjectPlanNationalStrategyZ',
   providers: [GridJsService, DecimalPipe, EbudgetService],
   templateUrl: './MasProjectPlanNationalStrategyZ.component.html',
-  styles: `
-    :host ::ng-deep .ng-dropdown-panel {
-      z-index: 1060 !important;
-    }
-  `
+  styleUrls: ['./MasProjectPlanNationalStrategyZ.component.scss']
 })
 export class MasProjectPlanNationalStrategyZComponent {
   currentTab = 1;
