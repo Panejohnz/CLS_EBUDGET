@@ -59,7 +59,6 @@ export class TabDetailComponent implements OnInit, OnChanges {
   }
   initData() {
 
-
     if (!this.model.Project_Detail || Array.isArray(this.model.Project_Detail)) {
       this.model.Project_Detail = {
         Principle: '',
@@ -69,11 +68,7 @@ export class TabDetailComponent implements OnInit, OnChanges {
       };
     }
 
-    this.projectDetail = {
-
-      ...this.model.Project_Detail
-
-    };
+    this.projectDetail = this.model.Project_Detail;
     this.projectDetail.Start_Date =
       this.convertJsonDateToInput(this.projectDetail.Start_Date);
 
@@ -184,21 +179,20 @@ export class TabDetailComponent implements OnInit, OnChanges {
     this.model.Project_Objective = [...this.objectives];
   }
 
-  convertToApiDate(
-    date: NgbDateStruct | null
-  ): string {
+  convertToApiDate(date: any): string {
 
     if (!date) return '';
 
-    const year = date.year;
+    if (
+      typeof date === 'object' &&
+      date.year &&
+      date.month &&
+      date.day
+    ) {
+      return `${date.year}-${String(date.month).padStart(2, '0')}-${String(date.day).padStart(2, '0')}`;
+    }
 
-    const month =
-      String(date.month).padStart(2, '0');
-
-    const day =
-      String(date.day).padStart(2, '0');
-
-    return `${year}-${month}-${day}`;
+    return date;
   }
   syncProjectDetailDate() {
 

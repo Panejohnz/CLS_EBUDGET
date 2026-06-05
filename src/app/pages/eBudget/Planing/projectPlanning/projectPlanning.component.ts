@@ -102,6 +102,8 @@ export class ProjectPlanningComponent {
 
 
   }
+  department: any[] = []
+  griddataTemp: any[] = [];
   get_data() {
     let model = {
       FUNC_CODE: "FUNC-Get_Project_Plan",
@@ -113,6 +115,10 @@ export class ProjectPlanningComponent {
       this.allData = Array.isArray(response.List_Project_Plan_Data_Table.Data)
         ? response.List_Project_Plan_Data_Table.Data
         : [];
+      this.department = Array.isArray(response.Mas_Department_Lists)
+        ? response.Mas_Department_Lists
+        : [];
+      this.griddataTemp = [...this.allData];
       this.griddata = [...this.allData];
       this.currentTab = 1
       this.firstLoad = true;
@@ -132,7 +138,41 @@ export class ProjectPlanningComponent {
     );
 
   }
+  selectedDepartmentId: any = null;
+  applyFilter() {
 
+    let data = [...this.griddataTemp];
+
+    if (this.selectedDepartmentId) {
+
+      data = data.filter(
+        x => x.Department_Id == this.selectedDepartmentId
+      );
+
+    }
+
+    if (this.service.searchTerm) {
+
+      const keyword = this.service.searchTerm.toLowerCase();
+
+      data = data.filter(x =>
+
+        (x.Department_Name || '').toLowerCase().includes(keyword) ||
+        (x.Plan_Name || '').toLowerCase().includes(keyword) ||
+        (x.Product_Name || '').toLowerCase().includes(keyword) ||
+        (x.Activity_Name || '').toLowerCase().includes(keyword) ||
+        (x.Budget_Type || '').toLowerCase().includes(keyword) ||
+        (x.Project_Name || '').toLowerCase().includes(keyword) ||
+        (x.Status_Name || '').toLowerCase().includes(keyword) ||
+        String(x.Total || '').includes(keyword)
+
+      );
+
+    }
+
+    this.griddata = data;
+
+  }
   filterSearch() {
 
     const keyword = (this.service.searchTerm || '').toLowerCase().trim();
@@ -470,6 +510,7 @@ export class ProjectPlanningComponent {
   }
   Project_Plan: any
   async savePlan(modal: any) {
+    console.log('this.model.Project_Detail', this.project_planing.Project_Detail);
 
     const getId = (obj: any, key: string) =>
       typeof obj === 'object' ? obj?.[key] : obj;
@@ -651,9 +692,19 @@ export class ProjectPlanningComponent {
     return true;
   }
   toDotNetDate(dateStr: string): string | null {
+
     if (!dateStr) return null;
 
+    if (/\/Date\(\d+\)\//.test(dateStr)) {
+      return dateStr;
+    }
+
     const timestamp = new Date(dateStr).getTime();
+
+    if (isNaN(timestamp)) {
+      return null;
+    }
+
     return `/Date(${timestamp})/`;
   }
   activities: any

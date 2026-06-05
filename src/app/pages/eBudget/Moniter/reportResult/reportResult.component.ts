@@ -5,6 +5,7 @@ import { DecimalPipe } from '@angular/common';
 import { EbudgetService } from 'src/app/core/services/ebudget.service';
 import { AuthenticationService } from 'src/app/core/services/auth.service';
 import { BudgetYearService } from 'src/app/core/services/budget-year.service';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-report-result',
@@ -278,6 +279,8 @@ export class ReportResultComponent
     modal: any,
     data: any
   ) {
+    console.log('ไหนมาดูซิ', data);
+
     this.selectedItem = data;
 
     const createPayload = {
@@ -370,6 +373,18 @@ export class ReportResultComponent
               res?.List_Report_Budget_Plan_Detail_Month || [];
             const investList =
               res?.List_Report_Budget_Plan_Investment || [];
+
+            const items = res.Project_Plan_Detail_Item || [];
+            const details = res.Project_Plan_Detail || [];
+            details.forEach((d: any) => {
+              d.Project_Detail_Id = Number(d.Project_Detail_Id);
+              d.Parent_Id = d.Parent_Id ? Number(d.Parent_Id) : null;
+            });
+
+            const activities = this.mapPlanDetail(details);
+            this.mapItems(items, activities);
+
+            this.model.activities = activities;
 
             let Progress_list = res.Report_Budget_Plan_Progress
             this.Output_Result = Progress_list.Output_Result
@@ -516,6 +531,117 @@ export class ReportResultComponent
           });
 
       });
+  }
+  mapPlanDetail(data: any[]) {
+
+    return data.map(x => ({
+
+      id: Number(x.Project_Detail_Id),
+      name: x.Activity_Name,
+      owner: x.Responsible,
+
+      noBudget: x.Used_BG === 0,
+      consult: x.Is_Consult === 1,
+
+      quarters: this.convertMonths(x.Months),
+
+      // 🔥 เพิ่มตรงนี้
+      sumAmount: Number(x.Sum_Amount ?? x.Sum_Amount_Total ?? 0),
+      _edited: false,
+      otherExpenses: [],
+      multiplierTotal: 0,
+
+      SubActivities: (x.SubActivities || []).map((s: any) => ({
+
+        id: Number(s.Project_Detail_Id),
+        Project_Detail_Id: Number(s.Project_Detail_Id),
+        name: s.Activity_Name,
+        owner: s.Responsible,
+
+        noBudget: s.Used_BG === 0,
+        consult: s.Is_Consult === 1,
+
+        quarters: this.convertMonths(s.Months),
+
+        // 🔥 เพิ่มตรงนี้
+        sumAmount: Number(s.Sum_Amount) || 0,
+
+        _edited: false,
+        otherExpenses: [],
+        multiplierTotal: 0
+
+      }))
+
+    }));
+  }
+  convertMonths(months: any[]) {
+
+    const MONTHS = [
+      'ต.ค.', 'พ.ย.', 'ธ.ค.',
+      'ม.ค.', 'ก.พ.', 'มี.ค.',
+      'เม.ย.', 'พ.ค.', 'มิ.ย.',
+      'ก.ค.', 'ส.ค.', 'ก.ย.'
+    ];
+
+    const mapped = months.map((m, i) => ({
+      month: MONTHS[i],
+      selected: m.Selected,
+      budget: m.Budget
+    }));
+
+    return [
+      { quarter: 1, months: mapped.slice(0, 3) },
+      { quarter: 2, months: mapped.slice(3, 6) },
+      { quarter: 3, months: mapped.slice(6, 9) },
+      { quarter: 4, months: mapped.slice(9, 12) }
+    ];
+  }
+  mapItems(items: any[], activities: any[]) {
+
+    const map: any = {};
+
+    const walk = (list: any[]) => {
+      list.forEach(a => {
+        map[Number(a.id)] = a;
+
+        if (a.SubActivities?.length) {
+          walk(a.SubActivities);
+        }
+      });
+    };
+
+    walk(activities);
+
+    // 🔥 reset ก่อน
+    Object.values(map).forEach((a: any) => {
+      a.otherExpenses = [];
+      a.multiplierTotal = 0; // <<<<<< สำคัญ
+    });
+
+    items.forEach(i => {
+
+      const key = Number(i.Fk_Project_Detail_Id);
+      const target = map[key];
+
+      if (target) {
+
+        target.otherExpenses.push({
+          id: i.Project_Item_Id,
+          name: i.Expense_Name,
+          times: i.Times,
+          people: i.People,
+          rate: i.Rate,
+          total: i.Total,
+          input3: i.input3,
+          input4: i.input4,
+          input5: i.input5
+        });
+
+        // 🔥 บรรทัดนี้คือคำตอบ
+        target.multiplierTotal += (i.Total || 0);
+      }
+
+    });
   }
   openMonthModal(
     modal: any,
@@ -923,7 +1049,7 @@ export class ReportResultComponent
               modal,
               {
                 backdrop: 'static',
-                windowClass: 'modal-75'
+                windowClass: 'modal-full'
               }
             );
 
@@ -936,7 +1062,7 @@ export class ReportResultComponent
           modal,
           {
             backdrop: 'static',
-            windowClass: 'modal-75'
+            windowClass: 'modal-full'
           }
         );
 
@@ -954,6 +1080,297 @@ export class ReportResultComponent
     console.log(checkedList);
 
     modal.close();
+
+  }
+
+  project_planing = {
+    projectType: ''
+  };
+
+  model: any = {}
+  movingIndex: number | null = null;
+  // ส่วนกิจกรรม
+  dropActivity(event: any) {
+    moveItemInArray(this.model.activities, event.previousIndex, event.currentIndex);
+    this.reIndexSort();
+  }
+  reIndexSort() {
+    this.model.activities.forEach((a: any, i: number) => {
+      a.Seq = i + 1;
+    });
+  }
+  trackById(index: number, item: any) {
+    return item.id || index;
+  }
+  moveUp(index: number) {
+    if (index === 0) return;
+
+    this.movingIndex = index;
+
+    const arr = this.model.activities;
+    [arr[index - 1], arr[index]] = [arr[index], arr[index - 1]];
+
+    this.reIndexSort();
+
+    setTimeout(() => {
+      this.movingIndex = null;
+    }, 300);
+  }
+
+  moveDown(index: number) {
+    const arr = this.model.activities;
+    if (index === arr.length - 1) return;
+
+    this.movingIndex = index;
+
+    [arr[index], arr[index + 1]] = [arr[index + 1], arr[index]];
+
+    this.reIndexSort();
+
+    setTimeout(() => {
+      this.movingIndex = null;
+    }, 300);
+  }
+  onBudgetChange(month: any) {
+
+    if (month.budget && month.budget > 0) {
+      month.selected = true;
+    } else {
+      month.selected = false;
+    }
+
+  }
+  syncMainFromSub(act: any) {
+
+    if (!act.SubActivities?.length) return;
+
+    act.quarters.forEach((q: any, qIndex: number) => {
+
+      q.months.forEach((m: any, mIndex: number) => {
+
+        const hasSelected = act.SubActivities.some((sub: any) => {
+          return sub.quarters?.[qIndex]?.months?.[mIndex]?.selected;
+        });
+
+        m.selected = hasSelected;
+      });
+
+    });
+
+  }
+  displayValue(value: any): string {
+    if (value === null || value === undefined || value === '') return '';
+
+    let str = value.toString();
+
+    if (!/[0-9]/.test(str)) return '';
+
+    const parts = str.split('.');
+
+    const intPart = Number(parts[0] || 0).toLocaleString('en-US');
+
+    if (parts.length > 1) {
+      const decimal = parts[1].slice(0, 2);
+      return `${intPart}.${decimal}`;
+    }
+
+    return intPart;
+  }
+  onInputFormat(event: any, month: any) {
+
+    let val = event.target.value || '';
+
+    val = val.replace(/[^0-9.,]/g, '');
+
+    const parts = val.split('.');
+    if (parts.length > 2) {
+      val = parts[0] + '.' + parts.slice(1).join('');
+    }
+
+    event.target.value = val;
+    const num = Number(val.replace(/,/g, ''));
+
+    month.budget = isNaN(num) ? 0 : num;
+    month.selected = month.budget > 0;
+
+    this.model.activities.forEach((act: any) => {
+      act._edited = true;
+      act.SubActivities?.forEach((sub: any) => {
+        sub._edited = true;
+      });
+    });
+  }
+  allowOnlyNumber(event: KeyboardEvent) {
+    const char = event.key;
+    if (!/[0-9.,]/.test(char)) {
+      event.preventDefault();
+    }
+  }
+  activities: any[] = [];
+  removeActivity(i: number) {
+    this.activities.splice(i, 1);
+  }
+  selectedActivityId: number | null = null;
+  selectedLevel: 'act' | 'sub' | null = null;
+  selectedActivity: any;
+  type: string = '';
+  formTypeMap: any = {
+    73: 'seminar',
+    74: 'pr',
+    64: 'investment',
+    75: 'consult',
+    70: 'other'
+  }
+  openMultiplierModal(content: any, item: any, level: 'act' | 'sub' = 'act') {
+
+    this.selectedActivity = item;
+    item._useMultiplier = true;
+    this.selectedActivityId = item.Project_Detail_Id || item.id;
+
+    if (item.SubActivities?.length) {
+      item.SubActivities.forEach((sub: any) => {
+        sub._useMultiplier = true;
+      });
+    }
+
+
+    this.modalService.open(content, {
+      backdrop: 'static',
+      windowClass: 'modal-95'
+    }).result.then(() => {
+      item._useMultiplier = true;
+      item.multiplierTotal = (item.otherExpenses || []).reduce((sum: number, i: any) => {
+        return sum + (i.total || i.Total || 0);
+      }, 0);
+
+    }).catch(() => { });
+  }
+  getMultiplierTotal(act: any): number {
+
+    if (act.SubActivities?.length) {
+      return act.SubActivities.reduce((sum: number, sub: any) => {
+        return sum + this.getMultiplierTotal(sub);
+      }, 0);
+    }
+
+    if (act.otherExpenses?.length) {
+      return act.otherExpenses.reduce((sum: number, item: any) => {
+        return sum + (item.total || item.Total || 0);
+      }, 0);
+    }
+
+    return act.multiplierTotal || 0;
+  }
+  getActivityTotal(act: any): number {
+
+    if (act.SubActivities?.length) {
+      return act.SubActivities.reduce((sum: number, sub: any) => {
+        return sum + this.getActivityTotal(sub);
+      }, 0);
+    }
+
+    if (!act._edited && act.sumAmount != null) {
+      return Number(act.sumAmount);
+    }
+
+    let total = 0;
+
+    (act.quarters || []).forEach((q: any) => {
+      (q.months || []).forEach((m: any) => {
+        total += Number(m.budget) || 0;
+      });
+    });
+
+    return total;
+  }
+  onSubBudgetChange(event: any, sub: any, qIndex: number, rowIndex: number) {
+
+    let val = event.target.value || '';
+    val = val.replace(/[^0-9.]/g, '');
+
+    const parts = val.split('.');
+    if (parts.length > 2) {
+      val = parts[0] + '.' + parts.slice(1).join('');
+    }
+
+    const [intPart, decimalPart] = val.split('.');
+
+    const intFormatted = intPart
+      ? Number(intPart).toLocaleString('en-US')
+      : '';
+
+    let finalValue = intFormatted;
+
+    if (decimalPart !== undefined) {
+      finalValue += '.' + decimalPart.slice(0, 2);
+    }
+
+    event.target.value = finalValue;
+
+    const num = Number(intPart + (decimalPart ? '.' + decimalPart : ''));
+
+    const month = sub.quarters?.[qIndex]?.months?.[rowIndex];
+
+    if (month) {
+      month.budget = isNaN(num) ? 0 : num;
+      month.selected = month.budget > 0;
+    }
+
+    sub._edited = true;
+
+    this.sumMainBudgetFromSub(
+      this.model.activities.find((a: any) =>
+        a.SubActivities?.includes(sub)
+      )
+    );
+  }
+  sumMainBudgetFromSub(act: any) {
+
+    if (!act?.SubActivities?.length) return;
+
+    act.quarters.forEach((q: any, qIndex: number) => {
+
+      q.months.forEach((m: any, mIndex: number) => {
+
+        let total = 0;
+        let hasValue = false;
+
+        act.SubActivities.forEach((sub: any) => {
+
+          const budget =
+            Number(sub.quarters?.[qIndex]?.months?.[mIndex]?.budget);
+
+          if (!isNaN(budget) && budget > 0) {
+            total += budget;
+            hasValue = true;
+          }
+
+        });
+
+        m.budget = hasValue ? total : null;
+
+        m.selected = hasValue;
+
+      });
+
+    });
+
+  }
+  removeSub(act: any, i: number) {
+
+    const sub = act.SubActivities[i];
+    if (!sub.Project_Detail_Id) {
+      act.SubActivities.splice(i, 1);
+      return
+    }
+    let model = {
+      FUNC_CODE: "FUNC-Delete_Project_Plan_Detail",
+      Project_Detail_Id: sub.Project_Detail_Id
+    }
+    var getData = this.servicebud.GatewayGetData(model);
+    getData.subscribe((response: any) => {
+      act.SubActivities.splice(i, 1);
+    })
 
   }
 }
