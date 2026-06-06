@@ -190,6 +190,10 @@ export class ProjectPlanningComponent {
     );
   }
   fullModal(modal: any, data: any) {
+    if (!this.selectedDepartmentId) {
+      basicAlert('info', 'เลือกหน่วยงาน', '')
+      return
+    }
     this.currentTab = 1;
     this.firstLoad = true;
     if (data?.Project_Id) {
@@ -308,7 +312,7 @@ export class ProjectPlanningComponent {
           Indicators_Id_5: null,
           Goals_Guidelines_Id_5: null
         },
-        selectedDepartment: null,
+        selectedDepartment: this.selectedDepartmentId,
         projectType: null,
         selectedPlan: null,
         selectedProduct: null,

@@ -1624,17 +1624,17 @@ export class AddPlanManagementComponent
 
   }
 
-  openTargetModal(content: any) {
+  // openTargetModal(content: any) {
 
-    this.modalService.open(content, {
+  //   this.modalService.open(content, {
 
-      size: 'lg',
+  //     size: 'lg',
 
-      backdrop: 'static'
+  //     backdrop: 'static'
 
-    });
+  //   });
 
-  }
+  // }
 
   getTotalBudget(item: any): number {
 
@@ -2167,5 +2167,165 @@ export class AddPlanManagementComponent
       });
 
   }
+  isBudgetIndicator = false
+  openTargetModal(content: any) {
 
+    if (this.targetList.length === 0) {
+
+      this.addTargetRow();
+    }
+
+    this.modalService.open(content, {
+      fullscreen: true
+    });
+  }
+
+
+  addTargetRow() {
+
+    this.targetList.push({
+
+      Request_Detail_Id: 0,
+      unit: '',
+
+      oct: 0,
+      nov: 0,
+      dec: 0,
+
+      jan: 0,
+      feb: 0,
+      mar: 0,
+
+      apr: 0,
+      may: 0,
+      jun: 0,
+
+      jul: 0,
+      aug: 0,
+      sep: 0
+
+    });
+  }
+  async removeTargetRow(index: number, data: any) {
+    const userConfirmed = await confirmAlert('info', 'ต้องการลบข้อมูล ?', '');
+
+    if (userConfirmed) {
+      if (data.Request_Detail_Id) {
+
+        const model = {
+          FUNC_CODE: "FUNC-Delete_Budget_Request_Detail",
+
+          Request_Detail_Id: data.Request_Detail_Id
+        };
+
+        this.serviceebud.GatewayGetData(model).subscribe(async () => {
+          this.targetList.splice(index, 1);
+
+
+        });
+      }
+    } else {
+      this.targetList.splice(index, 1);
+    }
+
+
+  }
+  targetDetail: any = {}
+  saveTarget(modal: any) {
+
+    this.targetDetail =
+      this.targetList.map((t: any) => ({
+
+        Request_Detail_Id:
+          t.Request_Detail_Id || 0,
+
+        Unit_Name:
+          t.unit,
+
+        Oct_Target:
+          t.oct || 0,
+
+        Nov_Target:
+          t.nov || 0,
+
+        Dec_Target:
+          t.dec || 0,
+
+        Jan_Target:
+          t.jan || 0,
+
+        Feb_Target:
+          t.feb || 0,
+
+        Mar_Target:
+          t.mar || 0,
+
+        Apr_Target:
+          t.apr || 0,
+
+        May_Target:
+          t.may || 0,
+
+        Jun_Target:
+          t.jun || 0,
+
+        Jul_Target:
+          t.jul || 0,
+
+        Aug_Target:
+          t.aug || 0,
+
+        Sep_Target:
+          t.sep || 0,
+
+        Sum_Target:
+          (t.oct || 0) +
+          (t.nov || 0) +
+          (t.dec || 0) +
+          (t.jan || 0) +
+          (t.feb || 0) +
+          (t.mar || 0) +
+          (t.apr || 0) +
+          (t.may || 0) +
+          (t.jun || 0) +
+          (t.jul || 0) +
+          (t.aug || 0) +
+          (t.sep || 0)
+
+      }));
+
+    modal.close();
+    this.isBudgetIndicator
+  }
+  getTargetSum(t: any): number {
+
+    return (
+      (Number(t.oct) || 0) +
+      (Number(t.nov) || 0) +
+      (Number(t.dec) || 0) +
+
+      (Number(t.jan) || 0) +
+      (Number(t.feb) || 0) +
+      (Number(t.mar) || 0) +
+
+      (Number(t.apr) || 0) +
+      (Number(t.may) || 0) +
+      (Number(t.jun) || 0) +
+
+      (Number(t.jul) || 0) +
+      (Number(t.aug) || 0) +
+      (Number(t.sep) || 0)
+    );
+  }
+  getGrandTotal(): number {
+
+    return this.targetList.reduce(
+      (sum: number, t: any) => {
+
+        return sum + this.getTargetSum(t);
+
+      },
+      0
+    );
+  }
 }
