@@ -388,7 +388,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
       }
     });
   }
-
+  isBudgetIndicator = false
   openTargetModal(content: any) {
 
     if (this.targetList.length === 0) {
@@ -515,6 +515,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
       }));
 
     modal.close();
+    this.isBudgetIndicator
   }
   Get_Dropdown_list() {
 
@@ -615,7 +616,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
 
   async save() {
 
-console.log(',',this.model);
+    console.log(',', this.model);
 
     const findById = (
       list: any[],
@@ -868,7 +869,9 @@ console.log(',',this.model);
       );
 
     if (userConfirmed) {
+      if (this.isBudgetIndicator) {
 
+      }
       const model = {
 
         FUNC_CODE:
