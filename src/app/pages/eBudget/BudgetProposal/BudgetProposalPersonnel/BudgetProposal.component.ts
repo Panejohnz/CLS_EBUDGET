@@ -166,7 +166,7 @@ export class ProjectBudgetProposalComponent {
         .subscribe((res: any) => {
 
           this.model = {
-            Budget_Type : 1,
+            Budget_Type: 1,
             Budget_Request: res.Budget_Request || {},
             Budget_Request_Detail_Item: res.Budget_Request_Detail_Item || {},
             Budget_Request_Detail: res.Budget_Request_Detail || {},
@@ -207,6 +207,7 @@ export class ProjectBudgetProposalComponent {
         });
     } else {
       this.model = {
+        Budget_Type: 1,
         Budget_Request: {},
         Department_Id: this.selectedDepartmentId,
         Project_Plan: {},

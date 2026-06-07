@@ -22,10 +22,10 @@ export class MasProjectPlanMasterPlanYComponent {
 
   Mas_Master_Plan: any = {};
   Mas_Master_Plan_Goal: any = {};
-  Mas_Master_Plan_Goal_Tactic: any = {};
+  Mas_Master_Plan_Goals_Tactic: any = {};
   Mas_Sub_Master_Plan: any = {};
-  Mas_Sub_Master_Plan_Goal: any = {};
-  Mas_Sub_Plan_Guideline: any = {};
+  Mas_Sub_Master_Plan_Goals: any = {};
+  Mas_Sub_Plan_Guidelines: any = {};
   Mas_Value_Chain: any = {};
   Mas_Value_Chain_Factor: any = {};
 
@@ -36,20 +36,16 @@ export class MasProjectPlanMasterPlanYComponent {
   isEditModeSubGoal = false;
   isEditModeGuideline = false;
   isEditModeChainMain = false;
-  isEditModeChainSupport = false;
   isEditModeFactorMain = false;
-  isEditModeFactorSupport = false;
 
   List_Mas_Master_Plan: any[] = [];
   List_Mas_Master_Plan_Goal: any[] = [];
-  List_Mas_Master_Plan_Goal_Tactic: any[] = [];
+  List_Mas_Master_Plan_Goals_Tactic: any[] = [];
   List_Mas_Sub_Master_Plan: any[] = [];
   List_Mas_Sub_Master_Plan_Goal: any[] = [];
   List_Mas_Sub_Plan_Guideline: any[] = [];
   List_Mas_Value_Chain_Main: any[] = [];
   List_Mas_Value_Chain_Factor_Main: any[] = [];
-  List_Mas_Value_Chain_Support: any[] = [];
-  List_Mas_Value_Chain_Factor_Support: any[] = [];
 
   listMasMasterPlanAll: any[] = [];
   listMasMasterPlanGoalAll: any[] = [];
@@ -59,10 +55,8 @@ export class MasProjectPlanMasterPlanYComponent {
   listMasSubPlanGuidelineAll: any[] = [];
   listMasValueChainAll: any[] = [];
   listMasValueChainMainAll: any[] = [];
-  listMasValueChainSupportAll: any[] = [];
   listMasValueChainFactorAll: any[] = [];
   listMasValueChainFactorMainAll: any[] = [];
-  listMasValueChainFactorSupportAll: any[] = [];
 
   listMasMasterPlanFiltered: any[] = [];
   listMasMasterPlanGoalFiltered: any[] = [];
@@ -72,8 +66,6 @@ export class MasProjectPlanMasterPlanYComponent {
   listMasSubPlanGuidelineFiltered: any[] = [];
   listMasValueChainMainFiltered: any[] = [];
   listMasValueChainFactorMainFiltered: any[] = [];
-  listMasValueChainSupportFiltered: any[] = [];
-  listMasValueChainFactorSupportFiltered: any[] = [];
 
   readonly pageSize = 30;
   planPagination = { page: 1, startIndex: 0, endIndex: 0, total: 0 };
@@ -84,8 +76,6 @@ export class MasProjectPlanMasterPlanYComponent {
   guidelinePagination = { page: 1, startIndex: 0, endIndex: 0, total: 0 };
   chainMainPagination = { page: 1, startIndex: 0, endIndex: 0, total: 0 };
   factorMainPagination = { page: 1, startIndex: 0, endIndex: 0, total: 0 };
-  chainSupportPagination = { page: 1, startIndex: 0, endIndex: 0, total: 0 };
-  factorSupportPagination = { page: 1, startIndex: 0, endIndex: 0, total: 0 };
 
   searchGoalTerm = '';
   searchTacticTerm = '';
@@ -94,43 +84,30 @@ export class MasProjectPlanMasterPlanYComponent {
   searchGuidelineTerm = '';
   searchChainMainTerm = '';
   searchFactorMainTerm = '';
-  searchChainSupportTerm = '';
-  searchFactorSupportTerm = '';
 
-  tacticModalMasterPlan: any = null;
-  tacticModalGoal: any = null;
+  tacticModalMasterPlanId: any = null;
   tacticGoalOptions: any[] = [];
   tacticGoalSelectKey = 0;
   tacticMasterPlanSelectKey = 0;
 
-  subGoalModalMasterPlan: any = null;
-  subGoalModalSubPlan: any = null;
+  subGoalModalMasterPlanId: any = null;
   subGoalSubPlanOptions: any[] = [];
   subGoalSubPlanSelectKey = 0;
   subGoalMasterPlanSelectKey = 0;
 
-  guidelineModalSubPlan: any = null;
   guidelineSubPlanSelectKey = 0;
 
   chainModalMasterPlan: any = null;
   chainModalSubPlan: any = null;
-  chainModalY1: any = null;
-  chainModalY2: any = null;
   chainSubPlanOptions: any[] = [];
   chainY1Options: any[] = [];
   chainSubPlanSelectKey = 0;
   chainY1SelectKey = 0;
-  chainY2SelectKey = 0;
   chainMasterPlanSelectKey = 0;
 
-  factorMainModalChain: any = null;
   factorMainChainSelectKey = 0;
 
-  factorSupportModalChain: any = null;
-  factorSupportChainSelectKey = 0;
-
   currentChainSaveType: 'MAIN' | 'SUPPORT' = 'MAIN';
-  currentFactorSaveType: 'MAIN' | 'SUPPORT' = 'MAIN';
 
   constructor(
     private router: Router,
@@ -159,7 +136,7 @@ export class MasProjectPlanMasterPlanYComponent {
 
   get_data(): void {
     const model = {
-      FUNC_CODE: 'FUNC-Get_Mas_Master_Plan',
+      FUNC_CODE: 'FUNC-Get_Mas_ProjectPlanMasterPlanY',
       BgYear: this.currentYear
     };
 
@@ -170,32 +147,75 @@ export class MasProjectPlanMasterPlanYComponent {
       );
       this.listMasMasterPlanGoalAll = this.normalizeListIds(
         this.extractList(response?.List_Mas_Master_Plan_Goal),
-        ['Plan_Goals_Id', 'FK_Master_Plan_Id']
-      );
+        ['Plan_Goals_Id', 'FK_Master_Plan_Id', 'FK_Master_Plan']
+      ).map((goal) => {
+        const masterPlanId =
+          goal.FK_Master_Plan_Id ?? goal.FK_Master_Plan ?? goal.Master_Plan_Id ?? null;
+        return {
+          ...goal,
+          FK_Master_Plan_Id: masterPlanId,
+          FK_Master_Plan: masterPlanId
+        };
+      });
       this.listMasMasterPlanTacticAll = this.normalizeListIds(
-        this.extractList(response?.List_Mas_Master_Plan_Goal_Tactic),
+        this.extractList(response?.List_Mas_Master_Plan_Goals_Tactics),
         ['Plan_Tactics_Id', 'FK_Plan_Goals_Id', 'FK_Master_Plan_Id']
       );
       this.listMasSubMasterPlanAll = this.normalizeListIds(
         this.extractList(response?.List_Mas_Sub_Master_Plan),
-        ['Sub_Master_Plan_Id', 'FK_Master_Plan_Id']
-      );
+        ['Sub_Master_Plan_Id', 'FK_Master_Plan_Id', 'FK_Master_Plan']
+      ).map((subPlan) => {
+        const masterPlanId =
+          subPlan.FK_Master_Plan_Id ?? subPlan.FK_Master_Plan ?? subPlan.Master_Plan_Id ?? null;
+        return {
+          ...subPlan,
+          FK_Master_Plan_Id: masterPlanId,
+          FK_Master_Plan: masterPlanId
+        };
+      });
       this.listMasSubMasterPlanGoalAll = this.normalizeListIds(
         this.extractList(response?.List_Mas_Sub_Master_Plan_Goal),
-        ['Sub_Plan_Goals_Id', 'FK_Sub_Master_Plan_Id']
-      );
+        ['Sub_Plan_Goals_Id', 'FK_Sub_Master_Plan', 'FK_Sub_Master_Plan_Id']
+      ).map((goal) => {
+        const subPlanId = goal.FK_Sub_Master_Plan ?? goal.FK_Sub_Master_Plan_Id ?? null;
+        return {
+          ...goal,
+          FK_Sub_Master_Plan: subPlanId,
+          FK_Sub_Master_Plan_Id: subPlanId
+        };
+      });
       this.listMasSubPlanGuidelineAll = this.normalizeListIds(
         this.extractList(response?.List_Mas_Sub_Plan_Guideline),
-        ['Guidelines_Id', 'FK_Sub_Master_Plan_Id']
-      );
+        ['Guidelines_Id', 'FK_Sub_Master_Plan', 'FK_Sub_Master_Plan_Id']
+      ).map((guideline) => {
+        const subPlanId = guideline.FK_Sub_Master_Plan ?? guideline.FK_Sub_Master_Plan_Id ?? null;
+        return {
+          ...guideline,
+          FK_Sub_Master_Plan: subPlanId,
+          FK_Sub_Master_Plan_Id: subPlanId
+        };
+      });
       this.listMasValueChainAll = this.normalizeListIds(
         this.extractList(response?.List_Mas_Value_Chain),
-        ['Value_Chain_Id', 'FK_Sub_Plan_Goals_Id', 'Target_Y1_Id', 'FK_Plan_Goals_Id', 'Target_Y2_Id']
-      );
+        ['Value_Chain_Id', 'Fk_SubPlan_Goals_Id', 'FK_Sub_Plan_Goals_Id', 'Target_Y1_Id', 'FK_Plan_Goals_Id', 'Target_Y2_Id']
+      ).map((chain) => {
+        const y1Id =
+          chain.Fk_SubPlan_Goals_Id ?? chain.FK_Sub_Plan_Goals_Id ?? chain.Target_Y1_Id ?? null;
+        return {
+          ...chain,
+          Fk_SubPlan_Goals_Id: y1Id
+        };
+      });
       this.listMasValueChainFactorAll = this.normalizeListIds(
         this.extractList(response?.List_Mas_Value_Chain_Factor),
-        ['Factor_Id', 'FK_Value_Chain_Id']
-      );
+        ['Factor_Id', 'FK_Value_Chain_Id', 'Fk_Value_Chain_Id']
+      ).map((factor) => {
+        const chainId = factor.FK_Value_Chain_Id ?? factor.Fk_Value_Chain_Id ?? null;
+        return {
+          ...factor,
+          FK_Value_Chain_Id: chainId
+        };
+      });
       this.splitValueChainLists();
 
       this.filterSearch();
@@ -206,29 +226,7 @@ export class MasProjectPlanMasterPlanYComponent {
       this.filterGuidelineSearch();
       this.filterChainMainSearch();
       this.filterFactorMainSearch();
-      this.filterChainSupportSearch();
-      this.filterFactorSupportSearch();
     });
-  }
-
-  private isChainMain(row: any): boolean {
-    if (!row) {
-      return false;
-    }
-    const type = String(row.Value_Chain_Type ?? row.Chain_Type ?? '').toUpperCase();
-    if (type === 'SUPPORT' || type === '2') {
-      return false;
-    }
-    if (type === 'MAIN' || type === '1') {
-      return true;
-    }
-    if (row.Is_Support === 1 || row.Is_Support === true) {
-      return false;
-    }
-    if (row.Is_Main === 1 || row.Is_Main === true) {
-      return true;
-    }
-    return true;
   }
 
   private isChainSupport(row: any): boolean {
@@ -246,16 +244,8 @@ export class MasProjectPlanMasterPlanYComponent {
   }
 
   private splitValueChainLists(): void {
-    this.listMasValueChainMainAll = this.listMasValueChainAll.filter((c) => this.isChainMain(c));
-    this.listMasValueChainSupportAll = this.listMasValueChainAll.filter((c) => this.isChainSupport(c));
-    this.listMasValueChainFactorMainAll = this.listMasValueChainFactorAll.filter((f) => {
-      const chain = this.findValueChainById(f.FK_Value_Chain_Id);
-      return chain && this.isChainMain(chain);
-    });
-    this.listMasValueChainFactorSupportAll = this.listMasValueChainFactorAll.filter((f) => {
-      const chain = this.findValueChainById(f.FK_Value_Chain_Id);
-      return chain && this.isChainSupport(chain);
-    });
+    this.listMasValueChainMainAll = [...this.listMasValueChainAll];
+    this.listMasValueChainFactorMainAll = [...this.listMasValueChainFactorAll];
   }
 
   goTab(tab: number): void {
@@ -368,7 +358,7 @@ export class MasProjectPlanMasterPlanYComponent {
 
   refreshTacticPage(): void {
     const result = this.slicePage(this.listMasMasterPlanTacticFiltered, this.tacticPagination.page);
-    this.List_Mas_Master_Plan_Goal_Tactic = result.slice;
+    this.List_Mas_Master_Plan_Goals_Tactic = result.slice;
     this.tacticPagination = {
       page: result.page,
       startIndex: result.startIndex,
@@ -504,31 +494,6 @@ export class MasProjectPlanMasterPlanYComponent {
     };
   }
 
-  refreshChainSupportPage(): void {
-    const result = this.slicePage(this.listMasValueChainSupportFiltered, this.chainSupportPagination.page);
-    this.List_Mas_Value_Chain_Support = result.slice;
-    this.chainSupportPagination = {
-      page: result.page,
-      startIndex: result.startIndex,
-      endIndex: result.endIndex,
-      total: result.total,
-    };
-  }
-
-  refreshFactorSupportPage(): void {
-    const result = this.slicePage(
-      this.listMasValueChainFactorSupportFiltered,
-      this.factorSupportPagination.page
-    );
-    this.List_Mas_Value_Chain_Factor_Support = result.slice;
-    this.factorSupportPagination = {
-      page: result.page,
-      startIndex: result.startIndex,
-      endIndex: result.endIndex,
-      total: result.total,
-    };
-  }
-
   onChainMainPageChange(page: number): void {
     this.chainMainPagination.page = page;
     this.refreshChainMainPage();
@@ -537,16 +502,6 @@ export class MasProjectPlanMasterPlanYComponent {
   onFactorMainPageChange(page: number): void {
     this.factorMainPagination.page = page;
     this.refreshFactorMainPage();
-  }
-
-  onChainSupportPageChange(page: number): void {
-    this.chainSupportPagination.page = page;
-    this.refreshChainSupportPage();
-  }
-
-  onFactorSupportPageChange(page: number): void {
-    this.factorSupportPagination.page = page;
-    this.refreshFactorSupportPage();
   }
 
   filterChainMainSearch(): void {
@@ -564,26 +519,6 @@ export class MasProjectPlanMasterPlanYComponent {
     );
     this.factorMainPagination.page = 1;
     this.refreshFactorMainPage();
-  }
-
-  filterChainSupportSearch(): void {
-    const keyword = (this.searchChainSupportTerm || '').toLowerCase().trim();
-    this.listMasValueChainSupportFiltered = this.filterListByKeyword(
-      this.listMasValueChainSupportAll,
-      keyword
-    );
-    this.chainSupportPagination.page = 1;
-    this.refreshChainSupportPage();
-  }
-
-  filterFactorSupportSearch(): void {
-    const keyword = (this.searchFactorSupportTerm || '').toLowerCase().trim();
-    this.listMasValueChainFactorSupportFiltered = this.filterListByKeyword(
-      this.listMasValueChainFactorSupportAll,
-      keyword
-    );
-    this.factorSupportPagination.page = 1;
-    this.refreshFactorSupportPage();
   }
 
   findMasterPlanById(id: any): any {
@@ -640,15 +575,24 @@ export class MasProjectPlanMasterPlanYComponent {
     return this.getGoalNameById(this.getTacticFkGoalId(row));
   }
 
+  getGoalMasterPlanId(goal: any): any {
+    if (!goal) {
+      return null;
+    }
+    return this.normalizeSelectId(
+      goal.FK_Master_Plan_Id ?? goal.FK_Master_Plan ?? goal.Master_Plan_Id ?? null
+    );
+  }
+
   filterGoalsByMasterPlanId(masterPlanId: any): any[] {
     const id = this.normalizeSelectId(masterPlanId);
     if (id == null || id === '') {
       return [...this.listMasMasterPlanGoalAll];
     }
-    return this.listMasMasterPlanGoalAll.filter(
-      (g) =>
-        g.FK_Master_Plan_Id == id || String(g.FK_Master_Plan_Id) === String(id)
-    );
+    return this.listMasMasterPlanGoalAll.filter((g) => {
+      const goalPlanId = this.getGoalMasterPlanId(g);
+      return goalPlanId == id || String(goalPlanId) === String(id);
+    });
   }
 
   findSubMasterPlanById(id: any): any {
@@ -673,7 +617,9 @@ export class MasProjectPlanMasterPlanYComponent {
     if (!item) {
       return null;
     }
-    return this.normalizeSelectId(item.FK_Sub_Master_Plan_Id ?? item.Sub_Master_Plan_Id ?? null);
+    return this.normalizeSelectId(
+      item.FK_Sub_Master_Plan ?? item.FK_Sub_Master_Plan_Id ?? null
+    );
   }
 
   getGuidelineFkSubPlanId(item: any): any {
@@ -706,14 +652,9 @@ export class MasProjectPlanMasterPlanYComponent {
     if (!row) {
       return null;
     }
-    return this.normalizeSelectId(row.FK_Sub_Plan_Goals_Id ?? row.Target_Y1_Id ?? null);
-  }
-
-  getValueChainMainY2Id(row: any): any {
-    if (!row) {
-      return null;
-    }
-    return this.normalizeSelectId(row.FK_Plan_Goals_Id ?? row.Target_Y2_Id ?? null);
+    return this.normalizeSelectId(
+      row.Fk_SubPlan_Goals_Id ?? row.FK_Sub_Plan_Goals_Id ?? row.Target_Y1_Id ?? null
+    );
   }
 
   findValueChainById(id: any): any {
@@ -742,12 +683,27 @@ export class MasProjectPlanMasterPlanYComponent {
   }
 
   getMasterPlanNameForValueChainMainRow(row: any): string {
-    const goal = this.findGoalById(this.getValueChainMainY2Id(row));
-    return this.getMasterPlanNameById(goal?.FK_Master_Plan_Id);
+    return this.getMasterPlanNameForValueChainSupportRow(row);
+  }
+
+  getY1NameForValueChainMainRow(row: any): string {
+    return this.getY1NameForValueChainSupportRow(row);
   }
 
   getY2NameForValueChainMainRow(row: any): string {
-    return this.getGoalNameById(this.getValueChainMainY2Id(row));
+    return this.getY1NameForValueChainMainRow(row);
+  }
+
+  getMasterPlanNameForValueChainRow(row: any): string {
+    return this.isChainSupport(row)
+      ? this.getMasterPlanNameForValueChainSupportRow(row)
+      : this.getMasterPlanNameForValueChainMainRow(row);
+  }
+
+  getGoalNameForValueChainRow(row: any): string {
+    return this.isChainSupport(row)
+      ? this.getY1NameForValueChainSupportRow(row)
+      : this.getY1NameForValueChainMainRow(row);
   }
 
   getMasterPlanNameForValueChainSupportRow(row: any): string {
@@ -763,25 +719,32 @@ export class MasProjectPlanMasterPlanYComponent {
     const goal = this.listMasSubMasterPlanGoalAll.find(
       (g) => g.Sub_Plan_Goals_Id == y1Id || String(g.Sub_Plan_Goals_Id) === String(y1Id)
     );
-    return this.getSubMasterPlanNameById(goal?.FK_Sub_Master_Plan_Id);
+    return this.getSubMasterPlanNameById(this.getSubGoalFkSubPlanId(goal));
   }
 
   getY1NameForValueChainSupportRow(row: any): string {
     return this.getSubGoalNameById(this.getValueChainY1Id(row));
   }
 
+  getFactorMainFkValueChainId(item: any): any {
+    if (!item) {
+      return null;
+    }
+    return this.normalizeSelectId(item.FK_Value_Chain_Id ?? item.Fk_Value_Chain_Id ?? null);
+  }
+
   getChainNameForFactorRow(row: any): string {
-    return this.getValueChainNameById(row?.FK_Value_Chain_Id);
+    return this.getValueChainNameById(this.getFactorMainFkValueChainId(row));
   }
 
   getY2NameForFactorMainRow(row: any): string {
-    const chain = this.findValueChainById(row?.FK_Value_Chain_Id);
-    return chain ? this.getY2NameForValueChainMainRow(chain) : '';
+    const chain = this.findValueChainById(this.getFactorMainFkValueChainId(row));
+    return chain ? this.getY1NameForValueChainMainRow(chain) : '';
   }
 
-  getY1NameForFactorSupportRow(row: any): string {
-    const chain = this.findValueChainById(row?.FK_Value_Chain_Id);
-    return chain ? this.getY1NameForValueChainSupportRow(chain) : '';
+  getGoalNameForFactorRow(row: any): string {
+    const chain = this.findValueChainById(this.getFactorMainFkValueChainId(row));
+    return chain ? this.getGoalNameForValueChainRow(chain) : '';
   }
 
   filterSubGoalsBySubPlanId(subPlanId: any): any[] {
@@ -789,10 +752,10 @@ export class MasProjectPlanMasterPlanYComponent {
     if (id == null || id === '') {
       return [...this.listMasSubMasterPlanGoalAll];
     }
-    return this.listMasSubMasterPlanGoalAll.filter(
-      (g) =>
-        g.FK_Sub_Master_Plan_Id == id || String(g.FK_Sub_Master_Plan_Id) === String(id)
-    );
+    return this.listMasSubMasterPlanGoalAll.filter((g) => {
+      const goalSubPlanId = this.getSubGoalFkSubPlanId(g);
+      return goalSubPlanId == id || String(goalSubPlanId) === String(id);
+    });
   }
 
   private warnNoSubGoalsForChain(): void {
@@ -805,62 +768,9 @@ export class MasProjectPlanMasterPlanYComponent {
     });
   }
 
-  private warnNoMasterPlanGoalsForChainMain(): void {
-    Swal.fire({
-      title: 'กรุณาเพิ่มข้อมูล',
-      text: 'กรุณาเพิ่ม : เป้าหมายระดับประเด็น (Y2)',
-      icon: 'warning',
-      confirmButtonColor: 'rgb(3, 142, 220)',
-      confirmButtonText: 'OK',
-    });
-  }
-
-  clearChainY2Models(): void {
-    this.chainModalY2 = null;
-    if (this.Mas_Value_Chain) {
-      this.Mas_Value_Chain.FK_Plan_Goals_Id = null;
-      this.Mas_Value_Chain.Target_Y2_Id = null;
-    }
-  }
-
-  onChainY2Change(goal: any): void {
-    if (!goal) {
-      this.clearChainY2Models();
-      this.cdr.detectChanges();
-      return;
-    }
-
-    const goalId = this.normalizeSelectId(goal.Plan_Goals_Id);
-    const fromList = this.findGoalById(goalId);
-    this.chainModalY2 = fromList ?? goal;
-    this.Mas_Value_Chain.FK_Plan_Goals_Id = goalId;
-    this.Mas_Value_Chain.Target_Y2_Id = goalId;
-    this.cdr.detectChanges();
-  }
-
-  applyValueChainY2ToModel(): void {
-    const goalId = this.normalizeSelectId(
-      this.Mas_Value_Chain.FK_Plan_Goals_Id ?? this.Mas_Value_Chain.Target_Y2_Id
-    );
-    this.Mas_Value_Chain.FK_Plan_Goals_Id = goalId;
-    this.Mas_Value_Chain.Target_Y2_Id = goalId;
-    this.Mas_Value_Chain.FK_Sub_Plan_Goals_Id = null;
-    this.Mas_Value_Chain.Target_Y1_Id = null;
-  }
-
-  setupChainMainModalFromY2(y2Id: any): void {
-    this.chainModalY2 = null;
-    const goal = this.findGoalById(y2Id);
-    if (goal) {
-      this.chainModalY2 = goal;
-    }
-  }
-
   clearChainY1Models(): void {
-    this.chainModalY1 = null;
     if (this.Mas_Value_Chain) {
-      this.Mas_Value_Chain.FK_Sub_Plan_Goals_Id = null;
-      this.Mas_Value_Chain.Target_Y1_Id = null;
+      this.Mas_Value_Chain.Fk_SubPlan_Goals_Id = null;
     }
   }
 
@@ -938,77 +848,39 @@ export class MasProjectPlanMasterPlanYComponent {
     this.cdr.detectChanges();
   }
 
-  onChainY1Change(y1: any): void {
-    if (!y1) {
+  onChainY1IdChange(y1Id: any): void {
+    const normalized = this.normalizeSelectId(y1Id);
+    if (!normalized) {
       this.clearChainY1Models();
       this.cdr.detectChanges();
       return;
     }
 
-    const y1Id = this.normalizeSelectId(y1.Sub_Plan_Goals_Id);
-    const fromList = this.listMasSubMasterPlanGoalAll.find(
-      (g) => g.Sub_Plan_Goals_Id == y1Id || String(g.Sub_Plan_Goals_Id) === String(y1Id)
-    );
-    this.chainModalY1 = fromList ?? y1;
-    this.Mas_Value_Chain.FK_Sub_Plan_Goals_Id = y1Id;
-    this.Mas_Value_Chain.Target_Y1_Id = y1Id;
+    this.Mas_Value_Chain.Fk_SubPlan_Goals_Id = normalized;
     this.cdr.detectChanges();
   }
 
   applyValueChainY1ToModel(): void {
     const y1Id = this.normalizeSelectId(
-      this.Mas_Value_Chain.FK_Sub_Plan_Goals_Id ?? this.Mas_Value_Chain.Target_Y1_Id
+      this.Mas_Value_Chain.Fk_SubPlan_Goals_Id ??
+        this.Mas_Value_Chain.FK_Sub_Plan_Goals_Id ??
+        this.Mas_Value_Chain.Target_Y1_Id
     );
-    this.Mas_Value_Chain.FK_Sub_Plan_Goals_Id = y1Id;
-    this.Mas_Value_Chain.Target_Y1_Id = y1Id;
+    this.Mas_Value_Chain.Fk_SubPlan_Goals_Id = y1Id;
+    delete this.Mas_Value_Chain.FK_Sub_Plan_Goals_Id;
+    delete this.Mas_Value_Chain.Target_Y1_Id;
+    this.Mas_Value_Chain.FK_Plan_Goals_Id = null;
+    this.Mas_Value_Chain.Target_Y2_Id = null;
   }
 
-  setupChainSupportModalFromY1(y1Id: any): void {
-    this.chainModalY1 = null;
-    const goal = this.listMasSubMasterPlanGoalAll.find(
-      (g) =>
-        g.Sub_Plan_Goals_Id == y1Id || String(g.Sub_Plan_Goals_Id) === String(y1Id)
-    );
-    if (goal) {
-      this.chainModalY1 = goal;
-    }
-  }
-
-  private warnNoSupportChainsForFactor(): void {
-    Swal.fire({
-      title: 'กรุณาเพิ่มข้อมูล',
-      text: 'กรุณาเพิ่ม : ส่วนสนับสนุน',
-      icon: 'warning',
-      confirmButtonColor: 'rgb(3, 142, 220)',
-      confirmButtonText: 'OK',
-    });
-  }
-
-  onFactorMainChainChange(chain: any): void {
-    if (!chain) {
-      this.factorMainModalChain = null;
+  onFactorMainChainIdChange(chainId: any): void {
+    const normalized = this.normalizeSelectId(chainId);
+    if (!normalized) {
       this.Mas_Value_Chain_Factor.FK_Value_Chain_Id = null;
       this.cdr.detectChanges();
       return;
     }
-    const chainId = this.normalizeSelectId(chain.Value_Chain_Id);
-    const fromList = this.findValueChainById(chainId);
-    this.factorMainModalChain = fromList ?? chain;
-    this.Mas_Value_Chain_Factor.FK_Value_Chain_Id = chainId;
-    this.cdr.detectChanges();
-  }
-
-  onFactorSupportChainChange(chain: any): void {
-    if (!chain) {
-      this.factorSupportModalChain = null;
-      this.Mas_Value_Chain_Factor.FK_Value_Chain_Id = null;
-      this.cdr.detectChanges();
-      return;
-    }
-    const chainId = this.normalizeSelectId(chain.Value_Chain_Id);
-    const fromList = this.findValueChainById(chainId);
-    this.factorSupportModalChain = fromList ?? chain;
-    this.Mas_Value_Chain_Factor.FK_Value_Chain_Id = chainId;
+    this.Mas_Value_Chain_Factor.FK_Value_Chain_Id = normalized;
     this.cdr.detectChanges();
   }
 
@@ -1017,10 +889,10 @@ export class MasProjectPlanMasterPlanYComponent {
     if (id == null || id === '') {
       return [...this.listMasSubMasterPlanAll];
     }
-    return this.listMasSubMasterPlanAll.filter(
-      (p) =>
-        p.FK_Master_Plan_Id == id || String(p.FK_Master_Plan_Id) === String(id)
-    );
+    return this.listMasSubMasterPlanAll.filter((p) => {
+      const subPlanMasterId = this.getSubPlanMasterPlanId(p);
+      return subPlanMasterId == id || String(subPlanMasterId) === String(id);
+    });
   }
 
   private warnNoSubMasterPlans(): void {
@@ -1033,133 +905,171 @@ export class MasProjectPlanMasterPlanYComponent {
     });
   }
 
+  getSubPlanMasterPlanId(subPlan: any): any {
+    if (!subPlan) {
+      return null;
+    }
+    return this.normalizeSelectId(
+      subPlan.FK_Master_Plan_Id ?? subPlan.FK_Master_Plan ?? subPlan.Master_Plan_Id ?? null
+    );
+  }
+
+  private isSubPlanInOptions(subPlanId: any, options: any[]): boolean {
+    const id = this.normalizeSelectId(subPlanId);
+    if (id == null || id === '') {
+      return false;
+    }
+    return options.some(
+      (p) =>
+        p.Sub_Master_Plan_Id == id || String(p.Sub_Master_Plan_Id) === String(id)
+    );
+  }
+
   clearSubGoalSubPlanModels(): void {
-    this.subGoalModalSubPlan = null;
-    if (this.Mas_Sub_Master_Plan_Goal) {
-      this.Mas_Sub_Master_Plan_Goal.FK_Sub_Master_Plan_Id = null;
+    if (this.Mas_Sub_Master_Plan_Goals) {
+      this.Mas_Sub_Master_Plan_Goals.FK_Sub_Master_Plan = null;
     }
   }
 
-  clearSubGoalMasterPlanModels(): void {
-    this.subGoalModalMasterPlan = null;
-  }
-
   updateSubGoalSubPlanOptions(): void {
-    const masterPlanId = this.subGoalModalMasterPlan?.Master_Plan_Id ?? null;
-    this.subGoalSubPlanOptions = [...this.filterSubPlansByMasterPlanId(masterPlanId)];
+    const masterPlanId = this.subGoalModalMasterPlanId ?? null;
+    let options = [...this.filterSubPlansByMasterPlanId(masterPlanId)];
+    const selectedSubPlanId = this.normalizeSelectId(
+      this.Mas_Sub_Master_Plan_Goals?.FK_Sub_Master_Plan
+    );
+    if (selectedSubPlanId && !this.isSubPlanInOptions(selectedSubPlanId, options)) {
+      const selectedSubPlan = this.findSubMasterPlanById(selectedSubPlanId);
+      if (selectedSubPlan) {
+        options = [selectedSubPlan, ...options];
+      }
+    }
+    this.subGoalSubPlanOptions = options;
   }
 
-  onSubGoalMasterPlanChange(plan: any): void {
-    this.clearSubGoalSubPlanModels();
-    this.subGoalSubPlanSelectKey++;
+  private syncSubGoalMasterPlanFromSubPlan(subPlanId: any): void {
+    const subPlan = this.findSubMasterPlanById(subPlanId);
+    const fkMasterPlanId = this.getSubPlanMasterPlanId(subPlan);
+    if (fkMasterPlanId) {
+      this.subGoalModalMasterPlanId = fkMasterPlanId;
+      this.updateSubGoalSubPlanOptions();
+    }
+  }
 
-    if (!plan) {
-      this.clearSubGoalMasterPlanModels();
+  onSubGoalMasterPlanIdChange(planId: any): void {
+    const normalizedPlanId = this.normalizeSelectId(planId);
+
+    if (normalizedPlanId == null || normalizedPlanId === '') {
+      this.subGoalModalMasterPlanId = null;
+      this.clearSubGoalSubPlanModels();
+      this.subGoalSubPlanSelectKey++;
       this.subGoalSubPlanOptions = [...this.listMasSubMasterPlanAll];
       this.cdr.detectChanges();
       return;
     }
 
-    const planId = this.normalizeSelectId(plan.Master_Plan_Id);
-    const fromList = this.findMasterPlanById(planId);
-    if (!fromList) {
-      this.clearSubGoalMasterPlanModels();
-      this.subGoalSubPlanOptions = [];
-      this.cdr.detectChanges();
-      return;
-    }
-
-    this.subGoalModalMasterPlan = fromList;
+    this.subGoalModalMasterPlanId = normalizedPlanId;
+    this.clearSubGoalSubPlanModels();
     this.updateSubGoalSubPlanOptions();
+    this.subGoalSubPlanSelectKey++;
+
     if (this.subGoalSubPlanOptions.length === 0) {
       this.warnNoSubMasterPlans();
     }
     this.cdr.detectChanges();
   }
 
-  onSubGoalSubPlanChange(subPlan: any): void {
-    if (!subPlan) {
+  onSubGoalSubPlanIdChange(subPlanId: any): void {
+    const normalizedSubPlanId = this.normalizeSelectId(subPlanId);
+
+    if (normalizedSubPlanId == null || normalizedSubPlanId === '') {
       this.clearSubGoalSubPlanModels();
       this.cdr.detectChanges();
       return;
     }
 
-    const subPlanId = this.normalizeSelectId(subPlan.Sub_Master_Plan_Id);
-    const fromList = this.findSubMasterPlanById(subPlanId);
-    this.subGoalModalSubPlan = fromList ?? subPlan;
-    this.Mas_Sub_Master_Plan_Goal.FK_Sub_Master_Plan_Id = subPlanId;
-
-    const fkMasterPlanId = this.normalizeSelectId(
-      fromList?.FK_Master_Plan_Id ?? subPlan.FK_Master_Plan_Id
-    );
-    if (fkMasterPlanId) {
-      const planFromList = this.findMasterPlanById(fkMasterPlanId);
-      if (planFromList) {
-        this.subGoalModalMasterPlan = planFromList;
-      }
-    }
+    this.Mas_Sub_Master_Plan_Goals.FK_Sub_Master_Plan = normalizedSubPlanId;
+    this.syncSubGoalMasterPlanFromSubPlan(normalizedSubPlanId);
     this.cdr.detectChanges();
   }
 
   clearGuidelineSubPlanModels(): void {
-    this.guidelineModalSubPlan = null;
-    if (this.Mas_Sub_Plan_Guideline) {
-      this.Mas_Sub_Plan_Guideline.FK_Sub_Master_Plan_Id = null;
+    if (this.Mas_Sub_Plan_Guidelines) {
+      this.Mas_Sub_Plan_Guidelines.FK_Sub_Master_Plan = null;
     }
   }
 
-  onGuidelineSubPlanChange(subPlan: any): void {
-    if (!subPlan) {
+  onGuidelineSubPlanIdChange(subPlanId: any): void {
+    const normalizedSubPlanId = this.normalizeSelectId(subPlanId);
+
+    if (normalizedSubPlanId == null || normalizedSubPlanId === '') {
       this.clearGuidelineSubPlanModels();
       this.cdr.detectChanges();
       return;
     }
 
-    const subPlanId = this.normalizeSelectId(subPlan.Sub_Master_Plan_Id);
-    const fromList = this.findSubMasterPlanById(subPlanId);
-    this.guidelineModalSubPlan = fromList ?? subPlan;
-    this.Mas_Sub_Plan_Guideline.FK_Sub_Master_Plan_Id = subPlanId;
+    this.Mas_Sub_Plan_Guidelines.FK_Sub_Master_Plan = normalizedSubPlanId;
     this.cdr.detectChanges();
   }
 
   clearTacticGoalModels(): void {
-    this.tacticModalGoal = null;
-    if (this.Mas_Master_Plan_Goal_Tactic) {
-      this.Mas_Master_Plan_Goal_Tactic.FK_Plan_Goals_Id = null;
+    if (this.Mas_Master_Plan_Goals_Tactic) {
+      this.Mas_Master_Plan_Goals_Tactic.FK_Plan_Goals_Id = null;
     }
   }
 
   clearTacticMasterPlanModels(): void {
-    this.tacticModalMasterPlan = null;
+    this.tacticModalMasterPlanId = null;
+  }
+
+  private isGoalInOptions(goalId: any, options: any[]): boolean {
+    const id = this.normalizeSelectId(goalId);
+    if (id == null || id === '') {
+      return false;
+    }
+    return options.some(
+      (g) => g.Plan_Goals_Id == id || String(g.Plan_Goals_Id) === String(id)
+    );
   }
 
   updateTacticGoalOptions(): void {
-    const masterPlanId = this.tacticModalMasterPlan?.Master_Plan_Id ?? null;
-    this.tacticGoalOptions = [...this.filterGoalsByMasterPlanId(masterPlanId)];
+    const masterPlanId = this.tacticModalMasterPlanId ?? null;
+    let options = [...this.filterGoalsByMasterPlanId(masterPlanId)];
+    const selectedGoalId = this.normalizeSelectId(this.Mas_Master_Plan_Goals_Tactic?.FK_Plan_Goals_Id);
+    if (selectedGoalId && !this.isGoalInOptions(selectedGoalId, options)) {
+      const selectedGoal = this.findGoalById(selectedGoalId);
+      if (selectedGoal) {
+        options = [selectedGoal, ...options];
+      }
+    }
+    this.tacticGoalOptions = options;
   }
 
-  onTacticMasterPlanChange(plan: any): void {
-    this.clearTacticGoalModels();
-    this.tacticGoalSelectKey++;
+  private syncTacticMasterPlanFromGoal(goalId: any): void {
+    const goal = this.findGoalById(goalId);
+    const fkMasterPlanId = this.getGoalMasterPlanId(goal);
+    if (fkMasterPlanId) {
+      this.tacticModalMasterPlanId = fkMasterPlanId;
+      this.updateTacticGoalOptions();
+    }
+  }
 
-    if (!plan) {
-      this.clearTacticMasterPlanModels();
+  onTacticMasterPlanIdChange(planId: any): void {
+    const normalizedPlanId = this.normalizeSelectId(planId);
+
+    if (normalizedPlanId == null || normalizedPlanId === '') {
+      this.tacticModalMasterPlanId = null;
+      this.clearTacticGoalModels();
+      this.tacticGoalSelectKey++;
       this.tacticGoalOptions = [...this.listMasMasterPlanGoalAll];
       this.cdr.detectChanges();
       return;
     }
 
-    const planId = this.normalizeSelectId(plan.Master_Plan_Id);
-    const fromList = this.findMasterPlanById(planId);
-    if (!fromList) {
-      this.clearTacticMasterPlanModels();
-      this.tacticGoalOptions = [];
-      this.cdr.detectChanges();
-      return;
-    }
-
-    this.tacticModalMasterPlan = fromList;
+    this.tacticModalMasterPlanId = normalizedPlanId;
+    this.clearTacticGoalModels();
     this.updateTacticGoalOptions();
+    this.tacticGoalSelectKey++;
+
     if (this.tacticGoalOptions.length === 0) {
       Swal.fire({
         title: 'กรุณาเพิ่มข้อมูล',
@@ -1172,25 +1082,17 @@ export class MasProjectPlanMasterPlanYComponent {
     this.cdr.detectChanges();
   }
 
-  onTacticGoalChange(goal: any): void {
-    if (!goal) {
+  onTacticGoalIdChange(goalId: any): void {
+    const normalizedGoalId = this.normalizeSelectId(goalId);
+
+    if (normalizedGoalId == null || normalizedGoalId === '') {
       this.clearTacticGoalModels();
       this.cdr.detectChanges();
       return;
     }
 
-    const goalId = this.normalizeSelectId(goal.Plan_Goals_Id);
-    const fromList = this.findGoalById(goalId);
-    this.tacticModalGoal = fromList ?? goal;
-    this.Mas_Master_Plan_Goal_Tactic.FK_Plan_Goals_Id = goalId;
-
-    const fkMasterPlanId = this.normalizeSelectId(fromList?.FK_Master_Plan_Id ?? goal.FK_Master_Plan_Id);
-    if (fkMasterPlanId) {
-      const planFromList = this.findMasterPlanById(fkMasterPlanId);
-      if (planFromList) {
-        this.tacticModalMasterPlan = planFromList;
-      }
-    }
+    this.Mas_Master_Plan_Goals_Tactic.FK_Plan_Goals_Id = normalizedGoalId;
+    this.syncTacticMasterPlanFromGoal(normalizedGoalId);
     this.cdr.detectChanges();
   }
 
@@ -1235,11 +1137,10 @@ export class MasProjectPlanMasterPlanYComponent {
 
   openAddTacticModal(modal: any): void {
     this.isEditModeTactic = false;
-    this.tacticModalMasterPlan = null;
-    this.tacticModalGoal = null;
+    this.tacticModalMasterPlanId = null;
     this.tacticGoalSelectKey = 0;
     this.tacticMasterPlanSelectKey = 0;
-    this.Mas_Master_Plan_Goal_Tactic = {
+    this.Mas_Master_Plan_Goals_Tactic = {
       Plan_Tactics_Id: 0,
       FK_Plan_Goals_Id: null,
       BgYear_Start: '',
@@ -1255,19 +1156,14 @@ export class MasProjectPlanMasterPlanYComponent {
   openEditTacticModal(modal: any, item: any): void {
     this.isEditModeTactic = true;
     const goalId = this.getTacticFkGoalId(item);
-    this.Mas_Master_Plan_Goal_Tactic = { ...item, FK_Plan_Goals_Id: goalId };
-    this.tacticModalMasterPlan = null;
-    this.tacticModalGoal = null;
+    this.Mas_Master_Plan_Goals_Tactic = { ...item, FK_Plan_Goals_Id: goalId };
+    this.tacticModalMasterPlanId = null;
     this.tacticGoalSelectKey = 0;
     this.tacticMasterPlanSelectKey = 0;
 
     const goal = this.findGoalById(goalId);
     if (goal) {
-      this.tacticModalGoal = goal;
-      const plan = this.findMasterPlanById(goal.FK_Master_Plan_Id);
-      if (plan) {
-        this.tacticModalMasterPlan = plan;
-      }
+      this.tacticModalMasterPlanId = this.getGoalMasterPlanId(goal);
     }
     this.updateTacticGoalOptions();
     this.cdr.detectChanges();
@@ -1296,13 +1192,12 @@ export class MasProjectPlanMasterPlanYComponent {
 
   openAddSubGoalModal(modal: any): void {
     this.isEditModeSubGoal = false;
-    this.subGoalModalMasterPlan = null;
-    this.subGoalModalSubPlan = null;
+    this.subGoalModalMasterPlanId = null;
     this.subGoalSubPlanSelectKey = 0;
     this.subGoalMasterPlanSelectKey = 0;
-    this.Mas_Sub_Master_Plan_Goal = {
+    this.Mas_Sub_Master_Plan_Goals = {
       Sub_Plan_Goals_Id: 0,
-      FK_Sub_Master_Plan_Id: null,
+      FK_Sub_Master_Plan: null,
       BgYear_Start: '',
       BgYear_End: '',
       Sub_Plan_Goals_Name: '',
@@ -1316,19 +1211,14 @@ export class MasProjectPlanMasterPlanYComponent {
   openEditSubGoalModal(modal: any, item: any): void {
     this.isEditModeSubGoal = true;
     const subPlanId = this.getSubGoalFkSubPlanId(item);
-    this.Mas_Sub_Master_Plan_Goal = { ...item, FK_Sub_Master_Plan_Id: subPlanId };
-    this.subGoalModalMasterPlan = null;
-    this.subGoalModalSubPlan = null;
+    this.Mas_Sub_Master_Plan_Goals = { ...item, FK_Sub_Master_Plan: subPlanId };
+    this.subGoalModalMasterPlanId = null;
     this.subGoalSubPlanSelectKey = 0;
     this.subGoalMasterPlanSelectKey = 0;
 
     const subPlan = this.findSubMasterPlanById(subPlanId);
     if (subPlan) {
-      this.subGoalModalSubPlan = subPlan;
-      const plan = this.findMasterPlanById(subPlan.FK_Master_Plan_Id);
-      if (plan) {
-        this.subGoalModalMasterPlan = plan;
-      }
+      this.subGoalModalMasterPlanId = this.getSubPlanMasterPlanId(subPlan);
     }
     this.updateSubGoalSubPlanOptions();
     this.cdr.detectChanges();
@@ -1337,11 +1227,10 @@ export class MasProjectPlanMasterPlanYComponent {
 
   openAddGuidelineModal(modal: any): void {
     this.isEditModeGuideline = false;
-    this.guidelineModalSubPlan = null;
     this.guidelineSubPlanSelectKey = 0;
-    this.Mas_Sub_Plan_Guideline = {
+    this.Mas_Sub_Plan_Guidelines = {
       Guidelines_Id: 0,
-      FK_Sub_Master_Plan_Id: null,
+      FK_Sub_Master_Plan: null,
       BgYear_Start: '',
       BgYear_End: '',
       Guidelines_Name: '',
@@ -1357,14 +1246,8 @@ export class MasProjectPlanMasterPlanYComponent {
   openEditGuidelineModal(modal: any, item: any): void {
     this.isEditModeGuideline = true;
     const subPlanId = this.getGuidelineFkSubPlanId(item);
-    this.Mas_Sub_Plan_Guideline = { ...item, FK_Sub_Master_Plan_Id: subPlanId };
-    this.guidelineModalSubPlan = null;
+    this.Mas_Sub_Plan_Guidelines = { ...item, FK_Sub_Master_Plan: subPlanId };
     this.guidelineSubPlanSelectKey = 0;
-
-    const subPlan = this.findSubMasterPlanById(subPlanId);
-    if (subPlan) {
-      this.guidelineModalSubPlan = subPlan;
-    }
     this.cdr.detectChanges();
     this.modalRef = this.modalService.open(modal, { size: 'xl', backdrop: 'static' });
   }
@@ -1372,14 +1255,12 @@ export class MasProjectPlanMasterPlanYComponent {
   openAddChainMainModal(modal: any): void {
     this.isEditModeChainMain = false;
     this.currentChainSaveType = 'MAIN';
-    this.chainModalY2 = null;
-    this.chainY2SelectKey = 0;
+    this.chainY1SelectKey = 0;
     this.Mas_Value_Chain = {
       Value_Chain_Id: 0,
       FK_Plan_Goals_Id: null,
       Target_Y2_Id: null,
-      FK_Sub_Plan_Goals_Id: null,
-      Target_Y1_Id: null,
+      Fk_SubPlan_Goals_Id: null,
       Value_Chain_Type: 'MAIN',
       BgYear_Start: '',
       BgYear_End: '',
@@ -1387,76 +1268,32 @@ export class MasProjectPlanMasterPlanYComponent {
       Value_Chain_Short_Name: '',
       Order_Seq: this.getNextOrderSeq(this.listMasValueChainMainAll)
     };
-    if (this.listMasMasterPlanGoalAll.length === 0) {
-      this.warnNoMasterPlanGoalsForChainMain();
-    }
-    this.modalRef = this.modalService.open(modal, { size: 'xl', backdrop: 'static' });
-  }
-
-  openEditChainMainModal(modal: any, item: any): void {
-    this.isEditModeChainMain = true;
-    this.currentChainSaveType = 'MAIN';
-    const y2Id = this.getValueChainMainY2Id(item);
-    this.Mas_Value_Chain = {
-      ...item,
-      Value_Chain_Type: 'MAIN',
-      FK_Plan_Goals_Id: y2Id,
-      Target_Y2_Id: y2Id,
-      FK_Sub_Plan_Goals_Id: null,
-      Target_Y1_Id: null
-    };
-    this.chainY2SelectKey = 0;
-    this.setupChainMainModalFromY2(y2Id);
-    this.cdr.detectChanges();
-    this.modalRef = this.modalService.open(modal, { size: 'xl', backdrop: 'static' });
-  }
-
-  openAddChainSupportModal(modal: any): void {
-    this.isEditModeChainSupport = false;
-    this.currentChainSaveType = 'SUPPORT';
-    this.chainModalY1 = null;
-    this.chainY1SelectKey = 0;
-    this.Mas_Value_Chain = {
-      Value_Chain_Id: 0,
-      FK_Sub_Plan_Goals_Id: null,
-      Target_Y1_Id: null,
-      FK_Plan_Goals_Id: null,
-      Target_Y2_Id: null,
-      Value_Chain_Type: 'SUPPORT',
-      BgYear_Start: '',
-      BgYear_End: '',
-      Value_Chain_Name: '',
-      Value_Chain_Short_Name: '',
-      Order_Seq: this.getNextOrderSeq(this.listMasValueChainSupportAll)
-    };
     if (this.listMasSubMasterPlanGoalAll.length === 0) {
       this.warnNoSubGoalsForChain();
     }
     this.modalRef = this.modalService.open(modal, { size: 'xl', backdrop: 'static' });
   }
 
-  openEditChainSupportModal(modal: any, item: any): void {
-    this.isEditModeChainSupport = true;
-    this.currentChainSaveType = 'SUPPORT';
+  openEditChainMainModal(modal: any, item: any): void {
+    this.isEditModeChainMain = true;
+    const isSupport = this.isChainSupport(item);
+    this.currentChainSaveType = isSupport ? 'SUPPORT' : 'MAIN';
+
     const y1Id = this.getValueChainY1Id(item);
     this.Mas_Value_Chain = {
       ...item,
-      Value_Chain_Type: 'SUPPORT',
-      FK_Sub_Plan_Goals_Id: y1Id,
-      Target_Y1_Id: y1Id,
+      Value_Chain_Type: isSupport ? 'SUPPORT' : 'MAIN',
+      Fk_SubPlan_Goals_Id: y1Id,
       FK_Plan_Goals_Id: null,
       Target_Y2_Id: null
     };
     this.chainY1SelectKey = 0;
-    this.setupChainSupportModalFromY1(y1Id);
     this.cdr.detectChanges();
     this.modalRef = this.modalService.open(modal, { size: 'xl', backdrop: 'static' });
   }
 
   openAddFactorMainModal(modal: any): void {
     this.isEditModeFactorMain = false;
-    this.currentFactorSaveType = 'MAIN';
-    this.factorMainModalChain = null;
     this.factorMainChainSelectKey = 0;
     this.Mas_Value_Chain_Factor = {
       Factor_Id: 0,
@@ -1472,42 +1309,9 @@ export class MasProjectPlanMasterPlanYComponent {
 
   openEditFactorMainModal(modal: any, item: any): void {
     this.isEditModeFactorMain = true;
-    this.currentFactorSaveType = 'MAIN';
-    const chainId = this.normalizeSelectId(item.FK_Value_Chain_Id);
+    const chainId = this.getFactorMainFkValueChainId(item);
     this.Mas_Value_Chain_Factor = { ...item, FK_Value_Chain_Id: chainId };
-    this.factorMainModalChain = this.findValueChainById(chainId);
-    this.factorMainChainSelectKey = 0;
-    this.cdr.detectChanges();
-    this.modalRef = this.modalService.open(modal, { size: 'xl', backdrop: 'static' });
-  }
-
-  openAddFactorSupportModal(modal: any): void {
-    this.isEditModeFactorSupport = false;
-    this.currentFactorSaveType = 'SUPPORT';
-    this.factorSupportModalChain = null;
-    this.factorSupportChainSelectKey = 0;
-    this.Mas_Value_Chain_Factor = {
-      Factor_Id: 0,
-      FK_Value_Chain_Id: null,
-      BgYear_Start: '',
-      BgYear_End: '',
-      Factor_Name: '',
-      Factor_Short_Name: '',
-      Order_Seq: this.getNextOrderSeq(this.listMasValueChainFactorSupportAll)
-    };
-    if (this.listMasValueChainSupportAll.length === 0) {
-      this.warnNoSupportChainsForFactor();
-    }
-    this.modalRef = this.modalService.open(modal, { size: 'xl', backdrop: 'static' });
-  }
-
-  openEditFactorSupportModal(modal: any, item: any): void {
-    this.isEditModeFactorSupport = true;
-    this.currentFactorSaveType = 'SUPPORT';
-    const chainId = this.normalizeSelectId(item.FK_Value_Chain_Id);
-    this.Mas_Value_Chain_Factor = { ...item, FK_Value_Chain_Id: chainId };
-    this.factorSupportModalChain = this.findValueChainById(chainId);
-    this.factorSupportChainSelectKey = 0;
+    this.factorMainChainSelectKey++;
     this.cdr.detectChanges();
     this.modalRef = this.modalService.open(modal, { size: 'xl', backdrop: 'static' });
   }
@@ -1547,11 +1351,11 @@ export class MasProjectPlanMasterPlanYComponent {
     });
   }
 
-  Delete_Mas_Master_Plan_Goal_Tactic(item: any): void {
+  Delete_Mas_Master_Plan_Goals_Tactic(item: any): void {
     this.confirmDelete(item?.Plan_Tactics_Name, () => {
       this.serviceebud.GatewayGetData({
-        FUNC_CODE: 'Func-Delete_Mas_Master_Plan_Goal_Tactic',
-        Mas_Master_Plan_Goal_Tactic: item
+        FUNC_CODE: 'Func-Delete_Mas_Master_Plan_Goals_Tactic',
+        Mas_Master_Plan_Goals_Tactic: item
       }).subscribe((response: any) =>
         this.handleDeleteResponse(response, 'ลบรายการตัวชี้วัดเป้าหมายระดับประเด็นเรียบร้อยแล้ว!')
       );
@@ -1569,22 +1373,22 @@ export class MasProjectPlanMasterPlanYComponent {
     });
   }
 
-  Delete_Mas_Sub_Master_Plan_Goal(item: any): void {
+  Delete_Mas_Sub_Master_Plan_Goals(item: any): void {
     this.confirmDelete(item?.Sub_Plan_Goals_Name, () => {
       this.serviceebud.GatewayGetData({
-        FUNC_CODE: 'Func-Delete_Mas_Sub_Master_Plan_Goal',
-        Mas_Sub_Master_Plan_Goal: item
+        FUNC_CODE: 'Func-Delete_Mas_Sub_Master_Plan_Goals',
+        Mas_Sub_Master_Plan_Goals: item
       }).subscribe((response: any) =>
         this.handleDeleteResponse(response, 'ลบรายการเป้าหมายแผนแม่บทย่อย (Y1) เรียบร้อยแล้ว!')
       );
     });
   }
 
-  Delete_Mas_Sub_Plan_Guideline(item: any): void {
+  Delete_Mas_Sub_Plan_Guidelines(item: any): void {
     this.confirmDelete(item?.Guidelines_Name, () => {
       this.serviceebud.GatewayGetData({
-        FUNC_CODE: 'Func-Delete_Mas_Sub_Plan_Guideline',
-        Mas_Sub_Plan_Guideline: item
+        FUNC_CODE: 'Func-Delete_Mas_Sub_Plan_Guidelines',
+        Mas_Sub_Plan_Guidelines: item
       }).subscribe((response: any) =>
         this.handleDeleteResponse(response, 'ลบรายการแนวทางการพัฒนาภายใต้แผนย่อยเรียบร้อยแล้ว!')
       );
@@ -1602,17 +1406,6 @@ export class MasProjectPlanMasterPlanYComponent {
     });
   }
 
-  Delete_Mas_Value_Chain_Support(item: any): void {
-    this.confirmDelete(item?.Value_Chain_Name, () => {
-      this.serviceebud.GatewayGetData({
-        FUNC_CODE: 'Func-Delete_Mas_Value_Chain',
-        Mas_Value_Chain: item
-      }).subscribe((response: any) =>
-        this.handleDeleteResponse(response, 'ลบรายการส่วนสนับสนุนเรียบร้อยแล้ว!')
-      );
-    });
-  }
-
   Delete_Mas_Value_Chain_Factor_Main(item: any): void {
     this.confirmDelete(item?.Factor_Name, () => {
       this.serviceebud.GatewayGetData({
@@ -1620,17 +1413,6 @@ export class MasProjectPlanMasterPlanYComponent {
         Mas_Value_Chain_Factor: item
       }).subscribe((response: any) =>
         this.handleDeleteResponse(response, 'ลบรายการปัจจัยหลักเรียบร้อยแล้ว!')
-      );
-    });
-  }
-
-  Delete_Mas_Value_Chain_Factor_Support(item: any): void {
-    this.confirmDelete(item?.Factor_Name, () => {
-      this.serviceebud.GatewayGetData({
-        FUNC_CODE: 'Func-Delete_Mas_Value_Chain_Factor',
-        Mas_Value_Chain_Factor: item
-      }).subscribe((response: any) =>
-        this.handleDeleteResponse(response, 'ลบรายการปัจจัยสนับสนุนเรียบร้อยแล้ว!')
       );
     });
   }
@@ -1690,8 +1472,8 @@ export class MasProjectPlanMasterPlanYComponent {
   BtnSaveGoal(): void {
     if (
       !this.isEditModeGoal &&
-      (this.Mas_Master_Plan_Goal.FK_Master_Plan_Id == null ||
-        this.Mas_Master_Plan_Goal.FK_Master_Plan_Id === '')
+      (this.Mas_Master_Plan_Goal.FK_Master_Plan == null ||
+        this.Mas_Master_Plan_Goal.FK_Master_Plan === '')
     ) {
       Swal.fire({
         title: 'กรุณาเลือกข้อมูล',
@@ -1712,7 +1494,7 @@ export class MasProjectPlanMasterPlanYComponent {
   }
 
   BtnSaveTactic(): void {
-    const goalId = this.normalizeSelectId(this.Mas_Master_Plan_Goal_Tactic.FK_Plan_Goals_Id);
+    const goalId = this.normalizeSelectId(this.Mas_Master_Plan_Goals_Tactic.FK_Plan_Goals_Id);
     if (!goalId) {
       Swal.fire({
         title: 'กรุณาเลือกข้อมูล',
@@ -1723,12 +1505,12 @@ export class MasProjectPlanMasterPlanYComponent {
       });
       return;
     }
-    this.Mas_Master_Plan_Goal_Tactic.FK_Plan_Goals_Id = goalId;
+    this.Mas_Master_Plan_Goals_Tactic.FK_Plan_Goals_Id = goalId;
 
     this.serviceebud.GatewayGetData({
-      FUNC_CODE: 'Func-Save_Mas_Master_Plan_Goal_Tactic',
-      Mas_Master_Plan_Goal_Tactic: this.Mas_Master_Plan_Goal_Tactic
-    }    ).subscribe((response: any) =>
+      FUNC_CODE: 'Func-Save_Mas_Master_Plan_Goals_Tactic',
+      Mas_Master_Plan_Goals_Tactic: this.Mas_Master_Plan_Goals_Tactic
+    }).subscribe((response: any) =>
       this.handleSaveResponse(response, 'บันทึกรายการตัวชี้วัดเป้าหมายระดับประเด็นเรียบร้อยแล้ว!')
     );
   }
@@ -1736,8 +1518,8 @@ export class MasProjectPlanMasterPlanYComponent {
   BtnSaveSubPlan(): void {
     if (
       !this.isEditModeSubPlan &&
-      (this.Mas_Sub_Master_Plan.FK_Master_Plan_Id == null ||
-        this.Mas_Sub_Master_Plan.FK_Master_Plan_Id === '')
+      (this.Mas_Sub_Master_Plan.FK_Master_Plan == null ||
+        this.Mas_Sub_Master_Plan.FK_Master_Plan === '')
     ) {
       Swal.fire({
         title: 'กรุณาเลือกข้อมูล',
@@ -1758,7 +1540,7 @@ export class MasProjectPlanMasterPlanYComponent {
   }
 
   BtnSaveSubGoal(): void {
-    const subPlanId = this.normalizeSelectId(this.Mas_Sub_Master_Plan_Goal.FK_Sub_Master_Plan_Id);
+    const subPlanId = this.normalizeSelectId(this.Mas_Sub_Master_Plan_Goals.FK_Sub_Master_Plan);
     if (!subPlanId) {
       Swal.fire({
         title: 'กรุณาเลือกข้อมูล',
@@ -1769,18 +1551,18 @@ export class MasProjectPlanMasterPlanYComponent {
       });
       return;
     }
-    this.Mas_Sub_Master_Plan_Goal.FK_Sub_Master_Plan_Id = subPlanId;
+    this.Mas_Sub_Master_Plan_Goals.FK_Sub_Master_Plan = subPlanId;
 
     this.serviceebud.GatewayGetData({
-      FUNC_CODE: 'Func-Save_Mas_Sub_Master_Plan_Goal',
-      Mas_Sub_Master_Plan_Goal: this.Mas_Sub_Master_Plan_Goal
+      FUNC_CODE: 'Func-Save_Mas_Sub_Master_Plan_Goals',
+      Mas_Sub_Master_Plan_Goals: this.Mas_Sub_Master_Plan_Goals
     }).subscribe((response: any) =>
       this.handleSaveResponse(response, 'บันทึกรายการเป้าหมายแผนแม่บทย่อย (Y1) เรียบร้อยแล้ว!')
     );
   }
 
   BtnSaveGuideline(): void {
-    const subPlanId = this.normalizeSelectId(this.Mas_Sub_Plan_Guideline.FK_Sub_Master_Plan_Id);
+    const subPlanId = this.normalizeSelectId(this.Mas_Sub_Plan_Guidelines.FK_Sub_Master_Plan);
     if (!subPlanId) {
       Swal.fire({
         title: 'กรุณาเลือกข้อมูล',
@@ -1791,50 +1573,33 @@ export class MasProjectPlanMasterPlanYComponent {
       });
       return;
     }
-    this.Mas_Sub_Plan_Guideline.FK_Sub_Master_Plan_Id = subPlanId;
+    this.Mas_Sub_Plan_Guidelines.FK_Sub_Master_Plan = subPlanId;
 
     this.serviceebud.GatewayGetData({
-      FUNC_CODE: 'Func-Save_Mas_Sub_Plan_Guideline',
-      Mas_Sub_Plan_Guideline: this.Mas_Sub_Plan_Guideline
-    }    ).subscribe((response: any) =>
+      FUNC_CODE: 'Func-Save_Mas_Sub_Plan_Guidelines',
+      Mas_Sub_Plan_Guidelines: this.Mas_Sub_Plan_Guidelines
+    }).subscribe((response: any) =>
       this.handleSaveResponse(response, 'บันทึกรายการแนวทางการพัฒนาภายใต้แผนย่อยเรียบร้อยแล้ว!')
     );
   }
 
   BtnSaveValueChain(): void {
-    if (this.currentChainSaveType === 'MAIN') {
-      const y2Id = this.normalizeSelectId(
-        this.Mas_Value_Chain.FK_Plan_Goals_Id ?? this.Mas_Value_Chain.Target_Y2_Id
-      );
-      if (!y2Id) {
-        Swal.fire({
-          title: 'กรุณาเลือกข้อมูล',
-          text: 'กรุณาเลือกเป้าหมายระดับประเด็น (Y2)',
-          icon: 'warning',
-          confirmButtonColor: 'rgb(3, 142, 220)',
-          confirmButtonText: 'OK',
-        });
-        return;
-      }
-      this.applyValueChainY2ToModel();
-    } else {
-      const y1Id = this.normalizeSelectId(
-        this.Mas_Value_Chain.FK_Sub_Plan_Goals_Id ?? this.Mas_Value_Chain.Target_Y1_Id
-      );
-      if (!y1Id) {
-        Swal.fire({
-          title: 'กรุณาเลือกข้อมูล',
-          text: 'กรุณาเลือกเป้าหมายแผนแม่บทย่อย (Y1)',
-          icon: 'warning',
-          confirmButtonColor: 'rgb(3, 142, 220)',
-          confirmButtonText: 'OK',
-        });
-        return;
-      }
-      this.applyValueChainY1ToModel();
-      this.Mas_Value_Chain.FK_Plan_Goals_Id = null;
-      this.Mas_Value_Chain.Target_Y2_Id = null;
+    const y1Id = this.normalizeSelectId(
+      this.Mas_Value_Chain.Fk_SubPlan_Goals_Id ??
+        this.Mas_Value_Chain.FK_Sub_Plan_Goals_Id ??
+        this.Mas_Value_Chain.Target_Y1_Id
+    );
+    if (!y1Id) {
+      Swal.fire({
+        title: 'กรุณาเลือกข้อมูล',
+        text: 'กรุณาเลือกเป้าหมายแผนแม่บทย่อย (Y1)',
+        icon: 'warning',
+        confirmButtonColor: 'rgb(3, 142, 220)',
+        confirmButtonText: 'OK',
+      });
+      return;
     }
+    this.applyValueChainY1ToModel();
 
     this.Mas_Value_Chain.Value_Chain_Type =
       this.currentChainSaveType === 'SUPPORT' ? 'SUPPORT' : 'MAIN';
@@ -1842,25 +1607,17 @@ export class MasProjectPlanMasterPlanYComponent {
     this.serviceebud.GatewayGetData({
       FUNC_CODE: 'Func-Save_Mas_Value_Chain',
       Mas_Value_Chain: this.Mas_Value_Chain
-    }).subscribe((response: any) => {
-      const msg =
-        this.currentChainSaveType === 'SUPPORT'
-          ? 'บันทึกรายการส่วนสนับสนุนเรียบร้อยแล้ว!'
-          : 'บันทึกรายการหลักเรียบร้อยแล้ว!';
-      this.handleSaveResponse(response, msg);
-    });
+    }).subscribe((response: any) =>
+      this.handleSaveResponse(response, 'บันทึกรายการหลักเรียบร้อยแล้ว!')
+    );
   }
 
   BtnSaveValueChainFactor(): void {
-    const chainId = this.normalizeSelectId(this.Mas_Value_Chain_Factor.FK_Value_Chain_Id);
+    const chainId = this.getFactorMainFkValueChainId(this.Mas_Value_Chain_Factor);
     if (!chainId) {
-      const msg =
-        this.currentFactorSaveType === 'SUPPORT'
-          ? 'กรุณาเลือกส่วนสนับสนุน'
-          : 'กรุณาเลือกหลัก';
       Swal.fire({
         title: 'กรุณาเลือกข้อมูล',
-        text: msg,
+        text: 'กรุณาเลือกหลัก',
         icon: 'warning',
         confirmButtonColor: 'rgb(3, 142, 220)',
         confirmButtonText: 'OK',
@@ -1868,16 +1625,13 @@ export class MasProjectPlanMasterPlanYComponent {
       return;
     }
     this.Mas_Value_Chain_Factor.FK_Value_Chain_Id = chainId;
+    delete this.Mas_Value_Chain_Factor.Fk_Value_Chain_Id;
 
     this.serviceebud.GatewayGetData({
       FUNC_CODE: 'Func-Save_Mas_Value_Chain_Factor',
       Mas_Value_Chain_Factor: this.Mas_Value_Chain_Factor
-    }).subscribe((response: any) => {
-      const msg =
-        this.currentFactorSaveType === 'SUPPORT'
-          ? 'บันทึกรายการปัจจัยสนับสนุนเรียบร้อยแล้ว!'
-          : 'บันทึกรายการปัจจัยหลักเรียบร้อยแล้ว!';
-      this.handleSaveResponse(response, msg);
-    });
+    }).subscribe((response: any) =>
+      this.handleSaveResponse(response, 'บันทึกรายการปัจจัยหลักเรียบร้อยแล้ว!')
+    );
   }
 }

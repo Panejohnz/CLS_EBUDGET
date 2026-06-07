@@ -199,14 +199,14 @@
 
     }
 
-::ng-deep .modal-full .modal-dialog {
-    max-width: 95vw !important;
-    width: 95vw !important;
-}
+    ::ng-deep .modal-full .modal-dialog {
+        max-width: 95vw !important;
+        width: 95vw !important;
+    }
 
-::ng-deep .modal-full .modal-content {
-    min-height: 90vh;
-}
+    ::ng-deep .modal-full .modal-content {
+        min-height: 90vh;
+    }
 
     @keyframes pulseGlow {
 
@@ -852,12 +852,42 @@
                         </div>
                         <div class="mb-3">
                             <label class="fw-semibold">เป้าหมายผลผลิต (Output)</label>
-                            <textarea class="form-control" rows="2" [(ngModel)]="Output_Result"></textarea>
+                            <div *ngFor="let item of Output_Result; let i = index" class="row g-2 mb-2">
+
+                                <!-- ชื่อเป้าหมาย -->
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" [(ngModel)]="item.Name"
+                                        readonly>
+                                </div>
+
+                                <!-- แผน -->
+                                <div class="col-md-1">
+                                    <input type="text" class="form-control text-center" 
+                                        readonly>
+                                </div>
+
+                                <!-- รายงาน -->
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control" >
+                                </div>
+
+                                <!-- หน่วยนับ -->
+                                <div class="col-md-1">
+                                    <ng-select [items]="Mas_Unit_Lists" bindLabel="Unit_Name" bindValue="Unit_Id"
+                                        [(ngModel)]="item.Unit" name="tg_unit_{{i}}" placeholder="-- เลือกหน่วยนับ --"
+                                        [clearable]="false">
+                                    </ng-select>
+                                </div>
+
+                            </div>
                         </div>
 
                         <div class="mb-4">
                             <label class="fw-semibold">เป้าหมายผลลัพธ์ (Outcome)</label>
-                            <textarea class="form-control" rows="2" [(ngModel)]="Outcome_Result"></textarea>
+
+                            <div *ngFor="let item of Outcome_Result; let i = index" class="mb-2">
+                                <input class="form-control" rows="2" [(ngModel)]="item.Name">
+                            </div>
                         </div>
 
                         <div class="card p-3 mb-3 border-0 shadow-sm">

@@ -189,7 +189,7 @@ export class PlanManagementComponent {
         .subscribe((res: any) => {
 
           this.model = {
-
+            Budget_Type: 1,
             Budget_Plan:
               res.Budget_Plan || {},
 
@@ -314,7 +314,7 @@ export class PlanManagementComponent {
     } else {
 
       this.model = {
-
+        Budget_Type: 1,
         Budget_Plan: {},
 
         Department_Id:

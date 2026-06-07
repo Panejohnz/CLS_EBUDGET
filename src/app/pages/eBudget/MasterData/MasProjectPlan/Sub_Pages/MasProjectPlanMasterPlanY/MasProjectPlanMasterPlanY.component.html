@@ -45,16 +45,6 @@
           ปัจจัยหลัก
         </button>
       </li>
-      <li class="nav-item">
-        <button type="button" class="nav-link" [class.active]="currentTab === 9" (click)="goTab(9)">
-          ส่วนสนับสนุน
-        </button>
-      </li>
-      <li class="nav-item">
-        <button type="button" class="nav-link" [class.active]="currentTab === 10" (click)="goTab(10)">
-          ปัจจัยสนับสนุน
-        </button>
-      </li>
     </ul>
 
     <!-- Tab 1: ประเด็น -->
@@ -149,7 +139,7 @@
             <thead class="text-center text-white sticky-header" style="background-color: #556398;">
               <tr>
                 <th style="width:5%">ลำดับ</th>
-                <th style="width:15%">ประเด็น</th>
+                <!-- <th style="width:15%">ประเด็น</th> -->
                 <th style="width:5%">ปีที่เริ่ม</th>
                 <th style="width:5%">ปีที่สิ้นสุด</th>
                 <th style="width:20%">ชื่อ</th>
@@ -163,7 +153,7 @@
               @for (data of List_Mas_Master_Plan_Goal; track $index) {
               <tr>
                 <td>{{ goalPagination.startIndex + $index }}</td>
-                <td>{{ getMasterPlanNameForGoalRow(data) }}</td>
+                <!-- <td>{{ getMasterPlanNameForGoalRow(data) }}</td> -->
                 <td>{{ data.BgYear_Start }}</td>
                 <td>{{ data.BgYear_End }}</td>
                 <td>{{ data.Plan_Goals_Name }}</td>
@@ -223,8 +213,8 @@
             <thead class="text-center text-white sticky-header" style="background-color: #556398;">
               <tr>
                 <th style="width:5%">ลำดับ</th>
-                <th style="width:12%">ประเด็น</th>
-                <th style="width:12%">เป้าหมาย (Y2)</th>
+                <!-- <th style="width:12%">ประเด็น</th>
+                <th style="width:12%">เป้าหมาย (Y2)</th> -->
                 <th style="width:5%">ปีที่เริ่ม</th>
                 <th style="width:5%">ปีที่สิ้นสุด</th>
                 <th style="width:18%">ชื่อ</th>
@@ -235,11 +225,11 @@
               </tr>
             </thead>
             <tbody>
-              @for (data of List_Mas_Master_Plan_Goal_Tactic; track $index) {
+              @for (data of List_Mas_Master_Plan_Goals_Tactic; track $index) {
               <tr>
                 <td>{{ tacticPagination.startIndex + $index }}</td>
-                <td>{{ getMasterPlanNameForTacticRow(data) }}</td>
-                <td>{{ getGoalNameForTacticRow(data) }}</td>
+                <!-- <td>{{ getMasterPlanNameForTacticRow(data) }}</td>
+                <td>{{ getGoalNameForTacticRow(data) }}</td> -->
                 <td>{{ data.BgYear_Start }}</td>
                 <td>{{ data.BgYear_End }}</td>
                 <td>{{ data.Plan_Tactics_Name }}</td>
@@ -253,7 +243,7 @@
                 </td>
                 <td>
                   <button type="button" class="btn btn-danger btn-sm"
-                    (click)="Delete_Mas_Master_Plan_Goal_Tactic(data)">
+                    (click)="Delete_Mas_Master_Plan_Goals_Tactic(data)">
                     <i class="ri-delete-bin-line"></i>
                   </button>
                 </td>
@@ -301,7 +291,7 @@
             <thead class="text-center text-white sticky-header">
               <tr>
                 <th style="width:5%">ลำดับ</th>
-                <th style="width:15%">ประเด็น</th>
+                <!-- <th style="width:15%">ประเด็น</th> -->
                 <th style="width:5%">ปีที่เริ่ม</th>
                 <th style="width:5%">ปีที่สิ้นสุด</th>
                 <th style="width:20%">ชื่อ</th>
@@ -315,7 +305,7 @@
               @for (data of List_Mas_Sub_Master_Plan; track $index) {
               <tr>
                 <td>{{ subPlanPagination.startIndex + $index }}</td>
-                <td>{{ getMasterPlanNameForSubPlanRow(data) }}</td>
+                <!-- <td>{{ getMasterPlanNameForSubPlanRow(data) }}</td> -->
                 <td>{{ data.BgYear_Start }}</td>
                 <td>{{ data.BgYear_End }}</td>
                 <td>{{ data.Sub_Master_Plan_Name }}</td>
@@ -376,8 +366,8 @@
             <thead class="text-center text-white sticky-header">
               <tr>
                 <th style="width:5%">ลำดับ</th>
-                <th style="width:12%">ประเด็น</th>
-                <th style="width:12%">แผนย่อย</th>
+                <!-- <th style="width:12%">ประเด็น</th>
+                <th style="width:12%">แผนย่อย</th> -->
                 <th style="width:5%">ปีที่เริ่ม</th>
                 <th style="width:5%">ปีที่สิ้นสุด</th>
                 <th style="width:18%">ชื่อ</th>
@@ -391,8 +381,8 @@
               @for (data of List_Mas_Sub_Master_Plan_Goal; track $index) {
               <tr>
                 <td>{{ subGoalPagination.startIndex + $index }}</td>
-                <td>{{ getMasterPlanNameForSubGoalRow(data) }}</td>
-                <td>{{ getSubPlanNameForSubGoalRow(data) }}</td>
+                <!-- <td>{{ getMasterPlanNameForSubGoalRow(data) }}</td>
+                <td>{{ getSubPlanNameForSubGoalRow(data) }}</td> -->
                 <td>{{ data.BgYear_Start }}</td>
                 <td>{{ data.BgYear_End }}</td>
                 <td>{{ data.Sub_Plan_Goals_Name }}</td>
@@ -405,7 +395,7 @@
                   </button>
                 </td>
                 <td>
-                  <button type="button" class="btn btn-danger btn-sm" (click)="Delete_Mas_Sub_Master_Plan_Goal(data)">
+                  <button type="button" class="btn btn-danger btn-sm" (click)="Delete_Mas_Sub_Master_Plan_Goals(data)">
                     <i class="ri-delete-bin-line"></i>
                   </button>
                 </td>
@@ -453,8 +443,8 @@
             <thead class="text-center text-white sticky-header">
               <tr>
                 <th style="width:5%">ลำดับ</th>
-                <th style="width:12%">ประเด็น</th>
-                <th style="width:12%">แผนย่อย</th>
+                <!-- <th style="width:12%">ประเด็น</th>
+                <th style="width:12%">แผนย่อย</th> -->
                 <th style="width:5%">ปีที่เริ่ม</th>
                 <th style="width:5%">ปีที่สิ้นสุด</th>
                 <th style="width:18%">ชื่อ</th>
@@ -468,8 +458,8 @@
               @for (data of List_Mas_Sub_Plan_Guideline; track $index) {
               <tr>
                 <td>{{ guidelinePagination.startIndex + $index }}</td>
-                <td>{{ getMasterPlanNameForGuidelineRow(data) }}</td>
-                <td>{{ getSubPlanNameForGuidelineRow(data) }}</td>
+                <!-- <td>{{ getMasterPlanNameForGuidelineRow(data) }}</td>
+                <td>{{ getSubPlanNameForGuidelineRow(data) }}</td> -->
                 <td>{{ data.BgYear_Start }}</td>
                 <td>{{ data.BgYear_End }}</td>
                 <td>{{ data.Guidelines_Name }}</td>
@@ -482,7 +472,7 @@
                   </button>
                 </td>
                 <td>
-                  <button type="button" class="btn btn-danger btn-sm" (click)="Delete_Mas_Sub_Plan_Guideline(data)">
+                  <button type="button" class="btn btn-danger btn-sm" (click)="Delete_Mas_Sub_Plan_Guidelines(data)">
                     <i class="ri-delete-bin-line"></i>
                   </button>
                 </td>
@@ -525,8 +515,8 @@
             <thead class="text-center text-white sticky-header">
               <tr>
                 <th style="width:4%">ลำดับ</th>
-                <th style="width:12%">ประเด็น</th>
-                <th style="width:18%">เป้าหมาย (Y2)</th>
+                <!-- <th style="width:12%">ประเด็น</th> -->
+                <!-- <th style="width:18%">เป้าหมาย</th> -->
                 <th style="width:5%">ปีเริ่ม</th>
                 <th style="width:5%">ปีสิ้นสุด</th>
                 <th style="width:15%">ชื่อ</th>
@@ -540,8 +530,8 @@
               @for (data of List_Mas_Value_Chain_Main; track $index) {
               <tr>
                 <td>{{ chainMainPagination.startIndex + $index }}</td>
-                <td>{{ getMasterPlanNameForValueChainMainRow(data) }}</td>
-                <td>{{ getY2NameForValueChainMainRow(data) }}</td>
+                <!-- <td>{{ getMasterPlanNameForValueChainRow(data) }}</td> -->
+                <!-- <td>{{ getGoalNameForValueChainRow(data) }}</td> -->
                 <td>{{ data.BgYear_Start }}</td>
                 <td>{{ data.BgYear_End }}</td>
                 <td>{{ data.Value_Chain_Name }}</td>
@@ -597,8 +587,8 @@
             <thead class="text-center text-white sticky-header">
               <tr>
                 <th style="width:4%">ลำดับ</th>
-                <th style="width:12%">หลัก</th>
-                <th style="width:14%">เป้าหมาย (Y2)</th>
+                <!-- <th style="width:12%">หลัก</th> -->
+                <!-- <th style="width:14%">เป้าหมาย</th> -->
                 <th style="width:5%">ปีเริ่ม</th>
                 <th style="width:5%">ปีสิ้นสุด</th>
                 <th style="width:18%">ชื่อปัจจัย</th>
@@ -612,8 +602,8 @@
               @for (data of List_Mas_Value_Chain_Factor_Main; track $index) {
               <tr>
                 <td>{{ factorMainPagination.startIndex + $index }}</td>
-                <td>{{ getChainNameForFactorRow(data) }}</td>
-                <td>{{ getY2NameForFactorMainRow(data) }}</td>
+                <!-- <td>{{ getChainNameForFactorRow(data) }}</td> -->
+                <!-- <td>{{ getGoalNameForFactorRow(data) }}</td> -->
                 <td>{{ data.BgYear_Start }}</td>
                 <td>{{ data.BgYear_End }}</td>
                 <td>{{ data.Factor_Name }}</td>
@@ -655,152 +645,6 @@
       </div>
     </div>
 
-    <!-- Tab 9: ส่วนสนับสนุน -->
-    <div class="border rounded p-3 bg-light" *ngIf="currentTab === 9">
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <div style="width:300px;">
-            <input type="text" class="form-control" placeholder="ค้นหาส่วนสนับสนุน..."
-              [(ngModel)]="searchChainSupportTerm" (input)="filterChainSupportSearch()">
-          </div>
-          <button class="btn btn-success text-black" (click)="openAddChainSupportModal(addValueChainModal)">เพิ่มข้อมูล</button>
-        </div>
-        <div class="table-responsive">
-          <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
-            <thead class="text-center text-white sticky-header">
-              <tr>
-                <th style="width:4%">ลำดับ</th>
-                <th style="width:10%">ประเด็น</th>
-                <th style="width:10%">แผนย่อย</th>
-                <th style="width:10%">เป้าหมาย (Y1)</th>
-                <th style="width:5%">ปีเริ่ม</th>
-                <th style="width:5%">ปีสิ้นสุด</th>
-                <th style="width:15%">ชื่อ</th>
-                <th style="width:8%">ชื่อย่อ</th>
-                <th style="width:5%">เรียง</th>
-                <th style="width:7%">จัดการ</th>
-                <th style="width:7%">ลบ</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (data of List_Mas_Value_Chain_Support; track $index) {
-              <tr>
-                <td>{{ chainSupportPagination.startIndex + $index }}</td>
-                <td>{{ getMasterPlanNameForValueChainSupportRow(data) }}</td>
-                <td>{{ getSubPlanNameForValueChainSupportRow(data) }}</td>
-                <td>{{ getY1NameForValueChainSupportRow(data) }}</td>
-                <td>{{ data.BgYear_Start }}</td>
-                <td>{{ data.BgYear_End }}</td>
-                <td>{{ data.Value_Chain_Name }}</td>
-                <td>{{ data.Value_Chain_Short_Name }}</td>
-                <td>{{ data.Order_Seq }}</td>
-                <td>
-                  <button type="button" class="btn btn-warning btn-sm"
-                    (click)="openEditChainSupportModal(addValueChainModal, data)">
-                    <i class="ri-pencil-line"></i>
-                  </button>
-                </td>
-                <td>
-                  <button type="button" class="btn btn-danger btn-sm" (click)="Delete_Mas_Value_Chain_Support(data)">
-                    <i class="ri-delete-bin-line"></i>
-                  </button>
-                </td>
-              </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-        <div class="row justify-content-md-between align-items-md-center mt-2">
-          <div class="col col-sm-6">
-            <div class="dataTables_info mb-2">
-              แสดง {{ chainSupportPagination.startIndex }} ถึง {{ chainSupportPagination.endIndex }}
-              จากทั้งหมด {{ chainSupportPagination.total }} รายการ
-            </div>
-          </div>
-          <div class="col col-sm-6">
-            <div class="text-sm-end">
-              <ngb-pagination [collectionSize]="chainSupportPagination.total" [(page)]="chainSupportPagination.page"
-                [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
-                (pageChange)="onChainSupportPageChange($event)">
-              </ngb-pagination>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tab 10: ปัจจัยสนับสนุน -->
-    <div class="border rounded p-3 bg-light" *ngIf="currentTab === 10">
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <div style="width:300px;">
-            <input type="text" class="form-control" placeholder="ค้นหาปัจจัยสนับสนุน..."
-              [(ngModel)]="searchFactorSupportTerm" (input)="filterFactorSupportSearch()">
-          </div>
-          <button class="btn btn-success text-black" (click)="openAddFactorSupportModal(addValueChainFactorModal)">เพิ่มข้อมูล</button>
-        </div>
-        <div class="table-responsive">
-          <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
-            <thead class="text-center text-white sticky-header">
-              <tr>
-                <th style="width:4%">ลำดับ</th>
-                <th style="width:10%">ส่วนสนับสนุน</th>
-                <th style="width:10%">เป้าหมาย (Y1)</th>
-                <th style="width:5%">ปีเริ่ม</th>
-                <th style="width:5%">ปีสิ้นสุด</th>
-                <th style="width:18%">ชื่อปัจจัย</th>
-                <th style="width:8%">ชื่อย่อ</th>
-                <th style="width:5%">เรียง</th>
-                <th style="width:7%">จัดการ</th>
-                <th style="width:7%">ลบ</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (data of List_Mas_Value_Chain_Factor_Support; track $index) {
-              <tr>
-                <td>{{ factorSupportPagination.startIndex + $index }}</td>
-                <td>{{ getChainNameForFactorRow(data) }}</td>
-                <td>{{ getY1NameForFactorSupportRow(data) }}</td>
-                <td>{{ data.BgYear_Start }}</td>
-                <td>{{ data.BgYear_End }}</td>
-                <td>{{ data.Factor_Name }}</td>
-                <td>{{ data.Factor_Short_Name }}</td>
-                <td>{{ data.Order_Seq }}</td>
-                <td>
-                  <button type="button" class="btn btn-warning btn-sm"
-                    (click)="openEditFactorSupportModal(addValueChainFactorModal, data)">
-                    <i class="ri-pencil-line"></i>
-                  </button>
-                </td>
-                <td>
-                  <button type="button" class="btn btn-danger btn-sm"
-                    (click)="Delete_Mas_Value_Chain_Factor_Support(data)">
-                    <i class="ri-delete-bin-line"></i>
-                  </button>
-                </td>
-              </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-        <div class="row justify-content-md-between align-items-md-center mt-2">
-          <div class="col col-sm-6">
-            <div class="dataTables_info mb-2">
-              แสดง {{ factorSupportPagination.startIndex }} ถึง {{ factorSupportPagination.endIndex }}
-              จากทั้งหมด {{ factorSupportPagination.total }} รายการ
-            </div>
-          </div>
-          <div class="col col-sm-6">
-            <div class="text-sm-end">
-              <ngb-pagination [collectionSize]="factorSupportPagination.total"
-                [(page)]="factorSupportPagination.page" [pageSize]="pageSize" [maxSize]="5" [rotate]="true"
-                [boundaryLinks]="true" (pageChange)="onFactorSupportPageChange($event)">
-              </ngb-pagination>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -853,7 +697,7 @@
       <div class="col-md-12">
         <label class="form-label">ประเด็น <span class="text-danger">*</span></label>
         <ng-select [items]="listMasMasterPlanAll" bindLabel="Master_Plan_Name" bindValue="Master_Plan_Id"
-          [(ngModel)]="Mas_Master_Plan_Goal.FK_Master_Plan_Id" [searchable]="true" [clearable]="true"
+          [(ngModel)]="Mas_Master_Plan_Goal.FK_Master_Plan" [searchable]="true" [clearable]="true"
           appendTo="body" placeholder="-- เลือก --">
         </ng-select>
       </div>
@@ -898,8 +742,8 @@
       <div class="col-md-12">
         <label class="form-label">ประเด็น <span class="text-danger">*</span></label>
         @for (key of [tacticMasterPlanSelectKey]; track key) {
-        <ng-select [items]="listMasMasterPlanAll" bindLabel="Master_Plan_Name"
-          [ngModel]="tacticModalMasterPlan" (ngModelChange)="onTacticMasterPlanChange($event)"
+        <ng-select [items]="listMasMasterPlanAll" bindLabel="Master_Plan_Name" bindValue="Master_Plan_Id"
+          [ngModel]="tacticModalMasterPlanId" (ngModelChange)="onTacticMasterPlanIdChange($event)"
           [searchable]="true" [clearable]="true" appendTo="body" placeholder="-- เลือก --">
         </ng-select>
         }
@@ -907,8 +751,8 @@
       <div class="col-md-12">
         <label class="form-label">เป้าหมายระดับประเด็น (Y2) <span class="text-danger">*</span></label>
         @for (key of [tacticGoalSelectKey]; track key) {
-        <ng-select [items]="tacticGoalOptions" bindLabel="Plan_Goals_Name"
-          [ngModel]="tacticModalGoal" (ngModelChange)="onTacticGoalChange($event)"
+        <ng-select [items]="tacticGoalOptions" bindLabel="Plan_Goals_Name" bindValue="Plan_Goals_Id"
+          [ngModel]="Mas_Master_Plan_Goals_Tactic.FK_Plan_Goals_Id" (ngModelChange)="onTacticGoalIdChange($event)"
           [searchable]="true" [clearable]="true" appendTo="body" placeholder="-- เลือก --">
         </ng-select>
         }
@@ -916,24 +760,24 @@
       <div class="col-md-6">
         <label class="form-label">ปีที่เริ่ม</label>
         <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
-          [(ngModel)]="Mas_Master_Plan_Goal_Tactic.BgYear_Start">
+          [(ngModel)]="Mas_Master_Plan_Goals_Tactic.BgYear_Start">
       </div>
       <div class="col-md-6">
         <label class="form-label">ปีสิ้นสุด</label>
         <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
-          [(ngModel)]="Mas_Master_Plan_Goal_Tactic.BgYear_End">
+          [(ngModel)]="Mas_Master_Plan_Goals_Tactic.BgYear_End">
       </div>
       <div class="col-md-12">
         <label class="form-label">ชื่อ</label>
-        <input type="text" class="form-control" [(ngModel)]="Mas_Master_Plan_Goal_Tactic.Plan_Tactics_Name">
+        <input type="text" class="form-control" [(ngModel)]="Mas_Master_Plan_Goals_Tactic.Plan_Tactics_Name">
       </div>
       <div class="col-md-6">
         <label class="form-label">ชื่อย่อ</label>
-        <input type="text" class="form-control" [(ngModel)]="Mas_Master_Plan_Goal_Tactic.Plan_Tactics_Short_Name">
+        <input type="text" class="form-control" [(ngModel)]="Mas_Master_Plan_Goals_Tactic.Plan_Tactics_Short_Name">
       </div>
       <div class="col-md-6">
         <label class="form-label">เรียงลำดับ</label>
-        <input type="number" class="form-control" [(ngModel)]="Mas_Master_Plan_Goal_Tactic.Order_Seq">
+        <input type="number" class="form-control" [(ngModel)]="Mas_Master_Plan_Goals_Tactic.Order_Seq">
       </div>
     </div>
   </div>
@@ -954,7 +798,7 @@
       <div class="col-md-12">
         <label class="form-label">ประเด็น <span class="text-danger">*</span></label>
         <ng-select [items]="listMasMasterPlanAll" bindLabel="Master_Plan_Name" bindValue="Master_Plan_Id"
-          [(ngModel)]="Mas_Sub_Master_Plan.FK_Master_Plan_Id" [searchable]="true" [clearable]="true"
+          [(ngModel)]="Mas_Sub_Master_Plan.FK_Master_Plan" [searchable]="true" [clearable]="true"
           appendTo="body" placeholder="-- เลือก --">
         </ng-select>
       </div>
@@ -999,8 +843,8 @@
       <div class="col-md-12">
         <label class="form-label">ประเด็น <span class="text-danger">*</span></label>
         @for (key of [subGoalMasterPlanSelectKey]; track key) {
-        <ng-select [items]="listMasMasterPlanAll" bindLabel="Master_Plan_Name"
-          [ngModel]="subGoalModalMasterPlan" (ngModelChange)="onSubGoalMasterPlanChange($event)"
+        <ng-select [items]="listMasMasterPlanAll" bindLabel="Master_Plan_Name" bindValue="Master_Plan_Id"
+          [ngModel]="subGoalModalMasterPlanId" (ngModelChange)="onSubGoalMasterPlanIdChange($event)"
           [searchable]="true" [clearable]="true" appendTo="body" placeholder="-- เลือก --">
         </ng-select>
         }
@@ -1008,8 +852,8 @@
       <div class="col-md-12">
         <label class="form-label">แผนย่อยของแผนแม่บทฯ <span class="text-danger">*</span></label>
         @for (key of [subGoalSubPlanSelectKey]; track key) {
-        <ng-select [items]="subGoalSubPlanOptions" bindLabel="Sub_Master_Plan_Name"
-          [ngModel]="subGoalModalSubPlan" (ngModelChange)="onSubGoalSubPlanChange($event)"
+        <ng-select [items]="subGoalSubPlanOptions" bindLabel="Sub_Master_Plan_Name" bindValue="Sub_Master_Plan_Id"
+          [ngModel]="Mas_Sub_Master_Plan_Goals.FK_Sub_Master_Plan" (ngModelChange)="onSubGoalSubPlanIdChange($event)"
           [searchable]="true" [clearable]="true" appendTo="body" placeholder="-- เลือก --">
         </ng-select>
         }
@@ -1017,24 +861,24 @@
       <div class="col-md-6">
         <label class="form-label">ปีที่เริ่ม</label>
         <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
-          [(ngModel)]="Mas_Sub_Master_Plan_Goal.BgYear_Start">
+          [(ngModel)]="Mas_Sub_Master_Plan_Goals.BgYear_Start">
       </div>
       <div class="col-md-6">
         <label class="form-label">ปีสิ้นสุด</label>
         <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
-          [(ngModel)]="Mas_Sub_Master_Plan_Goal.BgYear_End">
+          [(ngModel)]="Mas_Sub_Master_Plan_Goals.BgYear_End">
       </div>
       <div class="col-md-12">
         <label class="form-label">ชื่อ</label>
-        <input type="text" class="form-control" [(ngModel)]="Mas_Sub_Master_Plan_Goal.Sub_Plan_Goals_Name">
+        <input type="text" class="form-control" [(ngModel)]="Mas_Sub_Master_Plan_Goals.Sub_Plan_Goals_Name">
       </div>
       <div class="col-md-6">
         <label class="form-label">ชื่อย่อ</label>
-        <input type="text" class="form-control" [(ngModel)]="Mas_Sub_Master_Plan_Goal.Sub_Plan_Goals_Short_Name">
+        <input type="text" class="form-control" [(ngModel)]="Mas_Sub_Master_Plan_Goals.Sub_Plan_Goals_Short_Name">
       </div>
       <div class="col-md-6">
         <label class="form-label">เรียงลำดับ</label>
-        <input type="number" class="form-control" [(ngModel)]="Mas_Sub_Master_Plan_Goal.Order_Seq">
+        <input type="number" class="form-control" [(ngModel)]="Mas_Sub_Master_Plan_Goals.Order_Seq">
       </div>
     </div>
   </div>
@@ -1055,8 +899,8 @@
       <div class="col-md-12">
         <label class="form-label">แผนย่อยของแผนแม่บทฯ <span class="text-danger">*</span></label>
         @for (key of [guidelineSubPlanSelectKey]; track key) {
-        <ng-select [items]="listMasSubMasterPlanAll" bindLabel="Sub_Master_Plan_Name"
-          [ngModel]="guidelineModalSubPlan" (ngModelChange)="onGuidelineSubPlanChange($event)"
+        <ng-select [items]="listMasSubMasterPlanAll" bindLabel="Sub_Master_Plan_Name" bindValue="Sub_Master_Plan_Id"
+          [ngModel]="Mas_Sub_Plan_Guidelines.FK_Sub_Master_Plan" (ngModelChange)="onGuidelineSubPlanIdChange($event)"
           [searchable]="true" [clearable]="true" appendTo="body" placeholder="-- เลือก --">
         </ng-select>
         }
@@ -1064,24 +908,24 @@
       <div class="col-md-6">
         <label class="form-label">ปีที่เริ่ม</label>
         <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
-          [(ngModel)]="Mas_Sub_Plan_Guideline.BgYear_Start">
+          [(ngModel)]="Mas_Sub_Plan_Guidelines.BgYear_Start">
       </div>
       <div class="col-md-6">
         <label class="form-label">ปีสิ้นสุด</label>
         <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
-          [(ngModel)]="Mas_Sub_Plan_Guideline.BgYear_End">
+          [(ngModel)]="Mas_Sub_Plan_Guidelines.BgYear_End">
       </div>
       <div class="col-md-12">
         <label class="form-label">ชื่อ</label>
-        <input type="text" class="form-control" [(ngModel)]="Mas_Sub_Plan_Guideline.Guidelines_Name">
+        <input type="text" class="form-control" [(ngModel)]="Mas_Sub_Plan_Guidelines.Guidelines_Name">
       </div>
       <div class="col-md-6">
         <label class="form-label">ชื่อย่อ</label>
-        <input type="text" class="form-control" [(ngModel)]="Mas_Sub_Plan_Guideline.Guidelines_Short_Name">
+        <input type="text" class="form-control" [(ngModel)]="Mas_Sub_Plan_Guidelines.Guidelines_Short_Name">
       </div>
       <div class="col-md-6">
         <label class="form-label">เรียงลำดับ</label>
-        <input type="number" class="form-control" [(ngModel)]="Mas_Sub_Plan_Guideline.Order_Seq">
+        <input type="number" class="form-control" [(ngModel)]="Mas_Sub_Plan_Guidelines.Order_Seq">
       </div>
     </div>
   </div>
@@ -1091,42 +935,29 @@
   </div>
 </ng-template>
 
-<!-- Modal: หลัก / ส่วนสนับสนุน (Value Chain) -->
+<!-- Modal: หลัก (Value Chain) -->
 <ng-template #addValueChainModal let-modal>
   <div class="modal-header">
     <h5 class="modal-title">
-      {{ (isEditModeChainMain || isEditModeChainSupport) ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูล{{
-        currentChainSaveType === 'SUPPORT' ? 'ส่วนสนับสนุน' : 'หลัก' }}
+      {{ isEditModeChainMain ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลหลัก
     </h5>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
   </div>
   <div class="modal-body">
     <div class="row g-3">
-      @if (currentChainSaveType === 'MAIN') {
-      <div class="col-md-12">
-        <label class="form-label">เป้าหมายระดับประเด็น (Y2) <span class="text-danger">*</span></label>
-        @for (key of [chainY2SelectKey]; track key) {
-        <ng-select [items]="listMasMasterPlanGoalAll" bindLabel="Plan_Goals_Name"
-          [ngModel]="chainModalY2" (ngModelChange)="onChainY2Change($event)"
-          [searchable]="true" [clearable]="true" appendTo="body" placeholder="-- เลือก --">
-        </ng-select>
-        }
-      </div>
-      } @else {
       <div class="col-md-12">
         <label class="form-label">เป้าหมายแผนแม่บทย่อย (Y1) <span class="text-danger">*</span></label>
         @for (key of [chainY1SelectKey]; track key) {
-        <ng-select [items]="listMasSubMasterPlanGoalAll" bindLabel="Sub_Plan_Goals_Name"
-          [ngModel]="chainModalY1" (ngModelChange)="onChainY1Change($event)"
+        <ng-select [items]="listMasSubMasterPlanGoalAll" bindLabel="Sub_Plan_Goals_Name" bindValue="Sub_Plan_Goals_Id"
+          [ngModel]="Mas_Value_Chain.Fk_SubPlan_Goals_Id" (ngModelChange)="onChainY1IdChange($event)"
           [searchable]="true" [clearable]="true" appendTo="body" placeholder="-- เลือก --">
         </ng-select>
         }
       </div>
-      }
       <div class="col-md-6">
         <label class="form-label">ปีที่เริ่ม</label>
         <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
-          [(ngModel)]="Mas_Value_Chain.BgYear_Start">
+          [(ngModel)]="Mas_Value_Chain.BgYear_Strat">
       </div>
       <div class="col-md-6">
         <label class="form-label">ปีสิ้นสุด</label>
@@ -1153,34 +984,23 @@
   </div>
 </ng-template>
 
-<!-- Modal: ปัจจัยหลัก / ปัจจัยสนับสนุน -->
+<!-- Modal: ปัจจัยหลัก -->
 <ng-template #addValueChainFactorModal let-modal>
   <div class="modal-header">
     <h5 class="modal-title">
-      {{ (isEditModeFactorMain || isEditModeFactorSupport) ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูล{{
-        currentFactorSaveType === 'SUPPORT' ? 'ปัจจัยสนับสนุน' : 'ปัจจัยหลัก' }}
+      {{ isEditModeFactorMain ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลปัจจัยหลัก
     </h5>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
   </div>
   <div class="modal-body">
     <div class="row g-3">
       <div class="col-md-12">
-        <label class="form-label">{{ currentFactorSaveType === 'SUPPORT' ? 'ส่วนสนับสนุน' : 'หลัก' }}
-          <span class="text-danger">*</span></label>
-        @if (currentFactorSaveType === 'MAIN') {
+        <label class="form-label">หลัก <span class="text-danger">*</span></label>
         @for (key of [factorMainChainSelectKey]; track key) {
-        <ng-select [items]="listMasValueChainMainAll" bindLabel="Value_Chain_Name"
-          [ngModel]="factorMainModalChain" (ngModelChange)="onFactorMainChainChange($event)"
+        <ng-select [items]="listMasValueChainMainAll" bindLabel="Value_Chain_Name" bindValue="Value_Chain_Id"
+          [ngModel]="Mas_Value_Chain_Factor.FK_Value_Chain_Id" (ngModelChange)="onFactorMainChainIdChange($event)"
           [searchable]="true" [clearable]="true" appendTo="body" placeholder="-- เลือก --">
         </ng-select>
-        }
-        } @else {
-        @for (key of [factorSupportChainSelectKey]; track key) {
-        <ng-select [items]="listMasValueChainSupportAll" bindLabel="Value_Chain_Name"
-          [ngModel]="factorSupportModalChain" (ngModelChange)="onFactorSupportChainChange($event)"
-          [searchable]="true" [clearable]="true" appendTo="body" placeholder="-- เลือก --">
-        </ng-select>
-        }
         }
       </div>
       <div class="col-md-6">

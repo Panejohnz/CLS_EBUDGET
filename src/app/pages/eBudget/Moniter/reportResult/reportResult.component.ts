@@ -37,8 +37,8 @@ export class ReportResultComponent
   selectedItem: any = null;
   modalRef: any;
   selectedMonth: any = null;
-  Output_Result: any
-  Outcome_Result: any
+  Output_Result: any[] = [];
+  Outcome_Result: any[] = [];
   Progress_Percent: any
   Problems: any
   Solutions: any
@@ -46,6 +46,7 @@ export class ReportResultComponent
   Suggestions: any
   Progress_Id: any
   selectedTri = null;
+  Mas_Unit_Lists: any
   Tri_lists = [
 
     {
@@ -373,22 +374,24 @@ export class ReportResultComponent
               res?.List_Report_Budget_Plan_Detail_Month || [];
             const investList =
               res?.List_Report_Budget_Plan_Investment || [];
-
             const items = res.Project_Plan_Detail_Item || [];
             const details = res.Project_Plan_Detail || [];
             details.forEach((d: any) => {
               d.Project_Detail_Id = Number(d.Project_Detail_Id);
               d.Parent_Id = d.Parent_Id ? Number(d.Parent_Id) : null;
             });
-
+            this.Mas_Unit_Lists = Array.isArray(res.List_Mas_Unit)
+              ? res.List_Mas_Unit
+              : [];
             const activities = this.mapPlanDetail(details);
             this.mapItems(items, activities);
 
             this.model.activities = activities;
 
             let Progress_list = res.Report_Budget_Plan_Progress
-            this.Output_Result = Progress_list.Output_Result
-            this.Outcome_Result = Progress_list.Outcome_Result
+            this.Output_Result = res.Project_Output || [];
+            this.Outcome_Result = res.Project_Outcome || [];
+
             this.Progress_Percent = Progress_list.Progress_Percent
             this.Problems = Progress_list.Problems
             this.Solutions = Progress_list.Solutions
@@ -762,6 +765,7 @@ export class ReportResultComponent
       );
 
   }
+
   buildDetailData() {
     const months = [
       'Oct', 'Nov', 'Dec',
