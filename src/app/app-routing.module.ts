@@ -41,6 +41,17 @@ const routes: Routes = [
 
   { path: 'Report_R001', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/Report/Report_R001/Report_R001.module').then(m => m.EmonitorMasterModule), },
   { path: 'Report_R002', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/Report/Report_R002/Report_R002.module').then(m => m.EmonitorMasterModule), },
+  { path: 'Report_R003', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/Report/Report_R003/Report_R003.module').then(m => m.EmonitorMasterModule), },
+  { path: 'Report_R004', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/Report/Report_R004/Report_R004.module').then(m => m.EmonitorMasterModule), },
+  { path: 'Report_R005', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/Report/Report_R005/Report_R005.module').then(m => m.EmonitorMasterModule), },
+  { path: 'Report_R006', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/Report/Report_R006/Report_R006.module').then(m => m.EmonitorMasterModule), },
+  { path: 'Report_R007', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/Report/Report_R007/Report_R007.module').then(m => m.EmonitorMasterModule), },
+  { path: 'Report_R008', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/Report/Report_R008/Report_R008.module').then(m => m.EmonitorMasterModule), },
+  { path: 'Report_R009', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/Report/Report_R009/Report_R009.module').then(m => m.EmonitorMasterModule), },
+  { path: 'Report_R010', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/Report/Report_R010/Report_R010.module').then(m => m.EmonitorMasterModule), },
+  { path: 'Report_R011', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/Report/Report_R011/Report_R011.module').then(m => m.EmonitorMasterModule), },
+  { path: 'Report_R012', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/Report/Report_R012/Report_R012.module').then(m => m.EmonitorMasterModule), },
+  { path: 'Report_R013', component: LayoutComponent, loadChildren: () => import('./pages/eBudget/Report/Report_R013/Report_R013.module').then(m => m.EmonitorMasterModule), },
 ];
 
 @NgModule({

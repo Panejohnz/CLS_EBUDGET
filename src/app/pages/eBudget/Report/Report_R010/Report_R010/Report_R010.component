@@ -1,0 +1,12 @@
+<div class="card shadow-sm">
+  <div class="card-header">
+    <h5 class="mb-0">{{ reportTitle }}</h5>
+  </div>
+  <div class="card-body p-0 report-iframe-wrap">
+    <iframe
+      class="report-iframe"
+      [src]="reportUrl"
+      [title]="reportTitle"
+    ></iframe>
+  </div>
+</div>
