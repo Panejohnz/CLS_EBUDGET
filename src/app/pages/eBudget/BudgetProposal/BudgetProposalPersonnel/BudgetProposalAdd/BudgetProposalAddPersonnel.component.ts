@@ -285,6 +285,9 @@ export class ProjectBudgetProposalAddPersonnelComponent {
         this.model.selectedExpenseTypeId
       );
     }
+    if (this.model.Budget_Request.Is_Bureau_Indicator) {
+      this.Is_Bureau_Indicator = true
+    }
   }
   getTargetSum(t: any): number {
 
@@ -388,7 +391,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
       }
     });
   }
-  isBudgetIndicator = false
+  Is_Bureau_Indicator = false
   openTargetModal(content: any) {
 
     if (this.targetList.length === 0) {
@@ -515,7 +518,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
       }));
 
     modal.close();
-    this.isBudgetIndicator
+    this.Is_Bureau_Indicator
   }
   Get_Dropdown_list() {
 
@@ -676,7 +679,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
     const payload = {
 
       BgYear: this.currentYear,
-
+      Is_Bureau_Indicator: this.Is_Bureau_Indicator,
       Request_Id:
         this.model.Budget_Request.Request_Id,
 
@@ -869,9 +872,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
       );
 
     if (userConfirmed) {
-      if (this.isBudgetIndicator) {
 
-      }
       const model = {
 
         FUNC_CODE:

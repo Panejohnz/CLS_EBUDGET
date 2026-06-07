@@ -90,16 +90,14 @@ export class ProjectPlanningComponent {
   }
   currentYear: any
   ngOnInit(): void {
-
-    this.get_data()
-
-    this.budgetYearService.yearChanged$.subscribe(year => {
+    this.budgetYearService.yearChanged$.subscribe(async year => {
       if (year) {
+        if (year < 2500) {
+          year = year + 543
+        }
         this.currentYear = year
-        this.allData = Array.isArray(this.griddata)
-          ? this.griddata
-          : [];
-        this.griddata = [...this.allData];
+
+        this.get_data()
       }
     });
 
@@ -108,6 +106,7 @@ export class ProjectPlanningComponent {
   get_data() {
     let model = {
       FUNC_CODE: "FUNC-Get_Project_Plan",
+      BgYear: this.currentYear
     }
     var getData = this.serviceebud.GatewayGetData(model);
     getData.subscribe((response: any) => {
@@ -121,7 +120,7 @@ export class ProjectPlanningComponent {
     })
     this.project_planing = {
       Project_Plan: {},
-
+      Budget_Type: 1,
       Project_Detail: [],
       Project_Objective: [],
 
@@ -214,6 +213,7 @@ export class ProjectPlanningComponent {
             Project_Outcome: res.Project_Outcome || [],
             Project_Expected: res.Project_Expected || [],
             Project_TargetGroup: res.Project_TargetGroup || [],
+            Budget_Type: 1,
           };
           const details = res.Project_Plan_Detail || [];
           const items = res.Project_Plan_Detail_Item || [];
@@ -254,7 +254,7 @@ export class ProjectPlanningComponent {
           Indicators_Id: null,
           Mid1_Checked: false,
           Mid1_Name: '',
-
+          Budget_Type: 1,
           Mid2_Checked: false,
           Mid2_Name: '',
 

@@ -100,7 +100,7 @@
             <div class="col d-flex align-items-center">
 
                 <span class="fw-bold">
-                    เป้าหมาย
+                    เป้าหมาย .
                 </span>
 
                 <button class="btn btn-primary btn-sm ms-2" (click)="openTargetModal(targetModal)">
@@ -122,7 +122,13 @@
                 </h5>
 
             </div>
+            @if([64,70,73,74,75].includes(model.selectedExpenseTypeId)){
 
+            <projectPlanning [model]="multiplierModel" [expenseItem]="expenseItem">
+
+            </projectPlanning>
+
+            }@else{
             <div class="table-responsive">
 
                 <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
@@ -267,6 +273,8 @@
                 </table>
 
             </div>
+            }
+
 
         </div>
 
@@ -382,7 +390,7 @@
                 <!-- Checkbox -->
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="budgetIndicator"
-                        [(ngModel)]="isBudgetIndicator">
+                        [(ngModel)]="Is_Bureau_Indicator">
 
                     <label class="form-check-label fw-medium" for="budgetIndicator">
                         ตัวชี้วัดสำนักงบประมาณ

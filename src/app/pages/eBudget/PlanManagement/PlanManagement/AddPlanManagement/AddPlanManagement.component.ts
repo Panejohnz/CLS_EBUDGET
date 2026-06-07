@@ -1202,7 +1202,7 @@ export class AddPlanManagementComponent
   Mas_Plan_Lists: any[] = [];
 
   Mas_Product: any[] = [];
-
+  Is_Bureau_Indicator = false
   Mas_Activity: any[] = [];
   Mas_Department_Lists: any[] = []
   Mas_Expense_Lists: any[] = []
@@ -1505,7 +1505,9 @@ export class AddPlanManagementComponent
     }
 
     this.dropdown_select = true;
-
+    if (this.model.Budget_Plan.Is_Bureau_Indicator) {
+      this.Is_Bureau_Indicator = true
+    }
   }
 
   onExpenseChange(item: any) {
@@ -2045,7 +2047,7 @@ export class AddPlanManagementComponent
     const payload_plan = {
 
       BgYear: "2569",
-
+      Is_Bureau_Indicator: this.Is_Bureau_Indicator,
       Plan_Id:
         this.model.Budget_Plan.Plan_Id,
 
@@ -2148,8 +2150,59 @@ export class AddPlanManagementComponent
         detailPayload,
 
       Budget_Plan_Detail_Items:
-        detailItems
+        detailItems,
+      Project_Detail: {
+        ...this.model.Project_Detail,
 
+        Start_Date:
+          this.toDotNetDate(
+            this.model.Project_Detail.Start_Date
+          ),
+
+        End_Date:
+          this.toDotNetDate(
+            this.model.Project_Detail.End_Date
+          )
+      },
+
+      Project_Objective:
+        this.model.Project_Objective,
+
+      Project_Plan_Detail:
+        this.model.Project_Plan_Detail,
+
+      Project_Plan_Level1:
+        this.model.Project_Plan_Level1,
+
+      Project_Plan_Level2:
+        this.model.Project_Plan_Level2,
+
+      Project_Plan_Level1_Sub:
+        this.model.Project_Plan_Level1_Sub,
+
+      Project_Outcome:
+        this.model.Project_Outcome,
+
+      Project_Output:
+        this.model.Project_Output,
+
+      Project_Plan_Level3:
+        this.model.Project_Plan_Level3,
+
+      Project_Coordinator:
+        this.model.Project_Coordinator,
+
+      Project_Cabinet:
+        this.model.Project_Cabinet,
+
+      Project_Security:
+        this.model.Project_Security,
+
+      Project_Expected:
+        this.model.Project_Expected,
+
+      Project_TargetGroup:
+        this.model.Project_TargetGroup,
     };
 
     this.serviceebud
@@ -2166,6 +2219,15 @@ export class AddPlanManagementComponent
 
       });
 
+  }
+  toDotNetDate(dateStr: string): string | null {
+
+    if (!dateStr) return null;
+
+    const timestamp =
+      new Date(dateStr).getTime();
+
+    return `/Date(${timestamp})/`;
   }
   isBudgetIndicator = false
   openTargetModal(content: any) {
