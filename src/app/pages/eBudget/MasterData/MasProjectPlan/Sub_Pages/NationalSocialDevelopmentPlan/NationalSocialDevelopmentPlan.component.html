@@ -1,0 +1,590 @@
+<div class="card shadow-sm">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h5 class="mb-0">แผนพัฒนาเศรษฐกิจและสังคมแห่งชาติ</h5>
+    <button type="button" class="btn btn-outline-secondary btn-sm" (click)="goBackToPlan()">กลับหน้าแผนงาน</button>
+  </div>
+  <div class="card-body">
+    <ul class="nav nav-tabs mb-3">
+      <li class="nav-item">
+        <button type="button" class="nav-link" [class.active]="currentTab === 1" (click)="goTab(1)">หมุดหมายที่</button>
+      </li>
+      <li class="nav-item">
+        <button type="button" class="nav-link" [class.active]="currentTab === 2" (click)="goTab(2)">เป้าหมายที่</button>
+      </li>
+      <li class="nav-item">
+        <button type="button" class="nav-link" [class.active]="currentTab === 3" (click)="goTab(3)">ตัวชี้วัดที่</button>
+      </li>
+      <li class="nav-item">
+        <button type="button" class="nav-link" [class.active]="currentTab === 4" (click)="goTab(4)">กลยุทธ์การพัฒนาที่</button>
+      </li>
+      <li class="nav-item">
+        <button type="button" class="nav-link" [class.active]="currentTab === 5" (click)="goTab(5)">กลยุทธ์ย่อยที่</button>
+      </li>
+    </ul>
+
+    <!-- Tab 1: หมุดหมายที่ -->
+    <div class="border rounded p-3 bg-light" *ngIf="currentTab === 1">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div style="width:300px;">
+          <input type="text" class="form-control" placeholder="ค้นหาหมุดหมายที่..."
+            [(ngModel)]="service.searchTerm" (input)="filterLandmarkSearch()">
+        </div>
+        <button class="btn btn-success text-black" (click)="openAddLandmarkModal(addLandmarkModal)">เพิ่มข้อมูล</button>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+          <thead class="text-center text-white sticky-header">
+            <tr>
+              <th style="width:5%">ลำดับ</th>
+              <th style="width:8%">ปีเริ่ม</th>
+              <th style="width:8%">ปีสิ้นสุด</th>
+              <th style="width:30%">ชื่อ</th>
+              <th style="width:15%">ชื่อย่อ</th>
+              <th style="width:8%">เรียง</th>
+              <th style="width:8%">จัดการ</th>
+              <th style="width:8%">ลบ</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (data of List_Mas_Landmark; track $index) {
+            <tr>
+              <td>{{ landmarkPagination.startIndex + $index }}</td>
+              <td>{{ data.BgYear_Start }}</td>
+              <td>{{ data.BgYear_End }}</td>
+              <td>{{ data.Landmark_Name }}</td>
+              <td>{{ data.Landmark_Short_Name }}</td>
+              <td>{{ data.Order_Seq }}</td>
+              <td>
+                <button type="button" class="btn btn-warning btn-sm"
+                  (click)="openEditLandmarkModal(addLandmarkModal, data)">
+                  <i class="ri-pencil-line"></i>
+                </button>
+              </td>
+              <td>
+                <button type="button" class="btn btn-danger btn-sm" (click)="Delete_Mas_Landmark(data)">
+                  <i class="ri-delete-bin-line"></i>
+                </button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="row justify-content-md-between align-items-md-center mt-2">
+        <div class="col col-sm-6">
+          <div class="dataTables_info mb-2">
+            แสดง {{ landmarkPagination.startIndex }} ถึง {{ landmarkPagination.endIndex }}
+            จากทั้งหมด {{ landmarkPagination.total }} รายการ
+          </div>
+        </div>
+        <div class="col col-sm-6">
+          <div class="text-sm-end">
+            <ngb-pagination [collectionSize]="landmarkPagination.total" [(page)]="landmarkPagination.page"
+              [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
+              (pageChange)="onLandmarkPageChange($event)">
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 2: เป้าหมายที่ -->
+    <div class="border rounded p-3 bg-light" *ngIf="currentTab === 2">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div style="width:300px;">
+          <input type="text" class="form-control" placeholder="ค้นหาเป้าหมายที่..."
+            [(ngModel)]="searchGoalTerm" (input)="filterGoalSearch()">
+        </div>
+        <button class="btn btn-success text-black" (click)="openAddGoalModal(addGoalModal)">เพิ่มข้อมูล</button>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+          <thead class="text-center text-white sticky-header">
+            <tr>
+              <th style="width:5%">ลำดับ</th>
+              <th style="width:14%">หมุดหมายที่</th>
+              <th style="width:8%">ปีเริ่ม</th>
+              <th style="width:8%">ปีสิ้นสุด</th>
+              <th style="width:24%">ชื่อ</th>
+              <th style="width:10%">ชื่อย่อ</th>
+              <th style="width:6%">เรียง</th>
+              <th style="width:7%">จัดการ</th>
+              <th style="width:7%">ลบ</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (data of List_Mas_Landmark_Gloals; track $index) {
+            <tr>
+              <td>{{ goalPagination.startIndex + $index }}</td>
+              <td>{{ getLandmarkNameForGoalRow(data) }}</td>
+              <td>{{ data.BgYear_Start }}</td>
+              <td>{{ data.BgYear_End }}</td>
+              <td>{{ data.Landmark_Gloals_Name || data.Landmark_Goals_Name }}</td>
+              <td>{{ data.Landmark_Gloals_Short_Name || data.Landmark_Goals_Short_Name }}</td>
+              <td>{{ data.Order_Seq }}</td>
+              <td>
+                <button type="button" class="btn btn-warning btn-sm" (click)="openEditGoalModal(addGoalModal, data)">
+                  <i class="ri-pencil-line"></i>
+                </button>
+              </td>
+              <td>
+                <button type="button" class="btn btn-danger btn-sm" (click)="Delete_Mas_Landmark_Gloals(data)">
+                  <i class="ri-delete-bin-line"></i>
+                </button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="row justify-content-md-between align-items-md-center mt-2">
+        <div class="col col-sm-6">
+          <div class="dataTables_info mb-2">
+            แสดง {{ goalPagination.startIndex }} ถึง {{ goalPagination.endIndex }}
+            จากทั้งหมด {{ goalPagination.total }} รายการ
+          </div>
+        </div>
+        <div class="col col-sm-6">
+          <div class="text-sm-end">
+            <ngb-pagination [collectionSize]="goalPagination.total" [(page)]="goalPagination.page"
+              [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
+              (pageChange)="onGoalPageChange($event)">
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: ตัวชี้วัดที่ -->
+    <div class="border rounded p-3 bg-light" *ngIf="currentTab === 3">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div style="width:300px;">
+          <input type="text" class="form-control" placeholder="ค้นหาตัวชี้วัดที่..."
+            [(ngModel)]="searchTacticTerm" (input)="filterTacticSearch()">
+        </div>
+        <button class="btn btn-success text-black" (click)="openAddTacticModal(addTacticModal)">เพิ่มข้อมูล</button>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+          <thead class="text-center text-white sticky-header">
+            <tr>
+              <th style="width:5%">ลำดับ</th>
+              <th style="width:16%">เป้าหมายที่</th>
+              <th style="width:8%">ปีเริ่ม</th>
+              <th style="width:8%">ปีสิ้นสุด</th>
+              <th style="width:26%">ชื่อตัวชี้วัด</th>
+              <th style="width:10%">ชื่อย่อ</th>
+              <th style="width:6%">เรียง</th>
+              <th style="width:7%">จัดการ</th>
+              <th style="width:7%">ลบ</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (data of List_Mas_Landmark_Tacticts; track $index) {
+            <tr>
+              <td>{{ tacticPagination.startIndex + $index }}</td>
+              <td>{{ getGoalNameForTacticRow(data) }}</td>
+              <td>{{ data.BgYear_Start }}</td>
+              <td>{{ data.BgYear_End }}</td>
+              <td>{{ data.Landmark_Tacticts_Name || data.Landmark_Tactics_Name }}</td>
+              <td>{{ data.Landmark_Tacticts_Short_Name || data.Landmark_Tactics_Short_Name }}</td>
+              <td>{{ data.Order_Seq }}</td>
+              <td>
+                <button type="button" class="btn btn-warning btn-sm"
+                  (click)="openEditTacticModal(addTacticModal, data)">
+                  <i class="ri-pencil-line"></i>
+                </button>
+              </td>
+              <td>
+                <button type="button" class="btn btn-danger btn-sm" (click)="Delete_Mas_Landmark_Tacticts(data)">
+                  <i class="ri-delete-bin-line"></i>
+                </button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="row justify-content-md-between align-items-md-center mt-2">
+        <div class="col col-sm-6">
+          <div class="dataTables_info mb-2">
+            แสดง {{ tacticPagination.startIndex }} ถึง {{ tacticPagination.endIndex }}
+            จากทั้งหมด {{ tacticPagination.total }} รายการ
+          </div>
+        </div>
+        <div class="col col-sm-6">
+          <div class="text-sm-end">
+            <ngb-pagination [collectionSize]="tacticPagination.total" [(page)]="tacticPagination.page"
+              [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
+              (pageChange)="onTacticPageChange($event)">
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 4: กลยุทธ์การพัฒนาที่ -->
+    <div class="border rounded p-3 bg-light" *ngIf="currentTab === 4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div style="width:300px;">
+          <input type="text" class="form-control" placeholder="ค้นหากลยุทธ์การพัฒนาที่..."
+            [(ngModel)]="searchGuidelineTerm" (input)="filterGuidelineSearch()">
+        </div>
+        <button class="btn btn-success text-black" (click)="openAddGuidelineModal(addGuidelineModal)">เพิ่มข้อมูล</button>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+          <thead class="text-center text-white sticky-header">
+            <tr>
+              <th style="width:5%">ลำดับ</th>
+              <th style="width:14%">หมุดหมายที่</th>
+              <th style="width:8%">ปีเริ่ม</th>
+              <th style="width:8%">ปีสิ้นสุด</th>
+              <th style="width:24%">ชื่อ</th>
+              <th style="width:10%">ชื่อย่อ</th>
+              <th style="width:6%">เรียง</th>
+              <th style="width:7%">จัดการ</th>
+              <th style="width:7%">ลบ</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (data of List_Mas_Landmark_Guidelines; track $index) {
+            <tr>
+              <td>{{ guidelinePagination.startIndex + $index }}</td>
+              <td>{{ getLandmarkNameForGuidelineRow(data) }}</td>
+              <td>{{ data.BgYear_Start }}</td>
+              <td>{{ data.BgYear_End }}</td>
+              <td>{{ data.Landmark_Guidelines_Name || data.Guidelines_Name }}</td>
+              <td>{{ data.Landmark_Guidelines_Short_Name || data.Guidelines_Short_Name }}</td>
+              <td>{{ data.Order_Seq }}</td>
+              <td>
+                <button type="button" class="btn btn-warning btn-sm"
+                  (click)="openEditGuidelineModal(addGuidelineModal, data)">
+                  <i class="ri-pencil-line"></i>
+                </button>
+              </td>
+              <td>
+                <button type="button" class="btn btn-danger btn-sm" (click)="Delete_Mas_Landmark_Guidelines(data)">
+                  <i class="ri-delete-bin-line"></i>
+                </button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="row justify-content-md-between align-items-md-center mt-2">
+        <div class="col col-sm-6">
+          <div class="dataTables_info mb-2">
+            แสดง {{ guidelinePagination.startIndex }} ถึง {{ guidelinePagination.endIndex }}
+            จากทั้งหมด {{ guidelinePagination.total }} รายการ
+          </div>
+        </div>
+        <div class="col col-sm-6">
+          <div class="text-sm-end">
+            <ngb-pagination [collectionSize]="guidelinePagination.total" [(page)]="guidelinePagination.page"
+              [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
+              (pageChange)="onGuidelinePageChange($event)">
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 5: กลยุทธ์ย่อยที่ -->
+    <div class="border rounded p-3 bg-light" *ngIf="currentTab === 5">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div style="width:300px;">
+          <input type="text" class="form-control" placeholder="ค้นหากลยุทธ์ย่อยที่..."
+            [(ngModel)]="searchSubGuidelineTerm" (input)="filterSubGuidelineSearch()">
+        </div>
+        <button class="btn btn-success text-black" (click)="openAddSubGuidelineModal(addSubGuidelineModal)">เพิ่มข้อมูล</button>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+          <thead class="text-center text-white sticky-header">
+            <tr>
+              <th style="width:5%">ลำดับ</th>
+              <th style="width:16%">กลยุทธ์การพัฒนาที่</th>
+              <th style="width:8%">ปีเริ่ม</th>
+              <th style="width:8%">ปีสิ้นสุด</th>
+              <th style="width:24%">ชื่อ</th>
+              <th style="width:10%">ชื่อย่อ</th>
+              <th style="width:6%">เรียง</th>
+              <th style="width:7%">จัดการ</th>
+              <th style="width:7%">ลบ</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (data of List_Mas_Landmark_Sub_Guidelines; track $index) {
+            <tr>
+              <td>{{ subGuidelinePagination.startIndex + $index }}</td>
+              <td>{{ getGuidelineNameForSubRow(data) }}</td>
+              <td>{{ data.BgYear_Start }}</td>
+              <td>{{ data.BgYear_End }}</td>
+              <td>{{ data.Sub_Guidelines_Name }}</td>
+              <td>{{ data.Sub_Guidelines_Short_Name }}</td>
+              <td>{{ data.Order_Seq }}</td>
+              <td>
+                <button type="button" class="btn btn-warning btn-sm"
+                  (click)="openEditSubGuidelineModal(addSubGuidelineModal, data)">
+                  <i class="ri-pencil-line"></i>
+                </button>
+              </td>
+              <td>
+                <button type="button" class="btn btn-danger btn-sm"
+                  (click)="Delete_Mas_Landmark_Sub_Guidelines(data)">
+                  <i class="ri-delete-bin-line"></i>
+                </button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="row justify-content-md-between align-items-md-center mt-2">
+        <div class="col col-sm-6">
+          <div class="dataTables_info mb-2">
+            แสดง {{ subGuidelinePagination.startIndex }} ถึง {{ subGuidelinePagination.endIndex }}
+            จากทั้งหมด {{ subGuidelinePagination.total }} รายการ
+          </div>
+        </div>
+        <div class="col col-sm-6">
+          <div class="text-sm-end">
+            <ngb-pagination [collectionSize]="subGuidelinePagination.total" [(page)]="subGuidelinePagination.page"
+              [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
+              (pageChange)="onSubGuidelinePageChange($event)">
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: หมุดหมายที่ -->
+<ng-template #addLandmarkModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">{{ isEditModeLandmark ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลหมุดหมายที่</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">ปีที่เริ่ม</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Landmark.BgYear_Start">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีสิ้นสุด</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Landmark.BgYear_End">
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">ชื่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Landmark.Landmark_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ชื่อย่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Landmark.Landmark_Short_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">เรียงลำดับ</label>
+        <input type="number" class="form-control" [(ngModel)]="Mas_Landmark.Order_Seq">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="BtnSaveLandmark()">บันทึก</button>
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">ยกเลิก</button>
+  </div>
+</ng-template>
+
+<!-- Modal: เป้าหมายที่ -->
+<ng-template #addGoalModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">{{ isEditModeGoal ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลเป้าหมายที่</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row g-3">
+      <div class="col-md-12">
+        <label class="form-label">หมุดหมายที่ <span class="text-danger">*</span></label>
+        @for (key of [goalLandmarkSelectKey]; track key) {
+        <ng-select [items]="listMasLandmarkAll" bindLabel="Landmark_Name" bindValue="Landmark_Id"
+          [ngModel]="Mas_Landmark_Gloals.FK_Landmark_Id" (ngModelChange)="onGoalLandmarkIdChange($event)"
+          [searchable]="true" [clearable]="true" appendTo="body" placeholder="-- เลือก --">
+        </ng-select>
+        }
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีที่เริ่ม</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Landmark_Gloals.BgYear_Start">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีสิ้นสุด</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Landmark_Gloals.BgYear_End">
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">ชื่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Landmark_Gloals.Landmark_Gloals_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ชื่อย่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Landmark_Gloals.Landmark_Gloals_Short_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">เรียงลำดับ</label>
+        <input type="number" class="form-control" [(ngModel)]="Mas_Landmark_Gloals.Order_Seq">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="BtnSaveLandmarkGloals()">บันทึก</button>
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">ยกเลิก</button>
+  </div>
+</ng-template>
+
+<!-- Modal: ตัวชี้วัดที่ -->
+<ng-template #addTacticModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">{{ isEditModeTactic ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลตัวชี้วัดที่</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row g-3">
+      <div class="col-md-12">
+        <label class="form-label">เป้าหมายที่ <span class="text-danger">*</span></label>
+        @for (key of [tacticGoalSelectKey]; track key) {
+        <ng-select [items]="listMasLandmarkGloalsAll" bindLabel="Landmark_Gloals_Name" bindValue="Landmark_Gloals_Id"
+          [ngModel]="Mas_Landmark_Tacticts.FK_Landmark_Goals_Id" (ngModelChange)="onTacticGoalIdChange($event)"
+          [searchable]="true" [clearable]="true" appendTo="body" placeholder="-- เลือก --">
+        </ng-select>
+        }
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีที่เริ่ม</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Landmark_Tacticts.BgYear_Start">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีสิ้นสุด</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Landmark_Tacticts.BgYear_End">
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">ชื่อตัวชี้วัด</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Landmark_Tacticts.Landmark_Tacticts_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ชื่อย่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Landmark_Tacticts.Landmark_Tacticts_Short_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">เรียงลำดับ</label>
+        <input type="number" class="form-control" [(ngModel)]="Mas_Landmark_Tacticts.Order_Seq">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="BtnSaveLandmarkTacticts()">บันทึก</button>
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">ยกเลิก</button>
+  </div>
+</ng-template>
+
+<!-- Modal: กลยุทธ์การพัฒนาที่ -->
+<ng-template #addGuidelineModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">{{ isEditModeGuideline ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลกลยุทธ์การพัฒนาที่</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row g-3">
+      <div class="col-md-12">
+        <label class="form-label">หมุดหมายที่ <span class="text-danger">*</span></label>
+        @for (key of [guidelineLandmarkSelectKey]; track key) {
+        <ng-select [items]="listMasLandmarkAll" bindLabel="Landmark_Name" bindValue="Landmark_Id"
+          [ngModel]="Mas_Landmark_Guidelines.FK_Landmark_Id" (ngModelChange)="onGuidelineLandmarkIdChange($event)"
+          [searchable]="true" [clearable]="true" appendTo="body" placeholder="-- เลือก --">
+        </ng-select>
+        }
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีที่เริ่ม</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Landmark_Guidelines.BgYear_Start">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีสิ้นสุด</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Landmark_Guidelines.BgYear_End">
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">ชื่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Landmark_Guidelines.Landmark_Guidelines_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ชื่อย่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Landmark_Guidelines.Landmark_Guidelines_Short_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">เรียงลำดับ</label>
+        <input type="number" class="form-control" [(ngModel)]="Mas_Landmark_Guidelines.Order_Seq">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="BtnSaveLandmarkGuidelines()">บันทึก</button>
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">ยกเลิก</button>
+  </div>
+</ng-template>
+
+<!-- Modal: กลยุทธ์ย่อยที่ -->
+<ng-template #addSubGuidelineModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">{{ isEditModeSubGuideline ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลกลยุทธ์ย่อยที่</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row g-3">
+      <div class="col-md-12">
+        <label class="form-label">กลยุทธ์การพัฒนาที่ <span class="text-danger">*</span></label>
+        @for (key of [subGuidelineGuidelineSelectKey]; track key) {
+        <ng-select [items]="listMasLandmarkGuidelinesAll" bindLabel="Landmark_Guidelines_Name"
+          bindValue="Landmark_Guidelines_Id" [ngModel]="Mas_Landmark_Sub_Guidelines.FK_Guidelines_Id"
+          (ngModelChange)="onSubGuidelineGuidelineIdChange($event)"
+          [searchable]="true" [clearable]="true" appendTo="body" placeholder="-- เลือก --">
+        </ng-select>
+        }
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีที่เริ่ม</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Landmark_Sub_Guidelines.BgYear_Start">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีสิ้นสุด</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Landmark_Sub_Guidelines.BgYear_End">
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">ชื่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Landmark_Sub_Guidelines.Sub_Guidelines_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ชื่อย่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Landmark_Sub_Guidelines.Sub_Guidelines_Short_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">เรียงลำดับ</label>
+        <input type="number" class="form-control" [(ngModel)]="Mas_Landmark_Sub_Guidelines.Order_Seq">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="BtnSaveLandmarkSubGuidelines()">บันทึก</button>
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">ยกเลิก</button>
+  </div>
+</ng-template>
