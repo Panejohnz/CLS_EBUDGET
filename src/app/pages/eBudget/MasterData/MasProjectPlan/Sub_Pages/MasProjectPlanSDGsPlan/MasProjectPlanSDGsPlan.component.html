@@ -1,0 +1,238 @@
+<div class="card shadow-sm">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h5 class="mb-0">ความสอดคล้องกับเป้าหมาย SDGs</h5>
+    <button type="button" class="btn btn-outline-secondary btn-sm" (click)="goBackToPlan()">กลับหน้าแผนงาน</button>
+  </div>
+  <div class="card-body">
+    <ul class="nav nav-tabs mb-3">
+      <li class="nav-item">
+        <button type="button" class="nav-link" [class.active]="currentTab === 1" (click)="goTab(1)">
+          เป้าหมายหลัก SDGs
+        </button>
+      </li>
+      <li class="nav-item">
+        <button type="button" class="nav-link" [class.active]="currentTab === 2" (click)="goTab(2)">
+          เป้าหมายย่อย SDGs
+        </button>
+      </li>
+    </ul>
+
+    <!-- Tab 1: เป้าหมายหลัก SDGs -->
+    <div class="border rounded p-3 bg-light" *ngIf="currentTab === 1">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div style="width:300px;">
+          <input type="text" class="form-control" placeholder="ค้นหาเป้าหมายหลัก SDGs..."
+            [(ngModel)]="service.searchTerm" (input)="filterGoalSearch()">
+        </div>
+        <button class="btn btn-success text-black" (click)="openAddGoalModal(addGoalModal)">เพิ่มข้อมูล</button>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+          <thead class="text-center text-white sticky-header">
+            <tr>
+              <th style="width:5%">ลำดับ</th>
+              <th style="width:8%">ปีเริ่ม</th>
+              <th style="width:8%">ปีสิ้นสุด</th>
+              <th style="width:35%">ชื่อ</th>
+              <th style="width:15%">ชื่อย่อ</th>
+              <th style="width:8%">เรียง</th>
+              <th style="width:8%">จัดการ</th>
+              <th style="width:8%">ลบ</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (data of List_Mas_SDGs_Gloals; track $index) {
+            <tr>
+              <td>{{ goalPagination.startIndex + $index }}</td>
+              <td>{{ data.BgYear_Start }}</td>
+              <td>{{ data.BgYear_End }}</td>
+              <td>{{ data.SDGs_Gloals_Name || data.SDGS_Goals_Name }}</td>
+              <td>{{ data.SDGs_Gloals_Short_Name || data.SDGS_Goals_Short_Name }}</td>
+              <td>{{ data.Order_Seq }}</td>
+              <td>
+                <button type="button" class="btn btn-warning btn-sm" (click)="openEditGoalModal(addGoalModal, data)">
+                  <i class="ri-pencil-line"></i>
+                </button>
+              </td>
+              <td>
+                <button type="button" class="btn btn-danger btn-sm" (click)="Delete_Mas_SDGs_Gloals(data)">
+                  <i class="ri-delete-bin-line"></i>
+                </button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="row justify-content-md-between align-items-md-center mt-2">
+        <div class="col col-sm-6">
+          <div class="dataTables_info mb-2">
+            แสดง {{ goalPagination.startIndex }} ถึง {{ goalPagination.endIndex }}
+            จากทั้งหมด {{ goalPagination.total }} รายการ
+          </div>
+        </div>
+        <div class="col col-sm-6">
+          <div class="text-sm-end">
+            <ngb-pagination [collectionSize]="goalPagination.total" [(page)]="goalPagination.page"
+              [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
+              (pageChange)="onGoalPageChange($event)">
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 2: เป้าหมายย่อย SDGs -->
+    <div class="border rounded p-3 bg-light" *ngIf="currentTab === 2">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div style="width:300px;">
+          <input type="text" class="form-control" placeholder="ค้นหาเป้าหมายย่อย SDGs..."
+            [(ngModel)]="searchTargetTerm" (input)="filterTargetSearch()">
+        </div>
+        <button class="btn btn-success text-black" (click)="openAddTargetModal(addTargetModal)">เพิ่มข้อมูล</button>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+          <thead class="text-center text-white sticky-header">
+            <tr>
+              <th style="width:5%">ลำดับ</th>
+              <th style="width:18%">เป้าหมายหลัก SDGs</th>
+              <th style="width:8%">ปีเริ่ม</th>
+              <th style="width:8%">ปีสิ้นสุด</th>
+              <th style="width:28%">ชื่อ</th>
+              <th style="width:10%">ชื่อย่อ</th>
+              <th style="width:6%">เรียง</th>
+              <th style="width:7%">จัดการ</th>
+              <th style="width:7%">ลบ</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (data of List_Mas_SDGs_Targets; track $index) {
+            <tr>
+              <td>{{ targetPagination.startIndex + $index }}</td>
+              <td>{{ getGoalNameForTargetRow(data) }}</td>
+              <td>{{ data.BgYear_Start }}</td>
+              <td>{{ data.BgYear_End }}</td>
+              <td>{{ data.SDGs_Targets_Name }}</td>
+              <td>{{ data.SDGs_Targets_Short_Name }}</td>
+              <td>{{ data.Order_Seq }}</td>
+              <td>
+                <button type="button" class="btn btn-warning btn-sm"
+                  (click)="openEditTargetModal(addTargetModal, data)">
+                  <i class="ri-pencil-line"></i>
+                </button>
+              </td>
+              <td>
+                <button type="button" class="btn btn-danger btn-sm" (click)="Delete_Mas_SDGs_Targets(data)">
+                  <i class="ri-delete-bin-line"></i>
+                </button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="row justify-content-md-between align-items-md-center mt-2">
+        <div class="col col-sm-6">
+          <div class="dataTables_info mb-2">
+            แสดง {{ targetPagination.startIndex }} ถึง {{ targetPagination.endIndex }}
+            จากทั้งหมด {{ targetPagination.total }} รายการ
+          </div>
+        </div>
+        <div class="col col-sm-6">
+          <div class="text-sm-end">
+            <ngb-pagination [collectionSize]="targetPagination.total" [(page)]="targetPagination.page"
+              [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
+              (pageChange)="onTargetPageChange($event)">
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: เป้าหมายหลัก SDGs -->
+<ng-template #addGoalModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">{{ isEditModeGoal ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลเป้าหมายหลัก SDGs</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">ปีที่เริ่ม</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_SDGs_Gloals.BgYear_Start">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีสิ้นสุด</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_SDGs_Gloals.BgYear_End">
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">ชื่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_SDGs_Gloals.SDGs_Gloals_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ชื่อย่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_SDGs_Gloals.SDGs_Gloals_Short_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">เรียงลำดับ</label>
+        <input type="number" class="form-control" [(ngModel)]="Mas_SDGs_Gloals.Order_Seq">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="BtnSaveSDGsGloals()">บันทึก</button>
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">ยกเลิก</button>
+  </div>
+</ng-template>
+
+<!-- Modal: เป้าหมายย่อย SDGs -->
+<ng-template #addTargetModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">{{ isEditModeTarget ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลเป้าหมายย่อย SDGs</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row g-3">
+      <div class="col-md-12">
+        <label class="form-label">เป้าหมายหลัก SDGs <span class="text-danger">*</span></label>
+        @for (key of [targetGoalSelectKey]; track key) {
+        <ng-select [items]="listMasSDGsGloalsAll" bindLabel="SDGs_Gloals_Name" bindValue="SDGs_Gloals_Id"
+          [ngModel]="Mas_SDGs_Targets.Fk_SDGS_Goals_Id" (ngModelChange)="onTargetGoalIdChange($event)"
+          [searchable]="true" [clearable]="true" appendTo="body" placeholder="-- เลือก --">
+        </ng-select>
+        }
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีที่เริ่ม</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_SDGs_Targets.BgYear_Start">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีสิ้นสุด</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_SDGs_Targets.BgYear_End">
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">ชื่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_SDGs_Targets.SDGs_Targets_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ชื่อย่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_SDGs_Targets.SDGs_Targets_Short_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">เรียงลำดับ</label>
+        <input type="number" class="form-control" [(ngModel)]="Mas_SDGs_Targets.Order_Seq">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="BtnSaveSDGsTargets()">บันทึก</button>
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">ยกเลิก</button>
+  </div>
+</ng-template>

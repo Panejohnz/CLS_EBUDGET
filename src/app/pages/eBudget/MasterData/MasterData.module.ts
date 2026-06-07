@@ -21,6 +21,10 @@ import { MasProjectPlanComponent } from './MasProjectPlan/MasProjectPlan.compone
 import { MasExpenseDetailComponent } from './MasExpenseDetail/MasExpenseDetail.component';
 import { MasProjectPlanNationalStrategyZComponent } from './MasProjectPlan/Sub_Pages/MasProjectPlanNationalStrategyZ/MasProjectPlanNationalStrategyZ.component';
 import { MasProjectPlanMasterPlanYComponent } from './MasProjectPlan/Sub_Pages/MasProjectPlanMasterPlanY/MasProjectPlanMasterPlanY.component';
+import { MasProjectPlanMinistryActionPlanComponent } from './MasProjectPlan/Sub_Pages/MasProjectPlanMinistryActionPlan/MasProjectPlanMinistryActionPlan.component';
+import { NationalEconomicDevelopmentPlanComponent } from './MasProjectPlan/Sub_Pages/NationalEconomicDevelopmentPlan/NationalEconomicDevelopmentPlan.component';
+import { NationalSocialDevelopmentPlanComponent } from './MasProjectPlan/Sub_Pages/NationalSocialDevelopmentPlan/NationalSocialDevelopmentPlan.component';
+import { MasProjectPlanSDGsPlanComponent } from './MasProjectPlan/Sub_Pages/MasProjectPlanSDGsPlan/MasProjectPlanSDGsPlan.component';
 
 
 @NgModule({
@@ -31,6 +35,10 @@ import { MasProjectPlanMasterPlanYComponent } from './MasProjectPlan/Sub_Pages/M
     MasExpenseDetailComponent,
     MasProjectPlanNationalStrategyZComponent,
     MasProjectPlanMasterPlanYComponent,
+    NationalEconomicDevelopmentPlanComponent,
+    NationalSocialDevelopmentPlanComponent,
+    MasProjectPlanMinistryActionPlanComponent,
+    MasProjectPlanSDGsPlanComponent,
   ],
   imports: [
     CommonModule,
