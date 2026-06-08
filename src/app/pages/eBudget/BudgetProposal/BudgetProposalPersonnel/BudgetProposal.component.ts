@@ -328,8 +328,11 @@ export class ProjectBudgetProposalComponent {
   selectedProjectIds: number[] = [];
 
   get allCopyProjectsSelected(): boolean {
-    return this.copyProjectList.length > 0 &&
-      this.selectedProjectIds.length === this.copyProjectList.length;
+    const visibleIds =
+      this.filteredCopyProjectList.map(item => Number(item.Project_Id));
+
+    return visibleIds.length > 0 &&
+      visibleIds.every(id => this.selectedProjectIds.includes(id));
   }
 
   get hasSelectedCopyProjects(): boolean {
@@ -337,9 +340,21 @@ export class ProjectBudgetProposalComponent {
   }
 
   toggleSelectAllCopyProjects(checked: boolean) {
-    this.selectedProjectIds = checked
-      ? this.copyProjectList.map(item => Number(item.Project_Id))
-      : [];
+    const visibleIds =
+      this.filteredCopyProjectList.map(item => Number(item.Project_Id));
+
+    if (checked) {
+      this.selectedProjectIds = Array.from(
+        new Set([
+          ...this.selectedProjectIds,
+          ...visibleIds
+        ])
+      );
+      return;
+    }
+
+    this.selectedProjectIds =
+      this.selectedProjectIds.filter(id => !visibleIds.includes(id));
   }
 
   toggleCopyProject(projectId: number, checked: boolean) {
@@ -362,6 +377,31 @@ export class ProjectBudgetProposalComponent {
   copyProjectList: any[] = [];
 
   copyProjectListTemp: any[] = [];
+  get filteredCopyProjectList(): any[] {
+    const keyword =
+      (this.projectSearchTerm || '').trim().toLowerCase();
+
+    if (!keyword) {
+      return this.copyProjectList;
+    }
+
+    return this.copyProjectList.filter(item => {
+      return [
+        item.BgYear,
+        item.Department_Name,
+        item.Plan_Name,
+        item.Product_Name,
+        item.Activity_Name,
+        item.Project_Name,
+        item.Status_Name,
+        item.Total
+      ]
+        .join(' ')
+        .toLowerCase()
+        .includes(keyword);
+    });
+  }
+
   copyModal(content: any) {
     let model = {
       FUNC_CODE: "FUNC-Get_Project_Plan_7",
@@ -375,6 +415,7 @@ export class ProjectBudgetProposalComponent {
         : [];
       let griddata = [...allData]
       this.copyProjectList = [...griddata];
+      this.projectSearchTerm = '';
 
       this.selectedProjectIds = [];
 

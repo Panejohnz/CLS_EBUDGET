@@ -93,7 +93,12 @@
                                 </td>
 
                                 <td>{{data.Budget_Type_Name}}</td>
+                                @if(data.Project_Name){
+                                <td>{{data.Project_Name}}</td>
+                                }@else {
                                 <td>{{data.Expense_Name}}</td>
+                                }
+
 
                                 <td class=" text-end">
                                     {{data.Total | number:'1.2-2'}}
@@ -188,7 +193,12 @@
         <div class="row mb-3">
 
             <div class="col-md-6">
-
+                <label class="form-label">ค้นหา</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    [(ngModel)]="projectSearchTerm"
+                    placeholder="ค้นหาโครงการ, หน่วยงาน, แผนงาน...">
 
             </div>
 
@@ -202,10 +212,7 @@
 
                     <tr>
                         <th style="width:5%">
-                            <input
-                                class="form-check-input"
-                                type="checkbox"
-                                [checked]="allCopyProjectsSelected"
+                            <input class="form-check-input" type="checkbox" [checked]="allCopyProjectsSelected"
                                 (change)="toggleSelectAllCopyProjects($any($event.target).checked)">
                         </th>
                         <th style="width:8%">ปีงบ</th>
@@ -214,6 +221,7 @@
                         <th style="width:15%">ผลผลิต</th>
                         <th style="width:20%">กิจกรรม</th>
                         <th style="width:22%">โครงการ</th>
+                        <th style="width:22%">งบประมาณ</th>
                         <th style="width:22%">สถานะ</th>
                     </tr>
 
@@ -221,15 +229,13 @@
 
                 <tbody>
 
-                    @for(item of copyProjectList; track item.Project_Id){
+                    @for(item of filteredCopyProjectList; track item.Project_Id){
 
                     <tr>
 
                         <td class="text-center">
 
-                            <input
-                                class="form-check-input"
-                                type="checkbox"
+                            <input class="form-check-input" type="checkbox"
                                 [checked]="isCopyProjectSelected(item.Project_Id)"
                                 (change)="toggleCopyProject(item.Project_Id, $any($event.target).checked)">
 
@@ -259,6 +265,9 @@
                             {{item.Project_Name}}
                         </td>
                         <td>
+                            {{item.Total}}
+                        </td>
+                        <td>
 
                             <span class="badge bg-info">
                                 {{item.Status_Name}}
@@ -269,10 +278,10 @@
 
                     }
 
-                    @if(copyProjectList.length == 0){
+                    @if(filteredCopyProjectList.length == 0){
 
                     <tr>
-                        <td colspan="7" class="text-center text-muted py-4">
+                        <td colspan="9" class="text-center text-muted py-4">
                             ไม่พบข้อมูล
                         </td>
                     </tr>
@@ -305,4 +314,3 @@
     </div>
 
 </ng-template>
-
