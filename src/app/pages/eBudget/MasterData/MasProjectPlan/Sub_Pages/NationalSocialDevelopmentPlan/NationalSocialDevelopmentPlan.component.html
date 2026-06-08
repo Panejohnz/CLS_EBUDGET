@@ -72,13 +72,13 @@
       </div>
       <div class="row justify-content-md-between align-items-md-center mt-2">
         <div class="col col-sm-6">
-          <div class="dataTables_info mb-2">
+          <div class="dataTables_info mb-2 text-start">
             แสดง {{ landmarkPagination.startIndex }} ถึง {{ landmarkPagination.endIndex }}
             จากทั้งหมด {{ landmarkPagination.total }} รายการ
           </div>
         </div>
         <div class="col col-sm-6">
-          <div class="text-sm-end">
+          <div class="d-flex justify-content-sm-end">
             <ngb-pagination [collectionSize]="landmarkPagination.total" [(page)]="landmarkPagination.page"
               [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
               (pageChange)="onLandmarkPageChange($event)">
@@ -139,13 +139,13 @@
       </div>
       <div class="row justify-content-md-between align-items-md-center mt-2">
         <div class="col col-sm-6">
-          <div class="dataTables_info mb-2">
+          <div class="dataTables_info mb-2 text-start">
             แสดง {{ goalPagination.startIndex }} ถึง {{ goalPagination.endIndex }}
             จากทั้งหมด {{ goalPagination.total }} รายการ
           </div>
         </div>
         <div class="col col-sm-6">
-          <div class="text-sm-end">
+          <div class="d-flex justify-content-sm-end">
             <ngb-pagination [collectionSize]="goalPagination.total" [(page)]="goalPagination.page"
               [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
               (pageChange)="onGoalPageChange($event)">
@@ -207,13 +207,13 @@
       </div>
       <div class="row justify-content-md-between align-items-md-center mt-2">
         <div class="col col-sm-6">
-          <div class="dataTables_info mb-2">
+          <div class="dataTables_info mb-2 text-start">
             แสดง {{ tacticPagination.startIndex }} ถึง {{ tacticPagination.endIndex }}
             จากทั้งหมด {{ tacticPagination.total }} รายการ
           </div>
         </div>
         <div class="col col-sm-6">
-          <div class="text-sm-end">
+          <div class="d-flex justify-content-sm-end">
             <ngb-pagination [collectionSize]="tacticPagination.total" [(page)]="tacticPagination.page"
               [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
               (pageChange)="onTacticPageChange($event)">
@@ -275,13 +275,13 @@
       </div>
       <div class="row justify-content-md-between align-items-md-center mt-2">
         <div class="col col-sm-6">
-          <div class="dataTables_info mb-2">
+          <div class="dataTables_info mb-2 text-start">
             แสดง {{ guidelinePagination.startIndex }} ถึง {{ guidelinePagination.endIndex }}
             จากทั้งหมด {{ guidelinePagination.total }} รายการ
           </div>
         </div>
         <div class="col col-sm-6">
-          <div class="text-sm-end">
+          <div class="d-flex justify-content-sm-end">
             <ngb-pagination [collectionSize]="guidelinePagination.total" [(page)]="guidelinePagination.page"
               [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
               (pageChange)="onGuidelinePageChange($event)">
@@ -344,13 +344,13 @@
       </div>
       <div class="row justify-content-md-between align-items-md-center mt-2">
         <div class="col col-sm-6">
-          <div class="dataTables_info mb-2">
+          <div class="dataTables_info mb-2 text-start">
             แสดง {{ subGuidelinePagination.startIndex }} ถึง {{ subGuidelinePagination.endIndex }}
             จากทั้งหมด {{ subGuidelinePagination.total }} รายการ
           </div>
         </div>
         <div class="col col-sm-6">
-          <div class="text-sm-end">
+          <div class="d-flex justify-content-sm-end">
             <ngb-pagination [collectionSize]="subGuidelinePagination.total" [(page)]="subGuidelinePagination.page"
               [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
               (pageChange)="onSubGuidelinePageChange($event)">

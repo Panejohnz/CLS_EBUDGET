@@ -53,13 +53,13 @@
 
     <div class="row justify-content-md-between align-items-md-center mt-2">
       <div class="col col-sm-6">
-        <div class="dataTables_info mb-2">
+        <div class="dataTables_info mb-2 text-start">
           แสดง {{ pagination.startIndex }} ถึง {{ pagination.endIndex }}
           จากทั้งหมด {{ pagination.total }} รายการ
         </div>
       </div>
       <div class="col col-sm-6">
-        <div class="text-sm-end">
+        <div class="d-flex justify-content-sm-end">
           <ngb-pagination [collectionSize]="pagination.total" [(page)]="pagination.page"
             [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
             (pageChange)="onPageChange($event)">

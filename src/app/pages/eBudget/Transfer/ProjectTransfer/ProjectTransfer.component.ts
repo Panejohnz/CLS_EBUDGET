@@ -94,6 +94,8 @@ export class ProjectTransferComponent
 
   toPlans: any[] = [];
   currentYear: any;
+  readonly pageSize = 30;
+  pagination = { page: 1 };
 
   ngOnInit(): void {
 
@@ -171,6 +173,7 @@ export class ProjectTransferComponent
         this.allPlans =
           response?.List_Budget_Plan || [];
         this.plans = [];
+        this.pagination.page = 1;
 
       });
 
@@ -729,6 +732,41 @@ const plan =
     });
 
   }
+
+  get pagedRows(): any[] {
+    const rows = this.filteredRows;
+    const safePage = this.clampPage(this.pagination.page, rows.length);
+
+    if (safePage !== this.pagination.page) {
+      this.pagination.page = safePage;
+    }
+
+    return rows.slice((safePage - 1) * this.pageSize, safePage * this.pageSize);
+  }
+
+  get pageStartIndex(): number {
+    return this.filteredRows.length
+      ? (this.pagination.page - 1) * this.pageSize + 1
+      : 0;
+  }
+
+  get pageEndIndex(): number {
+    return Math.min(this.pagination.page * this.pageSize, this.filteredRows.length);
+  }
+
+  onFilterChange(): void {
+    this.pagination.page = 1;
+  }
+
+  onPageChange(page: number): void {
+    this.pagination.page = page;
+  }
+
+  private clampPage(page: number, total: number): number {
+    const maxPage = Math.max(1, Math.ceil(total / this.pageSize) || 1);
+    return Math.min(Math.max(1, page), maxPage);
+  }
+
   reset() {
 
     this.form = {

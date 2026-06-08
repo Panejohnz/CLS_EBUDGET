@@ -18,7 +18,8 @@
                     ค้นหา
                 </label>
 
-                <input class="form-control" style="width:200px" [(ngModel)]="keyword">
+                <input class="form-control" style="width:200px" [(ngModel)]="keyword"
+                    (ngModelChange)="onFilterChange()">
 
                 <button class="btn btn-success" (click)="openAdd(formModal)">
 
@@ -53,9 +54,9 @@
 
                 <tbody>
 
-                    <tr *ngFor="let row of filteredRows; let i = index">
+                    <tr *ngFor="let row of pagedRows; let i = index">
                         <td>
-                            {{ i + 1 }}
+                            {{ pageStartIndex + i }}
                         </td>
 
                         <td>
@@ -115,6 +116,22 @@
                 </tbody>
 
             </table>
+        </div>
+        <div class="row justify-content-md-between align-items-md-center mt-2">
+            <div class="col col-sm-6">
+                <div class="dataTables_info mb-2 text-start">
+                    แสดง {{ pageStartIndex }} ถึง {{ pageEndIndex }}
+                    จากทั้งหมด {{ filteredRows.length }} รายการ
+                </div>
+            </div>
+            <div class="col col-sm-6">
+                <div class="d-flex justify-content-sm-end">
+                    <ngb-pagination [collectionSize]="filteredRows.length" [(page)]="pagination.page"
+                        [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
+                        (pageChange)="onPageChange($event)">
+                    </ngb-pagination>
+                </div>
+            </div>
         </div>
         <ng-template #formModal let-modal>
 

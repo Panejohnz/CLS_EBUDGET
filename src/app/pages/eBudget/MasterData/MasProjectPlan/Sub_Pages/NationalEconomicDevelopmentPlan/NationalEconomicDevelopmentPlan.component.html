@@ -76,13 +76,13 @@
       </div>
       <div class="row justify-content-md-between align-items-md-center mt-2">
         <div class="col col-sm-6">
-          <div class="dataTables_info mb-2">
+          <div class="dataTables_info mb-2 text-start">
             แสดง {{ planPagination.startIndex }} ถึง {{ planPagination.endIndex }}
             จากทั้งหมด {{ planPagination.total }} รายการ
           </div>
         </div>
         <div class="col col-sm-6">
-          <div class="text-sm-end">
+          <div class="d-flex justify-content-sm-end">
             <ngb-pagination [collectionSize]="planPagination.total" [(page)]="planPagination.page"
               [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
               (pageChange)="onPlanPageChange($event)">
@@ -143,13 +143,13 @@
       </div>
       <div class="row justify-content-md-between align-items-md-center mt-2">
         <div class="col col-sm-6">
-          <div class="dataTables_info mb-2">
+          <div class="dataTables_info mb-2 text-start">
             แสดง {{ goalPagination.startIndex }} ถึง {{ goalPagination.endIndex }}
             จากทั้งหมด {{ goalPagination.total }} รายการ
           </div>
         </div>
         <div class="col col-sm-6">
-          <div class="text-sm-end">
+          <div class="d-flex justify-content-sm-end">
             <ngb-pagination [collectionSize]="goalPagination.total" [(page)]="goalPagination.page"
               [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
               (pageChange)="onGoalPageChange($event)">
@@ -211,13 +211,13 @@
       </div>
       <div class="row justify-content-md-between align-items-md-center mt-2">
         <div class="col col-sm-6">
-          <div class="dataTables_info mb-2">
+          <div class="dataTables_info mb-2 text-start">
             แสดง {{ indicatorPagination.startIndex }} ถึง {{ indicatorPagination.endIndex }}
             จากทั้งหมด {{ indicatorPagination.total }} รายการ
           </div>
         </div>
         <div class="col col-sm-6">
-          <div class="text-sm-end">
+          <div class="d-flex justify-content-sm-end">
             <ngb-pagination [collectionSize]="indicatorPagination.total" [(page)]="indicatorPagination.page"
               [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
               (pageChange)="onIndicatorPageChange($event)">
@@ -280,13 +280,13 @@
       </div>
       <div class="row justify-content-md-between align-items-md-center mt-2">
         <div class="col col-sm-6">
-          <div class="dataTables_info mb-2">
+          <div class="dataTables_info mb-2 text-start">
             แสดง {{ guidelinePagination.startIndex }} ถึง {{ guidelinePagination.endIndex }}
             จากทั้งหมด {{ guidelinePagination.total }} รายการ
           </div>
         </div>
         <div class="col col-sm-6">
-          <div class="text-sm-end">
+          <div class="d-flex justify-content-sm-end">
             <ngb-pagination [collectionSize]="guidelinePagination.total" [(page)]="guidelinePagination.page"
               [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
               (pageChange)="onGuidelinePageChange($event)">

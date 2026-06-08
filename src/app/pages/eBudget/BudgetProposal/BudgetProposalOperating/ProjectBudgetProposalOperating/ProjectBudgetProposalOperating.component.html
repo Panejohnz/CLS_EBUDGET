@@ -113,19 +113,17 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="row justify-content-md-between align-items-md-center">
-                    <div class="col-sm-12 col-md-5">
-                        <div class="dataTables_info mb-2" id="tickets-table_info" role="status" aria-live="polite">
-                            Showing
-                            {{service.startIndex}} to
-                            {{service.endIndex}} of {{service.totalRecords}}
-                            entries
+                <div class="row justify-content-md-between align-items-md-center mt-2">
+                    <div class="col col-sm-6">
+                        <div class="dataTables_info mb-2 text-start">
+                            แสดง {{ service.startIndex }} ถึง {{ service.endIndex }}
+                            จากทั้งหมด {{ service.totalRecords }} รายการ
                         </div>
                     </div>
-                    <div class="col-sm-12 col-md-5">
-                        <div class="text-md-right float-md-end gridjs-pagination">
+                    <div class="col col-sm-6">
+                        <div class="d-flex justify-content-sm-end">
                             <ngb-pagination [collectionSize]="(total$ | async)!" [(page)]="service.page"
-                                [pageSize]="service.pageSize">
+                                [pageSize]="service.pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true">
                             </ngb-pagination>
                         </div>
                     </div>

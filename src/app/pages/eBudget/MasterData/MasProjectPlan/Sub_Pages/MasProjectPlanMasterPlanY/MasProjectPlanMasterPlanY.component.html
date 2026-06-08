@@ -102,13 +102,13 @@
         </div>
         <div class="row justify-content-md-between align-items-md-center mt-2">
           <div class="col col-sm-6">
-            <div class="dataTables_info mb-2">
+            <div class="dataTables_info mb-2 text-start">
               แสดง {{ planPagination.startIndex }} ถึง {{ planPagination.endIndex }}
               จากทั้งหมด {{ planPagination.total }} รายการ
             </div>
           </div>
           <div class="col col-sm-6">
-            <div class="text-sm-end">
+            <div class="d-flex justify-content-sm-end">
               <ngb-pagination [collectionSize]="planPagination.total" [(page)]="planPagination.page"
                 [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
                 (pageChange)="onPlanPageChange($event)">
@@ -176,13 +176,13 @@
         </div>
         <div class="row justify-content-md-between align-items-md-center mt-2">
           <div class="col col-sm-6">
-            <div class="dataTables_info mb-2">
+            <div class="dataTables_info mb-2 text-start">
               แสดง {{ goalPagination.startIndex }} ถึง {{ goalPagination.endIndex }}
               จากทั้งหมด {{ goalPagination.total }} รายการ
             </div>
           </div>
           <div class="col col-sm-6">
-            <div class="text-sm-end">
+            <div class="d-flex justify-content-sm-end">
               <ngb-pagination [collectionSize]="goalPagination.total" [(page)]="goalPagination.page"
                 [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
                 (pageChange)="onGoalPageChange($event)">
@@ -254,13 +254,13 @@
         </div>
         <div class="row justify-content-md-between align-items-md-center mt-2">
           <div class="col col-sm-6">
-            <div class="dataTables_info mb-2">
+            <div class="dataTables_info mb-2 text-start">
               แสดง {{ tacticPagination.startIndex }} ถึง {{ tacticPagination.endIndex }}
               จากทั้งหมด {{ tacticPagination.total }} รายการ
             </div>
           </div>
           <div class="col col-sm-6">
-            <div class="text-sm-end">
+            <div class="d-flex justify-content-sm-end">
               <ngb-pagination [collectionSize]="tacticPagination.total" [(page)]="tacticPagination.page"
                 [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
                 (pageChange)="onTacticPageChange($event)">
@@ -329,13 +329,13 @@
         </div>
         <div class="row justify-content-md-between align-items-md-center mt-2">
           <div class="col col-sm-6">
-            <div class="dataTables_info mb-2">
+            <div class="dataTables_info mb-2 text-start">
               แสดง {{ subPlanPagination.startIndex }} ถึง {{ subPlanPagination.endIndex }}
               จากทั้งหมด {{ subPlanPagination.total }} รายการ
             </div>
           </div>
           <div class="col col-sm-6">
-            <div class="text-sm-end">
+            <div class="d-flex justify-content-sm-end">
               <ngb-pagination [collectionSize]="subPlanPagination.total" [(page)]="subPlanPagination.page"
                 [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
                 (pageChange)="onSubPlanPageChange($event)">
@@ -406,13 +406,13 @@
         </div>
         <div class="row justify-content-md-between align-items-md-center mt-2">
           <div class="col col-sm-6">
-            <div class="dataTables_info mb-2">
+            <div class="dataTables_info mb-2 text-start">
               แสดง {{ subGoalPagination.startIndex }} ถึง {{ subGoalPagination.endIndex }}
               จากทั้งหมด {{ subGoalPagination.total }} รายการ
             </div>
           </div>
           <div class="col col-sm-6">
-            <div class="text-sm-end">
+            <div class="d-flex justify-content-sm-end">
               <ngb-pagination [collectionSize]="subGoalPagination.total" [(page)]="subGoalPagination.page"
                 [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
                 (pageChange)="onSubGoalPageChange($event)">
@@ -483,13 +483,13 @@
         </div>
         <div class="row justify-content-md-between align-items-md-center mt-2">
           <div class="col col-sm-6">
-            <div class="dataTables_info mb-2">
+            <div class="dataTables_info mb-2 text-start">
               แสดง {{ guidelinePagination.startIndex }} ถึง {{ guidelinePagination.endIndex }}
               จากทั้งหมด {{ guidelinePagination.total }} รายการ
             </div>
           </div>
           <div class="col col-sm-6">
-            <div class="text-sm-end">
+            <div class="d-flex justify-content-sm-end">
               <ngb-pagination [collectionSize]="guidelinePagination.total" [(page)]="guidelinePagination.page"
                 [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
                 (pageChange)="onGuidelinePageChange($event)">
@@ -555,13 +555,13 @@
         </div>
         <div class="row justify-content-md-between align-items-md-center mt-2">
           <div class="col col-sm-6">
-            <div class="dataTables_info mb-2">
+            <div class="dataTables_info mb-2 text-start">
               แสดง {{ chainMainPagination.startIndex }} ถึง {{ chainMainPagination.endIndex }}
               จากทั้งหมด {{ chainMainPagination.total }} รายการ
             </div>
           </div>
           <div class="col col-sm-6">
-            <div class="text-sm-end">
+            <div class="d-flex justify-content-sm-end">
               <ngb-pagination [collectionSize]="chainMainPagination.total" [(page)]="chainMainPagination.page"
                 [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
                 (pageChange)="onChainMainPageChange($event)">
@@ -628,13 +628,13 @@
         </div>
         <div class="row justify-content-md-between align-items-md-center mt-2">
           <div class="col col-sm-6">
-            <div class="dataTables_info mb-2">
+            <div class="dataTables_info mb-2 text-start">
               แสดง {{ factorMainPagination.startIndex }} ถึง {{ factorMainPagination.endIndex }}
               จากทั้งหมด {{ factorMainPagination.total }} รายการ
             </div>
           </div>
           <div class="col col-sm-6">
-            <div class="text-sm-end">
+            <div class="d-flex justify-content-sm-end">
               <ngb-pagination [collectionSize]="factorMainPagination.total" [(page)]="factorMainPagination.page"
                 [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
                 (pageChange)="onFactorMainPageChange($event)">

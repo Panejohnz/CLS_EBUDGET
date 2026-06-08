@@ -80,13 +80,13 @@
         </div>
         <div class="row justify-content-md-between align-items-md-center mt-2">
           <div class="col col-sm-6">
-            <div class="dataTables_info mb-2">
+            <div class="dataTables_info mb-2 text-start">
               แสดง {{ strategicPagination.startIndex }} ถึง {{ strategicPagination.endIndex }}
               จากทั้งหมด {{ strategicPagination.total }} รายการ
             </div>
           </div>
           <div class="col col-sm-6">
-            <div class="text-sm-end">
+            <div class="d-flex justify-content-sm-end">
               <ngb-pagination [collectionSize]="strategicPagination.total" [(page)]="strategicPagination.page"
                 [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
                 (pageChange)="onStrategicPageChange($event)">
@@ -152,13 +152,13 @@
         </div>
         <div class="row justify-content-md-between align-items-md-center mt-2">
           <div class="col col-sm-6">
-            <div class="dataTables_info mb-2">
+            <div class="dataTables_info mb-2 text-start">
               แสดง {{ issuePagination.startIndex }} ถึง {{ issuePagination.endIndex }}
               จากทั้งหมด {{ issuePagination.total }} รายการ
             </div>
           </div>
           <div class="col col-sm-6">
-            <div class="text-sm-end">
+            <div class="d-flex justify-content-sm-end">
               <ngb-pagination [collectionSize]="issuePagination.total" [(page)]="issuePagination.page"
                 [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
                 (pageChange)="onIssuePageChange($event)">
@@ -224,13 +224,13 @@
         </div>
         <div class="row justify-content-md-between align-items-md-center mt-2">
           <div class="col col-sm-6">
-            <div class="dataTables_info mb-2">
+            <div class="dataTables_info mb-2 text-start">
               แสดง {{ subIssuePagination.startIndex }} ถึง {{ subIssuePagination.endIndex }}
               จากทั้งหมด {{ subIssuePagination.total }} รายการ
             </div>
           </div>
           <div class="col col-sm-6">
-            <div class="text-sm-end">
+            <div class="d-flex justify-content-sm-end">
               <ngb-pagination [collectionSize]="subIssuePagination.total" [(page)]="subIssuePagination.page"
                 [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
                 (pageChange)="onSubIssuePageChange($event)">
