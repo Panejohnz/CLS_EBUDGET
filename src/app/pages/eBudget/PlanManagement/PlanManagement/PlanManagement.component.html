@@ -43,12 +43,12 @@
                     </div>
 
                 </div>
-          
-             <div class="table-responsive">
 
-    <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
-        <!-- sticky header -->
-        <thead class="text-center text-white sticky-header" style="background-color: #556398;">
+                <div class="table-responsive">
+
+                    <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+                        <!-- sticky header -->
+                        <thead class="text-center text-white sticky-header" style="background-color: #556398;">
                             <tr class="text-center">
 
                                 <th style="width:5%">ลำดับ</th>
@@ -89,7 +89,13 @@
                                 </td>
 
                                 <td>{{data.Budget_Type}}</td>
-                                <td>{{data.Expense_List}}</td>
+                                <td>
+                                    @if(data.Project_Name){
+                                    {{data.Project_Name}}
+                                    }@else{
+                                    {{data.Expense_List}}
+                                    }
+                                </td>
 
 
                                 <td class=" text-end">
@@ -132,11 +138,11 @@
                             <tr style="font-weight: bold; background-color: #556398;">
                                 <td colspan="7" class="text-end text-white">รวมทั้งหมด</td>
 
-                             
+
                                 <td class="text-end text-white">
                                     {{ Total_Plan | number:'1.2-2' }}
                                 </td>
-                                   <td class="text-end text-white">
+                                <td class="text-end text-white">
                                     {{ Total | number:'1.2-2' }}
                                 </td>
                                 <td colspan="3"></td>

@@ -351,21 +351,17 @@
                                                         <!-- EXPENSE -->
                                                         <td class="ps-3 text-start">
                                                             <div style="padding-left: 100px;">
-                                                                - {{
+                                                                -
+                                                                @if( item.Project_Name){
+                                                                {{item.Project_Name}}
+                                                                }@else { {{
                                                                 item.Expense_Name ||
                                                                 item.Expense_List ||
                                                                 '-'
-                                                                }}
-                                                            </div>
-
-                                                            <div class="small text-muted" style="padding-left: 100px;">
-
-                                                                {{
-                                                                item.Project_Name ||
-                                                                ''
-                                                                }}
+                                                                }}}
 
                                                             </div>
+
 
                                                         </td>
 
