@@ -1,124 +1,104 @@
 <div class="card shadow-sm">
-    <div class="card-header d-flex justify-content-between">
-        <h5>ระดับบุคลากร</h5>
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h5 class="mb-0">ระดับบุคลากร</h5>
+    <button type="button" class="btn btn-success text-black" (click)="openAddModal(addLevelModal)">เพิ่มข้อมูล</button>
+  </div>
 
-        <button class="btn btn-primary" (click)="fullModal(fullDataModal, null)">
-            + เพิ่มระดับ
-        </button>
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div style="width:300px;">
+        <input type="text" class="form-control" placeholder="ค้นหาระดับบุคลากร..."
+          [(ngModel)]="service.searchTerm" (input)="filterSearch()">
+      </div>
     </div>
 
-    <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+        <thead class="text-center text-white sticky-header">
+          <tr>
+            <th style="width:5%">ลำดับ</th>
+            <!-- <th style="width:10%">ปีงบประมาณ</th> -->
+            <th style="width:25%">ชื่อระดับ</th>
+            <th style="width:15%">ชื่อระดับ (ย่อ)</th>
+            <th style="width:12%">รหัสระดับ</th>
+            <th style="width:8%">เรียงลำดับ</th>
+            <th style="width:8%">จัดการ</th>
+            <th style="width:8%">ลบ</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (data of List_Mas_Business_Level; track $index) {
+          <tr>
+            <td>{{ pagination.startIndex + $index }}</td>
+            <!-- <td>{{ data.BgYear }}</td> -->
+            <td class="text-center">{{ data.Level_Name }}</td>
+            <td>{{ data.Level_Short_Name || '-' }}</td>
+            <td>{{ data.Level_Code }}</td>
+            <td>{{ data.Order_Seq }}</td>
+            <td>
+              <button type="button" class="btn btn-warning btn-sm" (click)="openEditModal(addLevelModal, data)">
+                <i class="ri-pencil-line"></i>
+              </button>
+            </td>
+            <td>
+              <button type="button" class="btn btn-danger btn-sm" (click)="Delete_Mas_Business_Level(data)">
+                <i class="ri-delete-bin-line"></i>
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
 
-        <div class="table-responsive">
-            <table class="table table-hover text-center align-middle">
-
-                <thead class="table-light">
-                    <tr>
-                        <th>#</th>
-                        <th>รหัส</th>
-                        <th>ชื่อย่อ</th>
-                        <th>ชื่อระดับ</th>
-                        <th>ปีงบ</th>
-                        <th>ลำดับ</th>
-                        <th>ผู้บันทึก</th>
-                        <th>จัดการ</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    <tr *ngFor="let item of levelList; let i = index">
-
-                        <td>{{ i + 1 }}</td>
-                        <td>{{ item.Level_Code }}</td>
-                        <td>{{ item.Level_Short_Name || '-' }}</td>
-                        <td class="text-start">{{ item.Level_Name }}</td>
-                        <td>{{ item.BgYear }}</td>
-                        <td>{{ item.Order_Seq }}</td>
-                        <td>{{ item.Create_User }}</td>
-
-                        <td>
-                            <button class="btn btn-warning btn-sm me-1" (click)="fullModal(fullDataModal, item)">
-                                ✏️
-                            </button>
-
-                            <button class="btn btn-danger btn-sm" (click)="delete(item)">
-                                🗑
-                            </button>
-                        </td>
-
-                    </tr>
-                </tbody>
-
-            </table>
+    <div class="row justify-content-md-between align-items-md-center mt-2">
+      <div class="col col-sm-6">
+        <div class="dataTables_info mb-2">
+          แสดง {{ pagination.startIndex }} ถึง {{ pagination.endIndex }}
+          จากทั้งหมด {{ pagination.total }} รายการ
         </div>
-
+      </div>
+      <div class="col col-sm-6">
+        <div class="text-sm-end">
+          <ngb-pagination [collectionSize]="pagination.total" [(page)]="pagination.page"
+            [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
+            (pageChange)="onPageChange($event)">
+          </ngb-pagination>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
-<!-- 🧾 MODAL -->
-<ng-template #fullDataModal let-modal>
+<ng-template #addLevelModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">{{ isEditMode ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลระดับบุคลากร</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
 
-    <div class="modal-header">
-        <h5>
-            {{ Mas_Level.Level_Id ? 'แก้ไข' : 'เพิ่ม' }}
-            ระดับบุคลากร
-        </h5>
-        <button class="btn-close" (click)="modal.dismiss()"></button>
+  <div class="modal-body">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">รหัสระดับ</label>
+        <input type="text" class="form-control" placeholder="" [(ngModel)]="Mas_Business_Level.Level_Code">
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">ชื่อระดับ <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Business_Level.Level_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ชื่อระดับ (ย่อ)</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Business_Level.Level_Short_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">เรียงลำดับ</label>
+        <input type="number" class="form-control" [(ngModel)]="Mas_Business_Level.Order_Seq">
+      </div>
     </div>
+  </div>
 
-    <div class="modal-body">
-
-        <div class="row g-3">
-
-            <!-- CODE -->
-            <div class="col-md-6">
-                <label class="form-label">รหัสระดับ</label>
-                <input class="form-control" placeholder="เช่น LV01" [(ngModel)]="Mas_Level.Level_Code">
-            </div>
-
-            <!-- SHORT -->
-            <div class="col-md-6">
-                <label class="form-label">ชื่อย่อระดับ</label>
-                <input class="form-control" [(ngModel)]="Mas_Level.Level_Short_Name">
-            </div>
-
-            <!-- NAME -->
-            <div class="col-md-12">
-                <label class="form-label">ชื่อระดับ</label>
-                <input class="form-control" [(ngModel)]="Mas_Level.Level_Name">
-            </div>
-
-            <!-- YEAR -->
-            <div class="col-md-6">
-                <label class="form-label">ปีงบประมาณ</label>
-                <input type="number" class="form-control" [(ngModel)]="Mas_Level.BgYear">
-            </div>
-
-            <!-- ORDER -->
-            <div class="col-md-6">
-                <label class="form-label">ลำดับการแสดงผล</label>
-                <input type="number" class="form-control" [(ngModel)]="Mas_Level.Order_Seq">
-            </div>
-
-            <!-- USER -->
-            <div class="col-md-6">
-                <label class="form-label">ผู้บันทึก</label>
-                <input class="form-control" [(ngModel)]="Mas_Level.Create_User">
-            </div>
-
-            <!-- DATE -->
-            <div class="col-md-6">
-                <label class="form-label">วันที่บันทึก</label>
-                <input type="date" class="form-control" [(ngModel)]="Mas_Level.Create_Date">
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="modal-footer">
-        <button class="btn btn-secondary" (click)="modal.dismiss()">ยกเลิก</button>
-        <button class="btn btn-primary" (click)="saveLevel()">บันทึก</button>
-    </div>
-
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="BtnSaveBusinessLevel()">บันทึก</button>
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">ยกเลิก</button>
+  </div>
 </ng-template>
