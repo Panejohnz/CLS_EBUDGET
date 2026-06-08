@@ -16,7 +16,7 @@ import { BudgetYearService } from 'src/app/core/services/budget-year.service';
 })
 export class ProjectBudgetProposalComponent {
   constructor(private modalService: NgbModal, public service: GridJsService
-    , private sortService: PaginationService, public servicebud: EbudgetService
+    , public sortService: PaginationService, public servicebud: EbudgetService
     , private authService: AuthenticationService, private budgetYearService: BudgetYearService) {
   }
   allData: any[] = [];
@@ -61,7 +61,27 @@ export class ProjectBudgetProposalComponent {
   selectedDepartmentId: any = null;
 
   griddataTemp: any[] = [];
+  get pagedGriddata(): any[] {
+    return this.sortService.changePage(this.griddata);
+  }
+
+  get pageStartIndex(): number {
+    return this.griddata.length
+      ? ((this.sortService.page - 1) * this.sortService.pageSize) + 1
+      : 0;
+  }
+
+  get pageEndIndex(): number {
+    return Math.min(this.sortService.page * this.sortService.pageSize, this.griddata.length);
+  }
+
+  get Total(): number {
+    return this.griddata.reduce((sum: number, item: any) => {
+      return sum + Number(item?.Total || 0);
+    }, 0);
+  }
   ngOnInit(): void {
+    this.sortService.pageSize = 20;
     this.budgetYearService.yearChanged$.subscribe(async year => {
       if (year) {
         if (year < 2500) {
@@ -92,6 +112,7 @@ export class ProjectBudgetProposalComponent {
       this.griddataTemp = [...this.allData];
 
       this.griddata = [...this.allData];
+      this.sortService.page = 1;
 
       this.department = Array.isArray(response.Mas_Department_Lists)
         ? response.Mas_Department_Lists
@@ -101,6 +122,7 @@ export class ProjectBudgetProposalComponent {
 
   }
   applyFilter() {
+    this.sortService.page = 1;
 
     let data = [...this.griddataTemp];
 
@@ -348,8 +370,8 @@ export class ProjectBudgetProposalComponent {
     var getData = this.servicebud.GatewayGetData(model);
     getData.subscribe((response: any) => {
 
-      let allData = Array.isArray(response.List_Project_Plan)
-        ? response.List_Project_Plan
+      let allData = Array.isArray(response.List_Project_Plan_Table.Data)
+        ? response.List_Project_Plan_Table.Data
         : [];
       let griddata = [...allData]
       this.copyProjectList = [...griddata];
@@ -374,6 +396,7 @@ export class ProjectBudgetProposalComponent {
     var getData = this.servicebud.GatewayGetData(model);
     getData.subscribe((response: any) => {
       basicAlert('success', 'คัดลอกรายการแล้ว', '')
+      copyModal.close();
       this.get_data()
     })
 
