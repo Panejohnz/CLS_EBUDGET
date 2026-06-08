@@ -24,7 +24,6 @@ export class ExpenseListSalaryComponent {
   file: any = null;
 
   ngOnInit() {
-    console.log('this.model.Budget_Request_Detail_Item', this.model.Budget_Request_Detail_Item);
 
     if (!this.model) return;
 
@@ -279,8 +278,6 @@ export class ExpenseListSalaryComponent {
   onFileChange(event: any) {
 
     this.file = event.target.files[0];
-
-    console.log(this.file);
 
   }
 

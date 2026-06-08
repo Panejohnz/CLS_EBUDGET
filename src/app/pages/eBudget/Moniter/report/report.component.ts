@@ -22,6 +22,5 @@ export class ReportComponent {
 
   toggleResult() {
     // future: เปิด modal ได้
-    console.log('open result form');
   }
 }

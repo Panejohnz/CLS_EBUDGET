@@ -296,7 +296,6 @@ export class MasProjectPlanNationalStrategyZComponent {
 
   CancelConfirm(projectId: number) {
     // TODO: wire cancel API for National Strategy tab
-    console.log('Cancel confirm project:', projectId);
   }
 
   goTab(tab: number) {

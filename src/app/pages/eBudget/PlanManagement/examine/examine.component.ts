@@ -123,11 +123,6 @@ export class ExamineComponent {
             ? response.Mas_Department_Lists
             : [];
 
-        console.log(
-          'ALL DATA',
-          this.allData
-        );
-
       });
 
   }
@@ -166,11 +161,6 @@ export class ExamineComponent {
 
     );
 
-    console.log(
-      'ROWS',
-      rows
-    );
-
     // =====================================
     // GET BUDGET PLAN
     // =====================================
@@ -195,11 +185,6 @@ export class ExamineComponent {
           )
             ? response.List_Budget_Plan_Data_Table.Data
             : [];
-
-        console.log(
-          'BUDGET PLAN',
-          plans
-        );
 
         // =====================================
         // MERGE PLAN
@@ -464,11 +449,6 @@ export class ExamineComponent {
 
         });
 
-        console.log(
-          'GROUP DATA',
-          this.groupData
-        );
-
       });
 
   }
@@ -727,11 +707,6 @@ export class ExamineComponent {
 
     });
 
-    console.log(
-      'SAVE PAYLOAD',
-      payload
-    );
-
     // =========================
     // MODEL
     // =========================
@@ -755,11 +730,6 @@ export class ExamineComponent {
       .subscribe({
 
         next: (response: any) => {
-
-          console.log(
-            'SAVE RESPONSE',
-            response
-          );
 
 
           basicAlert('success', 'บันทึกข้อมูล', '')

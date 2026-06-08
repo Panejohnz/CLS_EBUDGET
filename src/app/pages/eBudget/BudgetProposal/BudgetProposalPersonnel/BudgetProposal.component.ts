@@ -150,7 +150,6 @@ export class ProjectBudgetProposalComponent {
   }
 
   fullModal(modal: any, data: any) {
-    console.log('data', data);
 
     if (!this.selectedDepartmentId && !data.Request_Id) {
       basicAlert('info', 'เลือกหน่วยงาน', '')
@@ -168,8 +167,8 @@ export class ProjectBudgetProposalComponent {
           this.model = {
             Budget_Type: 1,
             Budget_Request: res.Budget_Request || {},
-            Budget_Request_Detail_Item: res.Budget_Request_Detail_Item || {},
-            Budget_Request_Detail: res.Budget_Request_Detail || {},
+            Budget_Request_Detail_Item: res.Budget_Request_Detail_Item || [],
+            Budget_Request_Detail: res.Budget_Request_Detail || [],
             Project_Plan: res.Project_Plan || {},
             Project_Detail: res.Project_Detail || {},
             Project_Objective: res.Project_Objective || [],
@@ -286,8 +285,6 @@ export class ProjectBudgetProposalComponent {
 
       };
     }
-
-    console.log('่ก่อน model', this.model);
 
     this.modalRef = this.modalService.open(modal, {
       backdrop: 'static',

@@ -190,10 +190,7 @@ export class ProjectPlanningComponent {
     );
   }
   fullModal(modal: any, data: any) {
-    if (!this.selectedDepartmentId) {
-      basicAlert('info', 'เลือกหน่วยงาน', '')
-      return
-    }
+
     this.currentTab = 1;
     this.firstLoad = true;
     if (data?.Project_Id) {
@@ -244,6 +241,10 @@ export class ProjectPlanningComponent {
         });
 
     } else {
+      if (!this.selectedDepartmentId) {
+        basicAlert('info', 'เลือกหน่วยงาน', '')
+        return
+      }
       this.project_planing = {
         Project_Plan: {},
 
@@ -514,7 +515,6 @@ export class ProjectPlanningComponent {
   }
   Project_Plan: any
   async savePlan(modal: any) {
-    console.log('this.model.Project_Detail', this.project_planing.Project_Detail);
 
     const getId = (obj: any, key: string) =>
       typeof obj === 'object' ? obj?.[key] : obj;

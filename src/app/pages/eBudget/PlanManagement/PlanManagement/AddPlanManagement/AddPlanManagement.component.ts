@@ -1119,13 +1119,15 @@ import {
   Input,
   OnInit,
   OnChanges,
-  SimpleChanges
+  SimpleChanges,
+  ViewChild
 } from '@angular/core';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { EbudgetService } from 'src/app/core/services/ebudget.service';
 import { BudgetYearService } from 'src/app/core/services/budget-year.service';
+import { ProjectPlanningComponent } from '../../Planing/projectPlanning/projectPlanning.component';
 
 @Component({
   selector: 'app-add-plan-management',
@@ -1138,6 +1140,9 @@ export class AddPlanManagementComponent
   @Input() model: any = {};
 
   @Input() modalRef: any;
+
+  @ViewChild(ProjectPlanningComponent)
+  projectPlanningComp?: ProjectPlanningComponent;
 
   constructor(
     private modalService: NgbModal,
@@ -1307,6 +1312,9 @@ export class AddPlanManagementComponent
       }
     };
 
+    this.model.selectedPlanPropos =
+      Number(this.model.selectedPlanPropos) || null;
+
     this.model.Budget_Plan.Fk_Plan_Id =
       this.model.selectedPlanPropos;
 
@@ -1318,7 +1326,7 @@ export class AddPlanManagementComponent
       if (this.model.Budget_Plan.Fk_Product_Id) {
 
         this.model.selectedProductPropos =
-          this.model.Budget_Plan.Fk_Product_Id;
+          Number(this.model.Budget_Plan.Fk_Product_Id) || null;
       }
 
       if (this.model.selectedProductPropos) {
@@ -1339,6 +1347,9 @@ export class AddPlanManagementComponent
       }
     };
 
+    this.model.selectedProductPropos =
+      Number(this.model.selectedProductPropos) || null;
+
     this.model.Budget_Plan.Fk_Product_Id =
       this.model.selectedProductPropos;
 
@@ -1347,28 +1358,27 @@ export class AddPlanManagementComponent
       this.Mas_Activity =
         res.Mas_Activity_Lists || [];
 
-      if (this.model.Fk_Activity_Id) {
+      if (this.model.Budget_Plan.Fk_Activity_Id) {
 
         this.model.selectedActivityPropos =
-          this.model.Budget_Plan.Fk_Activity_Id;
+          Number(this.model.Budget_Plan.Fk_Activity_Id) || null;
       }
     });
   }
   mapInitialData() {
-    console.log('this.model', this.model);
-
+debugger
     if (!this.model) return;
 
     if (!this.model.Budget_Plan) return;
 
     this.model.selectedPlanPropos =
-      this.model.Budget_Plan.Fk_Plan_Id || null;
+      Number(this.model.Budget_Plan.Fk_Plan_Id) || null;
 
     this.model.selectedProductPropos =
-      this.model.Budget_Plan.Fk_Product_Id || null;
+      Number(this.model.Budget_Plan.Fk_Product_Id) || null;
 
     this.model.selectedActivityPropos =
-      this.model.Budget_Plan.Fk_Activity_Id || null;
+      Number(this.model.Budget_Plan.Fk_Activity_Id) || null;
 
     this.model.selectedBudgetPropos =
       this.model.Budget_Plan.Fk_Budget_Type || null;
@@ -1792,8 +1802,20 @@ export class AddPlanManagementComponent
 
   }
 
+  syncProjectPlanningPayload() {
+
+    if (!this.projectPlanningComp || !this.model) return;
+
+    this.projectPlanningComp.bindInputModel();
+
+    this.model.Project_Plan_Detail =
+      this.projectPlanningComp.mapActivities();
+
+  }
+
   save() {
 
+    this.syncProjectPlanningPayload();
 
     this.model.Total =
       this.getAllBudget();
@@ -1801,10 +1823,10 @@ export class AddPlanManagementComponent
     this.model.Update_Amount =
       this.getAllBudget();
 
-    if (this.model.Budget_Plan.Total_Plan != this.model.Total) {
-      basicAlert('info', 'จำนวนเงินไม่ตรงกัน', '')
-      return
-    }
+    // if (this.model.Budget_Plan.Total_Plan != this.model.Total) {
+    //   basicAlert('info', 'จำนวนเงินไม่ตรงกัน', '')
+    //   return
+    // }
     const detailPayload = {
 
       Plan_Detail_Id:
@@ -2044,6 +2066,108 @@ export class AddPlanManagementComponent
         this.model.Department_Id
       );
 
+
+
+    const getId = (obj: any, key: string) =>
+      typeof obj === 'object'
+        ? obj?.[key]
+        : obj;
+    const data =
+      this.model?.Project_Plan ||
+      this.model;
+
+    const payload_project_plan = {
+
+      BgYear: this.currentYear,
+
+      ...(data?.Project_Id && {
+        Project_Id: data.Project_Id
+      }),
+
+      Department_Id: getId(
+        this.model.selectedDepartment,
+        'Department_Id'
+      ),
+
+      Department_Name:
+        this.model.selectedDepartment?.Department_Name,
+
+      Fk_Plan_Id: getId(
+        this.model.selectedPlan,
+        'Plan_Id'
+      ),
+
+      Plan_Name:
+        this.model.selectedPlan?.Plan_Name,
+
+      Fk_Expense_List: getId(
+        this.model.projectType || this.model.selectedExpenseTypeId,
+        'Expense_Id'
+      ) || this.model.selectedExpenseTypeId,
+
+      Expense_List:
+        this.model.projectType?.Expense_Name,
+
+      Fk_Product_Id: getId(
+        this.model.selectedProduct,
+        'Product_Id'
+      ),
+
+      Product_Name:
+        this.model.selectedProduct?.Product_Name,
+
+      Fk_Activity_Id: getId(
+        this.model.selectedActivity || this.model.selectedActivityPropos,
+        'Activity_Id'
+      ) || this.model.selectedActivityPropos,
+
+      Activity_Name:
+        this.model.selectedActivity?.Activity_Name,
+
+      Fk_Budget_Type: getId(
+        this.model.selectedBudget,
+        'Budget_Type_Id'
+      ),
+
+      Budget_Type:
+        this.model.selectedBudget?.Budget_Type_Name,
+
+      ...(data?.Project_Name && {
+        Project_Name: data.Project_Name
+      }),
+
+      ...(data?.Used_BG != null && {
+        Used_BG: data.Used_BG
+      }),
+
+      ...(data?.Project_Type_Id != null && {
+        Project_Type_Id: data.Project_Type_Id
+      }),
+
+      ...(data?.Project_Year_Count && {
+        Project_Year_Count: data.Project_Year_Count
+      }),
+
+      ...(data?.Project_Year_Number && {
+        Project_Year_Number: data.Project_Year_Number
+      }),
+
+      ...(data?.Operation1 != null && {
+        Operation1: data.Operation1
+      }),
+
+      ...(data?.Operation2 != null && {
+        Operation2: data.Operation2
+      }),
+
+      ...(data?.Proposer_Name && {
+        Proposer_Name: data.Proposer_Name
+      }),
+
+      ...(data?.Proposer_Position && {
+        Proposer_Position: data.Proposer_Position
+      }),
+    };
     const payload_plan = {
 
       BgYear: "2569",
@@ -2127,14 +2251,7 @@ export class AddPlanManagementComponent
 
     };
 
-    const getId = (obj: any, key: string) =>
-      typeof obj === 'object'
-        ? obj?.[key]
-        : obj;
 
-    const data =
-      this.model?.Project_Plan ||
-      this.model;
 
     const payload = {
 
@@ -2145,6 +2262,9 @@ export class AddPlanManagementComponent
 
       Budget_Plan:
         payload_plan,
+
+      Project_Plan:
+        payload_project_plan,
 
       Budget_Plan_Detail:
         detailPayload,

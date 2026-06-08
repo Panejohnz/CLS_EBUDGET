@@ -280,7 +280,6 @@ export class ReportResultComponent
     modal: any,
     data: any
   ) {
-    console.log('ไหนมาดูซิ', data);
 
     this.selectedItem = data;
 
@@ -1080,8 +1079,6 @@ export class ReportResultComponent
       this.reportSteps
         .filter(x => x.checked)
         .map(x => x.Invest_Name);
-
-    console.log(checkedList);
 
     modal.close();
 

@@ -160,7 +160,7 @@
                                     <td class="text-end">
 
                                         {{
-                                        sumTotal(plan)
+                                        sumTotal(product)
                                         | number:'1.2-2'
                                         }}
 
@@ -169,7 +169,7 @@
                                     <td class="text-end">
 
                                         {{
-                                        sumAdjust1(plan)
+                                        sumAdjust1(product)
                                         | number:'1.2-2'
                                         }}
 
@@ -178,7 +178,7 @@
                                     <td class="text-end">
 
                                         {{
-                                        sumAdjust2(plan)
+                                        sumAdjust2(product)
                                         | number:'1.2-2'
                                         }}
 
@@ -187,7 +187,7 @@
                                     <td class="text-end">
 
                                         {{
-                                        sumAdjust3(plan)
+                                        sumAdjust3(product)
                                         | number:'1.2-2'
                                         }}
 
@@ -196,7 +196,7 @@
                                     <td class="text-end fw-bold">
 
                                         {{
-                                        sumAllocate(plan)
+                                        sumAllocate(product)
                                         | number:'1.2-2'
                                         }}
 
@@ -225,7 +225,7 @@
                                             <td class="text-end">
 
                                                 {{
-                                                sumTotal(plan)
+                                                sumTotal(activity)
                                                 | number:'1.2-2'
                                                 }}
 
@@ -234,7 +234,7 @@
                                             <td class="text-end">
 
                                                 {{
-                                                sumAdjust1(plan)
+                                                sumAdjust1(activity)
                                                 | number:'1.2-2'
                                                 }}
 
@@ -243,7 +243,7 @@
                                             <td class="text-end">
 
                                                 {{
-                                                sumAdjust2(plan)
+                                                sumAdjust2(activity)
                                                 | number:'1.2-2'
                                                 }}
 
@@ -252,7 +252,7 @@
                                             <td class="text-end">
 
                                                 {{
-                                                sumAdjust3(plan)
+                                                sumAdjust3(activity)
                                                 | number:'1.2-2'
                                                 }}
 
@@ -261,7 +261,7 @@
                                             <td class="text-end fw-bold">
 
                                                 {{
-                                                sumAllocate(plan)
+                                                sumAllocate(activity)
                                                 | number:'1.2-2'
                                                 }}
 
@@ -436,7 +436,6 @@
 
                 </tbody>
 
-                <!-- FOOTER -->
                 <tfoot class="table fw-bold" style="background-color: #556398; color: white;">
 
                     <tr>
@@ -458,7 +457,6 @@
 
                         <td></td>
 
-                        <!-- TOTAL ALLOCATED -->
                         <td class="text-end fw-bold">
 
                             {{ totalAllocated | number:'1.2-2' }}
@@ -473,7 +471,6 @@
 
             <br>
 
-            <!-- BUTTON -->
             <div class="d-flex justify-content-end gap-2">
 
                 <button class="btn btn-danger" (click)="backToTable()">

@@ -85,7 +85,7 @@
                     รายการค่าใช้จ่าย
                 </label>
 
-                <ng-select [disabled]="this.model.Budget_Plan.Plan_Id" appendTo="body" [items]="expenseOptions"
+                <ng-select [disabled]="model.Budget_Plan.Plan_Id" appendTo="body" [items]="expenseOptions"
                     bindLabel="Expense_Name" bindValue="Expense_Id" [(ngModel)]="model.selectedExpenseTypeId"
                     (ngModelChange)="onExpenseChange($event)" placeholder="-- กรุณาเลือกรายการค่าใช้จ่าย --">
 
@@ -124,7 +124,7 @@
             </div>
             @if([64,70,73,74,75].includes(model.selectedExpenseTypeId)){
 
-            <projectPlanning [model]="multiplierModel" [expenseItem]="expenseItem">
+            <projectPlanning [model]="model" [expenseItem]="expenseItem">
 
             </projectPlanning>
 

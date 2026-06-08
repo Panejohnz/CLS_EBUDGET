@@ -433,16 +433,6 @@ export class ExpenseForeignTravelComponent {
 
     this.fileError = false;
 
-    console.log({
-
-      main: this.main,
-
-      items: this.items,
-
-      file: this.file
-
-    });
-
   }
 
 }

@@ -1,4 +1,4 @@
-import { Component, Input, ElementRef, ViewChild, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
+import { Component, Input, ElementRef, ViewChild, CUSTOM_ELEMENTS_SCHEMA, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { environment } from '../../../../../../environments/environment';
@@ -26,7 +26,7 @@ import { TabGuidelineComponent } from 'src/app/shared/planingtab/components/tab-
   providers: [GridJsService, DecimalPipe, EbudgetService],
   templateUrl: './projectPlanning.component.html'
 })
-export class ProjectPlanningComponent {
+export class ProjectPlanningComponent implements OnInit, OnChanges {
   @Input() modal: any;
   @Input() expenseItem: any;
   @Input() model: any;
@@ -89,7 +89,15 @@ export class ProjectPlanningComponent {
     , private authService: AuthenticationService, private ProjectPlanService: ProjectPlanService, private budgetYearService: BudgetYearService) {
   }
   currentYear: any
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['model']) {
+      this.bindInputModel();
+    }
+  }
+
   ngOnInit(): void {
+    this.bindInputModel();
+
     this.budgetYearService.yearChanged$.subscribe(async year => {
       if (year) {
         if (year < 2500) {
@@ -97,11 +105,69 @@ export class ProjectPlanningComponent {
         }
         this.currentYear = year
 
-        this.get_data()
+        if (!this.model) {
+          this.get_data()
+        }
       }
     });
 
 
+  }
+
+  bindInputModel() {
+    if (!this.model) return;
+
+    this.project_planing = this.model;
+
+    if (this.project_planing.Budget_Type == null) {
+      this.project_planing.Budget_Type = 1;
+    }
+
+    this.project_planing.Project_Plan =
+      this.project_planing.Project_Plan || {};
+
+    if (
+      !this.project_planing.Project_Detail ||
+      Array.isArray(this.project_planing.Project_Detail)
+    ) {
+      this.project_planing.Project_Detail = {};
+    }
+
+    this.project_planing.Project_Objective =
+      this.project_planing.Project_Objective || [];
+
+    this.project_planing.Project_Output =
+      this.project_planing.Project_Output || [];
+
+    this.project_planing.Project_Outcome =
+      this.project_planing.Project_Outcome || [];
+
+    this.project_planing.Project_Plan_Level1 =
+      this.project_planing.Project_Plan_Level1 || [];
+
+    this.project_planing.Project_Plan_Level1_Sub =
+      this.project_planing.Project_Plan_Level1_Sub || [];
+
+    this.project_planing.Project_Plan_Level2 =
+      this.project_planing.Project_Plan_Level2 || {};
+
+    this.project_planing.Project_Cabinet =
+      this.project_planing.Project_Cabinet || [];
+
+    this.project_planing.Project_Plan_Level3 =
+      this.project_planing.Project_Plan_Level3 || {};
+
+    this.project_planing.Project_Coordinator =
+      this.project_planing.Project_Coordinator || [];
+
+    this.project_planing.Project_Expected =
+      this.project_planing.Project_Expected || [];
+
+    this.project_planing.Project_TargetGroup =
+      this.project_planing.Project_TargetGroup || [];
+
+    this.project_planing.activities =
+      this.project_planing.activities || [];
   }
   get_data() {
     let model = {
