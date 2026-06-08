@@ -39,8 +39,7 @@ export class ExpenseRentHouseComponent {
       }
 
     });
-    debugger
-    if (!this.model.Budget_Request_Detail_Item) {
+if (!this.model.Budget_Request_Detail_Item) {
 
       this.model.Budget_Request_Detail_Item = [];
 

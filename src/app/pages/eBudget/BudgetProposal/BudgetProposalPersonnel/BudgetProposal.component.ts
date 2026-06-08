@@ -16,7 +16,7 @@ import { BudgetYearService } from 'src/app/core/services/budget-year.service';
 })
 export class ProjectBudgetProposalComponent {
   constructor(private modalService: NgbModal, public service: GridJsService
-    , private sortService: PaginationService, public servicebud: EbudgetService
+    , public sortService: PaginationService, public servicebud: EbudgetService
     , private authService: AuthenticationService, private budgetYearService: BudgetYearService) {
   }
   allData: any[] = [];
@@ -61,7 +61,27 @@ export class ProjectBudgetProposalComponent {
   selectedDepartmentId: any = null;
 
   griddataTemp: any[] = [];
+  get pagedGriddata(): any[] {
+    return this.sortService.changePage(this.griddata);
+  }
+
+  get pageStartIndex(): number {
+    return this.griddata.length
+      ? ((this.sortService.page - 1) * this.sortService.pageSize) + 1
+      : 0;
+  }
+
+  get pageEndIndex(): number {
+    return Math.min(this.sortService.page * this.sortService.pageSize, this.griddata.length);
+  }
+
+  get Total(): number {
+    return this.griddata.reduce((sum: number, item: any) => {
+      return sum + Number(item?.Total || 0);
+    }, 0);
+  }
   ngOnInit(): void {
+    this.sortService.pageSize = 20;
     this.budgetYearService.yearChanged$.subscribe(async year => {
       if (year) {
         if (year < 2500) {
@@ -92,6 +112,7 @@ export class ProjectBudgetProposalComponent {
       this.griddataTemp = [...this.allData];
 
       this.griddata = [...this.allData];
+      this.sortService.page = 1;
 
       this.department = Array.isArray(response.Mas_Department_Lists)
         ? response.Mas_Department_Lists
@@ -101,6 +122,7 @@ export class ProjectBudgetProposalComponent {
 
   }
   applyFilter() {
+    this.sortService.page = 1;
 
     let data = [...this.griddataTemp];
 
@@ -150,7 +172,6 @@ export class ProjectBudgetProposalComponent {
   }
 
   fullModal(modal: any, data: any) {
-    console.log('data', data);
 
     if (!this.selectedDepartmentId && !data.Request_Id) {
       basicAlert('info', 'เลือกหน่วยงาน', '')
@@ -168,8 +189,8 @@ export class ProjectBudgetProposalComponent {
           this.model = {
             Budget_Type: 1,
             Budget_Request: res.Budget_Request || {},
-            Budget_Request_Detail_Item: res.Budget_Request_Detail_Item || {},
-            Budget_Request_Detail: res.Budget_Request_Detail || {},
+            Budget_Request_Detail_Item: res.Budget_Request_Detail_Item || [],
+            Budget_Request_Detail: res.Budget_Request_Detail || [],
             Project_Plan: res.Project_Plan || {},
             Project_Detail: res.Project_Detail || {},
             Project_Objective: res.Project_Objective || [],
@@ -287,8 +308,6 @@ export class ProjectBudgetProposalComponent {
       };
     }
 
-    console.log('่ก่อน model', this.model);
-
     this.modalRef = this.modalService.open(modal, {
       backdrop: 'static',
       windowClass: 'modal-95'
@@ -306,7 +325,39 @@ export class ProjectBudgetProposalComponent {
   }
   projectSearchTerm = '';
 
-  selectedProjectId: number | null = null;
+  selectedProjectIds: number[] = [];
+
+  get allCopyProjectsSelected(): boolean {
+    return this.copyProjectList.length > 0 &&
+      this.selectedProjectIds.length === this.copyProjectList.length;
+  }
+
+  get hasSelectedCopyProjects(): boolean {
+    return this.selectedProjectIds.length > 0;
+  }
+
+  toggleSelectAllCopyProjects(checked: boolean) {
+    this.selectedProjectIds = checked
+      ? this.copyProjectList.map(item => Number(item.Project_Id))
+      : [];
+  }
+
+  toggleCopyProject(projectId: number, checked: boolean) {
+    const id = Number(projectId);
+
+    if (checked) {
+      if (!this.selectedProjectIds.includes(id)) {
+        this.selectedProjectIds = [...this.selectedProjectIds, id];
+      }
+      return;
+    }
+
+    this.selectedProjectIds = this.selectedProjectIds.filter(x => x !== id);
+  }
+
+  isCopyProjectSelected(projectId: number): boolean {
+    return this.selectedProjectIds.includes(Number(projectId));
+  }
 
   copyProjectList: any[] = [];
 
@@ -319,13 +370,13 @@ export class ProjectBudgetProposalComponent {
     var getData = this.servicebud.GatewayGetData(model);
     getData.subscribe((response: any) => {
 
-      let allData = Array.isArray(response.List_Project_Plan)
-        ? response.List_Project_Plan
+      let allData = Array.isArray(response.List_Project_Plan_Table.Data)
+        ? response.List_Project_Plan_Table.Data
         : [];
       let griddata = [...allData]
       this.copyProjectList = [...griddata];
 
-      this.selectedProjectId = null;
+      this.selectedProjectIds = [];
 
       this.modalService.open(content, {
         size: 'xl',
@@ -335,16 +386,17 @@ export class ProjectBudgetProposalComponent {
   }
   copyProjectToRequest(copyModal: any) {
 
-    if (!this.selectedProjectId) {
+    if (!this.selectedProjectIds.length) {
       return;
     }
     let model = {
       FUNC_CODE: "FUNC-Project_Plan_Copy",
-      Project_Id: this.selectedProjectId
+      Project_Ids: this.selectedProjectIds
     }
     var getData = this.servicebud.GatewayGetData(model);
     getData.subscribe((response: any) => {
       basicAlert('success', 'คัดลอกรายการแล้ว', '')
+      copyModal.close();
       this.get_data()
     })
 

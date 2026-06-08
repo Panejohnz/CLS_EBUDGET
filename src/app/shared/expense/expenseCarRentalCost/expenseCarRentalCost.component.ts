@@ -424,14 +424,6 @@ export class ExpenseCarRentalCostComponent {
 
   save() {
 
-    console.log({
-
-      old: this.itemsOld,
-
-      new: this.itemsNew
-
-    });
-
   }
 
 }

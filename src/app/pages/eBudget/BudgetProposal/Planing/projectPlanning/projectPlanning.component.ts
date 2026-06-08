@@ -184,7 +184,6 @@ export class ProjectPlanningComponent {
             d.Project_Detail_Id = Number(d.Project_Detail_Id);
             d.Parent_Id = d.Parent_Id ? Number(d.Parent_Id) : null;
           });
-          console.log('DETAIL', details);
           const activities = this.mapPlanDetail(details);
           this.mapItems(items, activities);
 
