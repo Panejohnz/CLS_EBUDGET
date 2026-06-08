@@ -213,13 +213,11 @@
                                             (click)="activity.expanded = !activity.expanded">
 
                                             <td class="ps-5">
-
                                                 <i class="ri-arrow-right-s-line me-1" *ngIf="!activity.expanded"></i>
 
                                                 <i class="ri-arrow-down-s-line me-1" *ngIf="activity.expanded"></i>
 
                                                 {{ activity.Activity_Name }}
-
                                             </td>
 
                                             <td class="text-end">
@@ -279,17 +277,43 @@
                                                     (click)="budget.expanded = !budget.expanded">
 
                                                     <!-- NAME -->
-                                                    <td style="padding-left: 80px;">
+                                                    <td class="text-start" style="padding-left: 80px;">
 
-                                                        <i class="ri-arrow-right-s-line me-1"
-                                                            *ngIf="!budget.expanded"></i>
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <div class="d-flex align-items-center">
+                                                                <i class="ri-arrow-right-s-line me-1"
+                                                                    *ngIf="!budget.expanded"></i>
 
-                                                        <i class="ri-arrow-down-s-line me-1"
-                                                            *ngIf="budget.expanded"></i>
+                                                                <i class="ri-arrow-down-s-line me-1"
+                                                                    *ngIf="budget.expanded"></i>
 
-                                                        {{ budget.Budget_Type || '-' }}
+                                                                <ng-container *ngIf="budget.isNew; else showBudgetName">
+
+                                                                    <ng-select [items]="Mas_Budget_Types"
+                                                                        bindLabel="Expense_Name" bindValue="Expense_Id"
+                                                                        [(ngModel)]="budget.Fk_Budget_Type"
+                                                                        (change)="onBudgetTypeChange(budget, $event)"
+                                                                        (click)="$event.stopPropagation()"
+                                                                        placeholder="-- เลือกหมวดงบ --" appendTo="body"
+                                                                        style="display:inline-block; width:260px;">
+                                                                    </ng-select>
+
+                                                                </ng-container>
+
+                                                                <ng-template #showBudgetName>
+                                                                    {{ budget.Budget_Type || '-' }}
+                                                                </ng-template>
+                                                            </div>
+
+                                                            <button type="button" class="btn btn-sm btn-primary py-0 px-2"
+                                                                title="เพิ่มรายการ"
+                                                                (click)="addBudget(budget); $event.stopPropagation()">
+                                                                <i class="ri-add-line"></i>
+                                                            </button>
+                                                        </div>
 
                                                     </td>
+
 
                                                     <!-- TOTAL -->
                                                     <td class="text-end">
@@ -352,13 +376,26 @@
                                                         <td class="ps-3 text-start">
                                                             <div style="padding-left: 100px;">
                                                                 -
-                                                                @if( item.Project_Name){
-                                                                {{item.Project_Name}}
-                                                                }@else { {{
-                                                                item.Expense_Name ||
-                                                                item.Expense_List ||
-                                                                '-'
-                                                                }}}
+                                                                <ng-container
+                                                                    *ngIf="item.isNewBudget; else showExpenseName">
+                                                                    <ng-select [items]="Mas_Expense_Lists"
+                                                                        bindLabel="Expense_Name" bindValue="Expense_Id"
+                                                                        [(ngModel)]="item.Fk_Expense_List"
+                                                                        (change)="onExpenseListChange(item, $event)"
+                                                                        placeholder="-- เลือกรายการ --" appendTo="body"
+                                                                        style="display:inline-block; width:320px;">
+                                                                    </ng-select>
+                                                                </ng-container>
+
+                                                                <ng-template #showExpenseName>
+                                                                    @if( item.Project_Name){
+                                                                    {{item.Project_Name}}
+                                                                    }@else { {{
+                                                                    item.Expense_Name ||
+                                                                    item.Expense_List ||
+                                                                    '-'
+                                                                    }}}
+                                                                </ng-template>
 
                                                             </div>
 

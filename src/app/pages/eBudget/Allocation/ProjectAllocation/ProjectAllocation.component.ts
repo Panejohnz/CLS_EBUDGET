@@ -31,7 +31,8 @@ export class ProjectAllocationComponent implements OnInit {
   // =====================================
   // VARIABLE
   // =====================================
-
+  Mas_Budget_Types: any[] = [];
+  Mas_Expense_Lists: any[] = [];
   table_display: boolean = false;
 
   department: any[] = [];
@@ -104,7 +105,14 @@ export class ProjectAllocationComponent implements OnInit {
           )
             ? response.Mas_Department_Lists
             : [];
-
+        this.Mas_Budget_Types =
+          Array.isArray(response.Mas_Budget_Types)
+            ? response.Mas_Budget_Types
+            : [];
+        this.Mas_Expense_Lists =
+          Array.isArray(response.Mas_Expense_Lists)
+            ? response.Mas_Expense_Lists
+            : this.buildExpenseListOptions(this.allData);
       });
 
   }
@@ -159,7 +167,14 @@ export class ProjectAllocationComponent implements OnInit {
           )
             ? response.List_Budget_Plan_Data_Table.Data
             : [];
-
+        this.Mas_Budget_Types =
+          Array.isArray(response.Mas_Budget_Types)
+            ? response.Mas_Budget_Types
+            : [];
+        this.Mas_Expense_Lists =
+          Array.isArray(response.Mas_Expense_Lists)
+            ? response.Mas_Expense_Lists
+            : this.buildExpenseListOptions(this.allData);
         // =========================
         // MAP OLD PLAN
         // =========================
@@ -333,16 +348,15 @@ export class ProjectAllocationComponent implements OnInit {
           if (!activity) {
 
             activity = {
+              Activity_Name: row.Activity_Name || '-',
 
-              Activity_Name:
-                row.Activity_Name || '-',
+              Fk_Plan_Id: row.Fk_Plan_Id || 0,
+              Fk_Product_Id: row.Fk_Product_Id || 0,
+              Fk_Activity_Id: row.Fk_Activity_Id || 0,
 
               expanded: true,
-
               budgets: []
-
             };
-
             product.activities.push(activity);
 
           }
@@ -454,7 +468,106 @@ export class ProjectAllocationComponent implements OnInit {
       });
 
   }
+  addBudget(budget: any) {
 
+    const template = budget.items?.[0] || {};
+
+    const fkExpenseTypeId =
+      template.Fk_Expense_Type ||
+      template.Fk_Expense_Type_Id ||
+      0;
+
+    let model = {
+      FUNC_CODE: 'FUNC-GET_Mas_Expense_List',
+      Mas_Expense_List: {
+        Fk_Expense_Type_Id: fkExpenseTypeId
+      }
+    };
+
+    this.servicebud
+      .GatewayGetData(model)
+      .subscribe((response: any) => {
+
+        this.Mas_Expense_Lists =
+          Array.isArray(response.Mas_Expense_Lists)
+            ? response.Mas_Expense_Lists
+            : [];
+
+        budget.expanded = true;
+
+        budget.items.push({
+          Plan_Id: 0,
+          FK_Request_Id: 0,
+
+          Department_Id: template.Department_Id || this.selectedDepartmentId,
+          Department_Name: template.Department_Name || '',
+
+          Fk_Plan_Id: template.Fk_Plan_Id || 0,
+          Fk_Product_Id: template.Fk_Product_Id || 0,
+          Fk_Activity_Id: template.Fk_Activity_Id || 0,
+
+          Fk_Budget_Type: budget.Fk_Budget_Type || template.Fk_Budget_Type || 0,
+          Budget_Type: budget.Budget_Type || template.Budget_Type || '',
+
+          Fk_Expense_List: 0,
+          Expense_List: '',
+          Expense_Name: '',
+          Project_Name: '',
+
+          Total: 0,
+          Adjust1Temp: 0,
+          Adjust2Temp: 0,
+          Adjust3Temp: 0,
+
+          isNewBudget: true
+        });
+
+      });
+  }
+  onExpenseListChange(item: any, selected: any) {
+    const selectedExpense = typeof selected === 'object'
+      ? selected
+      : this.Mas_Expense_Lists.find((expense: any) => expense.Expense_Id == selected);
+
+    item.Fk_Expense_List = selectedExpense?.Expense_Id || 0;
+    item.Expense_List = selectedExpense?.Expense_Name || '';
+    item.Expense_Name = selectedExpense?.Expense_Name || '';
+  }
+
+  private buildExpenseListOptions(rows: any[]): any[] {
+    const map = new Map<number, any>();
+
+    rows.forEach((row: any) => {
+      const id = Number(row.Fk_Expense_List || row.Expense_Id || 0);
+      const name = row.Expense_Name || row.Expense_List || '';
+
+      if (id && name && !map.has(id)) {
+        map.set(id, {
+          Expense_Id: id,
+          Expense_Name: name
+        });
+      }
+    });
+
+    return Array.from(map.values());
+  }
+  onBudgetTypeChange(budget: any, selected: any) {
+    const selectedBudgetType = typeof selected === 'object'
+      ? selected
+      : this.Mas_Budget_Types.find((item: any) => item.Budget_Type_Id == selected);
+
+    budget.Budget_Type =
+      selectedBudgetType?.Budget_Type_Name || '';
+
+    budget.Fk_Budget_Type =
+      selectedBudgetType?.Budget_Type_Id || 0;
+
+    budget.items.forEach((item: any) => {
+      item.Fk_Budget_Type = budget.Fk_Budget_Type;
+      item.Budget_Type = budget.Budget_Type;
+    });
+
+  }
   // =====================================
   // GET ALL ITEMS
   // =====================================
@@ -692,7 +805,8 @@ export class ProjectAllocationComponent implements OnInit {
           item.Fk_Product_Id,
 
         BgYear:
-          this.currentYear
+          this.currentYear,
+        Budget_Type: item.Budget_Type,
 
       };
 
