@@ -279,8 +279,7 @@
                                                     <!-- NAME -->
                                                     <td class="text-start" style="padding-left: 80px;">
 
-                                                        <div
-                                                            class="d-flex align-items-center justify-content-between gap-2">
+                                                        <div class="d-flex align-items-center gap-2">
                                                             <div class="d-flex align-items-center">
                                                                 <i class="ri-arrow-right-s-line me-1"
                                                                     *ngIf="!budget.expanded"></i>
@@ -306,7 +305,7 @@
                                                                 </ng-template>
                                                             </div>
 
-                                                            <button type="button" class="btn btn-sm btn-primary"
+                                                            <button type="button" class="btn btn-sm btn-primary py-0 px-2"
                                                                 title="เพิ่มรายการ"
                                                                 (click)="addBudget(budget); $event.stopPropagation()">
                                                                 <i class="ri-add-line"></i>
