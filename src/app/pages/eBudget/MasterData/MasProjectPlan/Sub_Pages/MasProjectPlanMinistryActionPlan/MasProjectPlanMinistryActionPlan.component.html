@@ -75,16 +75,16 @@
       <div class="row justify-content-md-between align-items-md-center mt-2">
         <div class="col col-sm-6">
           <div class="dataTables_info mb-2">
-            แสดง {{ planPagination.startIndex }} ถึง {{ planPagination.endIndex }}
-            จากทั้งหมด {{ planPagination.total }} รายการ
-          </div>
-        </div>
-        <div class="col col-sm-6">
-          <div class="text-sm-end">
             <ngb-pagination [collectionSize]="planPagination.total" [(page)]="planPagination.page"
               [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
               (pageChange)="onPlanPageChange($event)">
             </ngb-pagination>
+          </div>
+        </div>
+        <div class="col col-sm-6">
+          <div class="text-sm-end">
+            แสดง {{ planPagination.startIndex }} ถึง {{ planPagination.endIndex }}
+            จากทั้งหมด {{ planPagination.total }} รายการ
           </div>
         </div>
       </div>
