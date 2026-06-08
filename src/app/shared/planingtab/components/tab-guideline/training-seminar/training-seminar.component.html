@@ -7,7 +7,7 @@
                 แบบฟอร์มค่าใช้จ่ายในการสัมมนาและฝึกอบรม
             </span>
 
-            <button class="btn btn-primary btn-sm" (click)="addProject()">
+            <button class="btn btn-success text-black btn-sm" (click)="addProject()">
                 + เพิ่มโครงการ / หลักสูตร
             </button>
 
@@ -133,7 +133,7 @@
                 <!-- TABLE ค่าใช้จ่าย -->
                 <br>
                 <div class="table-responsive">
-                    <button class="btn btn-primary btn-sm" (click)="addExpense(project)">เพิ่มค่าใช้จ่าย</button>
+                    <button class="btn btn-success text-black btn-sm" (click)="addExpense(project)">เพิ่มค่าใช้จ่าย</button>
                     <table class="table table-bordered  bg-light align-middle text-center mb-0">
 
                         <thead class="table-secondary small">
@@ -273,12 +273,12 @@
     </div>
     <div class="d-flex justify-content-end mt-3 gap-2">
 
-        <button class="btn btn-success" (click)="save()">
+        <button class="btn btn-success text-black" (click)="save()">
 
-            💾 บันทึก
+            บันทึก
 
         </button>
-        <button class="btn btn-light" (click)="closeModal()">
+        <button class="btn btn-danger text-black" (click)="closeModal()">
             ยกเลิก
         </button>
     </div>
