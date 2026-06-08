@@ -388,8 +388,14 @@ export class ReportResultComponent
             this.model.activities = activities;
 
             let Progress_list = res.Report_Budget_Plan_Progress
-            this.Output_Result = res.Project_Output || [];
-            this.Outcome_Result = res.Project_Outcome || [];
+            this.Output_Result = Progress_list?.Output_Result
+              ? JSON.parse(Progress_list.Output_Result)
+              : (res.Project_Output || []);
+
+            this.Outcome_Result = Progress_list?.Outcome_Result
+              ? JSON.parse(Progress_list.Outcome_Result)
+              : (res.Project_Outcome || []);
+            this.normalizeUnitBindings();
 
             this.Progress_Percent = Progress_list.Progress_Percent
             this.Problems = Progress_list.Problems
@@ -869,8 +875,14 @@ export class ReportResultComponent
       .GatewayGetData(model)
       .subscribe((res: any) => {
 
-        this.Output_Result = res.Report_Budget_Plan_Progress.Output_Result;
-        this.Outcome_Result = res.Report_Budget_Plan_Progress.Outcome_Result;
+        this.Output_Result = res.Report_Budget_Plan_Progress?.Output_Result
+          ? JSON.parse(res.Report_Budget_Plan_Progress.Output_Result)
+          : [];
+
+        this.Outcome_Result = res.Report_Budget_Plan_Progress?.Outcome_Result
+          ? JSON.parse(res.Report_Budget_Plan_Progress.Outcome_Result)
+          : [];
+        this.normalizeUnitBindings();
         this.Progress_Percent = res.Report_Budget_Plan_Progress.Progress_Percent;
         this.Problems = res.Report_Budget_Plan_Progress.Problems;
         this.Solutions = res.Report_Budget_Plan_Progress.Solutions;
@@ -948,8 +960,6 @@ export class ReportResultComponent
     };
 
     const Plan_Progress = {
-      Output_Result: this.Output_Result,
-      Outcome_Result: this.Outcome_Result,
       Progress_Percent: this.Progress_Percent,
       Problems: this.Problems,
       Solutions: this.Solutions,
@@ -958,13 +968,11 @@ export class ReportResultComponent
       BgYear: this.currentYear,
       Progress_Id: this.Progress_Id || 0,
       Active: true,
-      Trimas_Id: this.selectedTri
-    }
+      Trimas_Id: this.selectedTri || 0
+    };
 
     const model = {
-
-      FUNC_CODE:
-        'FUNC-Save_Report_Budget_Plan',
+      FUNC_CODE: 'FUNC-Save_Report_Budget_Plan',
 
       Report_Budget_Plan: payload,
 
@@ -973,26 +981,20 @@ export class ReportResultComponent
 
       List_Report_Budget_Plan_Detail_Month:
         this.buildMonthData(),
+
       List_Report_Budget_Plan_Investment:
-
         this.selectedItem?.Fk_Budget_Type == 3
-
           ? this.reportSteps.map(x => ({
-
-            Invest_Id:
-              x.Invest_Id,
-
-            Invest_Name:
-              x.Invest_Name,
-
-            Is_Proceed:
-              x.checked ? 1 : 0
-
+            Invest_Id: x.Invest_Id,
+            Invest_Name: x.Invest_Name,
+            Is_Proceed: x.checked ? 1 : 0
           }))
+          : [],
 
-          : []
-      ,
-      Report_Budget_Plan_Progress: Plan_Progress
+      Report_Budget_Plan_Progress: Plan_Progress,
+
+      Project_Output: this.Output_Result,
+      Project_Outcome: this.Outcome_Result
     };
 
 
@@ -1082,6 +1084,22 @@ export class ReportResultComponent
 
     modal.close();
 
+  }
+
+  normalizeUnitBindings() {
+    this.Mas_Unit_Lists = Array.isArray(this.Mas_Unit_Lists)
+      ? this.Mas_Unit_Lists.map((item: any) => ({
+        ...item,
+        Unit_Id: item?.Unit_Id != null ? Number(item.Unit_Id) : null
+      }))
+      : [];
+
+    this.Output_Result = Array.isArray(this.Output_Result)
+      ? this.Output_Result.map((item: any) => ({
+        ...item,
+        Unit: item?.Unit != null ? Number(item.Unit) : null
+      }))
+      : [];
   }
 
   project_planing = {

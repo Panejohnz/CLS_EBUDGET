@@ -303,7 +303,39 @@ export class ProjectBudgetProposalComponent {
   }
   projectSearchTerm = '';
 
-  selectedProjectId: number | null = null;
+  selectedProjectIds: number[] = [];
+
+  get allCopyProjectsSelected(): boolean {
+    return this.copyProjectList.length > 0 &&
+      this.selectedProjectIds.length === this.copyProjectList.length;
+  }
+
+  get hasSelectedCopyProjects(): boolean {
+    return this.selectedProjectIds.length > 0;
+  }
+
+  toggleSelectAllCopyProjects(checked: boolean) {
+    this.selectedProjectIds = checked
+      ? this.copyProjectList.map(item => Number(item.Project_Id))
+      : [];
+  }
+
+  toggleCopyProject(projectId: number, checked: boolean) {
+    const id = Number(projectId);
+
+    if (checked) {
+      if (!this.selectedProjectIds.includes(id)) {
+        this.selectedProjectIds = [...this.selectedProjectIds, id];
+      }
+      return;
+    }
+
+    this.selectedProjectIds = this.selectedProjectIds.filter(x => x !== id);
+  }
+
+  isCopyProjectSelected(projectId: number): boolean {
+    return this.selectedProjectIds.includes(Number(projectId));
+  }
 
   copyProjectList: any[] = [];
 
@@ -322,7 +354,7 @@ export class ProjectBudgetProposalComponent {
       let griddata = [...allData]
       this.copyProjectList = [...griddata];
 
-      this.selectedProjectId = null;
+      this.selectedProjectIds = [];
 
       this.modalService.open(content, {
         size: 'xl',
@@ -332,12 +364,12 @@ export class ProjectBudgetProposalComponent {
   }
   copyProjectToRequest(copyModal: any) {
 
-    if (!this.selectedProjectId) {
+    if (!this.selectedProjectIds.length) {
       return;
     }
     let model = {
       FUNC_CODE: "FUNC-Project_Plan_Copy",
-      Project_Id: this.selectedProjectId
+      Project_Ids: this.selectedProjectIds
     }
     var getData = this.servicebud.GatewayGetData(model);
     getData.subscribe((response: any) => {
