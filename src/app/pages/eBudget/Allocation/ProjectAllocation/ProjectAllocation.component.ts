@@ -105,11 +105,6 @@ export class ProjectAllocationComponent implements OnInit {
             ? response.Mas_Department_Lists
             : [];
 
-        console.log(
-          'ALL DATA',
-          this.allData
-        );
-
       });
 
   }
@@ -146,8 +141,6 @@ export class ProjectAllocationComponent implements OnInit {
 
     );
 
-    console.log('ROWS', rows);
-
     let model = {
 
       FUNC_CODE: 'FUNC-Get_Budget_Plan_Tabel',
@@ -167,11 +160,10 @@ export class ProjectAllocationComponent implements OnInit {
             ? response.List_Budget_Plan_Data_Table.Data
             : [];
 
-        console.log('BUDGET PLAN', plans);
-
         // =========================
         // MAP OLD PLAN
         // =========================
+        console.log(',', plans);
 
         rows.forEach((row: any) => {
 
@@ -201,8 +193,6 @@ export class ProjectAllocationComponent implements OnInit {
               Number(a.Plan_Id || 0)
 
             )[0];
-
-          console.log('OLD PLAN', oldPlan);
 
           if (oldPlan) {
 
@@ -461,8 +451,6 @@ export class ProjectAllocationComponent implements OnInit {
 
         });
 
-        console.log('GROUP DATA', this.groupData);
-
       });
 
   }
@@ -677,7 +665,8 @@ export class ProjectAllocationComponent implements OnInit {
 
         Adjust3:
           Number(item.Adjust3Temp || 0),
-
+        Total: Number(item.Total || 0),
+        Total_Plan: this.getRowTotal(item),
         Update_Amount:
           this.getRowTotal(item),
 
@@ -709,11 +698,6 @@ export class ProjectAllocationComponent implements OnInit {
 
     });
 
-    console.log(
-      'SAVE PAYLOAD',
-      payload
-    );
-
     const model = {
 
       FUNC_CODE:
@@ -730,11 +714,6 @@ export class ProjectAllocationComponent implements OnInit {
 
         next: async (response: any) => {
 
-          console.log(
-            'SAVE RESPONSE',
-            response
-          );
-
           items.forEach((item: any) => {
 
             item.Adjust1 = Number(item.Adjust1Temp || 0);
@@ -748,7 +727,7 @@ export class ProjectAllocationComponent implements OnInit {
             'บันทึกข้อมูล',
             ''
           );
-
+          this.applyFilter();
           // await this.reloadAfterSave();
           items.forEach((item: any) => {
 

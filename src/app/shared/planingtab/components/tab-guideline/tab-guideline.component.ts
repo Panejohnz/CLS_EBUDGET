@@ -91,7 +91,7 @@ export class TabGuidelineComponent {
       });
     }
 
-    if (!this.model?.activities) {
+    if (!this.model?.activities || this.model.activities.length === 0) {
       this.model.activities = [];
       this.addActivity();
     }
@@ -242,10 +242,10 @@ export class TabGuidelineComponent {
         sub._useMultiplier = true;
       });
     }
-    if (!this.type) {
-      basicAlert('info', 'เลือกประเภทโครงการ', '');
-      return;
-    }
+    // if (!this.type) {
+    //   basicAlert('info', 'เลือกประเภทโครงการ', '');
+    //   return;
+    // }
 
     this.modalService.open(content, {
       backdrop: 'static',

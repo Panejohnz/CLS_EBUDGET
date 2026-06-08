@@ -23,7 +23,6 @@ export class ProjectBudgetProposalAddPersonnelComponent {
   closeModal() {
 
     this.modalRef.dismiss();
-    window.location.reload();
   }
 
   project_budget: any
@@ -384,7 +383,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
       this.Mas_Activity =
         res.Mas_Activity_Lists || [];
 
-      if (this.model.Fk_Activity_Id) {
+      if (this.model?.Budget_Request?.Fk_Activity_Id) {
 
         this.model.selectedActivityPropos =
           this.model.Budget_Request.Fk_Activity_Id;
@@ -618,8 +617,6 @@ export class ProjectBudgetProposalAddPersonnelComponent {
   }
 
   async save() {
-
-    console.log(',', this.model);
 
     const findById = (
       list: any[],
@@ -958,8 +955,6 @@ export class ProjectBudgetProposalAddPersonnelComponent {
           );
 
           this.modalRef.close();
-
-          window.location.reload();
         });
 
     }

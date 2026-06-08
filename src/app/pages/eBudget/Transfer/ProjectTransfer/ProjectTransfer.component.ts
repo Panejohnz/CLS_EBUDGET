@@ -171,10 +171,6 @@ export class ProjectTransferComponent
         this.allPlans =
           response?.List_Budget_Plan || [];
         this.plans = [];
-        console.log(
-          'TRANSFER',
-          this.rows
-        );
 
       });
 
@@ -420,9 +416,7 @@ export class ProjectTransferComponent
   }
 
   onChangeFromPlan() {
-    console.log('plans', this.plans);
-    debugger
-    const plan =
+const plan =
       this.fromPlans.find(
         (x: any) =>
           Number(x.Plan_Id)
@@ -444,8 +438,7 @@ export class ProjectTransferComponent
   }
 
   onChangeToPlan() {
-    debugger
-    const plan =
+const plan =
       this.plans.find(
         (x: any) =>
           Number(x.Plan_Id)
@@ -562,11 +555,6 @@ export class ProjectTransferComponent
         payload
 
     };
-
-    console.log(
-      'SAVE',
-      model
-    );
 
     this.servicebud
       .GatewayGetData(model)

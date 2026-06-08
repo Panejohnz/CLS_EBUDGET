@@ -88,8 +88,6 @@ export class BudgetTargetSettingComponent implements OnInit {
         const rows =
           response?.List_Report_Goals || [];
 
-        console.log('GOALS', rows);
-
         // =====================================
         // RESET ทุกครั้งก่อน bind
         // =====================================
@@ -172,11 +170,6 @@ export class BudgetTargetSettingComponent implements OnInit {
 
         });
 
-        console.log(
-          'SECTIONS',
-          this.sections
-        );
-
       });
 
   }
@@ -238,8 +231,6 @@ export class BudgetTargetSettingComponent implements OnInit {
 
     });
 
-    console.log('SAVE GOALS', payload);
-
     const model = {
 
       FUNC_CODE:
@@ -255,8 +246,6 @@ export class BudgetTargetSettingComponent implements OnInit {
       .subscribe({
 
         next: (response: any) => {
-
-          console.log(response);
 
           basicAlert(
             'success',

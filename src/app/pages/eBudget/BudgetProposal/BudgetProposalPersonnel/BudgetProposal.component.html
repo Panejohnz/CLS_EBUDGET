@@ -50,7 +50,7 @@
 
                     </div>
                 </div>
-                <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+                <div class="table-responsive">
                     <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
 
                         <thead class="text-center text-white sticky-header" style="background-color: #556398;">
@@ -71,7 +71,7 @@
                         </thead>
 
                         <tbody>
-                            @for(data of griddata; track $index){
+                            @for(data of pagedGriddata; track $index){
                             <tr>
 
                                 <!-- checkbox -->
@@ -136,7 +136,7 @@
 
                                 <!-- รวมงบประมาณ -->
                                 <td class="text-end text-white">
-                                    <!-- {{ Total | number:'1.2-2' }} -->
+                                    {{ Total | number:'1.2-2' }}
                                 </td>
 
                                 <td colspan="3"></td>
@@ -148,15 +148,15 @@
                     <div class="col-sm-12 col-md-5">
                         <div class="dataTables_info mb-2" id="tickets-table_info" role="status" aria-live="polite">
                             Showing
-                            {{service.startIndex}} to
-                            {{service.endIndex}} of {{service.totalRecords}}
+                            {{pageStartIndex}} to
+                            {{pageEndIndex}} of {{griddata.length}}
                             entries
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-5">
                         <div class="text-md-right float-md-end gridjs-pagination">
-                            <ngb-pagination [collectionSize]="(total$ | async)!" [(page)]="service.page"
-                                [pageSize]="service.pageSize">
+                            <ngb-pagination [collectionSize]="griddata.length" [(page)]="sortService.page"
+                                [pageSize]="sortService.pageSize">
                             </ngb-pagination>
                         </div>
                     </div>
@@ -201,7 +201,13 @@
                 <thead class="text-center text-white sticky-header" style="background-color:#556398;">
 
                     <tr>
-                        <th style="width:5%">เลือก</th>
+                        <th style="width:5%">
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                [checked]="allCopyProjectsSelected"
+                                (change)="toggleSelectAllCopyProjects($any($event.target).checked)">
+                        </th>
                         <th style="width:8%">ปีงบ</th>
                         <th style="width:15%">หน่วยงาน</th>
                         <th style="width:15%">แผนงาน</th>
@@ -221,8 +227,11 @@
 
                         <td class="text-center">
 
-                            <input class="form-check-input" type="radio" name="selectedProject"
-                                [value]="item.Project_Id" [(ngModel)]="selectedProjectId">
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                [checked]="isCopyProjectSelected(item.Project_Id)"
+                                (change)="toggleCopyProject(item.Project_Id, $any($event.target).checked)">
 
                         </td>
 
@@ -280,7 +289,7 @@
 
     <div class="modal-footer">
 
-        <button class="btn btn-success" [disabled]="!selectedProjectId" (click)="copyProjectToRequest(modal)">
+        <button class="btn btn-success" [disabled]="!hasSelectedCopyProjects" (click)="copyProjectToRequest(modal)">
 
             <i class="ri-file-copy-line me-1"></i>
             คัดลอก
@@ -296,3 +305,4 @@
     </div>
 
 </ng-template>
+

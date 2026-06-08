@@ -40,6 +40,15 @@ export class TabGeneralComponent {
     return this.model?.Project_Plan || this.model
   }
 
+  get showPlanningSelectors() {
+
+    const budgetType =
+      this.model?.Budget_Type ??
+      this.data?.Budget_Type;
+
+    return Number(budgetType) !== 1;
+  }
+
   compareById(a: any, b: any): boolean {
 
     if (!a || !b) return a === b;
@@ -162,8 +171,7 @@ export class TabGeneralComponent {
   }
 
   mapInitialData() {
-    debugger
-    const find = (list: any[], key: string, value: any) =>
+const find = (list: any[], key: string, value: any) =>
       list.find(x => x[key] == value);
 
     this.model.selectedDepartment =

@@ -52,7 +52,6 @@ export class ExpenseFuelAndLubricantCostComponent {
   }
 
   save() {
-    console.log(this.items);
   }
 
   closeModal() { }

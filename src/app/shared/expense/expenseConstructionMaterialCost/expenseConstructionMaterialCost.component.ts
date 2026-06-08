@@ -54,7 +54,6 @@ export class ExpenseConstructionMaterialCostComponent {
   }
 
   save() {
-    console.log(this.items);
   }
 
   closeModal() { }

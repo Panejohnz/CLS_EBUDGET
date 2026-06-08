@@ -30,8 +30,6 @@ export class TabCoordinatorComponent implements OnChanges {
         Fax: ''
       });
     }
-
-    console.log('Coordinator (from parent)', this.model.Project_Coordinator);
   }
 
   addContact() {

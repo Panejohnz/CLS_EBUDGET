@@ -856,19 +856,18 @@
 
                                 <!-- ชื่อเป้าหมาย -->
                                 <div class="col-md-6">
-                                    <input type="text" class="form-control" [(ngModel)]="item.Name"
-                                        readonly>
+                                    <input type="text" class="form-control" [(ngModel)]="item.Name" readonly>
                                 </div>
 
                                 <!-- แผน -->
                                 <div class="col-md-1">
-                                    <input type="text" class="form-control text-center" 
-                                        readonly>
+                                    <input type="text" class="form-control text-center" readonly
+                                        [(ngModel)]="item.Target">
                                 </div>
 
                                 <!-- รายงาน -->
                                 <div class="col-md-2">
-                                    <input type="text" class="form-control" >
+                                    <input type="text" class="form-control" [(ngModel)]="item.Name_Report">
                                 </div>
 
                                 <!-- หน่วยนับ -->
@@ -885,8 +884,16 @@
                         <div class="mb-4">
                             <label class="fw-semibold">เป้าหมายผลลัพธ์ (Outcome)</label>
 
-                            <div *ngFor="let item of Outcome_Result; let i = index" class="mb-2">
-                                <input class="form-control" rows="2" [(ngModel)]="item.Name">
+                            <div *ngFor="let item of Outcome_Result; let i = index" class="row g-2 mb-2">
+
+                                <div class="col-md-6">
+                                    <input class="form-control" [(ngModel)]="item.Name">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <input class="form-control" [(ngModel)]="item.Name_Report">
+                                </div>
+
                             </div>
                         </div>
 

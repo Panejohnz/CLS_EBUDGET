@@ -17,7 +17,7 @@ import { BudgetYearService } from 'src/app/core/services/budget-year.service';
 export class PlanManagementComponent {
 
   constructor(private modalService: NgbModal, public service: GridJsService
-    , private sortService: PaginationService, public servicebud: EbudgetService
+    , public sortService: PaginationService, public servicebud: EbudgetService
     , private authService: AuthenticationService, private budgetYearService: BudgetYearService) {
   }
   allData: any[] = [];
@@ -61,7 +61,22 @@ export class PlanManagementComponent {
   griddata: any[] = [];
   griddataTemp: any[] = [];
   model: any
+  get pagedGriddata(): any[] {
+    return this.sortService.changePage(this.griddata);
+  }
+
+  get pageStartIndex(): number {
+    return this.griddata.length
+      ? ((this.sortService.page - 1) * this.sortService.pageSize) + 1
+      : 0;
+  }
+
+  get pageEndIndex(): number {
+    return Math.min(this.sortService.page * this.sortService.pageSize, this.griddata.length);
+  }
+
   ngOnInit(): void {
+    this.sortService.pageSize = 20;
     this.budgetYearService.yearChanged$.subscribe(async year => {
       if (year) {
         if (year < 2500) {
@@ -69,6 +84,7 @@ export class PlanManagementComponent {
         }
         this.currentYear = year
 
+        this.sortService.page = 1;
         this.get_data()
       }
     });
@@ -91,6 +107,7 @@ export class PlanManagementComponent {
       this.griddataTemp = [...this.allData];
 
       this.griddata = [...this.allData];
+      this.sortService.page = 1;
 
       this.department = Array.isArray(response.Mas_Department_Lists)
         ? response.Mas_Department_Lists
@@ -100,6 +117,7 @@ export class PlanManagementComponent {
 
   }
   applyFilter() {
+    this.sortService.page = 1;
 
     let data = [...this.griddataTemp];
 
@@ -134,6 +152,7 @@ export class PlanManagementComponent {
 
   }
   filterSearch() {
+    this.sortService.page = 1;
 
     const keyword = (this.service.searchTerm || '').toLowerCase().trim();
 

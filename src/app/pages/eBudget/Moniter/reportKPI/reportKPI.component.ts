@@ -119,11 +119,6 @@ export class ReportKPIComponent implements OnInit {
           response
             ?.List_Mas_Indicator || [];
 
-        console.log(
-          'KPI',
-          this.kpis
-        );
-
       });
 
   }
@@ -192,11 +187,6 @@ export class ReportKPIComponent implements OnInit {
             ?.Report_Project_Indicator
           ||
           null;
-
-        console.log(
-          'REPORT DATA',
-          data
-        );
 
         // =================================
         // เคยบันทึกแล้ว
@@ -331,21 +321,11 @@ export class ReportKPIComponent implements OnInit {
 
     };
 
-    console.log(
-      'SAVE KPI',
-      model
-    );
-
     this.servicebud
       .GatewayGetData(model)
       .subscribe({
 
         next: (response: any) => {
-
-          console.log(
-            'SAVE RESPONSE',
-            response
-          );
 
           basicAlert(
             'success',

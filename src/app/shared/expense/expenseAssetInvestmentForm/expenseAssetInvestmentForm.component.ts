@@ -446,16 +446,6 @@ export class ExpenseAssetInvestmentFormComponent {
 
     this.fileError = false;
 
-    console.log({
-
-      type: this.type,
-
-      items: this.items,
-
-      files: this.files
-
-    });
-
   }
 
 }
