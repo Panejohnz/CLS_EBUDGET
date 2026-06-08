@@ -1,0 +1,12 @@
+.sticky-header th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #556398 !important;
+  color: white;
+}
+
+.table-responsive {
+  max-height: 600px;
+  overflow-y: auto;
+}

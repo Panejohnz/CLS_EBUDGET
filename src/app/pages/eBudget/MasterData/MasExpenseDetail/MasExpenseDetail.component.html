@@ -1,147 +1,211 @@
 <div class="card shadow-sm">
+  <div class="card-header">
+    <h5 class="mb-0">กำหนดอัตราค่าใช้จ่าย</h5>
+  </div>
 
-    <!-- HEADER -->
-    <div class="card-header d-flex justify-content-between">
-        <h5>ค่าที่พักตามระดับ</h5>
-
-        <button class="btn btn-primary" (click)="fullModal(fullDataModal, null)">
-            + เพิ่มรายการ
+  <div class="card-body">
+    <ul class="nav nav-tabs mb-3">
+      <li class="nav-item">
+        <button type="button" class="nav-link active">
+          {{ tabTitle }}
         </button>
-    </div>
+      </li>
+    </ul>
 
-    <!-- TABLE -->
-    <div class="card-body">
-
-        <div class="table-responsive">
-            <table class="table table-hover text-center align-middle">
-
-                <thead class="table-light">
-                    <tr>
-                        <th>#</th>
-                        <th>ระดับ</th>
-                        <th>ประเภท</th>
-                        <th>รายละเอียด</th>
-                        <th>อัตราขอ</th>
-                        <th>อัตราแผน</th>
-                        <th>จัดการ</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    <tr *ngFor="let item of expenseDetailList; let i = index">
-
-                        <td>{{ i + 1 }}</td>
-                        <td>{{ item.Child_Detial_Name }}</td>
-                        <td>{{ item.Expense_Name }}</td>
-                        <td class="text-start">{{ item.Expense_Detial_Name }}</td>
-                        <td>{{ item.Request_Rate }}</td>
-                        <td>{{ item.Plan_Rate }}</td>
-
-                        <td>
-                            <button class="btn btn-warning btn-sm me-1" (click)="fullModal(fullDataModal, item)">
-                                ✏️
-                            </button>
-
-                            <button class="btn btn-danger btn-sm" (click)="delete(item)">
-                                🗑
-                            </button>
-                        </td>
-
-                    </tr>
-                </tbody>
-
-            </table>
+    <div class="border rounded p-3 bg-light">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div style="width:300px;">
+          <input type="text" class="form-control" placeholder="ค้นหา..."
+            [(ngModel)]="service.searchTerm" (input)="filterSearch()">
         </div>
+        <button type="button" class="btn btn-success text-black" (click)="openAddDetailModal(editDetailModal)">
+          เพิ่มข้อมูล
+        </button>
+      </div>
 
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+          <thead class="text-center text-white sticky-header">
+            <tr>
+              <th style="width:5%">ลำดับ</th>
+              <th style="width:15%">ชื่อระดับ</th>
+              <th style="width:20%">ค่าใช้จ่าย</th>
+              <th style="width:12%">ค่าใช้จ่าย (ย่อ)</th>
+              <th style="width:12%">รหัสค่าใช้จ่าย</th>
+              <th style="width:8%">เรียงลำดับ</th>
+              <th style="width:8%">กำหนดอัตรา</th>
+              <th style="width:8%">จัดการ</th>
+              <th style="width:8%">ลบข้อมูล</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (data of List_Mas_Expense_Detial; track $index) {
+            <tr>
+              <td>{{ pagination.startIndex + $index }}</td>
+              <td>{{ data.Child_Detial_Name }}</td>
+              <td class="text-center">{{ data.Expense_Detial_Name }}</td>
+              <td>{{ data.Expense_Detial_Short_Name || '-' }}</td>
+              <td>{{ data.Expense_Detial_Code || '-' }}</td>
+              <td>{{ data.Order_Seq }}</td>
+              <td>
+                <button type="button" class="btn btn-success btn-sm"
+                  (click)="openEditRateModal(addRateModal, data)">
+                  <i class="ri-money-dollar-circle-line"></i>
+                </button>
+              </td>
+              <td>
+                <button type="button" class="btn btn-warning btn-sm"
+                  (click)="openEditDetailModal(editDetailModal, data)">
+                  <i class="ri-pencil-line"></i>
+                </button>
+              </td>
+              <td>
+                <button type="button" class="btn btn-danger btn-sm" (click)="Delete_Mas_Expense_Detial(data)">
+                  <i class="ri-delete-bin-line"></i>
+                </button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="row justify-content-md-between align-items-md-center mt-2">
+        <div class="col col-sm-6">
+          <div class="dataTables_info mb-2">
+            แสดง {{ pagination.startIndex }} ถึง {{ pagination.endIndex }}
+            จากทั้งหมด {{ pagination.total }} รายการ
+          </div>
+        </div>
+        <div class="col col-sm-6">
+          <div class="text-sm-end">
+            <ngb-pagination [collectionSize]="pagination.total" [(page)]="pagination.page"
+              [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
+              (pageChange)="onPageChange($event)">
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
-<!-- 🔥 MODAL -->
-<ng-template #fullDataModal let-modal>
+<ng-template #addRateModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">กำหนดอัตราค่าใช้จ่าย</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
 
-    <div class="modal-header">
-        <h5>
-            {{ Mas_Expense_Detail?.Expense_Detial_Id ? 'แก้ไข' : 'เพิ่ม' }}
-            รายละเอียดค่าใช้จ่าย
-        </h5>
-        <button class="btn-close" (click)="modal.dismiss()"></button>
+  <div class="modal-body">
+    @if (selectedExpenseDetailRow) {
+    <div class="mb-3 p-2 bg-light rounded border">
+      <div><strong>ชื่อระดับ:</strong> {{ selectedExpenseDetailRow.Child_Detial_Name }}</div>
+      <div><strong>ค่าใช้จ่าย:</strong> {{ selectedExpenseDetailRow.Expense_Detial_Name }}</div>
+    </div>
+    }
+
+    <div class="d-flex justify-content-end mb-2">
+      <button type="button" class="btn btn-success btn-sm text-black" (click)="addRateRow()">
+        + เพิ่มแถว
+      </button>
     </div>
 
-    <div class="modal-body">
-
-        <div class="row g-3">
-
-            <!-- 🔹 Dropdown ระดับ -->
-            <div class="col-md-6">
-                <label>ระดับ</label>
-                <select class="form-select" [(ngModel)]="Mas_Expense_Detail.Child_Detial_Name">
-
-
-                    <!-- <option *ngFor="let e of levelList" [ngValue]="e.Expense_Name">
-                        {{ e.Expense_Name }}
-                    </option> -->
-
-                    <option value="ระดับ 8 ลงมา">ระดับ 8 ลงมา</option>
-                    <option value="ระดับ 9 ขึ้นไป">ระดับ 9 ขึ้นไป</option>
-                    <option value="ระดับ 10 ขึ้นไป">ระดับ 10 ขึ้นไป</option>
-                </select>
-            </div>
-
-            <!-- 🔹 Expense_Name (fix) -->
-            <div class="col-md-6">
-                <label>ประเภทค่าใช้จ่าย</label>
-                <select class="form-select" [(ngModel)]="Mas_Expense_Detail.Expense_Name">
-
-                    <option value="ค่าเบี้ยเลี้ยง">ค่าเบี้ยเลี้ยง</option>
-                    <option value="ค่าเช่าที่พัก">ค่าเช่าที่พัก</option>
-                    <option value="ค่าพาหนะ">ค่าพาหนะ</option>
-
-                </select>
-            </div>
-
-            <!-- 🔹 Detail -->
-            <div class="col-md-12">
-                <label>รายละเอียดค่าใช้จ่าย</label>
-                <input class="form-control" [(ngModel)]="Mas_Expense_Detail.Expense_Detial_Name">
-            </div>
-
-            <!-- 🔹 Request -->
-            <div class="col-md-6">
-                <label>อัตราที่ขอ</label>
-                <input type="number" class="form-control" [(ngModel)]="Mas_Expense_Detail.Request_Rate">
-            </div>
-
-            <!-- 🔹 Plan -->
-            <div class="col-md-6">
-                <label>อัตราแผน</label>
-                <input type="number" class="form-control" [(ngModel)]="Mas_Expense_Detail.Plan_Rate">
-            </div>
-
-            <!-- 🔹 Order -->
-            <div class="col-md-6">
-                <label>ลำดับ</label>
-                <input type="number" class="form-control" [(ngModel)]="Mas_Expense_Detail.Order_Seq">
-            </div>
-
-            <!-- 🔹 User -->
-            <div class="col-md-6">
-                <label>ผู้บันทึก</label>
-                <input class="form-control" [(ngModel)]="Mas_Expense_Detail.Create_User">
-            </div>
-
-            <!-- 🔹 Date -->
-            <div class="col-md-6">
-                <label>วันที่บันทึก</label>
-                <input type="date" class="form-control" [(ngModel)]="Mas_Expense_Detail.Create_Date">
-            </div>
-
-        </div>
-
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle text-center mb-0">
+        <thead class="table-light">
+          <tr>
+            <th style="width:8%">ลำดับ</th>
+            <th style="width:18%">ปีที่เริ่ม</th>
+            <th style="width:18%">ปีสิ้นสุด</th>
+            <th style="width:12%">ไม่ระบุ</th>
+            <th style="width:20%">อัตรา</th>
+            <th style="width:10%">ลบ</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of List_Mas_Expense_Rate; track $index) {
+          <tr>
+            <td>{{ $index + 1 }}</td>
+            <td>
+              <input type="text" class="form-control form-control text-center" maxlength="4"
+                (keydown)="masterService.allowOnlyNumber($event)" [(ngModel)]="row.Start_Year">
+            </td>
+            <td>
+              <input type="text" class="form-control form-control text-center" maxlength="4"
+                (keydown)="masterService.allowOnlyNumber($event)" [(ngModel)]="row.End_Year">
+            </td>
+            <td>
+              <input class="form-check-input" type="checkbox"
+                [checked]="isRateRowNullChecked(row)"
+                (change)="onRateIsNullChange(row, $any($event.target).checked)">
+            </td>
+            <td>
+              <input type="number" step="0.01" class="form-control form-control text-center"
+                [class.rate-readonly]="isRateRowNullChecked(row)"
+                [readonly]="isRateRowNullChecked(row)"
+                [(ngModel)]="row.Expense_Rate">
+            </td>
+            <td>
+              <button type="button" class="btn btn-danger btn-sm" (click)="removeRateRow($index)">
+                <i class="ri-delete-bin-line"></i>
+              </button>
+            </td>
+          </tr>
+          }
+          @if (List_Mas_Expense_Rate.length === 0) {
+          <tr>
+            <td colspan="6" class="text-muted">ยังไม่มีข้อมูล กด "เพิ่มแถว" เพื่อเพิ่มอัตรา</td>
+          </tr>
+          }
+        </tbody>
+      </table>
     </div>
+  </div>
 
-    <div class="modal-footer">
-        <button class="btn btn-secondary" (click)="modal.dismiss()">ยกเลิก</button>
-        <button class="btn btn-primary" (click)="saveExpenseDetail()">บันทึก</button>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="BtnSaveExpenseRate()">บันทึก</button>
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">ยกเลิก</button>
+  </div>
+</ng-template>
+
+<ng-template #editDetailModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">{{ isEditModeDetail ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลค่าใช้จ่าย</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+
+  <div class="modal-body">
+    <div class="row g-3">
+      <div class="col-md-12">
+        <label class="form-label">ชื่อระดับ <span class="text-danger">*</span></label>
+        <select class="form-select" [(ngModel)]="Mas_Expense_Detial.Buslness_Level">
+          <option [ngValue]="null">-- เลือกชื่อระดับ --</option>
+          @for (level of List_Mas_Business_Level; track level.Level_Id) {
+          <option [ngValue]="level.Level_Id">{{ level.Level_Name }}</option>
+          }
+        </select>
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">ค่าใช้จ่าย <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Expense_Detial.Expense_Detial_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ค่าใช้จ่าย (ย่อ)</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Expense_Detial.Expense_Detial_Short_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">รหัสค่าใช้จ่าย</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Expense_Detial.Expense_Detial_Code">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">เรียงลำดับ</label>
+        <input type="number" class="form-control" [(ngModel)]="Mas_Expense_Detial.Order_Seq">
+      </div>
     </div>
+  </div>
 
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="BtnSaveExpenseDetial()">บันทึก</button>
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">ยกเลิก</button>
+  </div>
 </ng-template>

@@ -558,7 +558,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         },
         {
           "id": 35,
-          "label": "ค่าที่พักตามระดับ",
+          "label": "กำหนดอัตราค่าใช้จ่าย",
           "icon": "bx bx-hotel",
           "link": "/MasterData/MasExpenseDetail",
           "subItems": [],
