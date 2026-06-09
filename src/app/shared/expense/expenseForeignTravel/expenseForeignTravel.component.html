@@ -277,29 +277,6 @@
 
         </div>
 
-        <!-- แนบไฟล์ -->
-        <div class="mt-3">
-
-            <label class="fw-semibold">
-                แนบไฟล์ (บังคับ)
-            </label>
-
-            <input type="file" class="form-control form-control-sm" (change)="uploadFile($event)">
-
-            <small class="text-danger" *ngIf="fileError">
-
-                กรุณาแนบไฟล์
-
-            </small>
-
-            <div class="text-success mt-1" *ngIf="file">
-
-                📎 {{file.name}}
-
-            </div>
-
-        </div>
-
         <!-- ปุ่ม -->
         <div class="mt-3">
 

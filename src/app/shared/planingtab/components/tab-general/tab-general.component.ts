@@ -53,13 +53,19 @@ export class TabGeneralComponent {
 
     if (!a || !b) return a === b;
 
-    return (
-      a.Department_Id === b.Department_Id ||
-      a.Expense_Id === b.Expense_Id ||
-      a.Plan_Id === b.Plan_Id ||
-      a.Product_Id === b.Product_Id ||
-      a.Activity_Id === b.Activity_Id ||
-      a.Budget_Type_Id === b.Budget_Type_Id
+    const ids = [
+      'Department_Id',
+      'Expense_Id',
+      'Plan_Id',
+      'Product_Id',
+      'Activity_Id',
+      'Budget_Type_Id'
+    ];
+
+    return ids.some(key =>
+      a?.[key] != null &&
+      b?.[key] != null &&
+      Number(a[key]) === Number(b[key])
     );
   }
   currentYear: any
@@ -96,7 +102,7 @@ export class TabGeneralComponent {
       this.Mas_Expense_Lists = res.Mas_Expense_Lists || [];
 
       const projectId =
-        this.data?.Project_Id || this.data.Project_Plan.Project_Id
+        this.data?.Project_Id || this.data?.Project_Plan?.Project_Id
 
       if (projectId) {
         this.mapInitialData();
@@ -139,7 +145,7 @@ export class TabGeneralComponent {
       this.Mas_Expense_Lists = res.Mas_Expense_Lists || [];
 
       const projectId =
-        this.data?.Project_Id || this.data.Project_Plan.Project_Id
+        this.data?.Project_Id || this.data?.Project_Plan?.Project_Id
 
       if (projectId) {
         this.mapInitialData();
@@ -172,32 +178,53 @@ export class TabGeneralComponent {
   }
 
   mapInitialData() {
+
     const find = (list: any[], key: string, value: any) =>
-      list.find(x => x[key] == value);
+      list.find(x => Number(x[key]) === Number(value));
+
+    const valueOf = (...values: any[]) =>
+      values.find(value => value !== undefined && value !== null && value !== '');
+
+    const idValue = (key: string, ...values: any[]) => {
+      const value = valueOf(...values);
+      return typeof value === 'object'
+        ? value?.[key]
+        : value;
+    };
 
     this.model.selectedDepartment =
       find(
         this.Mas_Department_Lists,
         'Department_Id',
-        this.data.Department_Id
+        idValue(
+          'Department_Id',
+          this.data.Department_Id,
+          this.model.selectedDepartment
+        )
       );
-    console.log('a', this.Mas_Expense_Lists
-
-    );
-    console.log('b', this.data);
 
     this.model.projectType =
       find(
         this.Mas_Expense_Lists,
         'Expense_Id',
-        this.data.Fk_Expense_List
+        idValue(
+          'Expense_Id',
+          this.data.Fk_Expense_List,
+          this.data.Fk_Expense_Type,
+          this.data.Fk_Expense_Id,
+          this.model.projectType
+        )
       );
 
     this.model.selectedPlan =
       find(
         this.Mas_Plan_Lists,
         'Plan_Id',
-        this.data.Fk_Plan_Id
+        idValue(
+          'Plan_Id',
+          this.data.Fk_Plan_Id,
+          this.model.selectedPlan
+        )
       );
 
     if (this.model.projectType) {
@@ -223,12 +250,24 @@ export class TabGeneralComponent {
 
     if (!this.model.projectType) return;
 
+    if (typeof this.model.projectType !== 'object') {
+      this.model.projectType =
+        this.Mas_Expense_Lists.find(
+          x => Number(x.Expense_Id) === Number(this.model.projectType)
+        );
+    }
+
+    if (!this.model.projectType) return;
+
     let model = {
       FUNC_CODE: "FUNC-GET_Mas_Budget_Type",
       Mas_Expense_List: {
         Expense_Id: this.model.projectType.Expense_Id
       }
     };
+
+    this.data.Fk_Expense_List =
+      this.model.projectType.Expense_Id;
 
     this.data.Fk_Expense_Type =
       this.model.projectType.Expense_Id;
@@ -238,11 +277,16 @@ export class TabGeneralComponent {
       this.Mas_Budget_Types =
         res.Mas_Budget_Types || [];
 
-      if (this.data.Fk_Budget_Type) {
+      const budgetTypeId =
+        typeof this.model.selectedBudget === 'object'
+          ? this.model.selectedBudget?.Budget_Type_Id
+          : (this.data.Fk_Budget_Type || this.model.selectedBudget);
+
+      if (budgetTypeId) {
 
         this.model.selectedBudget =
           this.Mas_Budget_Types.find(
-            x => x.Budget_Type_Id == this.data.Fk_Budget_Type
+            x => Number(x.Budget_Type_Id) === Number(budgetTypeId)
           );
       }
 
@@ -261,6 +305,15 @@ export class TabGeneralComponent {
 
     if (!this.model.selectedPlan) return;
 
+    if (typeof this.model.selectedPlan !== 'object') {
+      this.model.selectedPlan =
+        this.Mas_Plan_Lists.find(
+          x => Number(x.Plan_Id) === Number(this.model.selectedPlan)
+        );
+    }
+
+    if (!this.model.selectedPlan) return;
+
     let model = {
       FUNC_CODE: "FUNC-GET_Mas_Product",
       Mas_Plan: {
@@ -276,11 +329,16 @@ export class TabGeneralComponent {
       this.Mas_Product =
         res.Mas_Product_Lists || [];
 
-      if (this.data.Fk_Product_Id) {
+      const productId =
+        typeof this.model.selectedProduct === 'object'
+          ? this.model.selectedProduct?.Product_Id
+          : (this.data.Fk_Product_Id || this.model.selectedProduct);
+
+      if (productId) {
 
         this.model.selectedProduct =
           this.Mas_Product.find(
-            x => x.Product_Id == this.data.Fk_Product_Id
+            x => Number(x.Product_Id) === Number(productId)
           );
       }
 
@@ -291,6 +349,15 @@ export class TabGeneralComponent {
   }
 
   Onchange_type_Product() {
+
+    if (!this.model.selectedProduct) return;
+
+    if (typeof this.model.selectedProduct !== 'object') {
+      this.model.selectedProduct =
+        this.Mas_Product.find(
+          x => Number(x.Product_Id) === Number(this.model.selectedProduct)
+        );
+    }
 
     if (!this.model.selectedProduct) return;
 
@@ -309,17 +376,29 @@ export class TabGeneralComponent {
       this.Mas_Activity =
         res.Mas_Activity_Lists || [];
 
-      if (this.data.Fk_Activity_Id) {
+      const activityId =
+        typeof this.model.selectedActivity === 'object'
+          ? this.model.selectedActivity?.Activity_Id
+          : (this.data.Fk_Activity_Id || this.model.selectedActivity);
+
+      if (activityId) {
 
         this.model.selectedActivity =
           this.Mas_Activity.find(
-            x => x.Activity_Id == this.data.Fk_Activity_Id
+            x => Number(x.Activity_Id) === Number(activityId)
           );
       }
     });
   }
 
   onActivityChange(activity: any) {
+
+    if (activity && typeof activity !== 'object') {
+      activity =
+        this.Mas_Activity.find(
+          x => Number(x.Activity_Id) === Number(activity)
+        );
+    }
 
     this.model.selectedActivity = activity;
 
@@ -328,6 +407,13 @@ export class TabGeneralComponent {
   }
 
   onBudgetChange(budget: any) {
+
+    if (budget && typeof budget !== 'object') {
+      budget =
+        this.Mas_Budget_Types.find(
+          x => Number(x.Budget_Type_Id) === Number(budget)
+        );
+    }
 
     this.model.selectedBudget = budget;
 

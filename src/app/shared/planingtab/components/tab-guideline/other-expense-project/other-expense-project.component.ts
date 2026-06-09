@@ -7,6 +7,7 @@ import { EbudgetService } from 'src/app/core/services/ebudget.service';
   styleUrl: './other-expense-project.component.scss'
 })
 export class OtherExpenseProjectComponent {
+  @Input() model: any
   @Input() modal: any
   @Input() project_planing: any
   @Input() activity: any;
@@ -19,8 +20,9 @@ export class OtherExpenseProjectComponent {
     this.modal.dismiss();
   }
   ngOnChanges() {
+    console.log('this.modal', this.model);
 
-    if (this.activityId) {
+    if (this.activityId && !this.activity?.otherExpenses?.length) {
       this.loadData();
       return;
     }
@@ -32,10 +34,10 @@ export class OtherExpenseProjectComponent {
         // 🔥 เพิ่มบรรทัดนี้
         Project_Item_Id: x.Project_Item_Id || x.id || 0,
 
-        name: x.Expense_Name,
-        times: x.Times,
-        people: x.People,
-        rate: x.Rate,
+        name: x.Expense_Name || x.name || '',
+        times: x.Times ?? x.times,
+        people: x.People ?? x.people,
+        rate: x.Rate ?? x.rate,
 
         input3: x.input3,
         input4: x.input4,
@@ -47,6 +49,8 @@ export class OtherExpenseProjectComponent {
         Unit_Name_input3: x.Unit_Name_input3,
         Unit_Name_input4: x.Unit_Name_input4,
         Unit_Name_input5: x.Unit_Name_input5,
+        isStandard: x.isStandard,
+        isNonStandard: x.isNonStandard,
       }));
     } else {
       this.meetingCosts = [this.getDefaultItem()];
@@ -58,6 +62,8 @@ export class OtherExpenseProjectComponent {
     if (!this.meetingCosts) return;
 
     this.meetingCosts.forEach((item: any) => {
+      if (item.isStandard || item.isNonStandard) return;
+
       if (this.type === 'investment') {
         item.isStandard = true;
         item.isNonStandard = false;
@@ -245,7 +251,7 @@ export class OtherExpenseProjectComponent {
     this.activity.multiplierTotal = total;
 
     basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
-    this.modal.dismiss();
+    this.modal.close();
   }
   formatNumber(val: any): string {
     if (val == null || val === '') return '';

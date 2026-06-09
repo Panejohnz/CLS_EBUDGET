@@ -256,43 +256,6 @@
 
         </div>
 
-        <!-- FILE -->
-        <div class="mt-4">
-
-            <label class="fw-semibold">
-                แนบไฟล์
-            </label>
-
-            <div class="row mt-2">
-
-                <div class="col-md-6 mb-3" *ngFor="let f of fileConfig">
-
-                    <label class="mb-1">
-
-                        {{f.label}}
-
-                        <span *ngIf="f.required" class="text-danger">
-
-                            *
-
-                        </span>
-
-                    </label>
-
-                    <input type="file" class="form-control form-control-sm" (change)="uploadFile($event, f.key)">
-
-                    <small class="text-success" *ngIf="files[f.key]">
-
-                        📎 {{files[f.key]?.name}}
-
-                    </small>
-
-                </div>
-
-            </div>
-
-        </div>
-
         <!-- BUTTON -->
         <div class="mt-4 d-flex justify-content-between align-items-center">
 

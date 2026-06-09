@@ -61,7 +61,7 @@
                                 {{i+1}}
                             </td>
                             <td class="text-start">
-                                <div class="d-flex gap-3 mb-1">
+                                <div *ngIf="model.Fk_Budget_Type == '3'" class="d-flex gap-3 mb-1">
 
                                     <div class="form-check m-0">
                                         <input type="checkbox" class="form-check-input" [(ngModel)]="item.isStandard"

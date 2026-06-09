@@ -149,15 +149,46 @@ export class TabDetailComponent implements OnInit, OnChanges {
 
   }
   convertJsonDateToInput(
-    dateStr: string
+    dateStr: any
   ): NgbDateStruct | null {
 
     if (!dateStr) return null;
 
-    const timestamp =
-      Number(dateStr.replace(/[^0-9]/g, ''));
+    if (
+      typeof dateStr === 'object' &&
+      dateStr.year &&
+      dateStr.month &&
+      dateStr.day
+    ) {
+      return dateStr;
+    }
 
-    const date = new Date(timestamp);
+    let date: Date | null = null;
+
+    if (typeof dateStr === 'string' && /\/Date\(\d+\)\//.test(dateStr)) {
+      const timestamp =
+        Number(dateStr.replace(/[^0-9]/g, ''));
+
+      date = new Date(timestamp);
+    } else if (typeof dateStr === 'string') {
+      const value = dateStr.split('T')[0];
+
+      if (value.includes('-')) {
+        const [year, month, day] =
+          value.split('-').map(Number);
+
+        date = new Date(year, month - 1, day);
+      } else if (value.includes('/')) {
+        const [day, month, year] =
+          value.split('/').map(Number);
+
+        date = new Date(year, month - 1, day);
+      } else {
+        date = new Date(dateStr);
+      }
+    }
+
+    if (!date || isNaN(date.getTime())) return null;
 
     return {
       year: date.getFullYear(),
@@ -190,6 +221,11 @@ export class TabDetailComponent implements OnInit, OnChanges {
       date.day
     ) {
       return `${date.year}-${String(date.month).padStart(2, '0')}-${String(date.day).padStart(2, '0')}`;
+    }
+
+    if (typeof date === 'string' && /\/Date\(\d+\)\//.test(date)) {
+      const parsed = this.convertJsonDateToInput(date);
+      return this.convertToApiDate(parsed);
     }
 
     return date;

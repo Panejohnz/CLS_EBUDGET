@@ -947,7 +947,20 @@ export class ProjectBudgetProposalAddPersonnelComponent {
       };
 
       this.serviceebud.GatewayGetData(model)
-        .subscribe(async () => {
+        .subscribe(async (response: any) => {
+
+          this.applySavedRequestId(response);
+
+          try {
+            await this.uploadExpenseAttachFiles();
+          } catch (error) {
+            await basicAlert(
+              'warning',
+              'บันทึกข้อมูลแล้ว แต่แนบไฟล์ไม่สำเร็จ',
+              ''
+            );
+            return;
+          }
 
           await basicAlert(
             'success',
@@ -959,6 +972,58 @@ export class ProjectBudgetProposalAddPersonnelComponent {
         });
 
     }
+  }
+
+  private applySavedRequestId(response: any) {
+    const requestId =
+      response?.Request_Id ||
+      response?.Budget_Request?.Request_Id ||
+      response?.Data?.Request_Id ||
+      response?.data?.Request_Id;
+
+    if (requestId && this.model?.Budget_Request) {
+      this.model.Budget_Request.Request_Id = requestId;
+    }
+  }
+
+  private uploadExpenseAttachFiles(): Promise<void> {
+    const attachFiles =
+      (this.model?.Budget_Request_Attach_File || [])
+        .filter((x: any) => x?.file instanceof File);
+
+    if (attachFiles.length === 0) {
+      return Promise.resolve();
+    }
+
+    const formData = new FormData();
+    const requestId =
+      this.model?.Budget_Request?.Request_Id || 0;
+
+    attachFiles.forEach((item: any) => {
+      formData.append('', item.file);
+    });
+
+    formData.append(
+      'MODEL',
+      JSON.stringify({
+        FUNC_CODE: 'FUNC-Upload_Budget_Request_File',
+        Request_Id: requestId,
+        Files: attachFiles.map((item: any) => ({
+          Fk_Expense_Id: item.Fk_Expense_Id,
+          File_Name: item.File_Name || item.file?.name,
+          File_Size: item.File_Size || item.file?.size,
+          File_Type: item.File_Type || item.file?.type,
+          ATTACH: item.ATTACH || 1
+        }))
+      })
+    );
+
+    return new Promise((resolve, reject) => {
+      this.serviceebud.UploadData(formData).subscribe({
+        next: () => resolve(),
+        error: error => reject(error)
+      });
+    });
   }
 
   mapActivities() {
@@ -1106,12 +1171,23 @@ export class ProjectBudgetProposalAddPersonnelComponent {
     return total;
   }
 
-  toDotNetDate(dateStr: string): string | null {
+  toDotNetDate(dateStr: any): string | null {
 
     if (!dateStr) return null;
 
+    if (typeof dateStr === 'string' && /\/Date\(\d+\)\//.test(dateStr)) {
+      return dateStr;
+    }
+
     const timestamp =
-      new Date(dateStr).getTime();
+      typeof dateStr === 'object' &&
+        dateStr.year &&
+        dateStr.month &&
+        dateStr.day
+        ? new Date(dateStr.year, dateStr.month - 1, dateStr.day).getTime()
+        : new Date(dateStr).getTime();
+
+    if (isNaN(timestamp)) return null;
 
     return `/Date(${timestamp})/`;
   }

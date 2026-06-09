@@ -72,12 +72,6 @@
 
                         </th>
 
-                        <th width="10%" *ngIf="tab === 'old'">
-
-                            แนบไฟล์
-
-                        </th>
-
                         <th width="5%"></th>
 
                     </tr>
@@ -140,19 +134,6 @@
                             item.total
                             | number:'1.2-2'
                             }}
-
-                        </td>
-
-                        <!-- file -->
-                        <td *ngIf="tab === 'old'">
-
-                            <input type="file" class="form-control form-control-sm" (change)="uploadFile($event, i)">
-
-                            <small class="text-success d-block mt-1" *ngIf="item.fileName">
-
-                                📎 {{ item.fileName }}
-
-                            </small>
 
                         </td>
 

@@ -40,10 +40,6 @@
                 วัตถุประสงค์
               </th>
 
-              <th style="width:10%">
-                เอกสาร
-              </th>
-
               <th style="width:5%"></th>
 
             </tr>
@@ -125,13 +121,6 @@
                 <textarea class="form-control" rows="2" [(ngModel)]="item.purpose" (ngModelChange)="updateDetailItems()"
                   placeholder="ระบุวัตถุประสงค์">
                                 </textarea>
-
-              </td>
-
-              <!-- file -->
-              <td>
-
-                <input type="file" class="form-control form-control-sm" (change)="onFileChange($event,item)">
 
               </td>
 
