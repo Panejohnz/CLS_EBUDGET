@@ -102,7 +102,20 @@ export class ProjectPlanningComponent {
     window.open(url, '_blank');
   }
   currentYear: any
+  userSession: any
   ngOnInit(): void {
+    this.userSession = localStorage.getItem('userSession');
+    try {
+
+      if (this.userSession.VIEW_DATA == 3) {
+        this.selectedDepartmentId = this.userSession.Department_id
+        this.applyFilter()
+      } else {
+
+      }
+    } catch (error) {
+
+    }
 
 
 
