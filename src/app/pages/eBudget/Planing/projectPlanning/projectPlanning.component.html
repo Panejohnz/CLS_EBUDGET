@@ -43,8 +43,7 @@
                             </div>
 
                             <!-- ปุ่มเพิ่ม -->
-                            <button class="btn mb-0"
-                                style="background-color:#556398;color:white;border:none;height:38px;"
+                            <button class="btn btn-success text-black"
                                 data-bs-toggle="modal" data-bs-target="#exampleModalgrid"
                                 (click)="fullModal(fullDataModal,emptyplan)">
 
@@ -238,10 +237,10 @@
     </div>
 
     <div class="modal-footer">
-        <button class="btn btn-success" (click)="savePlan(modal)">
-            💾 บันทึก
+        <button class="btn btn-success text-black" (click)="savePlan(modal)">
+            บันทึก
         </button>
-        <button class="btn btn-light" (click)="modal.dismiss()">
+        <button class="btn btn-danger text-black" (click)="modal.dismiss()">
             ยกเลิก
         </button>
     </div>
@@ -368,11 +367,11 @@
 
     <div class="modal-footer">
 
-        <button class="btn btn-light" (click)="modal.dismiss()">
-            ยกเลิก
+        <button class="btn btn-danger text-black" (click)="modal.dismiss()">
+            ยกเลิก   
         </button>
 
-        <button class="btn btn-warning" [disabled]="!selectedCopyProjectId" (click)="confirmCopyProject(modal)">
+        <button class="btn btn-warning text-black" [disabled]="!selectedCopyProjectId" (click)="confirmCopyProject(modal)">
 
             <i class="ri-file-copy-line me-1"></i>
 

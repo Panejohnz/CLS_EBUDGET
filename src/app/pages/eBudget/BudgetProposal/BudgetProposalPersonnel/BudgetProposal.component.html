@@ -36,7 +36,7 @@
                                 [(ngModel)]="service.searchTerm" (input)="applyFilter()">
                         </div>
 
-                        <button class="btn" style="background-color:#556398; color:white; border:none;"
+                        <button class="btn btn-success text-black"
                             (click)="fullModal(fullDataModal,emptyplan)">
                             <i class="ri-add-line me-1"></i>
                             เพิ่มคำขอ
@@ -302,7 +302,7 @@
 
         </button>
 
-        <button class="btn btn-light" (click)="modal.dismiss()">
+        <button class="btn btn-danger text-black" (click)="modal.dismiss()">
 
             ยกเลิก
 
