@@ -1,123 +1,57 @@
-<div class="card-body">
+<div class="expense-table-responsive">
+    <table class="table table-bordered align-middle text-center expense-table mb-0" style="table-layout: fixed;">
+        <thead class="text-center text-white expense-table-header">
+            <tr>
+                <th class="text-start" style="width:30%">รายการ</th>
+                <th style="width:20%">จำนวนคน</th>
+                <th *ngIf="model.selectedExpenseTypeId == 5" style="width:25%">ต่อ/เดือน</th>
+                <th style="width:25%">วงเงิน/ปี</th>
+            </tr>
+        </thead>
 
-    <div class="table-responsive">
+        <tbody>
+            <tr>
+                <td class="text-start">อัตราเดิม</td>
+                <td>
+                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                        class="form-control text-center" [(ngModel)]="model.oldQty"
+                        (ngModelChange)="calculateRowOld()">
+                </td>
+                <td *ngIf="model.selectedExpenseTypeId == 5">
+                    <input type="text" class="form-control text-end" [ngModel]="model.oldMonth | number:'1.0-2'"
+                        (ngModelChange)="onAmountChange($event, 'oldMonth')">
+                </td>
+                <td>
+                    <input type="text" class="form-control text-end" [ngModel]="model.oldYear | number:'1.0-2'"
+                        (ngModelChange)="onAmountChange($event, 'oldYear')">
+                </td>
+            </tr>
 
-        <table class="table table-bordered align-middle text-center">
+            <tr>
+                <td class="text-start">อัตราใหม่</td>
+                <td>
+                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                        class="form-control text-center" [(ngModel)]="model.newQty"
+                        (ngModelChange)="calculateRowNew()">
+                </td>
+                <td *ngIf="model.selectedExpenseTypeId == 5">
+                    <input type="text" class="form-control text-end" [ngModel]="model.newMonth | number:'1.0-2'"
+                        (ngModelChange)="onAmountChange($event, 'newMonth')">
+                </td>
+                <td>
+                    <input type="text" class="form-control text-end" [ngModel]="model.newYear | number:'1.0-2'"
+                        (ngModelChange)="onAmountChange($event, 'newYear')">
+                </td>
+            </tr>
+        </tbody>
 
-            <thead class="table-secondary">
-
-                <tr>
-
-                    <th class="text-start">
-                        รายการ
-                    </th>
-
-                    <th style="width:150px">
-                        จำนวนคน
-                    </th>
-
-                    <th *ngIf="model.selectedExpenseTypeId == 5" style="width:200px">
-
-                        ต่อ/เดือน
-
-                    </th>
-
-                    <th style="width:200px">
-                        วงเงิน/ปี
-                    </th>
-
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-                <!-- อัตราเดิม -->
-                <tr>
-
-                    <td class="text-start">
-                        อัตราเดิม
-                    </td>
-
-                    <td>
-
-                        <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center" [(ngModel)]="model.oldQty"
-                            (ngModelChange)="calculateRowOld()">
-
-                    </td>
-
-                    <td *ngIf="model.selectedExpenseTypeId == 5">
-
-                        <input type="text" class="form-control text-end" [ngModel]="model.oldMonth | number:'1.0-2'"
-                            (ngModelChange)="onAmountChange($event, 'oldMonth')">
-
-                    </td>
-
-                    <td>
-                        <input type="text" class="form-control text-end" [ngModel]="model.oldYear | number:'1.0-2'"
-                            (ngModelChange)="onAmountChange($event, 'oldYear')" [readonly]="false">
-                    </td>
-
-                </tr>
-
-                <!-- อัตราใหม่ -->
-                <tr>
-
-                    <td class="text-start">
-                        อัตราใหม่
-                    </td>
-
-                    <td>
-
-                        <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center" [(ngModel)]="model.newQty"
-                            (ngModelChange)="calculateRowNew()">
-
-                    </td>
-
-                    <td *ngIf="model.selectedExpenseTypeId == 5">
-
-                        <input type="text" class="form-control text-end" [ngModel]="model.newMonth | number:'1.0-2'"
-                            (ngModelChange)="onAmountChange($event, 'newMonth')">
-                    </td>
-
-                    <td>
-
-                        <input type="text" class="form-control text-end" [ngModel]="model.newYear | number:'1.0-2'"
-                            (ngModelChange)="onAmountChange($event, 'newYear')" [readonly]="false">
-
-                    </td>
-
-                </tr>
-
-            </tbody>
-
-            <!-- footer -->
-            <tfoot class="table-secondary fw-bold">
-
-                <tr>
-
-                    <td class="text-end">
-                        รวม
-                    </td>
-
-                    <td>
-                        {{ totalQty | number:'1.0-2' }}
-                    </td>
-
-                    <td *ngIf="model.selectedExpenseTypeId == 5"></td>
-
-                    <td class="text-end">
-
-                        {{ totalAmount | number:'1.0-2' }}
-
-                    </td>
-
-                </tr>
-
-            </tfoot>
-
-        </table>
-
-    </div>
-
+        <tfoot>
+            <tr>
+                <td class="text-end">รวม</td>
+                <td>{{ totalQty | number:'1.0-2' }}</td>
+                <td *ngIf="model.selectedExpenseTypeId == 5"></td>
+                <td class="text-end">{{ totalAmount | number:'1.0-2' }}</td>
+            </tr>
+        </tfoot>
+    </table>
 </div>

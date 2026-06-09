@@ -1,0 +1,35 @@
+$expense-table-header-bg: #556398;
+
+.expense-table-responsive {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+table.expense-table {
+  thead.expense-table-header th,
+  thead.sticky-header th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: $expense-table-header-bg !important;
+    color: #fff;
+    text-align: center;
+  }
+
+  tfoot tr,
+  tr.expense-table-footer {
+    font-weight: 600;
+    background-color: $expense-table-header-bg;
+
+    td,
+    th {
+      color: #fff;
+    }
+  }
+}
+
+.expense-card {
+  &.card.shadow-sm .card-header {
+    background-color: #fff;
+  }
+}

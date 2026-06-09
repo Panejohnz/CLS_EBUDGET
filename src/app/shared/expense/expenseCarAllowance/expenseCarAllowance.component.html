@@ -1,207 +1,77 @@
-<div class="container-fluid bg-light py-3">
-
-    <div class="card shadow-sm border-0">
-
-        <!-- header -->
-        <!-- <div class="card-header bg-white border-bottom fw-bold text-primary">
-
-            แบบฟอร์มค่าเช่ารถประจำตำแหน่ง
-
-        </div> -->
-
-        <div class="card-body">
-
-            <div class="table-responsive">
-
-                <table class="table table-bordered align-middle text-center bg-white">
-
-                    <thead class="table-light">
-
-                        <tr>
-
-                            <th style="width:30%">
-
-                                ชื่อ - นามสกุล
-
-                            </th>
-
-                            <th style="width:20%">
-
-                                ตำแหน่ง
-
-                            </th>
-
-                            <th style="width:10%">
-
-                                จำนวน (คัน)
-
-                            </th>
-
-                            <th style="width:15%">
-
-                                ต่อเดือน
-
-                            </th>
-
-                            <th style="width:15%">
-
-                                ต่อปี
-
-                            </th>
-
-                            <th style="width:5%"></th>
-
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        <tr *ngFor="let item of list; let i = index">
-
-                            <!-- name -->
-                            <td>
-
-                                <input class="form-control" [(ngModel)]="item.name"
-                                    (ngModelChange)="updateDetailItems()" placeholder="ชื่อ - นามสกุล">
-
-                            </td>
-
-                            <!-- position -->
-                            <td>
-
-                                <select class="form-select" [(ngModel)]="item.position" (change)="updateDetailItems()">
-
-                                    <option value="">
-
-                                        -- ตำแหน่งงาน --
-
-                                    </option>
-
-                                    <option value="เลขาธิการ ป.ป.ท.">
-
-                                        เลขาธิการ ป.ป.ท.
-
-                                    </option>
-
-                                    <option value="รองเลขาธิการ ป.ป.ท.">
-
-                                        รองเลขาธิการ ป.ป.ท.
-                                    </option>
-
-                                    <option value="ผู้ช่วยเลขาธิการ ป.ป.ท.">
-
-                                        ผู้ช่วยเลขาธิการ ป.ป.ท.
-                                    </option>
-
-                                </select>
-
-                            </td>
-
-                            <!-- qty -->
-                            <td>
-
-                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center" [(ngModel)]="item.qty"
-                                    (ngModelChange)="calculate(item)">
-
-                            </td>
-
-                            <!-- month -->
-                            <td>
-
-                                <input type="text" class="form-control text-end" [ngModel]="item.rate | number:'1.0-2'"
-                                    (ngModelChange)="onRateChange($event, item)">
-
-                            </td>
-
-                            <!-- year -->
-                            <td class="fw-bold text-end bg-light text-primary">
-
-                                {{ item.total | number:'1.2-2' }}
-
-                            </td>
-
-                            <!-- remove -->
-                            <td>
-
-                                <button class="btn btn-sm btn-outline-danger" (click)="remove(item)">
-
-                                    <i class="bx bx-trash"></i>
-
-                                </button>
-
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                    <tfoot class="table-light fw-bold">
-
-                        <tr>
-
-                            <td colspan="2" class="text-end">
-
-                                รวมทั้งสิ้น
-
-                            </td>
-
-                            <!-- total qty -->
-                            <td>
-
-                                {{ totalQty | number:'1.0-2' }}
-
-                            </td>
-
-                            <!-- total month -->
-                            <td class="text-end">
-
-                                {{ totalMonth | number:'1.2-2' }}
-
-                            </td>
-
-                            <!-- total year -->
-                            <td class="text-end text-primary">
-
-                                {{ totalYear | number:'1.2-2' }}
-
-                            </td>
-
-                            <td></td>
-
-                        </tr>
-
-                    </tfoot>
-
-                </table>
-
-            </div>
-
-            <!-- footer -->
-            <div class="d-flex justify-content-between mt-3">
-
-                <div>
-
-                    <button class="btn btn-outline-primary" (click)="add()">
-
-                        <i class="bx bx-plus"></i>
-
-                        เพิ่มรายการ
-
-                    </button>
-
-                    <span class="text-danger ms-2">
-
-                        จำนวน {{ list.length }} รายการ
-
-                    </span>
-
-                </div>
-
-            </div>
-
+<div class="card shadow-sm expense-card">
+    <div class="card-body">
+        <div class="expense-table-responsive">
+            <table class="table table-bordered align-middle text-center expense-table mb-0" style="table-layout: fixed;">
+                <thead class="text-center text-white expense-table-header">
+                    <tr>
+                        <th style="width:30%">ชื่อ - นามสกุล</th>
+                        <th style="width:20%">ตำแหน่ง</th>
+                        <th style="width:10%">จำนวน (คัน)</th>
+                        <th style="width:15%">ต่อเดือน</th>
+                        <th style="width:15%">ต่อปี</th>
+                        <th style="width:5%"></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let item of list; let i = index">
+                        <td>
+                            <input class="form-control" [(ngModel)]="item.name"
+                                (ngModelChange)="updateDetailItems()" placeholder="ชื่อ - นามสกุล">
+                        </td>
+
+                        <td>
+                            <select class="form-select" [(ngModel)]="item.position" (change)="updateDetailItems()">
+                                <option value="">-- ตำแหน่งงาน --</option>
+                                <option value="เลขาธิการ ป.ป.ท.">เลขาธิการ ป.ป.ท.</option>
+                                <option value="รองเลขาธิการ ป.ป.ท.">รองเลขาธิการ ป.ป.ท.</option>
+                                <option value="ผู้ช่วยเลขาธิการ ป.ป.ท.">ผู้ช่วยเลขาธิการ ป.ป.ท.</option>
+                            </select>
+                        </td>
+
+                        <td>
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                                class="form-control text-center" [(ngModel)]="item.qty"
+                                (ngModelChange)="calculate(item)">
+                        </td>
+
+                        <td>
+                            <input type="text" class="form-control text-end" [ngModel]="item.rate | number:'1.0-2'"
+                                (ngModelChange)="onRateChange($event, item)">
+                        </td>
+
+                        <td class="fw-bold text-end text-primary">
+                            {{ item.total | number:'1.2-2' }}
+                        </td>
+
+                        <td>
+                            <button class="btn btn-sm btn-outline-danger" (click)="remove(item)">
+                                <i class="bx bx-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <td colspan="2" class="text-end">รวมทั้งสิ้น</td>
+                        <td>{{ totalQty | number:'1.0-2' }}</td>
+                        <td class="text-end">{{ totalMonth | number:'1.2-2' }}</td>
+                        <td class="text-end">{{ totalYear | number:'1.2-2' }}</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
 
+        <div class="d-flex justify-content-between mt-3">
+            <div>
+                <button class="btn btn-outline-primary" (click)="add()">
+                    <i class="bx bx-plus"></i>
+                    เพิ่มรายการ
+                </button>
+                <span class="text-danger ms-2">จำนวน {{ list.length }} รายการ</span>
+            </div>
+        </div>
     </div>
-
 </div>

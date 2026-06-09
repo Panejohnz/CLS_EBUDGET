@@ -1,12 +1,12 @@
-<div class="card shadow-sm">
+<div class="card shadow-sm expense-card">
     <div class="card-header">
         <h5 class="mb-0">ค่าตอบแทนบุคคลหรือคณะกรรมการ</h5>
     </div>
 
     <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered align-middle text-center mb-0" style="table-layout: fixed;">
-                <thead class="text-center text-white sticky-header">
+        <div class="expense-table-responsive">
+            <table class="table table-bordered align-middle expense-table text-center expense-table mb-0" style="table-layout: fixed;">
+                <thead class="text-center text-white expense-table-header">
                     <tr>
                         <th style="width:35%">รายการ</th>
                         <th style="width:20%">ประเภท</th>
@@ -79,9 +79,9 @@
                 </tbody>
 
                 <tfoot>
-                    <tr class="fw-bold" style="background-color: #556398;">
-                        <td colspan="5" class="text-end text-white">รวมทั้งสิ้น</td>
-                        <td class="text-end text-white">{{ grandTotal | number:'1.2-2' }}</td>
+                    <tr>
+                        <td colspan="5" class="text-end">รวมทั้งสิ้น</td>
+                        <td class="text-end">{{ grandTotal | number:'1.2-2' }}</td>
                         <td></td>
                     </tr>
                 </tfoot>

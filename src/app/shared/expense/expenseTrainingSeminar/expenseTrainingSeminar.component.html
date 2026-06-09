@@ -1,333 +1,174 @@
-<div class="container-fluid p-3">
-
-    <!-- HEADER -->
-    <div class="card shadow-sm border-0 mb-3">
-
-        <div class="card-header bg-light fw-semibold">
-            แบบฟอร์มค่าใช้จ่ายในการสัมมนาและฝึกอบรม
-        </div>
-
-        <div class="card-body">
-
-            <div class="row g-3">
-
-                <!-- โครงการ -->
-                <div class="col-md-5">
-
-                    <label class="form-label fw-semibold">
-                        โครงการ/หลักสูตร
-                    </label>
-
-                    <textarea class="form-control" rows="3" placeholder="ระบุโครงการ/หลักสูตร" [(ngModel)]="projectName"
-                        (ngModelChange)="updateDetailItems()">
-                    </textarea>
-
-                </div>
-
-                <!-- สถานที่ -->
-                <div class="col-md-2">
-
-                    <label class="form-label fw-semibold">
-                        สถานที่จัดกิจกรรม
-                    </label>
-
-                    <div class="form-check">
-
-                        <input class="form-check-input" type="checkbox" [(ngModel)]="locationOffice"
-                            (ngModelChange)="updateDetailItems()" id="government">
-
-                        <label class="form-check-label" for="government">
-                            ราชการ
-                        </label>
-
-                    </div>
-
-                    <div class="form-check">
-
-                        <input class="form-check-input" type="checkbox" [(ngModel)]="locationHotel"
-                            (ngModelChange)="updateDetailItems()" id="private">
-
-                        <label class="form-check-label" for="private">
-                            เอกชน
-                        </label>
-
-                    </div>
-
-                </div>
-
-                <!-- คำชี้แจง -->
-                <div class="col-md-3">
-
-                    <label class="form-label fw-semibold">
-                        คำชี้แจง
-                    </label>
-
-                    <textarea class="form-control" rows="3" [(ngModel)]="description"
-                        (ngModelChange)="updateDetailItems()" placeholder="ระบุคำชี้แจง">
-                    </textarea>
-
-                </div>
-
-            </div>
-
-        </div>
-
+<div class="card shadow-sm expense-card mb-3">
+    <div class="card-header">
+        <h5 class="mb-0">แบบฟอร์มค่าใช้จ่ายในการสัมมนาและฝึกอบรม</h5>
     </div>
 
-    <!-- EXPENSE TABLE -->
-    <div class="card shadow-sm border-0">
-
-        <div class="card-header bg-light fw-semibold">
-            ค่าใช้จ่าย
-        </div>
-
-        <div class="card-body p-0">
-
-            <div class="table-responsive">
-
-                <table class="table table-bordered text-center align-middle mb-0">
-
-                    <thead class="table-light">
-
-                        <tr>
-
-                            <th style="width:250px">
-                                รายการค่าใช้จ่าย
-                            </th>
-
-                            <th style="width:100px">
-                                ครั้ง/รุ่น
-                            </th>
-
-                            <th colspan="4">
-                                จำนวนคน
-                            </th>
-
-                            <th colspan="2">
-                                ระบุจำนวน/หน่วย
-                            </th>
-
-                            <th colspan="2">
-                                อัตราค่าใช้จ่ายที่ตั้ง
-                            </th>
-
-                            <th style="width:150px">
-                                รวมเงิน (บาท)
-                            </th>
-
-                            <th style="width:50px"></th>
-
-                        </tr>
-
-                        <tr>
-
-                            <th></th>
-
-                            <th></th>
-
-                            <th>ประเภท ก</th>
-                            <th>ประเภท ข</th>
-                            <th>บุคคลภายนอก</th>
-
-                            <th>รวมคน</th>
-
-                            <th>จำนวน</th>
-                            <th>หน่วยนับ</th>
-
-                            <th>อัตรา</th>
-                            <th>หน่วยนับ</th>
-
-                            <th></th>
-                            <th></th>
-
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        <tr *ngFor="let item of expenseList; let i=index">
-
-                            <!-- รายการ -->
-                            <td class="text-start">
-
-                                <select class="form-select" [(ngModel)]="item.expenseType"
-                                    (ngModelChange)="updateDetailItems()">
-
-                                    <option value="">
-                                        --- ค่าใช้จ่าย ---
-                                    </option>
-
-                                    <option value="ค่าตอบแทนวิทยากร">
-                                        ค่าตอบแทนวิทยากร
-                                    </option>
-
-                                    <option value="ค่าอาหารและเครื่องดื่ม">
-                                        ค่าอาหารและเครื่องดื่ม
-                                    </option>
-
-                                    <option value="ค่าเช่าที่พัก">
-                                        ค่าเช่าที่พัก
-                                    </option>
-
-                                    <option value="ค่าพาหนะ">
-                                        ค่าพาหนะ
-                                    </option>
-
-                                </select>
-
-                            </td>
-
-                            <!-- ครั้ง -->
-                            <td>
-
-                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center" [(ngModel)]="item.times"
-                                    (ngModelChange)="calculate(item)">
-
-                            </td>
-
-                            <!-- ประเภท ก -->
-                            <td>
-
-                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control" [(ngModel)]="item.typeA"
-                                    (ngModelChange)="calculate(item)">
-
-                            </td>
-
-                            <!-- ประเภท ข -->
-                            <td>
-
-                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control" [(ngModel)]="item.typeB"
-                                    (ngModelChange)="calculate(item)">
-
-                            </td>
-
-                            <!-- ภายนอก -->
-                            <td>
-
-                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control" [(ngModel)]="item.external"
-                                    (ngModelChange)="calculate(item)">
-
-                            </td>
-
-                            <!-- รวมคน -->
-                            <td class="fw-bold bg-light">
-
-                                {{item.person}}
-
-                            </td>
-
-                            <!-- จำนวน -->
-                            <td>
-
-                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control" [(ngModel)]="item.qty"
-                                    (ngModelChange)="calculate(item)">
-
-                            </td>
-
-                            <!-- หน่วย -->
-                            <td>
-
-                                <select class="form-select" [(ngModel)]="item.unit"
-                                    (ngModelChange)="updateDetailItems()">
-
-                                    <option>บาท</option>
-                                    <option>คน</option>
-                                    <option>วัน</option>
-                                    <option>มื้อ</option>
-
-                                </select>
-
-                            </td>
-
-                            <!-- rate -->
-                            <td>
-
-                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control" [(ngModel)]="item.rate"
-                                    (ngModelChange)="calculate(item)">
-
-                            </td>
-
-                            <!-- unit2 -->
-                            <td>
-
-                                <select class="form-select" [(ngModel)]="item.unit2"
-                                    (ngModelChange)="updateDetailItems()">
-
-                                    <option>บาท</option>
-                                    <option>คน</option>
-                                    <option>วัน</option>
-                                    <option>มื้อ</option>
-
-                                </select>
-
-                            </td>
-
-                            <!-- total -->
-                            <td class="fw-semibold text-end">
-
-                                {{item.total | number:'1.2-2'}}
-
-                            </td>
-
-                            <!-- delete -->
-                            <td>
-
-                                <button class="btn btn-sm btn-outline-danger" (click)="removeRow(i)">
-
-                                    🗑
-
-                                </button>
-
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                    <tfoot class="table-light fw-bold">
-
-                        <tr>
-
-                            <td colspan="10" class="text-end">
-                                รวมทั้งสิ้น
-                            </td>
-
-                            <td class="text-end text-primary">
-
-                                {{ grandTotal | number:'1.2-2' }}
-
-                            </td>
-
-                            <td></td>
-
-                        </tr>
-
-                    </tfoot>
-
-                </table>
-
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-5">
+                <label class="form-label fw-semibold">โครงการ/หลักสูตร</label>
+                <textarea class="form-control" rows="3" placeholder="ระบุโครงการ/หลักสูตร"
+                    [(ngModel)]="projectName" (ngModelChange)="updateDetailItems()">
+                </textarea>
             </div>
 
+            <div class="col-md-2">
+                <label class="form-label fw-semibold">สถานที่จัดกิจกรรม</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" [(ngModel)]="locationOffice"
+                        (ngModelChange)="updateDetailItems()" id="government">
+                    <label class="form-check-label" for="government">ราชการ</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" [(ngModel)]="locationHotel"
+                        (ngModelChange)="updateDetailItems()" id="private">
+                    <label class="form-check-label" for="private">เอกชน</label>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">คำชี้แจง</label>
+                <textarea class="form-control" rows="3" [(ngModel)]="description"
+                    (ngModelChange)="updateDetailItems()" placeholder="ระบุคำชี้แจง">
+                </textarea>
+            </div>
         </div>
+    </div>
+</div>
 
-        <!-- FOOTER -->
-        <div class="card-footer d-flex justify-content-between">
-
-            <button class="btn btn-outline-primary btn-sm" (click)="addRow()">
-
-                + เพิ่มรายการ
-
-            </button>
-
-            <span class="text-danger">
-
-                จำนวน {{expenseList.length}} รายการ
-
-            </span>
-
-        </div>
-
+<div class="card shadow-sm expense-card">
+    <div class="card-header">
+        <h5 class="mb-0">ค่าใช้จ่าย</h5>
     </div>
 
+    <div class="card-body p-0">
+        <div class="expense-table-responsive">
+            <table class="table table-bordered text-center expense-table align-middle mb-0"
+                style="table-layout: fixed;">
+                <thead class="text-center text-white expense-table-header">
+                    <tr>
+                        <th style="width:250px">รายการค่าใช้จ่าย</th>
+                        <th style="width:100px">ครั้ง/รุ่น</th>
+                        <th colspan="4">จำนวนคน</th>
+                        <th colspan="2">ระบุจำนวน/หน่วย</th>
+                        <th colspan="2">อัตราค่าใช้จ่ายที่ตั้ง</th>
+                        <th style="width:150px">รวมเงิน (บาท)</th>
+                        <th style="width:50px"></th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th>ประเภท ก</th>
+                        <th>ประเภท ข</th>
+                        <th>บุคคลภายนอก</th>
+                        <th>รวมคน</th>
+                        <th>จำนวน</th>
+                        <th>หน่วยนับ</th>
+                        <th>อัตรา</th>
+                        <th>หน่วยนับ</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let item of expenseList; let i=index">
+                        <td class="text-start">
+                            <select class="form-select" [(ngModel)]="item.expenseType"
+                                (ngModelChange)="updateDetailItems()">
+                                <option value="">--- ค่าใช้จ่าย ---</option>
+                                <option value="ค่าตอบแทนวิทยากร">ค่าตอบแทนวิทยากร</option>
+                                <option value="ค่าอาหารและเครื่องดื่ม">ค่าอาหารและเครื่องดื่ม</option>
+                                <option value="ค่าเช่าที่พัก">ค่าเช่าที่พัก</option>
+                                <option value="ค่าพาหนะ">ค่าพาหนะ</option>
+                            </select>
+                        </td>
+
+                        <td>
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                inputmode="decimal" class="form-control text-center" [(ngModel)]="item.times"
+                                (ngModelChange)="calculate(item)">
+                        </td>
+
+                        <td>
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                inputmode="decimal" class="form-control" [(ngModel)]="item.typeA"
+                                (ngModelChange)="calculate(item)">
+                        </td>
+
+                        <td>
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                inputmode="decimal" class="form-control" [(ngModel)]="item.typeB"
+                                (ngModelChange)="calculate(item)">
+                        </td>
+
+                        <td>
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                inputmode="decimal" class="form-control" [(ngModel)]="item.external"
+                                (ngModelChange)="calculate(item)">
+                        </td>
+
+                        <td class="fw-bold bg-light">{{ item.person }}</td>
+
+                        <td>
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                inputmode="decimal" class="form-control" [(ngModel)]="item.qty"
+                                (ngModelChange)="calculate(item)">
+                        </td>
+
+                        <td>
+                            <select class="form-select" [(ngModel)]="item.unit"
+                                (ngModelChange)="updateDetailItems()">
+                                <option>บาท</option>
+                                <option>คน</option>
+                                <option>วัน</option>
+                                <option>มื้อ</option>
+                            </select>
+                        </td>
+
+                        <td>
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                inputmode="decimal" class="form-control" [(ngModel)]="item.rate"
+                                (ngModelChange)="calculate(item)">
+                        </td>
+
+                        <td>
+                            <select class="form-select" [(ngModel)]="item.unit2"
+                                (ngModelChange)="updateDetailItems()">
+                                <option>บาท</option>
+                                <option>คน</option>
+                                <option>วัน</option>
+                                <option>มื้อ</option>
+                            </select>
+                        </td>
+
+                        <td class="fw-semibold text-end text-primary">
+                            {{ item.total | number:'1.2-2' }}
+                        </td>
+
+                        <td>
+                            <button class="btn btn-sm btn-outline-danger" (click)="removeRow(i)">
+                                <i class="bx bx-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <td colspan="10" class="text-end">รวมทั้งสิ้น</td>
+                        <td class="text-end">{{ grandTotal | number:'1.2-2' }}</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <div class="card-footer d-flex justify-content-between">
+        <button class="btn btn-outline-primary btn-sm" (click)="addRow()">
+            + เพิ่มรายการ
+        </button>
+        <span class="text-danger">จำนวน {{ expenseList.length }} รายการ</span>
+    </div>
 </div>

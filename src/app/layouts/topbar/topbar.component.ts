@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { TokenStorageService } from '../../core/services/token-storage.service';
 import { BudgetYearService } from '../../core/services/budget-year.service';
 import { MenuService } from '../../core/services/menu.service';
+import { SessionService } from '../../core/services/session.service';
 // Language
 import { CookieService } from 'ngx-cookie-service';
 import { LanguageService } from '../../core/services/language.service';
@@ -55,12 +56,39 @@ export class TopbarComponent implements OnInit {
   constructor(@Inject(DOCUMENT) private document: any, private eventService: EventService, public languageService: LanguageService, private modalService: NgbModal,
     public _cookiesService: CookieService, public translate: TranslateService, private authService: AuthenticationService, private authFackservice: AuthfakeauthenticationService,
     private router: Router, private TokenStorageService: TokenStorageService, private budgetYearService: BudgetYearService,
-    private menuService: MenuService) { }
+    private menuService: MenuService, private sessionService: SessionService) { }
+
+  get userDisplayName(): string {
+    const authen = this.userData || this.sessionService.getUserSession()?.authenData;
+    if (!authen) {
+      return '';
+    }
+
+    const candidates = [
+      authen.NAME,
+      authen.Personal_Name,
+      authen.Full_Name,
+      [authen.first_name, authen.last_name].filter(Boolean).join(' '),
+      [authen.First_Name, authen.Last_Name].filter(Boolean).join(' ')
+    ];
+
+    return candidates.find(value => value && String(value).trim())?.toString().trim() || '';
+  }
+
+  get departmentDisplayName(): string {
+    const permission = this.permissionData || this.sessionService.getUserSession()?.permissionData;
+    return permission?.Department_Name || '';
+  }
 
   ngOnInit(): void {
-    // this.userData = this.TokenStorageService.getUser();
     this.userData = this.authService.getAuthen();
     this.permissionData = this.authService.getStoredPermission();
+
+    const session = this.sessionService.getUserSession();
+    if (session) {
+      this.userData = this.userData || session.authenData;
+      this.permissionData = this.permissionData || session.permissionData;
+    }
     this.element = document.documentElement;
 
     // Initialize year selection

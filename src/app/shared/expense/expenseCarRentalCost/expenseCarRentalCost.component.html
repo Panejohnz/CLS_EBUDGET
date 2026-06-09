@@ -28,11 +28,11 @@
         </ul>
 
         <!-- table -->
-        <div class="table-responsive">
+        <div class="expense-table-responsive">
 
-            <table class="table table-bordered align-middle text-center bg-white">
+            <table class="table table-bordered align-middle expense-table text-center bg-white">
 
-                <thead class="table-secondary">
+                <thead class="text-center text-white expense-table-header">
 
                     <tr>
 
@@ -71,9 +71,8 @@
                             รวม (บาท)
 
                         </th>
-
-                        <th width="5%"></th>
-
+                        <th width="15%">
+                        </th>
                     </tr>
 
                 </thead>
@@ -153,11 +152,11 @@
                 </tbody>
 
                 <!-- footer -->
-                <tfoot class="table-secondary">
+                <tfoot>
 
                     <tr>
 
-                        <td colspan="4" class="text-end fw-bold">
+                        <td colspan="4" class="fw-bold">
 
                             รวมทั้งสิ้น
 
@@ -169,7 +168,7 @@
 
                         </td>
 
-                        <td class="text-end fw-bold text-primary">
+                        <td class="text-end">
 
                             {{
                             grandTotal
@@ -181,9 +180,6 @@
                         <td *ngIf="tab === 'old'">
 
                         </td>
-
-                        <td></td>
-
                     </tr>
 
                 </tfoot>

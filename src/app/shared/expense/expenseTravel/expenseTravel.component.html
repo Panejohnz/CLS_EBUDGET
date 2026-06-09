@@ -1,379 +1,191 @@
-<div class="container-fluid bg-light p-3">
-
-
-    <!-- SECTION -->
-    <div *ngFor="let section of sections; let s=index" class="d-flex mb-3">
-
-        <!-- left number -->
-        <div class="bg-light text-center fw-bold rounded-start" style="width:60px;padding-top:15px">
-
-            {{ s + 1 }}
-
-        </div>
-
-        <!-- content -->
-        <div class="flex-grow-1 bg-white border rounded-end p-3">
-
-            <!-- description -->
-            <div class="d-flex mb-2">
-
-                <input class="form-control me-2" [(ngModel)]="section.description" (ngModelChange)="updateDetailItems()"
-                    placeholder="คำอธิบายรายการ เช่น เดินทางไปประชุม เป็นต้น">
-
-                <button class="btn btn-sm btn-outline-dark me-2" (click)="addDetail(section)">
-
-                    + เพิ่มรายละเอียด
-
-                </button>
-
-                <button class="btn btn-sm btn-outline-danger" (click)="remove(s)">
-
-                    🗑
-
-                </button>
-
+<div class="card shadow-sm expense-card">
+    <div class="card-body">
+        <div *ngFor="let section of sections; let s=index" class="d-flex mb-3">
+            <div class="text-center fw-bold text-white rounded-start d-flex align-items-center justify-content-center"
+                style="width:60px; background-color:#556398;">
+                {{ s + 1 }}
             </div>
 
-            <!-- table -->
-            <div class="table-responsive">
+            <div class="flex-grow-1 border rounded-end p-3">
+                <div class="d-flex mb-2">
+                    <input class="form-control me-2" [(ngModel)]="section.description"
+                        (ngModelChange)="updateDetailItems()"
+                        placeholder="คำอธิบายรายการ เช่น เดินทางไปประชุม เป็นต้น">
 
-                <table class="table table-bordered align-middle mb-0">
+                    <button class="btn btn-sm btn-outline-primary me-2" (click)="addDetail(section)">
+                        + เพิ่มรายละเอียด
+                    </button>
 
-                    <thead class="table-light">
+                    <button class="btn btn-sm btn-outline-danger" (click)="remove(s)">
+                        <i class="bx bx-trash"></i>
+                    </button>
+                </div>
 
-                        <tr>
-
-                            <th style="width:220px" class="text-start">
-
-                                {{ s + 1 }}.1
-                                <br>
-
-                                ระดับ
-
-                            </th>
-
-                            <th style="width:120px" class="text-center">
-
-                                ครั้ง
-
-                            </th>
-
-                            <th style="width:180px" class="text-center">
-
-                            </th>
-
-                            <th class="text-center">
-
-                                ค่าเบี้ยเลี้ยง
-
-                            </th>
-
-                            <th class="text-center">
-
-                                ค่าเช่าที่พัก
-
-                            </th>
-
-                            <th class="text-center">
-
-                                ค่าพาหนะ (เครื่องบิน)
-
-                            </th>
-
-                            <th class="text-center">
-
-                                ค่าพาหนะ (แท็กซี่)
-
-                            </th>
-
-                            <th style="width:170px" class="text-center">
-
-                                รวมทั้งสิ้น (บาท)
-
-                            </th>
-
-                            <th style="width:50px" class="text-center">
-
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        <ng-container *ngFor="let detail of section.details; let i=index">
-
-                            <!-- row 1 -->
+                <div class="expense-table-responsive">
+                    <table class="table table-bordered align-middle text-center expense-table mb-0"
+                        style="table-layout: fixed;">
+                        <thead class="text-center text-white expense-table-header">
                             <tr>
-
-                                <!-- level -->
-                                <td rowspan="4">
-
-                                    <select class="form-select" [(ngModel)]="detail.level"
-                                        (change)="updateDetailItems()">
-
-                                        <option value="">
-
-                                            --- ระดับ ---
-
-                                        </option>
-
-                                        <option value="8">
-
-                                            ระดับ 8 ลงมา
-
-                                        </option>
-
-                                        <option value="9">
-
-                                            ระดับ 9 ขึ้นไป
-
-                                        </option>
-
-                                        <option value="10">
-
-                                            ระดับ 10 ขึ้นไป
-
-                                        </option>
-
-                                    </select>
-
-                                </td>
-
-                                <!-- times -->
-                                <td>
-
-                                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center" [(ngModel)]="detail.times"
-                                        (ngModelChange)="calculate(detail)">
-
-                                </td>
-
-                                <td class="bg-light text-start ps-3">
-
-                                    จำนวนคน
-
-                                </td>
-
-                                <!-- perdiem -->
-                                <td>
-
-                                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control" [(ngModel)]="detail.perdiemPerson"
-                                        (ngModelChange)="calculate(detail)">
-
-                                </td>
-
-                                <!-- hotel -->
-                                <td>
-
-                                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control" [(ngModel)]="detail.hotelPerson"
-                                        (ngModelChange)="calculate(detail)">
-
-                                </td>
-
-                                <!-- plane -->
-                                <td>
-
-                                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control" [(ngModel)]="detail.planePerson"
-                                        (ngModelChange)="calculate(detail)">
-
-                                </td>
-
-                                <!-- taxi -->
-                                <td>
-
-                                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control" [(ngModel)]="detail.taxiPerson"
-                                        (ngModelChange)="calculate(detail)">
-
-                                </td>
-
-                                <!-- grand -->
-                                <td rowspan="4" class="bg-light fw-bold text-end text-primary">
-
-                                    {{
-                                    detail.grandTotal
-                                    | number:'1.2-2'
-                                    }}
-
-                                </td>
-
-                                <!-- remove -->
-                                <td rowspan="4">
-
-                                    <button class="btn btn-sm btn-outline-danger" (click)="removeDetail(section,i)">
-
-                                        🗑
-
-                                    </button>
-
-                                </td>
-
+                                <th style="width:220px" class="text-start">
+                                    {{ s + 1 }}.1
+                                    <br>
+                                    ระดับ
+                                </th>
+                                <th style="width:120px">ครั้ง</th>
+                                <th style="width:180px"></th>
+                                <th>ค่าเบี้ยเลี้ยง</th>
+                                <th>ค่าเช่าที่พัก</th>
+                                <th>ค่าพาหนะ (เครื่องบิน)</th>
+                                <th>ค่าพาหนะ (แท็กซี่)</th>
+                                <th style="width:170px">รวมทั้งสิ้น (บาท)</th>
+                                <th style="width:50px"></th>
                             </tr>
+                        </thead>
 
-                            <!-- row 2 -->
-                            <tr>
+                        <tbody>
+                            <ng-container *ngFor="let detail of section.details; let i=index">
+                                <tr>
+                                    <td rowspan="4">
+                                        <select class="form-select" [(ngModel)]="detail.level"
+                                            (change)="updateDetailItems()">
+                                            <option value="">--- ระดับ ---</option>
+                                            <option value="8">ระดับ 8 ลงมา</option>
+                                            <option value="9">ระดับ 9 ขึ้นไป</option>
+                                            <option value="10">ระดับ 10 ขึ้นไป</option>
+                                        </select>
+                                    </td>
 
-                                <td></td>
+                                    <td>
+                                        <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                            inputmode="decimal" class="form-control text-center"
+                                            [(ngModel)]="detail.times" (ngModelChange)="calculate(detail)">
+                                    </td>
 
-                                <td class="bg-light text-start ps-3">
+                                    <td class="bg-light text-start ps-3">จำนวนคน</td>
 
-                                    จำนวนวัน/คืน/เที่ยว
+                                    <td>
+                                        <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                            inputmode="decimal" class="form-control" [(ngModel)]="detail.perdiemPerson"
+                                            (ngModelChange)="calculate(detail)">
+                                    </td>
 
-                                </td>
+                                    <td>
+                                        <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                            inputmode="decimal" class="form-control" [(ngModel)]="detail.hotelPerson"
+                                            (ngModelChange)="calculate(detail)">
+                                    </td>
 
-                                <!-- perdiem -->
-                                <td>
+                                    <td>
+                                        <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                            inputmode="decimal" class="form-control" [(ngModel)]="detail.planePerson"
+                                            (ngModelChange)="calculate(detail)">
+                                    </td>
 
-                                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control" [(ngModel)]="detail.perdiemDay"
-                                        (ngModelChange)="calculate(detail)">
+                                    <td>
+                                        <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                            inputmode="decimal" class="form-control" [(ngModel)]="detail.taxiPerson"
+                                            (ngModelChange)="calculate(detail)">
+                                    </td>
 
-                                </td>
+                                    <td rowspan="4" class="fw-bold text-end text-primary">
+                                        {{ detail.grandTotal | number:'1.2-2' }}
+                                    </td>
 
-                                <!-- hotel -->
-                                <td>
+                                    <td rowspan="4">
+                                        <button class="btn btn-sm btn-outline-danger"
+                                            (click)="removeDetail(section,i)">
+                                            <i class="bx bx-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
 
-                                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control" [(ngModel)]="detail.hotelNight"
-                                        (ngModelChange)="calculate(detail)">
+                                <tr>
+                                    <td></td>
+                                    <td class="bg-light text-start ps-3">จำนวนวัน/คืน/เที่ยว</td>
 
-                                </td>
+                                    <td>
+                                        <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                            inputmode="decimal" class="form-control" [(ngModel)]="detail.perdiemDay"
+                                            (ngModelChange)="calculate(detail)">
+                                    </td>
 
-                                <!-- plane -->
-                                <td>
+                                    <td>
+                                        <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                            inputmode="decimal" class="form-control" [(ngModel)]="detail.hotelNight"
+                                            (ngModelChange)="calculate(detail)">
+                                    </td>
 
-                                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control" [(ngModel)]="detail.planeTrip"
-                                        (ngModelChange)="calculate(detail)">
+                                    <td>
+                                        <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                            inputmode="decimal" class="form-control" [(ngModel)]="detail.planeTrip"
+                                            (ngModelChange)="calculate(detail)">
+                                    </td>
 
-                                </td>
+                                    <td>
+                                        <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                            inputmode="decimal" class="form-control" [(ngModel)]="detail.taxiTrip"
+                                            (ngModelChange)="calculate(detail)">
+                                    </td>
+                                </tr>
 
-                                <!-- taxi -->
-                                <td>
+                                <tr>
+                                    <td></td>
+                                    <td class="bg-light text-start ps-3">อัตรา/วัน (บาท)</td>
 
-                                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control" [(ngModel)]="detail.taxiTrip"
-                                        (ngModelChange)="calculate(detail)">
+                                    <td>
+                                        <input type="text" class="form-control text-end" mask="separator.2"
+                                            thousandSeparator="," decimalMarker="." inputmode="decimal"
+                                            [(ngModel)]="detail.perdiemRate" (ngModelChange)="calculate(detail)">
+                                    </td>
 
-                                </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end" mask="separator.2"
+                                            thousandSeparator="," decimalMarker="." inputmode="decimal"
+                                            [(ngModel)]="detail.hotelRate" (ngModelChange)="calculate(detail)">
+                                    </td>
 
-                            </tr>
+                                    <td>
+                                        <input type="text" class="form-control text-end" mask="separator.2"
+                                            thousandSeparator="," decimalMarker="." inputmode="decimal"
+                                            [(ngModel)]="detail.planeRate" (ngModelChange)="calculate(detail)">
+                                    </td>
 
-                            <!-- row 3 -->
-                            <tr>
+                                    <td>
+                                        <input type="text" class="form-control text-end" mask="separator.2"
+                                            thousandSeparator="," decimalMarker="." inputmode="decimal"
+                                            [(ngModel)]="detail.taxiRate" (ngModelChange)="calculate(detail)">
+                                    </td>
+                                </tr>
 
-                                <td></td>
+                                <tr>
+                                    <td></td>
+                                    <td class="bg-light text-start ps-3">รวม (บาท)</td>
 
-                                <td class="bg-light text-start ps-3">
+                                    <td class="bg-light text-end">
+                                        {{ detail.perdiemTotal | number:'1.2-2' }}
+                                    </td>
 
-                                    อัตรา/วัน (บาท)
+                                    <td class="bg-light text-end">
+                                        {{ detail.hotelTotal | number:'1.2-2' }}
+                                    </td>
 
-                                </td>
+                                    <td class="bg-light text-end">
+                                        {{ detail.planeTotal | number:'1.2-2' }}
+                                    </td>
 
-                                <!-- perdiem -->
-                                <td>
-
-                                    <input type="text" class="form-control text-end"
-                                        mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
-                                        [(ngModel)]="detail.perdiemRate" (ngModelChange)="calculate(detail)">
-
-                                </td>
-
-                                <!-- hotel -->
-                                <td>
-
-                                    <input type="text" class="form-control text-end"
-                                        mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
-                                        [(ngModel)]="detail.hotelRate" (ngModelChange)="calculate(detail)">
-
-                                </td>
-
-                                <!-- plane -->
-                                <td>
-
-                                    <input type="text" class="form-control text-end"
-                                        mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
-                                        [(ngModel)]="detail.planeRate" (ngModelChange)="calculate(detail)">
-
-                                </td>
-
-                                <!-- taxi -->
-                                <td>
-
-                                    <input type="text" class="form-control text-end"
-                                        mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
-                                        [(ngModel)]="detail.taxiRate" (ngModelChange)="calculate(detail)">
-
-                                </td>
-
-                            </tr>
-
-                            <!-- row 4 -->
-                            <tr>
-
-                                <td></td>
-
-                                <td class="bg-light text-start ps-3">
-
-                                    รวม (บาท)
-
-                                </td>
-
-                                <!-- perdiem -->
-                                <td class="bg-light text-end">
-
-                                    {{
-                                    detail.perdiemTotal
-                                    | number:'1.2-2'
-                                    }}
-
-                                </td>
-
-                                <!-- hotel -->
-                                <td class="bg-light text-end">
-
-                                    {{
-                                    detail.hotelTotal
-                                    | number:'1.2-2'
-                                    }}
-
-                                </td>
-
-                                <!-- plane -->
-                                <td class="bg-light text-end">
-
-                                    {{
-                                    detail.planeTotal
-                                    | number:'1.2-2'
-                                    }}
-
-                                </td>
-
-                                <!-- taxi -->
-                                <td class="bg-light text-end">
-
-                                    {{
-                                    detail.taxiTotal
-                                    | number:'1.2-2'
-                                    }}
-
-                                </td>
-
-                            </tr>
-
-                        </ng-container>
-
-                    </tbody>
-
-                </table>
-
+                                    <td class="bg-light text-end">
+                                        {{ detail.taxiTotal | number:'1.2-2' }}
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-
         </div>
 
+        <button class="btn btn-outline-primary btn-sm" (click)="addSection()">
+            + เพิ่มรายการ
+        </button>
     </div>
-
-    <!-- add section -->
-    <button class="btn btn-outline-secondary btn-sm" (click)="addSection()">
-
-        + เพิ่มรายการ
-
-    </button>
-
 </div>
