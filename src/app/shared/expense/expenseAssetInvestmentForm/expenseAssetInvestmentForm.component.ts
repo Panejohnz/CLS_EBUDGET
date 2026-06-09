@@ -64,6 +64,10 @@ export class ExpenseAssetInvestmentFormComponent {
   private currentExpenseTypeId: any = null;
   isTextMode = false;
 
+  get shouldDefaultStandardOut(): boolean {
+    return Number(this.currentExpenseTypeId || this.model?.selectedExpenseTypeId) === 63;
+  }
+
   ngOnInit() {
 
     this.config =
@@ -258,7 +262,6 @@ export class ExpenseAssetInvestmentFormComponent {
   }
 
   createItem() {
-
     return {
 
       requestItemId: 0,
@@ -269,7 +272,7 @@ export class ExpenseAssetInvestmentFormComponent {
 
       standardIn: false,
 
-      standardOut: false,
+      standardOut: this.shouldDefaultStandardOut,
 
       price: 0,
 
@@ -338,7 +341,7 @@ export class ExpenseAssetInvestmentFormComponent {
             row.People_Type_A == 1,
 
           standardOut:
-            row.People_Type_B == 1,
+            this.shouldDefaultStandardOut || row.People_Type_B == 1,
           price:
             row.Price || 0,
 

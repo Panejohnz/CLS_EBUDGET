@@ -93,7 +93,8 @@ export class ProjectBudgetProposalAddPersonnelComponent {
       60: 'electric',
       61: 'office',
       62: 'innovation',
-      63: 'other'
+      63: 'other',
+      68: 'other'
     };
 
     return map[id] || 'other';
