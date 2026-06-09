@@ -85,7 +85,20 @@ export class ProjectPlanningComponent {
     , private authService: AuthenticationService, private ProjectPlanService: ProjectPlanService, private budgetYearService: BudgetYearService) {
   }
   currentYear: any
+  userSession: any
   ngOnInit(): void {
+    this.userSession = localStorage.getItem('userSession');
+    try {
+
+      if (this.userSession.VIEW_DATA == 3) {
+        this.selectedDepartmentId = this.userSession.Department_id
+        this.applyFilter()
+      } else {
+
+      }
+    } catch (error) {
+
+    }
 
 
 
