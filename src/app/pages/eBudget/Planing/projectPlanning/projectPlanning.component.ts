@@ -116,7 +116,7 @@ export class ProjectPlanningComponent {
 
       }
     } catch (error) {
-
+      this.userSession.VIEW_DATA = 3
     }
 
 
