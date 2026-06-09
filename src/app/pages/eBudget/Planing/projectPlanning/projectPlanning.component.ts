@@ -408,6 +408,7 @@ export class ProjectPlanningComponent {
       id: Number(x.Project_Detail_Id),
       name: x.Activity_Name,
       owner: x.Responsible,
+      Seq: Number(x.Seq ?? 0) || 0,
 
       noBudget: x.Used_BG === 0,
       consult: x.Is_Consult === 1,
@@ -426,6 +427,7 @@ export class ProjectPlanningComponent {
         Project_Detail_Id: Number(s.Project_Detail_Id),
         name: s.Activity_Name,
         owner: s.Responsible,
+        Seq: Number(s.Seq ?? 0) || 0,
 
         noBudget: s.Used_BG === 0,
         consult: s.Is_Consult === 1,
@@ -756,7 +758,8 @@ export class ProjectPlanningComponent {
   activities: any
   mapActivities() {
 
-    const activities = this.project_planing.activities || [];
+    const activities = [...(this.project_planing.activities || [])]
+      .sort((a: any, b: any) => (a.Seq ?? 0) - (b.Seq ?? 0));
 
     return activities.map((act: any, i: number) => ({
 
@@ -772,7 +775,9 @@ export class ProjectPlanningComponent {
 
       OtherExpenses: act.otherExpenses || [],
 
-      SubActivities: (act.SubActivities || []).map((sub: any, j: number) => ({
+      SubActivities: [...(act.SubActivities || [])]
+        .sort((a: any, b: any) => (a.Seq ?? 0) - (b.Seq ?? 0))
+        .map((sub: any, j: number) => ({
 
         Project_Detail_Id: sub.Project_Detail_Id,
         Activity_Name: sub.name,

@@ -43,9 +43,8 @@
                             </div>
 
                             <!-- ปุ่มเพิ่ม -->
-                            <button class="btn btn-success text-black"
-                                data-bs-toggle="modal" data-bs-target="#exampleModalgrid"
-                                (click)="fullModal(fullDataModal,emptyplan)">
+                            <button class="btn btn-success text-black" data-bs-toggle="modal"
+                                data-bs-target="#exampleModalgrid" (click)="fullModal(fullDataModal,emptyplan)">
 
                                 <i class="ri-add-line me-1"></i>
                                 เพิ่มโครงการ
@@ -55,7 +54,7 @@
                     </div>
 
                 </div>
-<br>
+                <br>
                 <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
 
                     <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
@@ -123,9 +122,8 @@
                                 </td>
 
                                 <td class="text-center">
-                                    <button type="button" class="btn btn-primary btn-sm"
-                                        (click)="viewReport(data)" [disabled]="!data.Project_Id"
-                                        title="ดูรายงาน">
+                                    <button type="button" class="btn btn-primary btn-sm" (click)="viewReport(data)"
+                                        [disabled]="!data.Project_Id" title="ดูรายงาน">
                                         <i class="ri-file-chart-line"></i>
                                     </button>
                                 </td>
@@ -246,7 +244,7 @@
     </div>
 
     <div class="modal-footer">
-        <button class="btn btn-success text-black" (click)="savePlan(modal)">
+        <button  class="btn btn-success text-black" (click)="savePlan(modal)">
             บันทึก
         </button>
         <button class="btn btn-danger text-black" (click)="modal.dismiss()">
@@ -377,10 +375,11 @@
     <div class="modal-footer">
 
         <button class="btn btn-danger text-black" (click)="modal.dismiss()">
-            ยกเลิก   
+            ยกเลิก
         </button>
 
-        <button class="btn btn-warning text-black" [disabled]="!selectedCopyProjectId" (click)="confirmCopyProject(modal)">
+        <button class="btn btn-warning text-black" [disabled]="!selectedCopyProjectId"
+            (click)="confirmCopyProject(modal)">
 
             <i class="ri-file-copy-line me-1"></i>
 

@@ -1,154 +1,74 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { ApexChart } from 'ng-apexcharts';
-import { ActiveProjects, MyTask, TeamMembers, projectstatData } from 'src/app/core/data';
-import { NgApexchartsModule } from "ng-apexcharts";
-import { ApexLegend } from "ng-apexcharts";
+import { Component, OnInit } from '@angular/core';
+import { EbudgetService } from 'src/app/core/services/ebudget.service';
+import { BudgetYearService } from 'src/app/core/services/budget-year.service';
+
 @Component({
   selector: 'app-projects',
   templateUrl: './projects.component.html',
   styleUrls: ['./projects.component.scss']
 })
-
-/**
- * Projects Component
- */
 export class ProjectsComponent implements OnInit {
-  statData: any
-  breadCrumbItems: any
-  pieChart = {
-    series: [30, 25, 20, 15, 10],
+
+  constructor(
+    private servicebud: EbudgetService,
+    private budgetYearService: BudgetYearService
+  ) { }
+
+  breadCrumbItems: any[] = [];
+  statData: any[] = [];
+  dashboardData: any[] = [];
+  currentYear = 0;
+  selectedDepartmentId = 0;
+
+  chartNotes = {
+    pieBudgetType: '',
+    barBudgetType: '',
+    plan: '',
+    department: '',
+    quarterPie: '',
+    quarterBar: ''
+  };
+
+  pieChart: any = {
+    series: [],
     chart: {
-      type: 'pie' as const,
+      type: 'pie',
       height: 300
     },
-    labels: ['งบอุดหนุน', 'งบดำเนินงาน', 'ลงทุน', 'งบรายจ่ายอื่น', 'งบบุคลากร'],
+    labels: [],
     colors: ['#4e73df', '#1cc88a', '#f6c23e', '#ff0000', '#00d9ff']
   };
 
-  barLineChart = {
-    series: [
-      { name: 'แผน', type: 'column', data: [30, 40, 35, 50, 49] },
-      { name: 'เบิกจ่าย', type: 'column', data: [20, 30, 25, 40, 39] },
-      { name: 'แนวโน้ม', type: 'line', data: [20, 30, 25, 40, 35] }
-    ],
+  barLineChart: any = {
+    series: [],
     chart: {
-      type: 'line' as const,
+      type: 'line',
       height: 300
     },
-    stroke: { width: [0, 3] },
+    stroke: {
+      width: [0, 0, 3],
+      curve: 'smooth'
+    },
     colors: ['#4e73df', '#1cc88a', '#e74a3b'],
-    xaxis: { categories: ['งบอุดหนุน', 'งบดำเนินงาน', 'ลงทุน', 'งบรายจ่ายอื่น', 'งบบุคลากร'] }
-  };
-  pieChart2 = {
-    series: [25, 25, 25, 25],
-    chart: {
-      type: 'pie' as const,
-      height: 300
-    },
-    labels: ['ไตรมาส 1', 'ไตรมาส 2', 'ไตรมาส 3', 'ไตรมาส 4'],
-    colors: ['#4e73df', '#1cc88a', '#f6c23e', '#ff0000']
-  };
-
-  barLineChart2 = {
-    series: [
-      { name: 'แผน', type: 'column', data: [30, 40, 35, 50] },
-      { name: 'เบิกจ่าย', type: 'column', data: [20, 30, 25, 40] },
-      { name: 'แนวโน้ม', type: 'line', data: [20, 30, 25, 40] }
-    ],
-    chart: {
-      type: 'line' as const,
-      height: 300
-    },
-    stroke: { width: [0, 3] },
-    colors: ['#4e73df', '#1cc88a', '#e74a3b'],
-    xaxis: { categories: ['ไตรมาส 1', 'ไตรมาส 2', 'ไตรมาส 3', 'ไตรมาส 4'] }
-  };
-  planChart = {
-    series: [
-      {
-        name: 'แผน',
-        data: [50, 40, 60, 70, 50]
-      },
-      {
-        name: 'เบิกจ่าย',
-        data: [30, 20, 40, 60, 30]
-      }
-    ],
-    chart: {
-      type: 'bar' as const,
-      height: 350
-    },
-    plotOptions: {
-      bar: {
-        horizontal: false,
-        columnWidth: '40%'
-      }
-    },
     xaxis: {
-      categories: ['แผน1', 'แผน2', 'แผน3', 'แผน4', 'แผน5']
-    }
-  };
-
-  trendChart = {
-    series: [
-      {
-        name: 'แผน',
-        data: [20, 30, 25, 40, 35, 50, 30, 45, 40, 55]
-      },
-      {
-        name: 'เบิกจ่าย',
-        data: [10, 20, 15, 30, 25, 40, 20, 35, 30, 45]
-      }
-    ],
-    chart: {
-      type: 'bar' as const,
-      height: 350
-    },
-    plotOptions: {
-      bar: {
-        horizontal: false,
-        columnWidth: '40%',
-        borderRadius: 4
-      }
-    },
-    colors: ['#4e73df', '#e74a3b'], // 🔥 สีแยกชัด
-    xaxis: {
-      categories: [
-        'ส่วนกลาง', 'เขต 1', 'เขต 2', 'เขต 3', 'เขต 4',
-        'เขต 5', 'เขต 6', 'เขต 7', 'เขต 8', 'เขต 9'
-      ]
+      categories: []
     },
     legend: {
       position: 'top'
     }
   };
-  comboChart = {
-    series: [
-      {
-        name: 'แผน',
-        type: 'column',
-        data: [30, 40, 35, 50, 45]
-      },
-      {
-        name: 'เบิกจ่าย',
-        type: 'column',
-        data: [20, 30, 25, 40, 35]
-      },
-      {
-        name: 'แนวโน้ม',
-        type: 'line',
-        data: [20, 30, 25, 40, 35]
-      }
-    ],
+
+  comboChart: any = {
+    series: [],
     chart: {
       height: 350,
-      type: 'line' as const
+      type: 'line'
     },
     stroke: {
-      width: [0, 0, 3], // 🔥 เส้นแดงหนา
-      curve: 'smooth' as const
+      width: [0, 0, 3],
+      curve: 'smooth'
     },
-    colors: ['#4e73df', '#1cc88a', '#e74a3b'], // 🔵🟢🔴
+    colors: ['#4e73df', '#1cc88a', '#e74a3b'],
     plotOptions: {
       bar: {
         columnWidth: '40%',
@@ -159,38 +79,22 @@ export class ProjectsComponent implements OnInit {
       enabled: false
     },
     xaxis: {
-      categories: ['แผน1', 'แผน2', 'แผน3', 'แผน4', 'แผน5']
+      categories: []
     },
     legend: {
-      position: 'top' as const
+      position: 'top'
     }
   };
 
-  comboChart2 = {
-    series: [
-      {
-        name: 'แผน',
-        type: 'column',
-        data: [20, 30, 25, 40, 35, 50, 30, 45, 40, 55]
-      },
-      {
-        name: 'เบิกจ่าย',
-        type: 'column',
-        data: [10, 20, 15, 30, 25, 40, 20, 35, 30, 45]
-      },
-      {
-        name: 'แนวโน้ม',
-        type: 'line',
-        data: [10, 20, 15, 30, 25, 40, 20, 35, 30, 45]// 🔴 เส้นแดง
-      }
-    ],
+  comboChart2: any = {
+    series: [],
     chart: {
       height: 350,
-      type: 'line' as const
+      type: 'line'
     },
     stroke: {
-      width: [0, 0, 3], // 🔥 เส้นแดงหนา
-      curve: 'smooth' as const
+      width: [0, 0, 3],
+      curve: 'smooth'
     },
     colors: ['#4e73df', '#1cc88a', '#e74a3b'],
     plotOptions: {
@@ -200,291 +104,417 @@ export class ProjectsComponent implements OnInit {
       }
     },
     dataLabels: {
-      enabled: true
+      enabled: false
     },
     xaxis: {
-      categories: [
-        'ส่วนกลาง', 'เขต 1', 'เขต 2', 'เขต 3', 'เขต 4',
-        'เขต 5', 'เขต 6', 'เขต 7', 'เขต 8', 'เขต 9'
-      ]
+      categories: []
     },
     legend: {
-      position: 'top' as const
+      position: 'top'
     }
   };
 
-
-  constructor() {
-  }
-  totalSummary = {
-    plan: 0,
-    reimburse: 0,
-    balance: 0
+  pieChart2: any = {
+    series: [],
+    chart: {
+      type: 'pie',
+      height: 300
+    },
+    labels: [],
+    colors: ['#4e73df', '#1cc88a', '#f6c23e', '#ff0000']
   };
-  setprojectvalue(str: any) {
 
+  barLineChart2: any = {
+    series: [],
+    chart: {
+      type: 'line',
+      height: 300
+    },
+    stroke: {
+      width: [0, 0, 3],
+      curve: 'smooth'
+    },
+    colors: ['#4e73df', '#1cc88a', '#e74a3b'],
+    xaxis: {
+      categories: []
+    },
+    legend: {
+      position: 'top'
+    }
+  };
 
-  }
-  calculateSummary() {
-    const data = this.statData; // หรือ data จาก API
-
-    this.totalSummary.plan = data.reduce((sum: any, i: any) => sum + Number(i.plan || 0), 0);
-    this.totalSummary.reimburse = data.reduce((sum: any, i: any) => sum + Number(i.reimburse || 0), 0);
-    this.totalSummary.balance = data.reduce((sum: any, i: any) => sum + Number(i.balance || 0), 0);
-  }
   ngOnInit(): void {
+    this.breadCrumbItems = [{ label: 'Dashboard' }];
 
-    this.fetchData();
+    this.budgetYearService.yearChanged$
+      .subscribe((year: any) => {
+        if (!year) {
+          return;
+        }
 
-    this._OverviewChart('["--vz-primary", "--vz-success", "--vz-danger"]');
-
-    this._status7('["--vz-success", "--vz-warning", "--vz-danger", "--vz-primary"]');
-
+        this.currentYear = year < 2500 ? year + 543 : year;
+        this.getDashboard();
+      });
   }
 
-  ngAfterViewInit() {
+  getDashboard() {
+    const model = {
+      FUNC_CODE: 'FUNC-Get_Dashboard',
+      BgYear: this.currentYear,
+      Department_Id: this.selectedDepartmentId || 0
+    };
 
-  }
+    this.servicebud.GatewayGetData(model).subscribe({
+      next: (response: any) => {
+        console.log('response.List_Dashboard?.Data', response.List_Dashboard?.Data);
 
-  totalAll: number = 0;
-  totalFixed: number = 0;
-  totalInvest: number = 0;
+        this.dashboardData =
+          Array.isArray(response.List_Dashboard?.Data)
+            ? response.List_Dashboard.Data
+            : Array.isArray(response.Data)
+              ? response.Data
+              : Array.isArray(response)
+                ? response
+                : [];
 
-  totalPlan = 50000;
-  totalUsed = 32000;
-  totalRemain = 18000;
-
-  fixedPlan = 20000;
-  fixedUsed = 15000;
-  fixedRemain = 5000;
-
-  investPlan = 30000;
-  investUsed = 17000;
-  investRemain = 13000;
-
-  num: number = 0;
-  option = {
-    startVal: this.num,
-    useEasing: true,
-    duration: 2,
-    decimalPlaces: 2,
-  };
-
-  // Chart Colors Set
-  private getChartColorsArray(colors: any) {
-    colors = JSON.parse(colors);
-    return colors.map(function (value: any) {
-      var newValue = value.replace(" ", "");
-      if (newValue.indexOf(",") === -1) {
-        var color = getComputedStyle(document.documentElement).getPropertyValue(newValue);
-        if (color) {
-          color = color.replace(" ", "");
-          return color;
-        }
-        else return newValue;;
-      } else {
-        var val = value.split(',');
-        if (val.length == 2) {
-          var rgbaColor = getComputedStyle(document.documentElement).getPropertyValue(val[0]);
-          rgbaColor = "rgba(" + rgbaColor + "," + val[1] + ")";
-          return rgbaColor;
-        } else {
-          return newValue;
-        }
+        this.bindDashboard();
+      },
+      error: (err: any) => {
+        console.error('GET DASHBOARD ERROR', err);
+        this.dashboardData = [];
+        this.bindDashboard();
       }
     });
   }
 
+  bindDashboard() {
+    const data = this.dashboardData || [];
 
-  /**
- * Projects Overview
- */
-  OverviewChart: any
-  private _OverviewChart(colors: any) {
-    colors = this.getChartColorsArray(colors);
-    this.OverviewChart = {
-      series: [{
-        name: 'Number of Projects',
-        type: 'bar',
-        data: [34, 65, 46, 68, 49, 61, 42, 44, 78, 52, 63, 67]
-      }, {
-        name: 'Revenue',
-        type: 'area',
-        data: [89.25, 98.58, 68.74, 108.87, 77.54, 84.03, 51.24, 28.57, 92.57, 42.36, 88.51, 36.57]
-      }, {
-        name: 'Active Projects',
-        type: 'bar',
-        data: [8, 12, 7, 17, 21, 11, 5, 9, 7, 29, 12, 35]
-      }],
-      chart: {
-        height: 374,
-        type: 'line',
-        toolbar: {
-          show: false,
-        }
+    const totalPlan = this.sum(data, 'Total_Plan');
+    const totalAdjust = this.sum(data, 'Adjust');
+    const totalUsed = this.sum(data, 'Sum_Used');
+    const totalWithdraw = this.sum(data, 'Sum_Withdraw');
+    const totalBalance = totalPlan - totalAdjust;
+
+    this.statData = [
+      {
+        title: 'งบประมาณทั้งหมด',
+        value: this.formatMoney(totalPlan),
+        icon: 'ri-money-dollar-circle-line',
+        persantage: '',
+        profit: 'up',
+        month: 'บาท'
       },
-      stroke: {
-        curve: 'smooth',
-        dashArray: [0, 3, 0],
-        width: [0, 1, 0],
+      {
+        title: 'จัดสรรแล้ว',
+        value: this.formatMoney(totalAdjust),
+        icon: 'ri-wallet-3-line',
+        persantage: '',
+        profit: 'up',
+        month: 'บาท'
       },
-      fill: {
-        opacity: [1, 0.1, 1]
+      {
+        title: 'คงเหลือ',
+        value: this.formatMoney(totalBalance),
+        icon: 'ri-bank-card-line',
+        persantage: '',
+        profit: totalBalance >= 0 ? 'up' : 'down',
+        month: 'บาท'
       },
-      markers: {
-        size: [0, 4, 0],
-        strokeWidth: 2,
-        hover: {
-          size: 4,
-        }
+      {
+        title: 'ใช้ไป',
+        value: this.formatMoney(totalUsed),
+        icon: 'ri-funds-line',
+        persantage: '',
+        profit: 'up',
+        month: 'บาท'
       },
+      {
+        title: 'เบิกจ่าย',
+        value: this.formatMoney(totalWithdraw),
+        icon: 'ri-hand-coin-line',
+        persantage: '',
+        profit: 'up',
+        month: 'บาท'
+      }
+    ];
+
+    this.bindPieBudgetType(data);
+    this.bindBarBudgetType(data);
+    this.bindPlanChart(data);
+    this.bindDepartmentChart(data);
+    this.bindQuarterChart(data);
+  }
+
+  bindPieBudgetType(data: any[]) {
+    const useCountFallback = data.length > 0 && !this.hasAnyNonZero(data, ['Total_Plan']);
+    const map = new Map<string, number>();
+
+    data.forEach((x: any) => {
+      const key = x.Budget_Type_Name || x.Budget_Type_Name_Thai || x.Budget_Type || '-';
+      const value = useCountFallback ? 1 : Number(x.Total_Plan || 0);
+      map.set(key, (map.get(key) || 0) + value);
+    });
+
+    this.pieChart = {
+      ...this.pieChart,
+      series: Array.from(map.values()),
+      labels: Array.from(map.keys())
+    };
+
+    this.chartNotes.pieBudgetType = useCountFallback
+      ? 'แสดงตามจำนวนรายการ เนื่องจากยอดงบเป็น 0 ทั้งหมด'
+      : '';
+  }
+
+  bindBarBudgetType(data: any[]) {
+    const useCountFallback =
+      data.length > 0 &&
+      !this.hasAnyNonZero(data, ['Total_Plan', 'Adjust', 'Sum_Withdraw']);
+
+    const map = new Map<string, any>();
+
+    data.forEach((x: any) => {
+      const key = x.Budget_Type_Name || x.Budget_Type || '-';
+
+      if (!map.has(key)) {
+        map.set(key, { plan: 0, adjust: 0, withdraw: 0, count: 0 });
+      }
+
+      const row = map.get(key);
+      row.plan += Number(x.Total_Plan || 0);
+      row.adjust += Number(x.Adjust || 0);
+      row.withdraw += Number(x.Sum_Withdraw || 0);
+      row.count += 1;
+    });
+
+    const labels = Array.from(map.keys());
+    const rows = Array.from(map.values());
+
+    this.barLineChart = {
+      ...this.barLineChart,
+      series: useCountFallback
+        ? [
+          {
+            name: 'จำนวนรายการ',
+            type: 'column',
+            data: rows.map((x: any) => x.count)
+          }
+        ]
+        : [
+          {
+            name: 'แผน',
+            type: 'column',
+            data: rows.map((x: any) => x.plan)
+          },
+          {
+            name: 'จัดสรร',
+            type: 'column',
+            data: rows.map((x: any) => x.adjust)
+          },
+          {
+            name: 'เบิกจ่าย',
+            type: 'line',
+            data: rows.map((x: any) => x.withdraw)
+          }
+        ],
       xaxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        axisTicks: {
-          show: false
-        },
-        axisBorder: {
-          show: false
-        }
-      },
-      grid: {
-        show: true,
-        xaxis: {
-          lines: {
-            show: true,
-          }
-        },
-        yaxis: {
-          lines: {
-            show: false,
-          }
-        },
-        padding: {
-          top: 0,
-          right: -2,
-          bottom: 15,
-          left: 10
-        },
-      },
-      legend: {
-        show: true,
-        horizontalAlign: 'center',
-        offsetX: 0,
-        offsetY: -5,
-        markers: {
-          width: 9,
-          height: 9,
-          radius: 6,
-        },
-        itemMargin: {
-          horizontal: 10,
-          vertical: 0
-        },
-      },
-      plotOptions: {
-        bar: {
-          columnWidth: '30%',
-          barHeight: '70%'
-        }
-      },
-      colors: colors,
-      tooltip: {
-        shared: true,
-        y: [{
-          formatter: function (y: any) {
-            if (typeof y !== "undefined") {
-              return y.toFixed(0);
-            }
-            return y;
-
-          }
-        }, {
-          formatter: function (y: any) {
-            if (typeof y !== "undefined") {
-              return "$" + y.toFixed(2) + "k";
-            }
-            return y;
-
-          }
-        }, {
-          formatter: function (y: any) {
-            if (typeof y !== "undefined") {
-              return y.toFixed(0);
-            }
-            return y;
-
-          }
-        }]
+        categories: labels
       }
     };
+
+    this.chartNotes.barBudgetType = useCountFallback
+      ? 'แสดงตามจำนวนรายการ เนื่องจากยอดงบเป็น 0 ทั้งหมด'
+      : '';
   }
 
-  /**
-*  Status7
-*/
-  status7: any
-  setstatusvalue(value: any) {
-    if (value == 'all') {
-      this.status7.series = [125, 42, 58, 89]
-    }
-    if (value == '7') {
-      this.status7.series = [25, 52, 158, 99]
-    }
-    if (value == '30') {
-      this.status7.series = [35, 22, 98, 99]
-    }
-    if (value == '90') {
-      this.status7.series = [105, 32, 68, 79]
-    }
-  }
+  bindPlanChart(data: any[]) {
+    const useCountFallback =
+      data.length > 0 &&
+      !this.hasAnyNonZero(data, ['Total_Plan', 'Adjust', 'Total_Transfer']);
 
-  private _status7(colors: any) {
-    colors = this.getChartColorsArray(colors);
-    this.status7 = {
-      series: [125, 42, 58, 89],
-      labels: ["Completed", "In Progress", "Yet to Start", "Cancelled"],
-      chart: {
-        type: "donut",
-        height: 230,
-      },
-      plotOptions: {
-        pie: {
-          offsetX: 0,
-          offsetY: 0,
-          donut: {
-            size: "90%",
-            labels: {
-              show: false,
-            }
+    const map = new Map<string, any>();
+
+    data.forEach((x: any) => {
+      const key = x.Plan_Name || '-';
+
+      if (!map.has(key)) {
+        map.set(key, { plan: 0, adjust: 0, transfer: 0, count: 0 });
+      }
+
+      const row = map.get(key);
+      row.plan += Number(x.Total_Plan || 0);
+      row.adjust += Number(x.Adjust || 0);
+      row.transfer += Number(x.Total_Transfer || 0);
+      row.count += 1;
+    });
+
+    const labels = Array.from(map.keys());
+    const rows = Array.from(map.values());
+
+    this.comboChart = {
+      ...this.comboChart,
+      series: useCountFallback
+        ? [
+          {
+            name: 'จำนวนรายการ',
+            type: 'column',
+            data: rows.map((x: any) => x.count)
+          }
+        ]
+        : [
+          {
+            name: 'แผน',
+            type: 'column',
+            data: rows.map((x: any) => x.plan)
           },
-        },
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      legend: {
-        show: false,
-      },
-      stroke: {
-        lineCap: "round",
-        width: 0
-      },
-      colors: colors
+          {
+            name: 'จัดสรร',
+            type: 'column',
+            data: rows.map((x: any) => x.adjust)
+          },
+          {
+            name: 'โอนงบ',
+            type: 'line',
+            data: rows.map((x: any) => x.transfer)
+          }
+        ],
+      xaxis: {
+        categories: labels
+      }
     };
+
+    this.chartNotes.plan = useCountFallback
+      ? 'แสดงตามจำนวนรายการ เนื่องจากยอดงบเป็น 0 ทั้งหมด'
+      : '';
   }
 
-  /**
-   * Fetches the data
-   */
-  ActiveProjects: any
-  MyTask: any
-  TeamMembers: any
-  private fetchData() {
-    // this.statData = projectstatData;
-    this.statData = projectstatData;
-    this.ActiveProjects = ActiveProjects;
-    this.MyTask = MyTask;
-    this.TeamMembers = TeamMembers;
+  bindDepartmentChart(data: any[]) {
+    const useCountFallback =
+      data.length > 0 &&
+      !this.hasAnyNonZero(data, ['Total_Plan', 'Adjust', 'Sum_Withdraw']);
+
+    const map = new Map<string, any>();
+
+    data.forEach((x: any) => {
+      const key = x.Department_Name || '-';
+
+      if (!map.has(key)) {
+        map.set(key, { plan: 0, adjust: 0, withdraw: 0, count: 0 });
+      }
+
+      const row = map.get(key);
+      row.plan += Number(x.Total_Plan || 0);
+      row.adjust += Number(x.Adjust || 0);
+      row.withdraw += Number(x.Sum_Withdraw || 0);
+      row.count += 1;
+    });
+
+    const labels = Array.from(map.keys());
+    const rows = Array.from(map.values());
+
+    this.comboChart2 = {
+      ...this.comboChart2,
+      series: useCountFallback
+        ? [
+          {
+            name: 'จำนวนรายการ',
+            type: 'column',
+            data: rows.map((x: any) => x.count)
+          }
+        ]
+        : [
+          {
+            name: 'แผน',
+            type: 'column',
+            data: rows.map((x: any) => x.plan)
+          },
+          {
+            name: 'จัดสรร',
+            type: 'column',
+            data: rows.map((x: any) => x.adjust)
+          },
+          {
+            name: 'เบิกจ่าย',
+            type: 'line',
+            data: rows.map((x: any) => x.withdraw)
+          }
+        ],
+      xaxis: {
+        categories: labels
+      }
+    };
+
+    this.chartNotes.department = useCountFallback
+      ? 'แสดงตามจำนวนรายการ เนื่องจากยอดงบเป็น 0 ทั้งหมด'
+      : '';
   }
 
+  bindQuarterChart(data: any[]) {
+    const hasQuarterAmount = this.hasAnyNonZero(data, ['Adjust1', 'Adjust2', 'Adjust3', 'Adjust4']);
+
+    const q1 = hasQuarterAmount ? this.sum(data, 'Adjust1') : 0;
+    const q2 = hasQuarterAmount ? this.sum(data, 'Adjust2') : 0;
+    const q3 = hasQuarterAmount ? this.sum(data, 'Adjust3') : 0;
+    const q4 = hasQuarterAmount ? this.sum(data, 'Adjust4') : 0;
+
+    const labels = ['ไตรมาส 1', 'ไตรมาส 2', 'ไตรมาส 3', 'ไตรมาส 4'];
+    const quarterData = [q1, q2, q3, q4];
+
+    this.pieChart2 = {
+      ...this.pieChart2,
+      series: hasQuarterAmount ? quarterData : [],
+      labels: hasQuarterAmount ? labels : []
+    };
+
+    this.barLineChart2 = {
+      ...this.barLineChart2,
+      series: hasQuarterAmount
+        ? [
+          {
+            name: 'แผน',
+            type: 'column',
+            data: quarterData
+          },
+          {
+            name: 'เบิกจ่าย',
+            type: 'column',
+            data: [0, 0, 0, 0]
+          },
+          {
+            name: 'แนวโน้ม',
+            type: 'line',
+            data: quarterData
+          }
+        ]
+        : [],
+      xaxis: {
+        categories: hasQuarterAmount ? labels : []
+      }
+    };
+
+    this.chartNotes.quarterPie = hasQuarterAmount
+      ? ''
+      : 'ยังไม่มีข้อมูลยอดรายไตรมาสสำหรับการแสดงกราฟ';
+    this.chartNotes.quarterBar = hasQuarterAmount
+      ? ''
+      : 'ยังไม่มีข้อมูลยอดรายไตรมาสสำหรับการแสดงกราฟ';
+  }
+
+  sum(data: any[], field: string): number {
+    return data.reduce((s: number, x: any) => s + Number(x[field] || 0), 0);
+  }
+
+  hasAnyNonZero(data: any[], fields: string[]): boolean {
+    return data.some((row: any) =>
+      fields.some((field: string) => Number(row?.[field] || 0) !== 0)
+    );
+  }
+
+  formatMoney(value: number): string {
+    return Number(value || 0).toLocaleString('th-TH', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
 }

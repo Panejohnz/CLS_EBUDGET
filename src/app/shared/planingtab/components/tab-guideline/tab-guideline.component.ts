@@ -48,10 +48,9 @@ export class TabGuidelineComponent {
 
     if (this.model?.activities?.length) {
 
-      this.activities = [...this.model.activities].sort((a: any, b: any) => a.Seq - b.Seq);
-
-      this.model.activities = this.activities;
-      this.activities.forEach((act: any) => {
+      this.model.activities = [...this.model.activities].sort((a: any, b: any) => a.Seq - b.Seq);
+      this.activities = this.model.activities;
+      this.model.activities.forEach((act: any) => {
 
         if (act.SubActivities?.length) {
 
@@ -118,7 +117,8 @@ export class TabGuidelineComponent {
     });
   }
   removeActivity(i: number) {
-    this.activities.splice(i, 1);
+    this.model.activities.splice(i, 1);
+    this.reIndexSort();
   }
   addSubActivity(activity: any) {
     activity.SubActivities?.push({
@@ -451,7 +451,7 @@ export class TabGuidelineComponent {
   }
   updateAllMultiplier() {
 
-    this.activities.forEach((act: any) => {
+    this.model.activities.forEach((act: any) => {
 
       act.multiplierTotal = this.getMultiplierTotal(act);
 
