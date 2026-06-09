@@ -290,7 +290,8 @@
                                                                 <ng-container *ngIf="budget.isNew; else showBudgetName">
 
                                                                     <ng-select [items]="Mas_Budget_Types"
-                                                                        bindLabel="Expense_Name" bindValue="Expense_Id"
+                                                                        bindLabel="Budget_Type_Name"
+                                                                        bindValue="Budget_Type_Id"
                                                                         [(ngModel)]="budget.Fk_Budget_Type"
                                                                         (change)="onBudgetTypeChange(budget, $event)"
                                                                         (click)="$event.stopPropagation()"
@@ -305,7 +306,8 @@
                                                                 </ng-template>
                                                             </div>
 
-                                                            <button type="button" class="btn btn-sm btn-primary py-0 px-2"
+                                                            <button type="button"
+                                                                class="btn btn-sm btn-primary py-0 px-2"
                                                                 title="เพิ่มรายการ"
                                                                 (click)="addBudget(budget); $event.stopPropagation()">
                                                                 <i class="ri-add-line"></i>

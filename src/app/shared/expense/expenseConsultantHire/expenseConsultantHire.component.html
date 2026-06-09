@@ -232,28 +232,28 @@
 
                         <td>
 
-                            <input type="number" class="form-control form-control-sm" [(ngModel)]="main.exp"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm" [(ngModel)]="main.exp"
                                 (input)="updateDetailItems()">
 
                         </td>
 
                         <td>
 
-                            <input type="number" class="form-control form-control-sm" [(ngModel)]="main.qty"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm" [(ngModel)]="main.qty"
                                 (input)="calculateMain(p)">
 
                         </td>
 
                         <td>
 
-                            <input type="number" class="form-control form-control-sm" [(ngModel)]="main.month"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm" [(ngModel)]="main.month"
                                 (input)="calculateMain(p)">
 
                         </td>
 
                         <td>
 
-                            <input type="number" class="form-control form-control-sm" [(ngModel)]="main.rate"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm" [(ngModel)]="main.rate"
                                 (input)="calculateMain(p)">
 
                         </td>
@@ -338,28 +338,28 @@
 
                         <td>
 
-                            <input type="number" class="form-control form-control-sm" [(ngModel)]="sup.exp"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm" [(ngModel)]="sup.exp"
                                 (input)="updateDetailItems()">
 
                         </td>
 
                         <td>
 
-                            <input type="number" class="form-control form-control-sm" [(ngModel)]="sup.qty"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm" [(ngModel)]="sup.qty"
                                 (input)="calculateSupport(p)">
 
                         </td>
 
                         <td>
 
-                            <input type="number" class="form-control form-control-sm" [(ngModel)]="sup.month"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm" [(ngModel)]="sup.month"
                                 (input)="calculateSupport(p)">
 
                         </td>
 
                         <td>
 
-                            <input type="number" class="form-control form-control-sm" [(ngModel)]="sup.rate"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm" [(ngModel)]="sup.rate"
                                 (input)="calculateSupport(p)">
 
                         </td>
@@ -421,7 +421,7 @@
 
                         <td>
 
-                            <input type="number" class="form-control form-control-sm" [(ngModel)]="other.rate"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm" [(ngModel)]="other.rate"
                                 (input)="calculateOther(p)">
 
                         </td>

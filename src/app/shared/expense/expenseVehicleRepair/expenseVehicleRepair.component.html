@@ -111,7 +111,7 @@
               <!-- qty -->
               <td>
 
-                <input type="number" class="form-control text-end" [(ngModel)]="item.quantity"
+                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-end" [(ngModel)]="item.quantity"
                   (ngModelChange)="calculate()">
 
               </td>
@@ -119,7 +119,7 @@
               <!-- price -->
               <td>
 
-                <input type="number" class="form-control text-end" [(ngModel)]="item.price"
+                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-end" [(ngModel)]="item.price"
                   (ngModelChange)="calculate()">
 
               </td>

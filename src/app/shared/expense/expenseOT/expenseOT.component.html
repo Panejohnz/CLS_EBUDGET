@@ -75,17 +75,17 @@
 
                             <!-- วันทำการ -->
                             <td>
-                                <input type="number" class="form-control text-center" [(ngModel)]="item.workPerson"
+                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center" [(ngModel)]="item.workPerson"
                                     (ngModelChange)="calculate(i)">
                             </td>
 
                             <td>
-                                <input type="number" class="form-control text-center" [(ngModel)]="item.workDay"
+                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center" [(ngModel)]="item.workDay"
                                     (ngModelChange)="calculate(i)">
                             </td>
 
                             <td>
-                                <input type="number" class="form-control text-center"
+                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center"
                                     [class.is-invalid]="item.workHour > 4" [(ngModel)]="item.workHour"
                                     (ngModelChange)="calculate(i)">
                                 <span class="text-danger small" *ngIf="item.workHour > 4">
@@ -104,17 +104,17 @@
 
                             <!-- วันหยุด -->
                             <td>
-                                <input type="number" class="form-control text-center" [(ngModel)]="item.holidayPerson"
+                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center" [(ngModel)]="item.holidayPerson"
                                     (ngModelChange)="calculate(i)">
                             </td>
 
                             <td>
-                                <input type="number" class="form-control text-center" [(ngModel)]="item.holidayDay"
+                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center" [(ngModel)]="item.holidayDay"
                                     (ngModelChange)="calculate(i)">
                             </td>
 
                             <td>
-                                <input type="number" class="form-control text-center"
+                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center"
                                     [class.is-invalid]="item.holidayHour > 8" [(ngModel)]="item.holidayHour"
                                     (ngModelChange)="calculate(i)">
                                 <span class="text-danger small" *ngIf="item.holidayHour > 8">
@@ -254,7 +254,7 @@
 
             </label>
 
-            <input type="number" class="form-control text-center" [(ngModel)]="workRate">
+            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center" [(ngModel)]="workRate">
 
         </div>
 
@@ -266,7 +266,7 @@
 
             </label>
 
-            <input type="number" class="form-control text-center" [(ngModel)]="holidayRate">
+            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center" [(ngModel)]="holidayRate">
 
         </div>
 

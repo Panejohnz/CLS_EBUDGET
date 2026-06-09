@@ -177,6 +177,9 @@ export class ProjectBudgetProposalComponent {
       basicAlert('info', 'เลือกหน่วยงาน', '')
       return
     }
+
+    this.model = null;
+
     if (data?.Request_Id) {
       let model = {
         FUNC_CODE: "FUNC-GET_BUDGET_REQUEST_BY_ID",
@@ -225,6 +228,7 @@ export class ProjectBudgetProposalComponent {
           this.mapItems(items, activities);
 
           this.model.activities = activities;
+          this.openFullModal(modal);
         });
     } else {
       this.model = {
@@ -306,22 +310,30 @@ export class ProjectBudgetProposalComponent {
         selectedBudget: null,
 
       };
+      this.openFullModal(modal);
     }
+  }
+
+  openFullModal(modal: any) {
 
     this.modalRef = this.modalService.open(modal, {
       backdrop: 'static',
       windowClass: 'modal-95'
     });
+
     this.modalRef.result.then(
       (result: any) => {
         this.selectedDepartmentId = null
+        this.model = null;
         this.get_data()
       },
       (reason: any) => {
         this.selectedDepartmentId = null
+        this.model = null;
         this.get_data()
       }
     );
+
   }
   projectSearchTerm = '';
 

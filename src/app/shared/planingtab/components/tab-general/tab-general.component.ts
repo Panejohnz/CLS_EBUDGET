@@ -143,6 +143,7 @@ export class TabGeneralComponent {
 
       if (projectId) {
         this.mapInitialData();
+
       }
     });
   }
@@ -171,7 +172,7 @@ export class TabGeneralComponent {
   }
 
   mapInitialData() {
-const find = (list: any[], key: string, value: any) =>
+    const find = (list: any[], key: string, value: any) =>
       list.find(x => x[key] == value);
 
     this.model.selectedDepartment =
@@ -180,6 +181,10 @@ const find = (list: any[], key: string, value: any) =>
         'Department_Id',
         this.data.Department_Id
       );
+    console.log('a', this.Mas_Expense_Lists
+
+    );
+    console.log('b', this.data);
 
     this.model.projectType =
       find(
@@ -225,7 +230,7 @@ const find = (list: any[], key: string, value: any) =>
       }
     };
 
-    this.data.Fk_Expense_List =
+    this.data.Fk_Expense_Type =
       this.model.projectType.Expense_Id;
 
     this.ebudgetService.GatewayGetData(model).subscribe((res: any) => {

@@ -112,7 +112,7 @@
                             <!-- duration -->
                             <td>
 
-                                <input type="number" class="form-control form-control-sm text-end"
+                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end"
                                     [(ngModel)]="item.duration" (ngModelChange)="calculate(gi,i)">
 
                             </td>
@@ -120,7 +120,8 @@
                             <!-- amount -->
                             <td>
 
-                                <input type="number" class="form-control form-control-sm text-end"
+                                <input type="text" class="form-control form-control-sm text-end"
+                                    mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
                                     [(ngModel)]="item.amount" (ngModelChange)="calculate(gi,i)">
 
                             </td>
@@ -128,7 +129,7 @@
                             <!-- times -->
                             <td>
 
-                                <input type="number" class="form-control form-control-sm text-end"
+                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end"
                                     [(ngModel)]="item.times" (ngModelChange)="calculate(gi,i)">
 
                             </td>
@@ -136,7 +137,8 @@
                             <!-- rate -->
                             <td>
 
-                                <input type="number" class="form-control form-control-sm text-end"
+                                <input type="text" class="form-control form-control-sm text-end"
+                                    mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
                                     [(ngModel)]="item.rate" (ngModelChange)="calculate(gi,i)">
 
                             </td>

@@ -116,7 +116,7 @@
                         <td>
 
                             <input
-                                type="number"
+                                type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
                                 class="form-control form-control-sm text-center"
                                 [(ngModel)]="item.qty"
                                 (ngModelChange)="calculate(i)">
@@ -127,7 +127,7 @@
                         <td>
 
                             <input
-                                type="number"
+                                type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
                                 class="form-control form-control-sm text-center"
                                 [(ngModel)]="item.month"
                                 (ngModelChange)="calculate(i)">
@@ -138,7 +138,7 @@
                         <td>
                         
                             <!-- <input
-                                                        type="number"
+                                                        type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
                                                         class="form-control form-control-sm text-end"
                                                         [(ngModel)]="item.price"
                                                         (ngModelChange)="calculate(i)"> -->

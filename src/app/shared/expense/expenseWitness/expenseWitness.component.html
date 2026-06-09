@@ -82,7 +82,7 @@
                         <!-- case -->
                         <td>
 
-                            <input *ngIf="!row.children" type="number" class="form-control form-control-sm text-end"
+                            <input *ngIf="!row.children" type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end"
                                 [(ngModel)]="row.case" (ngModelChange)="calculate()">
 
                         </td>
@@ -90,7 +90,7 @@
                         <!-- people -->
                         <td>
 
-                            <input *ngIf="!row.children" type="number" class="form-control form-control-sm text-end"
+                            <input *ngIf="!row.children" type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end"
                                 [(ngModel)]="row.person" (ngModelChange)="calculate()">
 
                         </td>
@@ -98,7 +98,7 @@
                         <!-- rate -->
                         <td>
 
-                            <input *ngIf="!row.children" type="number" class="form-control form-control-sm text-end"
+                            <input *ngIf="!row.children" type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end"
                                 [(ngModel)]="row.rate" (ngModelChange)="calculate()">
 
                         </td>

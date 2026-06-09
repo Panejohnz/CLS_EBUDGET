@@ -41,7 +41,7 @@
 
                     <td>
 
-                        <input type="number" class="form-control text-center" [(ngModel)]="model.oldQty"
+                        <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center" [(ngModel)]="model.oldQty"
                             (ngModelChange)="calculateRowOld()">
 
                     </td>
@@ -69,7 +69,7 @@
 
                     <td>
 
-                        <input type="number" class="form-control text-center" [(ngModel)]="model.newQty"
+                        <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center" [(ngModel)]="model.newQty"
                             (ngModelChange)="calculateRowNew()">
 
                     </td>
@@ -101,7 +101,7 @@
                     </td>
 
                     <td>
-                        {{ totalQty }}
+                        {{ totalQty | number:'1.0-2' }}
                     </td>
 
                     <td *ngIf="model.selectedExpenseTypeId == 5"></td>

@@ -96,7 +96,7 @@
                                 <!-- qty -->
                                 <td>
 
-                                    <input type="number" class="form-control text-center" [(ngModel)]="role.qty"
+                                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center" [(ngModel)]="role.qty"
                                         (ngModelChange)="calculate(i)">
 
                                 </td>
@@ -104,7 +104,7 @@
                                 <!-- day -->
                                 <td>
 
-                                    <input type="number" class="form-control text-center" [(ngModel)]="role.day"
+                                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center" [(ngModel)]="role.day"
                                         (ngModelChange)="calculate(i)">
 
                                 </td>

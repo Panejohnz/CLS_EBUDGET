@@ -68,7 +68,7 @@
                         <!-- จำนวนเงิน -->
                         <td>
 
-                            <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.price"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.price"
                                 (ngModelChange)="calculate(i)">
 
                         </td>
@@ -76,7 +76,7 @@
                         <!-- จำนวน -->
                         <td>
 
-                            <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.qty"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.qty"
                                 (ngModelChange)="calculate(i)">
 
                         </td>
@@ -99,7 +99,7 @@
                         <!-- เดือน -->
                         <td>
 
-                            <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.month"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.month"
                                 (ngModelChange)="calculate(i)">
 
                         </td>
@@ -136,13 +136,13 @@
                         </td>
 
                         <td>
-                            {{getTotalQty()}}
+                            {{getTotalQty() | number:'1.0-2'}}
                         </td>
 
                         <td></td>
 
                         <td>
-                            {{getTotalMonth()}}
+                            {{getTotalMonth() | number:'1.0-2'}}
                         </td>
 
                         <td class="text-end text-primary">

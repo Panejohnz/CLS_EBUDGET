@@ -130,15 +130,16 @@
                         <!-- price -->
                         <td>
 
-                            <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.price"
-                                (ngModelChange)="calculate(i)">
+                            <input type="text" class="form-control form-control-sm text-end"
+                                mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                                [(ngModel)]="item.price" (ngModelChange)="calculate(i)">
 
                         </td>
 
                         <!-- qty -->
                         <td>
 
-                            <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.qty"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.qty"
                                 (ngModelChange)="calculate(i)">
 
                         </td>
@@ -156,7 +157,7 @@
                         <!-- reason new -->
                         <td>
 
-                            <input type="number" class="form-control form-control-sm" [(ngModel)]="item.newQty"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm" [(ngModel)]="item.newQty"
                                 (ngModelChange)="updateDetailItems()">
 
                             <textarea class="form-control form-control-sm mt-1" rows="2" placeholder="เหตุผลการขอใหม่"
@@ -169,7 +170,7 @@
                         <!-- reason replace -->
                         <td>
 
-                            <input type="number" class="form-control form-control-sm" [(ngModel)]="item.replaceQty"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm" [(ngModel)]="item.replaceQty"
                                 (ngModelChange)="updateDetailItems()">
 
                             <textarea class="form-control form-control-sm mt-1" rows="2" placeholder="เหตุผลการทดแทน"

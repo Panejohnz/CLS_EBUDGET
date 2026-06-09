@@ -89,6 +89,8 @@ import { OtherExpenseProjectComponent } from '../shared/planingtab/components/ta
 import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ThaiDatePickerComponent } from '../pages/thai-date-picker/thai-date-picker.component';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import { EmptyZeroNumberDirective } from './directives/empty-zero-number.directive';
 @NgModule({
   declarations: [
     BreadcrumbsComponent,
@@ -160,7 +162,8 @@ import { ThaiDatePickerComponent } from '../pages/thai-date-picker/thai-date-pic
     TabCoordinatorComponent,
     TabGuidelineComponent,
     OtherExpenseProjectComponent,
-    ThaiDatePickerComponent
+    ThaiDatePickerComponent,
+    EmptyZeroNumberDirective
   ],
   imports: [
     FormsModule,
@@ -170,8 +173,12 @@ import { ThaiDatePickerComponent } from '../pages/thai-date-picker/thai-date-pic
     NgbDropdownModule,
     SlickCarouselModule,
     CountUpModule,
-    NgSelectModule, NgbDatepickerModule
+    NgSelectModule, NgbDatepickerModule,
+    NgxMaskDirective
 
+  ],
+  providers: [
+    provideNgxMask()
   ],
   exports: [BreadcrumbsComponent,
     ClientLogoComponent,
