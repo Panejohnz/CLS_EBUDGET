@@ -82,7 +82,26 @@ export class ProjectPlanningComponent {
 
   constructor(private modalService: NgbModal, public service: GridJsService
     , private sortService: PaginationService, public serviceebud: EbudgetService
-    , private authService: AuthenticationService, private ProjectPlanService: ProjectPlanService, private budgetYearService: BudgetYearService) {
+    , private authService: AuthenticationService, private ProjectPlanService: ProjectPlanService
+    , private budgetYearService: BudgetYearService, private router: Router) {
+  }
+
+  viewReport(item: any): void {
+    if (!item?.Project_Id) {
+      return;
+    }
+
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['/Report_R007'], {
+        queryParams: {
+          BgYear: item.BgYear ?? this.currentYear,
+          Project_Id: item.Project_Id,
+          Project_Type: 1
+        }
+      })
+    );
+
+    window.open(url, '_blank');
   }
   currentYear: any
   ngOnInit(): void {

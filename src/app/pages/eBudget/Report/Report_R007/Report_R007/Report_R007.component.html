@@ -4,6 +4,7 @@
   </div>
   <div class="card-body p-0 report-iframe-wrap">
     <iframe
+      *ngIf="reportUrl"
       class="report-iframe"
       [src]="reportUrl"
       [title]="reportTitle"
