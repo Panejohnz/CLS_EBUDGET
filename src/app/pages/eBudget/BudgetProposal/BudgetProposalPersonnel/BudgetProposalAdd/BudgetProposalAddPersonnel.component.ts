@@ -674,6 +674,8 @@ export class ProjectBudgetProposalAddPersonnelComponent {
         this.model.Department_Id
       );
 
+    this.syncBudgetRequestTotal();
+
     const payload = {
 
       BgYear: this.currentYear,
@@ -684,7 +686,10 @@ export class ProjectBudgetProposalAddPersonnelComponent {
       FK_Project_Plan_Id:
         this.model.Budget_Request.FK_Project_Plan_Id,
 
-      Total: this.model.Total || this.model.Project_Plan.Total,
+      Total:
+        this.model.Total ||
+        this.model.Project_Plan.Total ||
+        0,
       Department_Id:
         this.model.Department_Id,
 
@@ -1024,6 +1029,63 @@ export class ProjectBudgetProposalAddPersonnelComponent {
         error: error => reject(error)
       });
     });
+  }
+
+  private syncBudgetRequestTotal() {
+    const total =
+      this.calculateSelectedExpenseTotal();
+
+    if (total > 0 || this.hasSelectedExpenseItems()) {
+      this.model.Total = total;
+    }
+  }
+
+  private hasSelectedExpenseItems(): boolean {
+    const selectedExpenseId =
+      Number(this.model?.selectedExpenseTypeId || 0);
+
+    return (this.model?.Budget_Request_Detail_Item || [])
+      .some((item: any) =>
+        Number(item?.Fk_Expense_Id || 0) === selectedExpenseId
+      );
+  }
+
+  private calculateSelectedExpenseTotal(): number {
+    const selectedExpenseId =
+      Number(this.model?.selectedExpenseTypeId || 0);
+
+    const rows =
+      (this.model?.Budget_Request_Detail_Item || [])
+        .filter((item: any) =>
+          Number(item?.Fk_Expense_Id || 0) === selectedExpenseId
+        );
+
+    return rows.reduce((sum: number, item: any) => {
+      return sum + this.getDetailItemTotal(item);
+    }, 0);
+  }
+
+  private getDetailItemTotal(item: any): number {
+    const totalFields = [
+      'Rate_Amount',
+      'Total',
+      'Per_Year',
+      'Salary_Amount',
+      'Budget_Amount'
+    ];
+
+    for (const field of totalFields) {
+      if (item?.[field] !== undefined && item?.[field] !== null && item?.[field] !== '') {
+        const value =
+          Number(item[field].toString().replace(/,/g, ''));
+
+        if (!isNaN(value)) {
+          return value;
+        }
+      }
+    }
+
+    return 0;
   }
 
   mapActivities() {
