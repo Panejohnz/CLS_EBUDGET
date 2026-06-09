@@ -1,5 +1,4 @@
 import { Component, ElementRef, ViewChild, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { environment } from '../../../../../environments/environment';
 import { HttpHeaders } from '@angular/common/http';
@@ -83,7 +82,7 @@ export class ProjectPlanningComponent {
   constructor(private modalService: NgbModal, public service: GridJsService
     , private sortService: PaginationService, public serviceebud: EbudgetService
     , private authService: AuthenticationService, private ProjectPlanService: ProjectPlanService
-    , private budgetYearService: BudgetYearService, private router: Router) {
+    , private budgetYearService: BudgetYearService) {
   }
 
   viewReport(item: any): void {
@@ -91,15 +90,14 @@ export class ProjectPlanningComponent {
       return;
     }
 
-    const url = this.router.serializeUrl(
-      this.router.createUrlTree(['/Report_R007'], {
-        queryParams: {
-          BgYear: item.BgYear ?? this.currentYear,
-          Project_Id: item.Project_Id,
-          Project_Type: 1
-        }
-      })
-    );
+    const query = new URLSearchParams({
+      BgYear: String(item.BgYear ?? this.currentYear),
+      Project_Id: String(item.Project_Id),
+      Project_Type: '1'
+    });
+
+    const url =
+      `https://app.celestsoft.com/CLS_ERP_BUDGET_REPORT/Report/Budget_Report_R007.aspx?${query.toString()}`;
 
     window.open(url, '_blank');
   }
