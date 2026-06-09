@@ -91,7 +91,7 @@
                         <!-- องค์ประชุม -->
                         <td class="bg-info-subtle">
 
-                            <input type="number" min="0" class="form-control text-center" [(ngModel)]="row.committee"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" min="0" class="form-control text-center" [(ngModel)]="row.committee"
                                 (ngModelChange)="calculate(row)">
 
                         </td>
@@ -99,7 +99,7 @@
                         <!-- คน -->
                         <td class="bg-light">
 
-                            <input type="number" min="0" class="form-control text-center" [(ngModel)]="row.people"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" min="0" class="form-control text-center" [(ngModel)]="row.people"
                                 (ngModelChange)="calculate(row)">
 
                         </td>
@@ -107,7 +107,7 @@
                         <!-- ครั้ง -->
                         <td class="bg-light">
 
-                            <input type="number" min="0" class="form-control text-center" [(ngModel)]="row.times"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" min="0" class="form-control text-center" [(ngModel)]="row.times"
                                 (ngModelChange)="calculate(row)">
 
                         </td>

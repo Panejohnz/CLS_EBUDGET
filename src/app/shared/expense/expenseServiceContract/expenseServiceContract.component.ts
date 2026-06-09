@@ -111,6 +111,10 @@ export class ExpenseServiceContractComponent {
     return '';
   }
 
+  if (Number(value) === 0) {
+    return '';
+  }
+
   return Number(value).toLocaleString('en-US', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
@@ -158,6 +162,22 @@ formatInput(event: any, item: any, field: string): void {
 
 }
 
+displayInputNumber(value: any): string {
+
+  if (value === null || value === undefined || value === '') {
+    return '';
+  }
+
+  const numericValue = Number(
+    value?.toString().replace(/,/g, '')
+  ) || 0;
+
+  return numericValue === 0
+    ? ''
+    : value;
+
+}
+
   newItem() {
 
     return {
@@ -166,15 +186,15 @@ formatInput(event: any, item: any, field: string): void {
 
       name: '',
 
-      price: 0,
+      price: '',
 
-      qty: 0,
+      qty: '',
 
       unit: 'คน',
 
-      month: 0,
+      month: '',
 
-      total: 0,
+      total: '',
 
       file: null
 

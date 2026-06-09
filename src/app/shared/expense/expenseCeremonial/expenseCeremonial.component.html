@@ -86,7 +86,7 @@
                             <!-- meal -->
                             <td>
 
-                                <input type="number" class="form-control form-control-sm text-end"
+                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end"
                                     [(ngModel)]="group.lunch.meal" (ngModelChange)="calculate(group)">
 
                             </td>
@@ -94,7 +94,7 @@
                             <!-- person -->
                             <td>
 
-                                <input type="number" class="form-control form-control-sm text-end"
+                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end"
                                     [(ngModel)]="group.lunch.person" (ngModelChange)="calculate(group)">
 
                             </td>
@@ -102,7 +102,8 @@
                             <!-- price -->
                             <td>
 
-                                <input type="number" class="form-control form-control-sm text-end"
+                                <input type="text" class="form-control form-control-sm text-end"
+                                    mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
                                     [(ngModel)]="group.lunch.price" (ngModelChange)="calculate(group)">
 
                             </td>
@@ -131,7 +132,7 @@
                             <!-- meal -->
                             <td>
 
-                                <input type="number" class="form-control form-control-sm text-end"
+                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end"
                                     [(ngModel)]="group.snack.meal" (ngModelChange)="calculate(group)">
 
                             </td>
@@ -139,7 +140,7 @@
                             <!-- person -->
                             <td>
 
-                                <input type="number" class="form-control form-control-sm text-end"
+                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end"
                                     [(ngModel)]="group.snack.person" (ngModelChange)="calculate(group)">
 
                             </td>
@@ -147,7 +148,8 @@
                             <!-- price -->
                             <td>
 
-                                <input type="number" class="form-control form-control-sm text-end"
+                                <input type="text" class="form-control form-control-sm text-end"
+                                    mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
                                     [(ngModel)]="group.snack.price" (ngModelChange)="calculate(group)">
 
                             </td>
@@ -180,14 +182,14 @@
                             <!-- total meal -->
                             <td class="fw-bold">
 
-                                {{ group.totalMeal }}
+                                {{ group.totalMeal | number:'1.0-2' }}
 
                             </td>
 
                             <!-- total person -->
                             <td class="fw-bold">
 
-                                {{ group.totalPerson }}
+                                {{ group.totalPerson | number:'1.0-2' }}
 
                             </td>
 

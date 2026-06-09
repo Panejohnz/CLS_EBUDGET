@@ -192,7 +192,7 @@
                             <!-- ครั้ง -->
                             <td>
 
-                                <input type="number" class="form-control text-center" [(ngModel)]="item.times"
+                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center" [(ngModel)]="item.times"
                                     (ngModelChange)="calculate(item)">
 
                             </td>
@@ -200,7 +200,7 @@
                             <!-- ประเภท ก -->
                             <td>
 
-                                <input type="number" class="form-control" [(ngModel)]="item.typeA"
+                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control" [(ngModel)]="item.typeA"
                                     (ngModelChange)="calculate(item)">
 
                             </td>
@@ -208,7 +208,7 @@
                             <!-- ประเภท ข -->
                             <td>
 
-                                <input type="number" class="form-control" [(ngModel)]="item.typeB"
+                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control" [(ngModel)]="item.typeB"
                                     (ngModelChange)="calculate(item)">
 
                             </td>
@@ -216,7 +216,7 @@
                             <!-- ภายนอก -->
                             <td>
 
-                                <input type="number" class="form-control" [(ngModel)]="item.external"
+                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control" [(ngModel)]="item.external"
                                     (ngModelChange)="calculate(item)">
 
                             </td>
@@ -231,7 +231,7 @@
                             <!-- จำนวน -->
                             <td>
 
-                                <input type="number" class="form-control" [(ngModel)]="item.qty"
+                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control" [(ngModel)]="item.qty"
                                     (ngModelChange)="calculate(item)">
 
                             </td>
@@ -254,7 +254,7 @@
                             <!-- rate -->
                             <td>
 
-                                <input type="number" class="form-control" [(ngModel)]="item.rate"
+                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control" [(ngModel)]="item.rate"
                                     (ngModelChange)="calculate(item)">
 
                             </td>

@@ -45,12 +45,14 @@
                         </td>
 
                         <td>
-                            <input type="number" class="form-control text-center" [(ngModel)]="item.qty"
+
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center" [(ngModel)]="item.qty"
                                 (ngModelChange)="calculate(item)">
                         </td>
 
                         <td>
-                            <input type="number" class="form-control text-center" [(ngModel)]="item.times"
+
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center" [(ngModel)]="item.times"
                                 (ngModelChange)="calculate(item)">
                         </td>
 

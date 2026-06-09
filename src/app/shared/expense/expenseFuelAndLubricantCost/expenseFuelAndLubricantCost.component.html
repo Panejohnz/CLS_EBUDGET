@@ -36,7 +36,7 @@
 
                         <!-- รวม/เดือน -->
                         <td>
-                            <input type="number" class="form-control form-control-sm text-end"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end"
                                 [(ngModel)]="item.monthly" (ngModelChange)="calculate(i)">
                         </td>
 

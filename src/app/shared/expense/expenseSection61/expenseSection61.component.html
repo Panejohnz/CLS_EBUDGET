@@ -164,7 +164,7 @@
                                                                         (ngModelChange)="updateDetailItems()">
 
                                                                 <!-- amount -->
-                                                                <input *ngIf="item.type === 'other'" type="number"
+                                                                <input *ngIf="item.type === 'other'" type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
                                                                         class="form-control form-control-sm text-end"
                                                                         placeholder="ราคา" [(ngModel)]="item.amount"
                                                                         (ngModelChange)="calculate(group)">
@@ -195,7 +195,7 @@
                                                 <!-- case -->
                                                 <td>
 
-                                                        <input type="number" class="form-control text-end"
+                                                        <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-end"
                                                                 [(ngModel)]="group.case"
                                                                 (ngModelChange)="calculate(group)">
 
@@ -204,7 +204,7 @@
                                                 <!-- people -->
                                                 <td>
 
-                                                        <input type="number" class="form-control text-end"
+                                                        <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-end"
                                                                 [(ngModel)]="group.person"
                                                                 (ngModelChange)="calculate(group)">
 
@@ -213,7 +213,7 @@
                                                 <!-- day -->
                                                 <td>
 
-                                                        <input type="number" class="form-control text-end"
+                                                        <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-end"
                                                                 [(ngModel)]="group.day"
                                                                 (ngModelChange)="calculate(group)">
 

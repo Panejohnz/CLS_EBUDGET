@@ -93,7 +93,7 @@
                         <!-- monthly -->
                         <td>
 
-                            <input type="number" class="form-control text-end" [(ngModel)]="item.month"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-end" [(ngModel)]="item.month"
                                 (ngModelChange)="calculate(item)">
 
                         </td>

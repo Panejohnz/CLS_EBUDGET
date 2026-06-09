@@ -88,7 +88,7 @@
                         <!-- price -->
                         <td>
 
-                            <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.price"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.price"
                                 (ngModelChange)="calculate(i)">
 
                         </td>
@@ -96,7 +96,7 @@
                         <!-- qty -->
                         <td>
 
-                            <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.qty"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.qty"
                                 (ngModelChange)="calculate(i)">
 
                         </td>
@@ -138,7 +138,7 @@
                         <!-- month -->
                         <td>
 
-                            <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.month"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.month"
                                 (ngModelChange)="calculate(i)">
 
                         </td>
@@ -194,7 +194,7 @@
 
                         <td class="fw-bold">
 
-                            {{ totalQty }}
+                            {{ totalQty | number:'1.0-2' }}
 
                         </td>
 
@@ -202,7 +202,7 @@
 
                         <td class="fw-bold">
 
-                            {{ totalMonth }}
+                            {{ totalMonth | number:'1.0-2' }}
 
                         </td>
 

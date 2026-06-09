@@ -77,7 +77,7 @@
                         <!-- ระยะเวลา -->
                         <td>
 
-                            <input type="number" class="form-control form-control-sm text-center"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-center"
                                 [(ngModel)]="item.year" (ngModelChange)="updateDetailItems()">
 
                         </td>
@@ -85,7 +85,7 @@
                         <!-- ราคา -->
                         <td>
 
-                            <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.price"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.price"
                                 (ngModelChange)="calculate(i)">
 
                         </td>
@@ -93,7 +93,7 @@
                         <!-- จำนวน -->
                         <td>
 
-                            <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.qty"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.qty"
                                 (ngModelChange)="calculate(i)">
 
                         </td>
@@ -108,7 +108,7 @@
                         <!-- สร้างใหม่ -->
                         <td>
 
-                            <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.newQty"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.newQty"
                                 (ngModelChange)="updateDetailItems()">
 
                         </td>
@@ -116,7 +116,7 @@
                         <!-- ปรับปรุง -->
                         <td>
 
-                            <input type="number" class="form-control form-control-sm text-end"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end"
                                 [(ngModel)]="item.updateQty" (ngModelChange)="updateDetailItems()">
 
                         </td>
@@ -226,7 +226,7 @@
                 <!-- amount -->
                 <div class="col-md-5">
 
-                    <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="yearly[i].amount"
+                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="yearly[i].amount"
                         (ngModelChange)="updateDetailItems()" placeholder="จำนวนเงิน">
 
                 </div>

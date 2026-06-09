@@ -76,7 +76,7 @@ export class ProjectAllocationComponent implements OnInit {
   // GET DATA
   // =====================================
 
-  get_data() {
+  get_data(afterLoad?: () => void) {
 
     let model = {
 
@@ -113,6 +113,10 @@ export class ProjectAllocationComponent implements OnInit {
           Array.isArray(response.Mas_Expense_Lists)
             ? response.Mas_Expense_Lists
             : this.buildExpenseListOptions(this.allData);
+
+        if (afterLoad) {
+          afterLoad();
+        }
       });
 
   }
@@ -281,19 +285,22 @@ export class ProjectAllocationComponent implements OnInit {
 
         rows.forEach((row: any) => {
 
+          const planKey =
+            this.buildGroupKey(row.Fk_Plan_Id, row.Plan_Name);
+
           let plan = this.groupData.find(
 
             (x: any) =>
 
-              x.Plan_Name ==
-
-              row.Plan_Name
+              x.key == planKey
 
           );
 
           if (!plan) {
 
             plan = {
+
+              key: planKey,
 
               Plan_Name:
                 row.Plan_Name || '-',
@@ -308,19 +315,22 @@ export class ProjectAllocationComponent implements OnInit {
 
           }
 
+          const productKey =
+            this.buildGroupKey(row.Fk_Product_Id, row.Product_Name);
+
           let product = plan.products.find(
 
             (x: any) =>
 
-              x.Product_Name ==
-
-              row.Product_Name
+              x.key == productKey
 
           );
 
           if (!product) {
 
             product = {
+
+              key: productKey,
 
               Product_Name:
                 row.Product_Name || '-',
@@ -335,19 +345,22 @@ export class ProjectAllocationComponent implements OnInit {
 
           }
 
+          const activityKey =
+            this.buildGroupKey(row.Fk_Activity_Id, row.Activity_Name);
+
           let activity = product.activities.find(
 
             (x: any) =>
 
-              x.Activity_Name ==
-
-              row.Activity_Name
+              x.key == activityKey
 
           );
 
           if (!activity) {
 
             activity = {
+              key: activityKey,
+
               Activity_Name: row.Activity_Name || '-',
 
               Fk_Plan_Id: row.Fk_Plan_Id || 0,
@@ -361,17 +374,25 @@ export class ProjectAllocationComponent implements OnInit {
 
           }
 
+          const budgetKey =
+            this.buildGroupKey(row.Fk_Budget_Type, row.Budget_Type_Name);
+
           let budget = activity.budgets.find(
 
             (x: any) =>
 
-              x.Budget_Type == row.Budget_Type_Name
+              x.key == budgetKey
 
           );
 
           if (!budget) {
 
             budget = {
+
+              key: budgetKey,
+
+              Fk_Budget_Type:
+                row.Fk_Budget_Type || 0,
 
               Budget_Type:
                 row.Budget_Type_Name || '-',
@@ -498,6 +519,7 @@ export class ProjectAllocationComponent implements OnInit {
         budget.items.push({
           Plan_Id: 0,
           FK_Request_Id: 0,
+          Is_New_Request: true,
 
           Department_Id: template.Department_Id || this.selectedDepartmentId,
           Department_Name: template.Department_Name || '',
@@ -551,6 +573,16 @@ export class ProjectAllocationComponent implements OnInit {
 
     return Array.from(map.values());
   }
+
+  private buildGroupKey(id: any, name: any): string {
+    const normalizedId = Number(id || 0);
+    const normalizedName = String(name || '-').trim();
+
+    return normalizedId
+      ? `${normalizedId}`
+      : normalizedName;
+  }
+
   onBudgetTypeChange(budget: any, selected: any) {
     const selectedBudgetType = typeof selected === 'object'
       ? selected
@@ -807,6 +839,7 @@ export class ProjectAllocationComponent implements OnInit {
         BgYear:
           this.currentYear,
         Budget_Type: item.Budget_Type,
+        Is_New_Request: item.Is_New_Request === true,
 
       };
 
@@ -841,7 +874,9 @@ export class ProjectAllocationComponent implements OnInit {
             'บันทึกข้อมูล',
             ''
           );
-          this.applyFilter();
+          this.get_data(() => {
+            this.applyFilter();
+          });
           // await this.reloadAfterSave();
           items.forEach((item: any) => {
 

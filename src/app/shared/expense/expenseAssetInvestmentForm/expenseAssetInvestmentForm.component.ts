@@ -1,11 +1,45 @@
 import { Component, Input } from '@angular/core';
+import { EbudgetService } from 'src/app/core/services/ebudget.service'
 
 @Component({
   selector: 'app-expense-asset-investment-form',
   templateUrl: './expenseAssetInvestmentForm.component.html',
-  styles: ``
+  styles: `
+    .asset-investment-table {
+      min-width: 1280px;
+      table-layout: fixed;
+    }
+
+    .asset-investment-table .item-col {
+      width: 34%;
+      min-width: 360px;
+    }
+
+    .asset-investment-select {
+      text-align: left;
+    }
+
+    .asset-investment-select ::ng-deep .ng-select-container {
+      min-height: 32px;
+      height: auto;
+    }
+
+    .asset-investment-select ::ng-deep .ng-value-container,
+    .asset-investment-select ::ng-deep .ng-value {
+      white-space: normal;
+      line-height: 1.25;
+    }
+
+    .asset-investment-select ::ng-deep .ng-option {
+      white-space: normal;
+      line-height: 1.35;
+    }
+  `
 })
 export class ExpenseAssetInvestmentFormComponent {
+  constructor(
+    public serviceebud: EbudgetService
+  ) { }
 
   @Input() model: any;
 
@@ -26,6 +60,13 @@ export class ExpenseAssetInvestmentFormComponent {
   spec = '';
 
   grandTotal = 0;
+  Mas_Expense_Detial_List: any[] = []
+  private currentExpenseTypeId: any = null;
+  isTextMode = false;
+
+  get shouldDefaultStandardOut(): boolean {
+    return Number(this.currentExpenseTypeId || this.model?.selectedExpenseTypeId) === 63;
+  }
 
   ngOnInit() {
 
@@ -40,10 +81,63 @@ export class ExpenseAssetInvestmentFormComponent {
 
     }
 
-    this.bindData();
-
+    this.loadExpenseType();
   }
 
+  ngDoCheck() {
+    if (!this.model) return;
+
+    if (this.currentExpenseTypeId != this.model.selectedExpenseTypeId) {
+      this.loadExpenseType();
+    }
+  }
+  loadExpenseType() {
+    this.currentExpenseTypeId = this.model.selectedExpenseTypeId;
+    this.isTextMode = Number(this.currentExpenseTypeId) === 63;
+    this.Mas_Expense_Detial_List = [];
+    this.grandTotal = 0;
+
+
+    let model = {
+      FUNC_CODE: "FUNC-Get_Mas_Expense_Detial",
+      Fk_Expense_Id: this.currentExpenseTypeId
+    };
+
+    this.serviceebud.GatewayGetData(model)
+      .subscribe((response: any) => {
+
+        this.Mas_Expense_Detial_List =
+          Array.isArray(response.List_Mas_Expense_Detial)
+            ? response.List_Mas_Expense_Detial
+            : [];
+
+        this.bindData();
+
+      });
+
+  }
+  onMaterialChange(item: any, selected: any, index: number) {
+
+    const obj = typeof selected === 'object'
+      ? selected
+      : this.Mas_Expense_Detial_List.find(
+        x => Number(x.Expense_Detial_Id) === Number(selected)
+      );
+
+    item.material = obj?.Expense_Detial_Id || null;
+    item.materialName = obj?.Expense_Detial_Name || '';
+    item.name = item.materialName;
+
+    const requestRate =
+      obj?.Request_Rate ??
+      obj?.request_rate ??
+      obj?.REQUEST_RATE ??
+      0;
+
+    item.price = Number(requestRate) || 0;
+
+    this.calculate(index);
+  }
   getConfig(type: string) {
 
     const map: any = {
@@ -168,16 +262,17 @@ export class ExpenseAssetInvestmentFormComponent {
   }
 
   createItem() {
-
     return {
 
       requestItemId: 0,
 
       name: '',
+      material: null,
+      materialName: '',
 
       standardIn: false,
 
-      standardOut: false,
+      standardOut: this.shouldDefaultStandardOut,
 
       price: 0,
 
@@ -234,11 +329,19 @@ export class ExpenseAssetInvestmentFormComponent {
           name:
             row.Expense_Detail || '',
 
+          material:
+            this.isTextMode
+              ? null
+              : row.Fk_Expense_Detail_Id || null,
+
+          materialName:
+            row.Expense_Detail || '',
+
           standardIn:
             row.People_Type_A == 1,
 
           standardOut:
-            row.People_Type_B == 1,
+            this.shouldDefaultStandardOut || row.People_Type_B == 1,
           price:
             row.Price || 0,
 
@@ -309,9 +412,9 @@ export class ExpenseAssetInvestmentFormComponent {
 
     item.total =
 
-      (Number(item.price) || 0) *
+      (Number(item.price?.toString().replace(/,/g, '')) || 0) *
 
-      (Number(item.qty) || 0);
+      (Number(item.qty?.toString().replace(/,/g, '')) || 0);
 
     this.calculateAll();
 
@@ -357,6 +460,12 @@ export class ExpenseAssetInvestmentFormComponent {
 
     this.items.forEach((item: any) => {
 
+      const detail = this.Mas_Expense_Detial_List.find(
+        (x: any) =>
+          Number(x.Expense_Detial_Id) ===
+          Number(item.material)
+      );
+
       this.model.Budget_Request_Detail_Item.push({
 
         Request_Item_Id:
@@ -365,17 +474,22 @@ export class ExpenseAssetInvestmentFormComponent {
         Fk_Expense_Id:
           this.model.selectedExpenseTypeId,
 
+        Fk_Expense_Detail_Id:
+          this.isTextMode ? 0 : (item.material || 0),
+
         Expense_Detail:
-          item.name || '',
+          this.isTextMode
+            ? (item.materialName || '')
+            : (detail?.Expense_Detial_Name || item.materialName || item.name || ''),
 
         Quantity:
-          item.qty,
+          Number(item.qty?.toString().replace(/,/g, '') || 0),
 
         Price:
-          item.price,
+          Number(item.price?.toString().replace(/,/g, '') || 0),
 
         Total:
-          item.total,
+          Number(item.total?.toString().replace(/,/g, '') || 0),
 
         People_Type_A:
           item.standardIn ? 1 : 0,

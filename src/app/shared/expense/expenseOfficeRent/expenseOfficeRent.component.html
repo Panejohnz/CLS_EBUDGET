@@ -65,7 +65,7 @@
               <!-- area -->
               <td>
 
-                <!-- <input type="number" class="form-control text-end" [(ngModel)]="item.area"
+                <!-- <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-end" [(ngModel)]="item.area"
                   (ngModelChange)="calculate(item)"> -->
                 <input type="text" class="form-control text-center" [(ngModel)]="item.area">
               </td>
@@ -82,7 +82,7 @@
               <!-- month -->
               <td>
 
-                <input type="text" class="form-control text-end" [value]="item.monthlyRent"
+                <input type="text" class="form-control text-end" [value]="item.monthlyRent | number:'1.0-2'"
                   (input)="formatInput($event, item, 'monthlyRent'); calculateYear(item)" inputmode="decimal">
 
               </td>
@@ -90,7 +90,7 @@
               <!-- year -->
               <td>
 
-                <input type="text" class="form-control text-end" [value]="item.yearlyRent"
+                <input type="text" class="form-control text-end" [value]="item.yearlyRent | number:'1.0-2'"
                   (input)="formatInput($event, item, 'yearlyRent'); calculateGrand(); updateDetailItems()"
                   inputmode="decimal">
 
@@ -98,7 +98,7 @@
               <!-- rate -->
               <!-- <td>
 
-                <input type="number" class="form-control text-end" [(ngModel)]="item.pricePerSqm"
+                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-end" [(ngModel)]="item.pricePerSqm"
                   (ngModelChange)="calculate(item)">
 
               </td> -->
@@ -106,7 +106,7 @@
               <!-- month -->
               <!-- <td>
 
-                <input type="number" class="form-control text-end" [(ngModel)]="item.monthlyRent"
+                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-end" [(ngModel)]="item.monthlyRent"
                   (ngModelChange)="calculateYear(item)">
 
               </td> -->
@@ -114,7 +114,7 @@
               <!-- year -->
               <!-- <td>
 
-                <input type="number" class="form-control text-end" [(ngModel)]="item.yearlyRent"
+                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-end" [(ngModel)]="item.yearlyRent"
                   (ngModelChange)="calculateGrand(); updateDetailItems()">
 
               </td> -->

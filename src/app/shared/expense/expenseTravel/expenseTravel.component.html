@@ -144,7 +144,7 @@
                                 <!-- times -->
                                 <td>
 
-                                    <input type="number" class="form-control text-center" [(ngModel)]="detail.times"
+                                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center" [(ngModel)]="detail.times"
                                         (ngModelChange)="calculate(detail)">
 
                                 </td>
@@ -158,7 +158,7 @@
                                 <!-- perdiem -->
                                 <td>
 
-                                    <input type="number" class="form-control" [(ngModel)]="detail.perdiemPerson"
+                                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control" [(ngModel)]="detail.perdiemPerson"
                                         (ngModelChange)="calculate(detail)">
 
                                 </td>
@@ -166,7 +166,7 @@
                                 <!-- hotel -->
                                 <td>
 
-                                    <input type="number" class="form-control" [(ngModel)]="detail.hotelPerson"
+                                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control" [(ngModel)]="detail.hotelPerson"
                                         (ngModelChange)="calculate(detail)">
 
                                 </td>
@@ -174,7 +174,7 @@
                                 <!-- plane -->
                                 <td>
 
-                                    <input type="number" class="form-control" [(ngModel)]="detail.planePerson"
+                                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control" [(ngModel)]="detail.planePerson"
                                         (ngModelChange)="calculate(detail)">
 
                                 </td>
@@ -182,7 +182,7 @@
                                 <!-- taxi -->
                                 <td>
 
-                                    <input type="number" class="form-control" [(ngModel)]="detail.taxiPerson"
+                                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control" [(ngModel)]="detail.taxiPerson"
                                         (ngModelChange)="calculate(detail)">
 
                                 </td>
@@ -224,7 +224,7 @@
                                 <!-- perdiem -->
                                 <td>
 
-                                    <input type="number" class="form-control" [(ngModel)]="detail.perdiemDay"
+                                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control" [(ngModel)]="detail.perdiemDay"
                                         (ngModelChange)="calculate(detail)">
 
                                 </td>
@@ -232,7 +232,7 @@
                                 <!-- hotel -->
                                 <td>
 
-                                    <input type="number" class="form-control" [(ngModel)]="detail.hotelNight"
+                                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control" [(ngModel)]="detail.hotelNight"
                                         (ngModelChange)="calculate(detail)">
 
                                 </td>
@@ -240,7 +240,7 @@
                                 <!-- plane -->
                                 <td>
 
-                                    <input type="number" class="form-control" [(ngModel)]="detail.planeTrip"
+                                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control" [(ngModel)]="detail.planeTrip"
                                         (ngModelChange)="calculate(detail)">
 
                                 </td>
@@ -248,7 +248,7 @@
                                 <!-- taxi -->
                                 <td>
 
-                                    <input type="number" class="form-control" [(ngModel)]="detail.taxiTrip"
+                                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control" [(ngModel)]="detail.taxiTrip"
                                         (ngModelChange)="calculate(detail)">
 
                                 </td>
@@ -269,32 +269,36 @@
                                 <!-- perdiem -->
                                 <td>
 
-                                    <input type="number" class="form-control" [(ngModel)]="detail.perdiemRate"
-                                        (ngModelChange)="calculate(detail)">
+                                    <input type="text" class="form-control text-end"
+                                        mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                                        [(ngModel)]="detail.perdiemRate" (ngModelChange)="calculate(detail)">
 
                                 </td>
 
                                 <!-- hotel -->
                                 <td>
 
-                                    <input type="number" class="form-control" [(ngModel)]="detail.hotelRate"
-                                        (ngModelChange)="calculate(detail)">
+                                    <input type="text" class="form-control text-end"
+                                        mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                                        [(ngModel)]="detail.hotelRate" (ngModelChange)="calculate(detail)">
 
                                 </td>
 
                                 <!-- plane -->
                                 <td>
 
-                                    <input type="number" class="form-control" [(ngModel)]="detail.planeRate"
-                                        (ngModelChange)="calculate(detail)">
+                                    <input type="text" class="form-control text-end"
+                                        mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                                        [(ngModel)]="detail.planeRate" (ngModelChange)="calculate(detail)">
 
                                 </td>
 
                                 <!-- taxi -->
                                 <td>
 
-                                    <input type="number" class="form-control" [(ngModel)]="detail.taxiRate"
-                                        (ngModelChange)="calculate(detail)">
+                                    <input type="text" class="form-control text-end"
+                                        mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                                        [(ngModel)]="detail.taxiRate" (ngModelChange)="calculate(detail)">
 
                                 </td>
 

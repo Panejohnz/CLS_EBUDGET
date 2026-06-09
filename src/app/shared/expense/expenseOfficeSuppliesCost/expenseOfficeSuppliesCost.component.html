@@ -74,9 +74,15 @@
                         <!-- material -->
                         <td>
 
-                            <ng-select [items]="materialOptions" bindLabel="name" [(ngModel)]="item.material"
-                                placeholder="--- โปรดเลือก ---" appendTo="body" (ngModelChange)="updateDetailItems()">
+                            <!-- type 48 -->
+                            <input *ngIf="isTextMode" class="form-control form-control-sm"
+                                [(ngModel)]="item.materialName" (ngModelChange)="updateDetailItems()">
 
+                            <!-- ปกติ -->
+                            <ng-select *ngIf="!isTextMode" [items]="Mas_Expense_Detial_List"
+                                bindLabel="Expense_Detial_Name" bindValue="Expense_Detial_Id"
+                                [(ngModel)]="item.material" placeholder="--- โปรดเลือก ---" appendTo="body"
+                                (change)="onMaterialChange(item, $event, i)">
                             </ng-select>
 
                         </td>
@@ -84,7 +90,8 @@
                         <!-- qty -->
                         <td>
 
-                            <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.qty"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.qty"
                                 (ngModelChange)="calculate(i)">
 
                         </td>
@@ -132,8 +139,9 @@
                         <!-- price -->
                         <td>
 
-                            <input type="number" class="form-control form-control-sm text-end" [(ngModel)]="item.price"
-                                (ngModelChange)="calculate(i)">
+                            <input [readonly]="!isTextMode" type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                inputmode="decimal" class="form-control form-control-sm text-end"
+                                [(ngModel)]="item.price" (ngModelChange)="calculate(i)">
 
                         </td>
 
