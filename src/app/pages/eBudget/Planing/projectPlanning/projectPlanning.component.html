@@ -70,7 +70,8 @@
                                 <th style="width:10%">หมวดงบ</th>
                                 <th style="width:15%">โครงการ</th>
                                 <th style="width:10%">งบประมาณ</th>
-                                <th style="width:10%">สถานะ</th>
+                                <th style="width:8%">สถานะ</th>
+                                <th style="width:7%">รายงาน</th>
                                 <th style="width:5%">แก้ไข</th>
                                 <th style="width:5%">ลบ</th>
                             </tr>
@@ -121,6 +122,14 @@
                                     </span>
                                 </td>
 
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-primary btn-sm"
+                                        (click)="viewReport(data)" [disabled]="!data.Project_Id"
+                                        title="ดูรายงาน">
+                                        <i class="ri-file-chart-line"></i>
+                                    </button>
+                                </td>
+
                                 <td>
                                     <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#exampleModalgrid" (click)="fullModal(fullDataModal,data)">
@@ -145,7 +154,7 @@
                                     {{ Total | number:'1.2-2' }}
                                 </td>
 
-                                <td colspan="3"></td>
+                                <td colspan="4"></td>
                             </tr>
                         </tfoot>
 
