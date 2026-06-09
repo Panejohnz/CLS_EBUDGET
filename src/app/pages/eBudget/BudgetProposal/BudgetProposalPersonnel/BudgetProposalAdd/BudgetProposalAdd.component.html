@@ -683,7 +683,9 @@
 
                 }
 
-                <app-expense-attachment [model]="model">
+                <app-expense-attachment
+                    *ngIf="![64,70,73,74,75].includes(model.selectedExpenseTypeId)"
+                    [model]="model">
 
                 </app-expense-attachment>
 
