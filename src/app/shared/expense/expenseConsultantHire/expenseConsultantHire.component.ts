@@ -359,7 +359,17 @@ export class ExpenseConsultantHireComponent {
 
   removeProject(index: number) {
 
+    if (this.projects.length <= 1) {
+      return;
+    }
+
     this.projects.splice(index, 1);
+
+    this.model.Total = this.projects.reduce(
+      (sum: number, project: any) =>
+        sum + (Number(project.totalCost) || 0),
+      0
+    );
 
     this.updateDetailItems();
 

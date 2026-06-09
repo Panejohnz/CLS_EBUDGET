@@ -16,12 +16,13 @@
 
             <!-- ตารางข้อมูลโครงการ -->
 
-            <table class="table table-bordered mb-3">
+            <table class="table table-bordered align-middle expense-table mb-3">
 
-                <thead class="table-light ">
+                <thead class="text-center text-white expense-table-header">
                     <tr>
                         <th colspan="2" class="text-start">รายการ</th>
                         <th width="150">รวม</th>
+                        <th width="60"></th>
                     </tr>
                 </thead>
 
@@ -44,6 +45,13 @@
 
                         <td class="text-end fw-bold">
                             {{project.totalCost | number:'1.2-2'}}
+                        </td>
+
+                        <td class="text-center">
+                            <button *ngIf="projects.length > 1" class="btn btn-sm btn-outline-danger"
+                                (click)="removeProject(p)" title="ลบรายการ">
+                                <i class="bx bx-trash"></i>
+                            </button>
                         </td>
 
                     </tr>
@@ -84,6 +92,8 @@
 
                         <td></td>
 
+                        <td></td>
+
                     </tr>
 
                 </tbody>
@@ -94,7 +104,7 @@
 
             <table class="table table-bordered align-middle expense-table text-center">
 
-                <thead class="table-light">
+                <thead class="text-center text-white expense-table-header">
 
                     <tr>
 
