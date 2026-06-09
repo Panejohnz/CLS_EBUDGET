@@ -1,0 +1,39 @@
+.box-title {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.box-title-header {
+  background-color: #556398;
+  color: #fff;
+  padding: 10px 14px;
+  margin: -1rem -1rem 12px;
+  border-radius: 5px 5px 0 0;
+}
+
+.quarter-label {
+  font-size: 13px;
+  color: #555;
+  min-width: 90px;
+}
+
+.custom-input input {
+  border-radius: 8px 0 0 8px;
+}
+
+.custom-input .input-group-text {
+  border-radius: 0 8px 8px 0;
+  background: #f5f6f8;
+  font-size: 13px;
+}
+
+input.form-control {
+  transition: all 0.2s ease;
+
+  &:focus {
+    border-color: #4c8bf5;
+    box-shadow: 0 0 0 0.15rem rgba(76, 139, 245, 0.2);
+  }
+}

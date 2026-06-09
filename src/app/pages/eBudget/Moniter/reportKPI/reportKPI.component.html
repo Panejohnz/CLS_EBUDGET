@@ -1,76 +1,46 @@
-<div class="card p-3 bg-light">
+<style>
+    .sticky-header th {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background-color: #556398 !important;
+        color: white;
+    }
+</style>
 
-    <h5 class="fw-bold mb-3">
-        รายงานผลตามตัวชี้วัดแผนงาน
-    </h5>
+<div class="card shadow-sm">
+    <div class="card-header">
+        <h5 class="mb-0">รายงานผลตามตัวชี้วัดแผนงาน</h5>
+    </div>
 
-    <!-- TABLE -->
-    <table class="table table-bordered text-center align-middle">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered text-center align-middle mb-0" style="table-layout: fixed;">
+                <thead class="text-center text-white sticky-header">
+                    <tr>
+                        <th style="width:5%">ลำดับ</th>
+                        <th style="width:10%">ปีงบประมาณ</th>
+                        <th>ชื่อตัวชี้วัด</th>
+                        <th style="width:15%">รายงานผล</th>
+                    </tr>
+                </thead>
 
-        <thead class="table-light">
-
-            <tr>
-
-                <th style="width:5%">
-                    ลำดับ
-                </th>
-
-                <th style="width:10%">
-                    ปีงบประมาณ
-                </th>
-
-                <th>
-                    ชื่อตัวชี้วัด
-                </th>
-
-                <th style="width:15%">
-                    รายงานผล
-                </th>
-
-            </tr>
-
-        </thead>
-
-        <tbody>
-
-            <tr *ngFor="let item of kpis; let i = index">
-
-                <td>
-
-                    {{i+1}}
-
-                </td>
-
-                <td>
-
-                    {{item.BgYear}}
-
-                </td>
-
-                <td class="text-start">
-
-                    {{item.Indicators_Name}}
-
-                </td>
-
-                <td>
-
-                    <button class="btn btn-primary btn-sm" (click)="openForm(reportModal,item)">
-
-                        <i class="ri-file-edit-line me-1"></i>
-
-                        รายงานผล
-
-                    </button>
-
-                </td>
-
-            </tr>
-
-        </tbody>
-
-    </table>
-
+                <tbody>
+                    <tr *ngFor="let item of kpis; let i = index">
+                        <td>{{i+1}}</td>
+                        <td>{{item.BgYear}}</td>
+                        <td class="text-start">{{item.Indicators_Name}}</td>
+                        <td>
+                            <button class="btn btn-primary btn-sm" (click)="openForm(reportModal,item)">
+                                <i class="ri-file-edit-line me-1"></i>
+                                รายงานผล
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 <!-- ================================================= -->

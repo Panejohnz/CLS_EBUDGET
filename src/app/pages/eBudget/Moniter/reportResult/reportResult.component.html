@@ -249,6 +249,14 @@
 
     }
 
+    .sticky-header th {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background-color: #556398 !important;
+        color: white;
+    }
+
     /* Responsive */
 
     @media (max-width: 768px) {
@@ -275,45 +283,27 @@
 
     }
 </style>
-<div class="bg-light p-3">
-    <h5 class="fw-bold mb-4">รายงานผล</h5>
-    <div class="d-flex justify-content-between align-items-end mb-3">
-
-        <div style="width: 400px;">
-
-            <label class="fw-semibold mb-1">
-
-                หน่วยงาน
-
-            </label>
-
-            <select class="form-select" [(ngModel)]="selectedDepartmentId" (change)="applyFilter()">
-
-                <option [ngValue]="null">
-
-                    -- เลือกหน่วยงาน --
-
-                </option>
-
-                <option *ngFor="let item of department" [ngValue]="item.Department_Id">
-
-                    {{ item.Department_Name }}
-
-                </option>
-
-            </select>
-
-        </div>
-
+<div class="card shadow-sm">
+    <div class="card-header">
+        <h5 class="mb-0">รายงานผล</h5>
     </div>
 
-    <div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-end mb-3">
+            <div style="width: 400px;">
+                <label class="fw-semibold mb-1">หน่วยงาน</label>
+                <select class="form-select" [(ngModel)]="selectedDepartmentId" (change)="applyFilter()">
+                    <option [ngValue]="null">-- เลือกหน่วยงาน --</option>
+                    <option *ngFor="let item of department" [ngValue]="item.Department_Id">
+                        {{ item.Department_Name }}
+                    </option>
+                </select>
+            </div>
+        </div>
 
         <div class="table-responsive">
-
-            <table class="table table-bordered align-middle mb-0">
-
-                <thead class="table-light text-center">
+            <table class="table table-bordered align-middle text-center mb-0" style="table-layout: fixed;">
+                <thead class="text-center text-white sticky-header">
 
                     <tr>
 
@@ -461,13 +451,9 @@
                     </tr>
 
                 </tbody>
-
             </table>
-
         </div>
-
     </div>
-
 </div>
 
 <!-- ================================================= -->

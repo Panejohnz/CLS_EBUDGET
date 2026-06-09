@@ -5,7 +5,8 @@ import { BudgetYearService } from 'src/app/core/services/budget-year.service';
 
 @Component({
   selector: 'app-budget-target-setting',
-  templateUrl: './budgetTargetSetting.component.html'
+  templateUrl: './budgetTargetSetting.component.html',
+  styleUrls: ['./budgetTargetSetting.component.scss']
 })
 export class BudgetTargetSettingComponent implements OnInit {
 

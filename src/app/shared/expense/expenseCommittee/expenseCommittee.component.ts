@@ -33,7 +33,7 @@ interface Section {
 @Component({
   selector: 'app-expense-committee',
   templateUrl: './expenseCommittee.component.html',
-  styles: ``
+  styleUrls: ['./expenseCommittee.component.scss']
 })
 export class ExpenseCommitteeComponent {
 

@@ -1,223 +1,89 @@
-<div class="card bg-light">
-
-    <div class="card-header bg-light fw-bold">
-
-        ค่าตอบแทนบุคคลหรือคณะกรรมการ
-
+<div class="card shadow-sm">
+    <div class="card-header">
+        <h5 class="mb-0">ค่าตอบแทนบุคคลหรือคณะกรรมการ</h5>
     </div>
 
     <div class="card-body">
-
         <div class="table-responsive">
-
-            <table class="table table-bordered align-middle text-center bg-white">
-
-                <thead class="table-secondary">
-
+            <table class="table table-bordered align-middle text-center mb-0" style="table-layout: fixed;">
+                <thead class="text-center text-white sticky-header">
                     <tr>
-
-                        <th style="width:35%">
-
-                            รายการ
-
-                        </th>
-
-                        <th style="width:20%">
-
-                            ประเภท
-
-                        </th>
-
-                        <th style="width:10%">
-
-                            จำนวนคน
-
-                        </th>
-
-                        <th style="width:10%">
-
-                            จำนวนครั้ง
-
-                        </th>
-
-                        <th style="width:10%">
-
-                            อัตรา
-
-                        </th>
-
-                        <th style="width:10%">
-
-                            รวม
-
-                        </th>
-
+                        <th style="width:35%">รายการ</th>
+                        <th style="width:20%">ประเภท</th>
+                        <th style="width:10%">จำนวนคน</th>
+                        <th style="width:10%">จำนวนครั้ง</th>
+                        <th style="width:10%">อัตรา</th>
+                        <th style="width:10%">รวม</th>
                         <th style="width:5%"></th>
-
                     </tr>
-
                 </thead>
 
-                <!-- section -->
                 <tbody *ngFor="let section of sections">
-
-                    <!-- section title -->
                     <tr class="table-light fw-bold">
-
                         <td colspan="7" class="text-start">
-
                             {{section.title}}
-
                             <button class="btn btn-sm btn-primary float-end" (click)="addItem(section)">
-
                                 <i class="bx bx-plus"></i>
-
                                 เพิ่มรายการ
-
                             </button>
-
                         </td>
-
                     </tr>
 
-                    <!-- item -->
                     <tr *ngFor="let item of section.items">
-
-                        <!-- รายการ -->
                         <td class="text-start">
-
                             <input class="form-control" [(ngModel)]="item.name" (ngModelChange)="updateDetailItems()"
                                 placeholder="ระบุรายการ">
-
                         </td>
 
-                        <!-- ประเภท -->
                         <td>
-
                             <select class="form-select" [(ngModel)]="item.type" (change)="updateRate(item)">
-
-                                <option value="" disabled>
-
-                                    -- เลือกประเภท --
-
-                                </option>
-
-                                <option value="1">
-
-                                    ประธาน
-
-                                </option>
-
-                                <option value="2">
-
-                                    กรรมการ
-
-                                </option>
-
-                                <option value="3">
-
-                                    คณะกรรมการ
-
-                                </option>
-
+                                <option value="" disabled>-- เลือกประเภท --</option>
+                                <option value="1">ประธาน</option>
+                                <option value="2">กรรมการ</option>
+                                <option value="3">คณะกรรมการ</option>
                             </select>
-
                         </td>
 
-                        <!-- จำนวนคน -->
                         <td>
-
                             <input type="number" class="form-control text-center" [(ngModel)]="item.qty"
                                 (ngModelChange)="calculate(item)">
-
                         </td>
 
-                        <!-- จำนวนครั้ง -->
                         <td>
-
                             <input type="number" class="form-control text-center" [(ngModel)]="item.times"
                                 (ngModelChange)="calculate(item)">
-
                         </td>
 
-                        <!-- rate -->
-                        <td class="bg-light text-end">
+                        <td class="text-end">{{item.rate | number:'1.2-2'}}</td>
 
-                            {{item.rate | number:'1.2-2'}}
-
-                        </td>
-
-                        <!-- total -->
                         <td class="fw-bold text-end text-primary">
-
                             {{item.total | number:'1.2-2'}}
-
                         </td>
 
-                        <!-- remove -->
                         <td>
-
                             <button class="btn btn-danger btn-sm" (click)="removeItem(section,item)">
-
                                 <i class="bx bx-trash"></i>
-
                             </button>
-
                         </td>
-
                     </tr>
 
-                    <!-- subtotal -->
                     <tr class="table-light fw-bold">
-
-                        <td colspan="5" class="text-end">
-
-                            รวม
-
-                        </td>
-
+                        <td colspan="5" class="text-end">รวม</td>
                         <td class="text-end text-primary">
-
-                            {{
-                            getSectionTotal(section)
-                            | number:'1.2-2'
-                            }}
-
+                            {{ getSectionTotal(section) | number:'1.2-2' }}
                         </td>
-
                         <td></td>
-
                     </tr>
-
                 </tbody>
 
-                <!-- grand -->
-                <tfoot class="table-secondary fw-bold">
-
-                    <tr>
-
-                        <td colspan="5" class="text-end">
-
-                            รวมทั้งสิ้น
-
-                        </td>
-
-                        <td class="text-end text-primary">
-
-                            {{ grandTotal | number:'1.2-2' }}
-
-                        </td>
-
+                <tfoot>
+                    <tr class="fw-bold" style="background-color: #556398;">
+                        <td colspan="5" class="text-end text-white">รวมทั้งสิ้น</td>
+                        <td class="text-end text-white">{{ grandTotal | number:'1.2-2' }}</td>
                         <td></td>
-
                     </tr>
-
                 </tfoot>
-
             </table>
-
         </div>
-
     </div>
-
 </div>

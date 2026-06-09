@@ -12,7 +12,7 @@ import { BudgetYearService } from 'src/app/core/services/budget-year.service';
   selector: 'app-project-budget-proposal',
   providers: [GridJsService, DecimalPipe, EbudgetService],
   templateUrl: './BudgetProposal.component.html',
-  styles: ``
+  styleUrls: ['./BudgetProposal.component.scss']
 })
 export class ProjectBudgetProposalComponent {
   constructor(private modalService: NgbModal, public service: GridJsService
