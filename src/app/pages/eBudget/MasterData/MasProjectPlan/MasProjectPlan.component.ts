@@ -4,12 +4,51 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'MasProjectPlan',
   templateUrl: './MasProjectPlan.component.html',
-  styles: ``
+  styleUrls: ['./MasProjectPlan.component.scss']
 })
 export class MasProjectPlanComponent {
   projectPlanList: any[] = [];
   Mas_Project_Plan: any = {};
   modalRef: any;
+
+  menuItems = [
+    {
+      no: 1,
+      title: 'ยุทธศาสตร์ชาติที่เกี่ยวข้องโดยตรง (Z)',
+      path: '/MasterData/MasProjectPlan/NationalStrategyZ',
+      icon: 'ri-flag-line'
+    },
+    {
+      no: 2,
+      title: 'ความสอดคล้องกับแผนแม่บทภายใต้ยุทธศาสตร์ชาติ (Y)',
+      path: '/MasterData/MasProjectPlan/MasterPlanY',
+      icon: 'ri-book-open-line'
+    },
+    {
+      no: 3,
+      title: 'แผนพัฒนาเศรษฐกิจและสังคมแห่งชาติ',
+      path: '/MasterData/MasProjectPlan/NationalSocialDevelopmentPlan',
+      icon: 'ri-community-line'
+    },
+    {
+      no: 4,
+      title: 'ความสอดคล้องกับแผนปฏิบัติการราชการ ปปท (แผน 5 ปี)',
+      path: '/MasterData/MasProjectPlan/NationalEconomicDevelopmentPlan',
+      icon: 'ri-line-chart-line'
+    },
+    {
+      no: 5,
+      title: 'ความสอดคล้องกับแผนปฏิบัติการราชการ ปปท (แผน 1 ปี)',
+      path: '/MasterData/MasProjectPlan/MinistryActionPlan',
+      icon: 'ri-calendar-check-line'
+    },
+    {
+      no: 6,
+      title: 'ความสอดคล้องกับเป้าหมาย SDGs',
+      path: '/MasterData/MasProjectPlan/SDGsPlan',
+      icon: 'ri-global-line'
+    }
+  ];
 
   emptyData = {
     Project_Plan_Id: null,

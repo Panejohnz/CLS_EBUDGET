@@ -9,6 +9,7 @@ import { AuthfakeauthenticationService } from '../../core/services/authfake.serv
 import { Router } from '@angular/router';
 import { TokenStorageService } from '../../core/services/token-storage.service';
 import { BudgetYearService } from '../../core/services/budget-year.service';
+import { MenuService } from '../../core/services/menu.service';
 // Language
 import { CookieService } from 'ngx-cookie-service';
 import { LanguageService } from '../../core/services/language.service';
@@ -53,7 +54,8 @@ export class TopbarComponent implements OnInit {
 
   constructor(@Inject(DOCUMENT) private document: any, private eventService: EventService, public languageService: LanguageService, private modalService: NgbModal,
     public _cookiesService: CookieService, public translate: TranslateService, private authService: AuthenticationService, private authFackservice: AuthfakeauthenticationService,
-    private router: Router, private TokenStorageService: TokenStorageService, private budgetYearService: BudgetYearService) { }
+    private router: Router, private TokenStorageService: TokenStorageService, private budgetYearService: BudgetYearService,
+    private menuService: MenuService) { }
 
   ngOnInit(): void {
     // this.userData = this.TokenStorageService.getUser();
@@ -216,12 +218,9 @@ export class TopbarComponent implements OnInit {
    * Logout the user
    */
   logout() {
-
-    // window.location.href("https://app.celestsoft.com/CLS_ERP_MANANGEMENT_FRONT/");
-
+    this.menuService.clearMenu();
     this.authService.logout();
     window.location.href = "https://app.celestsoft.com/CLS_ERP_MANANGEMENT_FRONT/";
-    // this.router.navigate(['/auth/permission']);
   }
 
   windowScroll() {

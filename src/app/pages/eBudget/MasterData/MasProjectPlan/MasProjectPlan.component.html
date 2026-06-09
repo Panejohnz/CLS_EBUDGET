@@ -1,43 +1,22 @@
 <div class="card shadow-sm">
-  <div class="card-header d-flex justify-content-between">
-    <h5>ความสอดคล้องโครงการ</h5>
+  <div class="card-header">
+    <h5 class="mb-0">ความสอดคล้องโครงการ</h5>
   </div>
 
   <div class="card-body">
+    <p class="text-muted mb-4">เลือกประเภทความสอดคล้องที่ต้องการจัดการข้อมูล</p>
 
-    <div class="mb-3">
-      <a class="d-block mb-1 text-primary text-decoration-underline"
-        style="cursor: pointer;"
-        (click)="goToSubPage('/MasterData/MasProjectPlan/NationalStrategyZ')">
-        1)ยุทธศาสตร์ชาติที่เกี่ยวข้องโดยตรง(Z)
-      </a>
-      <a class="d-block text-primary text-decoration-underline"
-        style="cursor: pointer;"
-        (click)="goToSubPage('/MasterData/MasProjectPlan/MasterPlanY')">
-        2)ความสอดคล้องกับแผนแม่บทภายใต้ยุทธศาสตร์ชาติ (Y)
-      </a>
-      <a class="d-block mb-1 text-primary text-decoration-underline"
-        style="cursor: pointer;"
-        (click)="goToSubPage('/MasterData/MasProjectPlan/NationalSocialDevelopmentPlan')">
-        3)แผนพัฒนาเศรษฐกิจและสังคมแห่งชาติ
-      </a>
-      <a class="d-block text-primary text-decoration-underline"
-        style="cursor: pointer;"
-        (click)="goToSubPage('/MasterData/MasProjectPlan/NationalEconomicDevelopmentPlan')">
-        4)ความสอดคล้องกับแผนปฏิบัติการราชการ ปปท (แผน 5 ปี)
-      </a>
-      <a class="d-block text-primary text-decoration-underline"
-        style="cursor: pointer;"
-        (click)="goToSubPage('/MasterData/MasProjectPlan/MinistryActionPlan')">
-        5)ความสอดคล้องกับแผนปฏิบัติการราชการ ปปท (แผน 1 ปี)
-      </a>
-      <a class="d-block text-primary text-decoration-underline"
-      style="cursor: pointer;"
-      (click)="goToSubPage('/MasterData/MasProjectPlan/SDGsPlan')">
-      6)ความสอดคล้องกับเป้าหมาย SDGs
-    </a>
+    <div class="row g-3">
+      <div class="col-md-6" *ngFor="let item of menuItems">
+        <div class="plan-menu-item" (click)="goToSubPage(item.path)">
+          <div class="plan-menu-num">{{ item.no }}</div>
+          <div class="plan-menu-icon">
+            <i [class]="item.icon"></i>
+          </div>
+          <div class="plan-menu-text">{{ item.title }}</div>
+          <i class="ri-arrow-right-s-line plan-menu-arrow"></i>
+        </div>
+      </div>
     </div>
   </div>
 </div>
-
-
