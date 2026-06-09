@@ -5,20 +5,20 @@
         <!-- table -->
         <div class="table-responsive">
 
-            <table class="table table-bordered align-middle text-center bg-white">
+            <table class="table table-bordered align-middle text-center bg-white asset-investment-table">
 
                 <!-- header -->
                 <thead class="table-secondary">
 
                     <tr>
 
-                        <th rowspan="2">
+                        <th rowspan="2" style="width:5%">
 
                             ลำดับ
 
                         </th>
 
-                        <th rowspan="2">
+                        <th rowspan="2" class="item-col">
 
                             รายการ
 
@@ -30,19 +30,19 @@
 
                         </th>
 
-                        <th rowspan="2">
+                        <th rowspan="2" style="width:12%">
 
                             ราคา/หน่วย
 
                         </th>
 
-                        <th rowspan="2">
+                        <th rowspan="2" style="width:10%">
 
                             จำนวน
 
                         </th>
 
-                        <th rowspan="2">
+                        <th rowspan="2" style="width:13%">
 
                             วงเงินรวม
 
@@ -106,9 +106,13 @@
                         <!-- item -->
                         <td>
 
-                            <ng-select [items]="config?.options" [(ngModel)]="item.name" appendTo="body"
-                                placeholder="--- รายการ ---" (ngModelChange)="updateDetailItems()">
+                            <input *ngIf="isTextMode" class="form-control form-control-sm"
+                                [(ngModel)]="item.materialName" (ngModelChange)="updateDetailItems()">
 
+                            <ng-select *ngIf="!isTextMode" class="asset-investment-select" [items]="Mas_Expense_Detial_List" bindLabel="Expense_Detial_Name"
+                                bindValue="Expense_Detial_Id" [(ngModel)]="item.material"
+                                placeholder="--- โปรดเลือก ---" appendTo="body"
+                                (change)="onMaterialChange(item, $event, i)">
                             </ng-select>
 
                         </td>
@@ -130,8 +134,8 @@
                         <!-- price -->
                         <td>
 
-                            <input type="text" class="form-control form-control-sm text-end"
-                                mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                            <input [readonly]="!isTextMode" type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                inputmode="decimal" class="form-control form-control-sm text-end"
                                 [(ngModel)]="item.price" (ngModelChange)="calculate(i)">
 
                         </td>
@@ -139,7 +143,8 @@
                         <!-- qty -->
                         <td>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.qty"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.qty"
                                 (ngModelChange)="calculate(i)">
 
                         </td>
@@ -157,7 +162,8 @@
                         <!-- reason new -->
                         <td>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm" [(ngModel)]="item.newQty"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                inputmode="decimal" class="form-control form-control-sm" [(ngModel)]="item.newQty"
                                 (ngModelChange)="updateDetailItems()">
 
                             <textarea class="form-control form-control-sm mt-1" rows="2" placeholder="เหตุผลการขอใหม่"
@@ -170,7 +176,8 @@
                         <!-- reason replace -->
                         <td>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm" [(ngModel)]="item.replaceQty"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                inputmode="decimal" class="form-control form-control-sm" [(ngModel)]="item.replaceQty"
                                 (ngModelChange)="updateDetailItems()">
 
                             <textarea class="form-control form-control-sm mt-1" rows="2" placeholder="เหตุผลการทดแทน"

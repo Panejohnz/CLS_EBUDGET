@@ -139,7 +139,7 @@
                         <!-- price -->
                         <td>
 
-                            <input readonly type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                            <input [readonly]="!isTextMode" type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
                                 inputmode="decimal" class="form-control form-control-sm text-end"
                                 [(ngModel)]="item.price" (ngModelChange)="calculate(i)">
 

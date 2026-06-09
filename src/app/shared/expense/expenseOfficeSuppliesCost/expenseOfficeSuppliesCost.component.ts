@@ -199,9 +199,9 @@ export class ExpenseOfficeSuppliesCostComponent {
 
     item.total =
 
-      (Number(item.qty) || 0) *
+      (Number(item.qty?.toString().replace(/,/g, '')) || 0) *
 
-      (Number(item.price) || 0);
+      (Number(item.price?.toString().replace(/,/g, '')) || 0);
 
     this.calculateAll();
 
@@ -217,7 +217,7 @@ export class ExpenseOfficeSuppliesCostComponent {
 
         (sum, x) =>
 
-          sum + (Number(x.total) || 0),
+          sum + (Number(x.total?.toString().replace(/,/g, '')) || 0),
 
         0
 
@@ -269,10 +269,10 @@ export class ExpenseOfficeSuppliesCostComponent {
             : (detail?.Expense_Detial_Name || ''),
 
         Quantity:
-          Number(item.qty || 0),
+          Number(item.qty?.toString().replace(/,/g, '') || 0),
 
         Price:
-          Number(item.price || 0),
+          Number(item.price?.toString().replace(/,/g, '') || 0),
 
         Fk_Unit_Id:
           0,
@@ -281,10 +281,10 @@ export class ExpenseOfficeSuppliesCostComponent {
           item.unit || '',
 
         Total:
-          Number(item.total || 0),
+          Number(item.total?.toString().replace(/,/g, '') || 0),
 
         Budget_Amount:
-          Number(item.total || 0),
+          Number(item.total?.toString().replace(/,/g, '') || 0),
 
         Reson:
           item.remark || '',
