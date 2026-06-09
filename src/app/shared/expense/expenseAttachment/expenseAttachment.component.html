@@ -1,0 +1,22 @@
+<div class="card shadow-sm mt-3">
+  <div class="card-body bg-light">
+    <label class="fw-semibold mb-2">
+      แนบไฟล์
+    </label>
+
+    <input type="file" multiple class="form-control form-control-sm" (change)="onFileChange($event)">
+
+    <div class="attachment-list mt-2" *ngIf="files.length > 0">
+      <div class="d-flex align-items-center justify-content-between gap-2 py-1" *ngFor="let file of files; let i = index">
+        <div class="text-truncate">
+          <i class="ri-attachment-2 me-1"></i>
+          {{ file.File_Name || file.file?.name }}
+        </div>
+
+        <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeFile(i)">
+          ลบ
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

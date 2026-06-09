@@ -2340,12 +2340,23 @@ debugger
       });
 
   }
-  toDotNetDate(dateStr: string): string | null {
+  toDotNetDate(dateStr: any): string | null {
 
     if (!dateStr) return null;
 
+    if (typeof dateStr === 'string' && /\/Date\(\d+\)\//.test(dateStr)) {
+      return dateStr;
+    }
+
     const timestamp =
-      new Date(dateStr).getTime();
+      typeof dateStr === 'object' &&
+        dateStr.year &&
+        dateStr.month &&
+        dateStr.day
+        ? new Date(dateStr.year, dateStr.month - 1, dateStr.day).getTime()
+        : new Date(dateStr).getTime();
+
+    if (isNaN(timestamp)) return null;
 
     return `/Date(${timestamp})/`;
   }

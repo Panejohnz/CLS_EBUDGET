@@ -247,32 +247,6 @@
 
         </div>
 
-        <!-- upload -->
-        <div class="mt-3">
-
-            <label class="fw-semibold">
-
-                แนบไฟล์
-                (กรณีนอกมาตรฐาน ต้อง 3 ไฟล์)
-
-            </label>
-
-            <input type="file" multiple class="form-control form-control-sm" (change)="uploadFiles($event)">
-
-            <small class="text-danger" *ngIf="fileError">
-
-                ต้องแนบ 3 ไฟล์
-
-            </small>
-
-            <div class="text-success mt-2" *ngFor="let f of files">
-
-                📎 {{ f.name }}
-
-            </div>
-
-        </div>
-
         <!-- action -->
         <div class="mt-3">
 

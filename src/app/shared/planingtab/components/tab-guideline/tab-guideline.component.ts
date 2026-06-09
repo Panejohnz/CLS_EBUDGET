@@ -231,6 +231,7 @@ export class TabGuidelineComponent {
   selectedActivityId: number | null = null;
   selectedLevel: 'act' | 'sub' | null = null;
   openMultiplierModal(content: any, item: any, level: 'act' | 'sub' = 'act') {
+    console.log('item', item);
 
     this.selectedActivity = item;
     item._useMultiplier = true;

@@ -695,15 +695,27 @@ export class ProjectPlanningComponent {
 
     return true;
   }
-  toDotNetDate(dateStr: string): string | null {
+  toDotNetDate(dateStr: any): string | null {
 
     if (!dateStr) return null;
 
-    if (/\/Date\(\d+\)\//.test(dateStr)) {
+    if (typeof dateStr === 'string' && /\/Date\(\d+\)\//.test(dateStr)) {
       return dateStr;
     }
 
-    const timestamp = new Date(dateStr).getTime();
+    let timestamp: number;
+
+    if (
+      typeof dateStr === 'object' &&
+      dateStr.year &&
+      dateStr.month &&
+      dateStr.day
+    ) {
+      timestamp =
+        new Date(dateStr.year, dateStr.month - 1, dateStr.day).getTime();
+    } else {
+      timestamp = new Date(dateStr).getTime();
+    }
 
     if (isNaN(timestamp)) {
       return null;

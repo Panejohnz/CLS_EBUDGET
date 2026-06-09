@@ -77,6 +77,7 @@ import { ExpenseWitnessProtectionComponent } from '../shared/expense/expenseWitn
 import { ExpenseConsultantHireComponent } from '../shared/expense/expenseConsultantHire/expenseConsultantHire.component';
 import { ExpenseGrantFormComponent } from '../shared/expense/expenseGrantForm/expenseGrantForm.component';
 import { ExpenseFuelLubricantComponent } from '../shared/expense/expenseFuelLubricant/expenseFuelLubricant.component';
+import { ExpenseAttachmentComponent } from '../shared/expense/expenseAttachment/expenseAttachment.component';
 
 //planing
 import { TabGeneralComponent } from '../shared/planingtab/components/tab-general/tab-general.component';
@@ -156,6 +157,7 @@ import { EmptyZeroNumberDirective } from './directives/empty-zero-number.directi
     ExpenseConsultantHireComponent,
     ExpenseGrantFormComponent,
     ExpenseFuelLubricantComponent,
+    ExpenseAttachmentComponent,
     TabGeneralComponent,
     TabAlignmentComponent,
     TabDetailComponent,
@@ -243,6 +245,7 @@ import { EmptyZeroNumberDirective } from './directives/empty-zero-number.directi
     ExpenseConsultantHireComponent,
     ExpenseGrantFormComponent,
     ExpenseFuelLubricantComponent,
+    ExpenseAttachmentComponent,
     TabGeneralComponent,
     TabAlignmentComponent,
     TabDetailComponent,
