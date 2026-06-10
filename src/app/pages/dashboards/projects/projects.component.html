@@ -49,10 +49,17 @@
                     <div *ngIf="chartNotes.pieBudgetType" class="small text-muted mb-2">
                         {{ chartNotes.pieBudgetType }}
                     </div>
-
-                    <apx-chart *ngIf="pieChart?.series?.length" [series]="pieChart.series" [chart]="pieChart.chart"
-                        [labels]="pieChart.labels" [colors]="pieChart.colors">
-                    </apx-chart>
+                    
+     <apx-chart
+    *ngIf="pieChart?.series?.length"
+    [series]="pieChart.series"
+    [chart]="pieChart.chart"
+    [labels]="pieChart.labels"
+    [colors]="pieChart.colors"
+    [tooltip]="pieChart.tooltip"
+    [dataLabels]="pieChart.dataLabels"
+    [legend]="pieChart.legend">
+</apx-chart>
 
                     <div *ngIf="!pieChart?.series?.length" class="text-center text-muted py-5">
                         ไม่พบข้อมูล
@@ -83,10 +90,16 @@
                         {{ chartNotes.barBudgetType }}
                     </div>
 
-                    <apx-chart *ngIf="barLineChart?.series?.length" [series]="barLineChart.series"
-                        [chart]="barLineChart.chart" [xaxis]="barLineChart.xaxis" [stroke]="barLineChart.stroke"
-                        [colors]="barLineChart.colors">
-                    </apx-chart>
+<apx-chart
+    *ngIf="barLineChart?.series?.length"
+    [series]="barLineChart.series"
+    [chart]="barLineChart.chart"
+    [xaxis]="barLineChart.xaxis"
+    [yaxis]="barLineChart.yaxis"
+    [stroke]="barLineChart.stroke"
+    [colors]="barLineChart.colors"
+    [tooltip]="barLineChart.tooltip">
+</apx-chart>
 
                     <div *ngIf="!barLineChart?.series?.length" class="text-center text-muted py-5">
                         ไม่พบข้อมูล
@@ -116,11 +129,18 @@
                     <div *ngIf="chartNotes.plan" class="small text-muted mb-2">
                         {{ chartNotes.plan }}
                     </div>
-
-                    <apx-chart *ngIf="comboChart?.series?.length" [series]="comboChart.series"
-                        [chart]="comboChart.chart" [stroke]="comboChart.stroke" [colors]="comboChart.colors"
-                        [plotOptions]="comboChart.plotOptions" [xaxis]="comboChart.xaxis" [legend]="comboChart.legend">
-                    </apx-chart>
+<apx-chart
+    *ngIf="comboChart?.series?.length"
+    [series]="comboChart.series"
+    [chart]="comboChart.chart"
+    [stroke]="comboChart.stroke"
+    [colors]="comboChart.colors"
+    [plotOptions]="comboChart.plotOptions"
+    [xaxis]="comboChart.xaxis"
+    [yaxis]="comboChart.yaxis"
+    [tooltip]="comboChart.tooltip"
+    [legend]="comboChart.legend">
+</apx-chart>
 
                     <div *ngIf="!comboChart?.series?.length" class="text-center text-muted py-5">
                         ไม่พบข้อมูล
@@ -150,12 +170,19 @@
                     <div *ngIf="chartNotes.department" class="small text-muted mb-2">
                         {{ chartNotes.department }}
                     </div>
-
-                    <apx-chart *ngIf="comboChart2?.series?.length" [series]="comboChart2.series"
-                        [chart]="comboChart2.chart" [stroke]="comboChart2.stroke" [colors]="comboChart2.colors"
-                        [plotOptions]="comboChart2.plotOptions" [xaxis]="comboChart2.xaxis"
-                        [legend]="comboChart2.legend">
-                    </apx-chart>
+<apx-chart
+    *ngIf="comboChart2?.series?.length"
+    [series]="comboChart2.series"
+    [chart]="comboChart2.chart"
+    [stroke]="comboChart2.stroke"
+    [colors]="comboChart2.colors"
+    [plotOptions]="comboChart2.plotOptions"
+    [dataLabels]="comboChart2.dataLabels"
+    [xaxis]="comboChart2.xaxis"
+    [yaxis]="comboChart2.yaxis"
+    [tooltip]="comboChart2.tooltip"
+    [legend]="comboChart2.legend">
+</apx-chart>
 
                     <div *ngIf="!comboChart2?.series?.length" class="text-center text-muted py-5">
                         ไม่พบข้อมูล
@@ -167,38 +194,45 @@
 
         </div>
 
-        <!-- PIE QUARTER -->
-        <div class="col-xl-6 col-md-12">
+    <!-- PIE QUARTER -->
+<div class="col-xl-6 col-md-12">
 
-            <div class="card h-100">
+    <div class="card h-100">
 
-                <div class="card-header">
+        <div class="card-header">
+            <h5 class="mb-0">
+                ภาพรวมงบประมาณแยกตามไตรมาส
+            </h5>
+        </div>
 
-                    <h5 class="mb-0">
-                        ภาพรวมงบประมาณแยกตามไตรมาส
-                    </h5>
+        <div class="card-body">
 
-                </div>
+            <div *ngIf="chartNotes.quarterPie"
+                 class="small text-muted mb-2">
+                {{ chartNotes.quarterPie }}
+            </div>
 
-                <div class="card-body">
+            <apx-chart
+                *ngIf="pieQuarterChart?.series?.length"
+                [series]="pieQuarterChart.series"
+                [chart]="pieQuarterChart.chart"
+                [labels]="pieQuarterChart.labels"
+                [colors]="pieQuarterChart.colors"
+                [tooltip]="pieQuarterChart.tooltip"
+                [dataLabels]="pieQuarterChart.dataLabels"
+                [legend]="pieQuarterChart.legend">
+            </apx-chart>
 
-                    <div *ngIf="chartNotes.quarterPie" class="small text-muted mb-2">
-                        {{ chartNotes.quarterPie }}
-                    </div>
-
-                    <apx-chart *ngIf="pieChart2?.series?.length" [series]="pieChart2.series" [chart]="pieChart2.chart"
-                        [labels]="pieChart2.labels" [colors]="pieChart2.colors">
-                    </apx-chart>
-
-                    <div *ngIf="!pieChart2?.series?.length" class="text-center text-muted py-5">
-                        ไม่พบข้อมูล
-                    </div>
-
-                </div>
-
+            <div *ngIf="!pieQuarterChart?.series?.length"
+                 class="text-center text-muted py-5">
+                ไม่พบข้อมูล
             </div>
 
         </div>
+
+    </div>
+
+</div>
 
         <!-- BAR LINE QUARTER -->
         <div class="col-xl-6 col-md-12">
@@ -219,10 +253,18 @@
                         {{ chartNotes.quarterBar }}
                     </div>
 
-                    <apx-chart *ngIf="barLineChart2?.series?.length" [series]="barLineChart2.series"
-                        [chart]="barLineChart2.chart" [xaxis]="barLineChart2.xaxis" [stroke]="barLineChart2.stroke"
-                        [colors]="barLineChart2.colors">
-                    </apx-chart>
+                <apx-chart
+    *ngIf="barLineChart2?.series?.length"
+    [series]="barLineChart2.series"
+    [chart]="barLineChart2.chart"
+    [colors]="barLineChart2.colors"
+    [plotOptions]="barLineChart2.plotOptions"
+    [dataLabels]="barLineChart2.dataLabels"
+    [xaxis]="barLineChart2.xaxis"
+    [yaxis]="barLineChart2.yaxis"
+    [tooltip]="barLineChart2.tooltip"
+    [legend]="barLineChart2.legend">
+</apx-chart>
 
                     <div *ngIf="!barLineChart2?.series?.length" class="text-center text-muted py-5">
                         ไม่พบข้อมูล
