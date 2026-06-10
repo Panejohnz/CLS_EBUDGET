@@ -2343,7 +2343,8 @@ export class AddPlanManagementComponent
 
       Create_User: this.userSession.permissionData.IDENTIFY,
       Update_User: this.userSession.permissionData.IDENTIFY
-    };
+    } : null;
+
     const payload_plan = {
 
       BgYear: this.currentYear,
