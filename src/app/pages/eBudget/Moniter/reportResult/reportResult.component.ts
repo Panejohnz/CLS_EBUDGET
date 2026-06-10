@@ -342,10 +342,10 @@ export class ReportResultComponent
               });
 
             const detailList =
-              res?.List_Report_Budget_Plan_Detail || [];
+              res?.Budget_Plan_Details || [];
 
             const monthList =
-              res?.List_Report_Budget_Plan_Detail_Month || [];
+              res?.Budget_Plan_Details_Month || [];
             const investList =
               res?.List_Report_Budget_Plan_Investment || [];
             const items = res.Project_Plan_Detail_Item || [];
@@ -362,23 +362,25 @@ export class ReportResultComponent
 
             this.model.activities = activities;
 
-            let Progress_list = res.Report_Budget_Plan_Progress
+            const Progress_list =
+              res.Report_Budget_Plan_Progress || {};
+
             this.Output_Result = Progress_list?.Output_Result
-              ? JSON.parse(Progress_list.Output_Result)
+              ? this.safeParseJson(Progress_list.Output_Result, res.Project_Output || [])
               : (res.Project_Output || []);
 
             this.Outcome_Result = Progress_list?.Outcome_Result
-              ? JSON.parse(Progress_list.Outcome_Result)
+              ? this.safeParseJson(Progress_list.Outcome_Result, res.Project_Outcome || [])
               : (res.Project_Outcome || []);
             this.normalizeUnitBindings();
 
-            this.Progress_Percent = Progress_list.Progress_Percent
-            this.Problems = Progress_list.Problems
-            this.Solutions = Progress_list.Solutions
-            this.Summary_Result = Progress_list.Summary_Result
-            this.Suggestions = Progress_list.Suggestions
-            this.Progress_Id = Progress_list.Progress_Id
-            this.selectedTri = Progress_list.Trimas_Id
+            this.Progress_Percent = Progress_list.Progress_Percent || 0
+            this.Problems = Progress_list.Problems || ''
+            this.Solutions = Progress_list.Solutions || ''
+            this.Summary_Result = Progress_list.Summary_Result || ''
+            this.Suggestions = Progress_list.Suggestions || ''
+            this.Progress_Id = Progress_list.Progress_Id || 0
+            this.selectedTri = Progress_list.Trimas_Id || null
             if (detailList.length > 0) {
               const detail = detailList[0];
 
@@ -556,6 +558,23 @@ export class ReportResultComponent
       }))
 
     }));
+  }
+
+  private safeParseJson(value: any, fallback: any) {
+    try {
+      return JSON.parse(value);
+    } catch (error) {
+      return fallback;
+    }
+  }
+
+  isInvestmentBudgetType(item: any): boolean {
+    return String(item?.Fk_Budget_Type || '') === '3';
+  }
+
+  isProjectExpenseList(item: any): boolean {
+    return ['64', '70', '73', '74', '75']
+      .includes(String(item?.Fk_Expense_List || ''));
   }
   convertMonths(months: any[]) {
 
@@ -850,20 +869,23 @@ export class ReportResultComponent
       .GatewayGetData(model)
       .subscribe((res: any) => {
 
-        this.Output_Result = res.Report_Budget_Plan_Progress?.Output_Result
-          ? JSON.parse(res.Report_Budget_Plan_Progress.Output_Result)
+        const progress =
+          res.Report_Budget_Plan_Progress || {};
+
+        this.Output_Result = progress?.Output_Result
+          ? this.safeParseJson(progress.Output_Result, [])
           : [];
 
-        this.Outcome_Result = res.Report_Budget_Plan_Progress?.Outcome_Result
-          ? JSON.parse(res.Report_Budget_Plan_Progress.Outcome_Result)
+        this.Outcome_Result = progress?.Outcome_Result
+          ? this.safeParseJson(progress.Outcome_Result, [])
           : [];
         this.normalizeUnitBindings();
-        this.Progress_Percent = res.Report_Budget_Plan_Progress.Progress_Percent;
-        this.Problems = res.Report_Budget_Plan_Progress.Problems;
-        this.Solutions = res.Report_Budget_Plan_Progress.Solutions;
-        this.Summary_Result = res.Report_Budget_Plan_Progress.Summary_Result;
-        this.Suggestions = res.Report_Budget_Plan_Progress.Suggestions;
-        this.Progress_Id = res.Report_Budget_Plan_Progress.Progress_Id;
+        this.Progress_Percent = progress.Progress_Percent || 0;
+        this.Problems = progress.Problems || '';
+        this.Solutions = progress.Solutions || '';
+        this.Summary_Result = progress.Summary_Result || '';
+        this.Suggestions = progress.Suggestions || '';
+        this.Progress_Id = progress.Progress_Id || 0;
 
       });
 
@@ -951,10 +973,10 @@ export class ReportResultComponent
 
       Report_Budget_Plan: payload,
 
-      List_Report_Budget_Plan_Detail:
+      Budget_Plan_Details:
         this.buildDetailData(),
 
-      List_Report_Budget_Plan_Detail_Month:
+      Budget_Plan_Details_Month:
         this.buildMonthData(),
 
       List_Report_Budget_Plan_Investment:

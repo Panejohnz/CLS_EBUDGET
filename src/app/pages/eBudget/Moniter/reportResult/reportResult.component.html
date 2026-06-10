@@ -504,7 +504,7 @@
             <div class="modal-body">
 
                 <div class="table-responsive">
-                    @if (['3'].includes(selectedItem.Fk_Budget_Type)) {
+                    @if (isInvestmentBudgetType(selectedItem)) {
                     <div class="d-flex justify-content-between align-items-center mb-3">
 
 
@@ -551,7 +551,7 @@
 
                     }
 
-                    @if (['64', '70', '73', '74', '75'].includes(selectedItem.Fk_Expense_List)) {
+                    @if (isProjectExpenseList(selectedItem)) {
 
                     <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
                         <!-- sticky header -->
