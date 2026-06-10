@@ -198,394 +198,394 @@ export class SidebarComponent implements OnInit, OnDestroy {
   //     link: '/MasterData/MasProjectPlan'
   //   },
   // ];
-  menuItems: MenuItem[] = [
-    {
-      "id": 25,
-      "label": "หน้าหลัก",
-      "icon": "bx bx-home-alt",
-      "link": "/Dashboard",
-      "subItems": [],
-      "isTitle": false,
-      "isCollapsed": true,
-      "isLayout": false
-    },
-    {
-      "id": 26,
-      "label": "ระบบวางแผน",
-      "icon": "bx bx-task",
-      "link": null,
-      "subItems": [
-        {
-          "id": 22,
-          "label": "วางแผนโครงการ (Planning)",
-          "icon": "bx bx-task",
-          "link": "/Planing",
-          "subItems": [],
-          "parentId": 26,
-          "isTitle": false,
-          "isCollapsed": false,
-          "isLayout": false
-        },
-        {
-          "id": 23,
-          "label": "Sign off โครงการ (ผู้อำนวยการกอง)",
-          "icon": "bx bx-check-circle",
-          "link": "/singOff",
-          "subItems": [],
-          "parentId": 26,
-          "isTitle": false,
-          "isCollapsed": false,
-          "isLayout": false
-        },
-        {
-          "id": 37,
-          "label": "ยืนยันข้อมูลโครงการ (หน่วยงาน)",
-          "icon": "bx bx-check-circle",
-          "link": "/Confirm",
-          "subItems": [],
-          "parentId": 26,
-          "isTitle": false,
-          "isCollapsed": false,
-          "isLayout": false
-        },
-        {
-          "id": 38,
-          "label": "ยืนยันข้อมูลโครงการ (กยผ)",
-          "icon": "bx bx-check-circle",
-          "link": "/ConfirmSuperDept",
-          "subItems": [],
-          "parentId": 26,
-          "isTitle": false,
-          "isCollapsed": false,
-          "isLayout": false
-        },
-        {
-          "id": 39,
-          "label": "Sign off โครงการ (กยผ)",
-          "icon": "bx bx-check-circle",
-          "link": "/singOffSuperDept",
-          "subItems": [],
-          "parentId": 26,
-          "isTitle": false,
-          "isCollapsed": false,
-          "isLayout": false
-        },
-        {
-          "id": 40,
-          "label": "Sign off โครงการ (ปปท)",
-          "icon": "bx bx-check-circle",
-          "link": "/singOffMinistry",
-          "subItems": [],
-          "parentId": 26,
-          "isTitle": false,
-          "isCollapsed": false,
-          "isLayout": false
-        }
-      ],
-      "isTitle": false,
-      "isCollapsed": true,
-      "isLayout": false
-    },
-    {
-      "id": 27,
-      "label": "ระบบจัดทำคำของบประมาณ",
-      "icon": "bx bx-file",
-      "link": null,
-      "subItems": [
-        {
-          "id": 24,
-          "label": "จัดทำคำของบประมาณ",
-          "icon": "bx bx-file",
-          "link": "/ProjectBudgetProposal/Personnel",
-          "subItems": [],
-          "parentId": 27,
-          "isTitle": false,
-          "isCollapsed": false,
-          "isLayout": false
-        },
-        {
-          "id": 25,
-          "label": "Sign off คำของบประมาณ (ผู้อำนวยการกอง)",
-          "icon": "bx bx-check-shield",
-          "link": "/singOffBudgetProposal",
-          "subItems": [],
-          "parentId": 27,
-          "isTitle": false,
-          "isCollapsed": false,
-          "isLayout": false
-        },
-        {
-          "id": 41,
-          "label": "ยืนยันข้อมูลคำของบประมาณ (หน่วยงาน)",
-          "icon": "bx bx-check-circle",
-          "link": "/ConfirmBudgetProposal",
-          "subItems": [],
-          "parentId": 27,
-          "isTitle": false,
-          "isCollapsed": false,
-          "isLayout": false
-        },
-        {
-          "id": 42,
-          "label": "ยืนยันข้อมูลคำของบประมาณ (กยผ)",
-          "icon": "bx bx-check-circle",
-          "link": "/ConfirmSuperDeptBudgetProposal",
-          "subItems": [],
-          "parentId": 27,
-          "isTitle": false,
-          "isCollapsed": false,
-          "isLayout": false
-        },
-        {
-          "id": 43,
-          "label": "Sign off คำของบประมาณ (กยผ)",
-          "icon": "bx bx-check-circle",
-          "link": "/singOffSuperDeptBudgetProposal",
-          "subItems": [],
-          "parentId": 27,
-          "isTitle": false,
-          "isCollapsed": false,
-          "isLayout": false
-        },
-        {
-          "id": 44,
-          "label": "Sign off คำของบประมาณ (ปปท)",
-          "icon": "bx bx-check-circle",
-          "link": "/singOffMinistryBudgetProposal",
-          "subItems": [],
-          "parentId": 27,
-          "isTitle": false,
-          "isCollapsed": false,
-          "isLayout": false
-        }
-      ],
-      "isTitle": false,
-      "isCollapsed": true,
-      "isLayout": false
-    },
-    {
-      "id": 28,
-      "label": "ระบบจัดสรรงบประมาณ",
-      "icon": "bx bx-wallet",
-      "link": null,
-      "subItems": [
-        {
-          "id": 26,
-          "label": "จัดสรรงบประมาณ",
-          "icon": "bx bx-wallet",
-          "link": "/Allocation",
-          "subItems": [],
-          "parentId": 28,
-          "isTitle": false,
-          "isCollapsed": false,
-          "isLayout": false
-        },
-        {
-          "id": 27,
-          "label": "งบประมาณที่ได้รับจัดสรร",
-          "icon": "bx bx-money",
-          "link": "/PlanManagement/examine",
-          "subItems": [],
-          "parentId": 28,
-          "isTitle": false,
-          "isCollapsed": false,
-          "isLayout": false
-        }
-      ],
-      "isTitle": false,
-      "isCollapsed": true,
-      "isLayout": false
-    },
-    {
-      "id": 29,
-      "label": "ระบบจัดทำแผนที่ปฎิบัติการ",
-      "icon": "bx bx-money",
-      "link": null,
-      "subItems": [
-        {
-          "id": 28,
-          "label": "จัดทำแผนปฎิบัติการ",
-          "icon": "bx bx-edit-alt",
-          "link": "/PlanManagement",
-          "subItems": [],
-          "parentId": 29,
-          "isTitle": false,
-          "isCollapsed": false,
-          "isLayout": false
-        },
-        {
-          "id": 29,
-          "label": "Sign off แผนปฎิบัติการ (ผู้อำนวยการกอง)",
-          "icon": "bx bx-check-double",
-          "link": "/singOffAction",
-          "subItems": [],
-          "parentId": 29,
-          "isTitle": false,
-          "isCollapsed": false,
-          "isLayout": false
-        },
-        {
-          "id": 45,
-          "label": "ยืนยันข้อมูลแผนปฎิบัติการ (หน่วยงาน)",
-          "icon": "bx bx-check-double",
-          "link": "/ConfirmAction",
-          "subItems": [],
-          "parentId": 29,
-          "isTitle": false,
-          "isCollapsed": false,
-          "isLayout": false
-        },
-        {
-          "id": 46,
-          "label": "ยืนยันข้อมูลแผนปฎิบัติการ (กยผ)",
-          "icon": "bx bx-check-double",
-          "link": "/ConfirmSuperDeptAction",
-          "subItems": [],
-          "parentId": 29,
-          "isTitle": false,
-          "isCollapsed": false,
-          "isLayout": false
-        },
-        {
-          "id": 47,
-          "label": "Sign off แผนปฎิบัติการ (กยผ)",
-          "icon": "bx bx-check-double",
-          "link": "/singOffSuperDeptAction",
-          "subItems": [],
-          "parentId": 29,
-          "isTitle": false,
-          "isCollapsed": false,
-          "isLayout": false
-        },
-        {
-          "id": 48,
-          "label": "Sign off แผนปฎิบัติการ (ปปท)",
-          "icon": "bx bx-check-double",
-          "link": "/singOffMinistryAction",
-          "subItems": [],
-          "parentId": 29,
-          "isTitle": false,
-          "isCollapsed": false,
-          "isLayout": false
-        }
-      ],
-      "isTitle": false,
-      "isCollapsed": true,
-      "isLayout": false
-    },
-    {
-      "id": 30,
-      "label": "โอนเปลี่ยนแปลงงบประมาณ",
-      "icon": "bx bx-transfer",
-      "link": null,
-      "subItems": [
-        {
-          "id": 30,
-          "label": "โอนเปลี่ยนแปลงงบประมาณ",
-          "icon": "bx bx-transfer",
-          "link": "/Transfer",
-          "subItems": [],
-          "parentId": 30,
-          "isTitle": false,
-          "isCollapsed": false,
-          "isLayout": false
-        }
-      ],
-      "isTitle": false,
-      "isCollapsed": true,
-      "isLayout": false
-    },
-    {
-      "id": 31,
-      "label": "ระบบติดตามการดำเนินงาน",
-      "icon": "bx bx-target-lock",
-      "link": null,
-      "subItems": [
-        {
-          "id": 31,
-          "label": "เมนูกำหนดเป้าหมาย",
-          "icon": "bx bx-target-lock",
-          "link": "/Moniter/BudgetTarget",
-          "subItems": [],
-          "parentId": 31,
-          "isTitle": false,
-          "isCollapsed": false,
-          "isLayout": false
-        },
-        {
-          "id": 32,
-          "label": "เมนูรายงานผล",
-          "icon": "bx bx-bar-chart-alt-2",
-          "link": "/Moniter/ReportResult",
-          "subItems": [],
-          "parentId": 31,
-          "isTitle": false,
-          "isCollapsed": false,
-          "isLayout": false
-        },
-        {
-          "id": 33,
-          "label": "รายงานผลตามตัวชี้วัดแผนงาน",
-          "icon": "bx bx-line-chart",
-          "link": "/Moniter/ReportKPI",
-          "subItems": [],
-          "parentId": 31,
-          "isTitle": false,
-          "isCollapsed": false,
-          "isLayout": false
-        }
-      ],
-      "isTitle": false,
-      "isCollapsed": true,
-      "isLayout": false
-    },
-    {
-      "id": 32,
-      "label": "ข้อมูลกลาง",
-      "icon": "bx bx-id-card",
-      "link": null,
-      "subItems": [
-        {
-          "id": 34,
-          "label": "ระดับบุคลากร",
-          "icon": "bx bx-id-card",
-          "link": "/MasterData/MasBusinessLevel",
-          "subItems": [],
-          "parentId": 32,
-          "isTitle": false,
-          "isCollapsed": false,
-          "isLayout": false
-        },
-        {
-          "id": 35,
-          "label": "กำหนดอัตราค่าใช้จ่าย",
-          "icon": "bx bx-hotel",
-          "link": "/MasterData/MasExpenseDetail",
-          "subItems": [],
-          "parentId": 32,
-          "isTitle": false,
-          "isCollapsed": false,
-          "isLayout": false
-        },
-        {
-          "id": 36,
-          "label": "ความสอดคล้องโครงการ",
-          "icon": "bx bx-check-shield",
-          "link": "/MasterData/MasProjectPlan",
-          "subItems": [],
-          "parentId": 32,
-          "isTitle": false,
-          "isCollapsed": false,
-          "isLayout": false
-        }
-      ],
-      "isTitle": false,
-      "isCollapsed": true,
-      "isLayout": false
-    }
-  ]
+  // menuItems: MenuItem[] = [
+  //   {
+  //     "id": 25,
+  //     "label": "หน้าหลัก",
+  //     "icon": "bx bx-home-alt",
+  //     "link": "/Dashboard",
+  //     "subItems": [],
+  //     "isTitle": false,
+  //     "isCollapsed": true,
+  //     "isLayout": false
+  //   },
+  //   {
+  //     "id": 26,
+  //     "label": "ระบบวางแผน",
+  //     "icon": "bx bx-task",
+  //     "link": null,
+  //     "subItems": [
+  //       {
+  //         "id": 22,
+  //         "label": "วางแผนโครงการ (Planning)",
+  //         "icon": "bx bx-task",
+  //         "link": "/Planing",
+  //         "subItems": [],
+  //         "parentId": 26,
+  //         "isTitle": false,
+  //         "isCollapsed": false,
+  //         "isLayout": false
+  //       },
+  //       {
+  //         "id": 23,
+  //         "label": "Sign off โครงการ (ผู้อำนวยการกอง)",
+  //         "icon": "bx bx-check-circle",
+  //         "link": "/singOff",
+  //         "subItems": [],
+  //         "parentId": 26,
+  //         "isTitle": false,
+  //         "isCollapsed": false,
+  //         "isLayout": false
+  //       },
+  //       {
+  //         "id": 37,
+  //         "label": "ยืนยันข้อมูลโครงการ (หน่วยงาน)",
+  //         "icon": "bx bx-check-circle",
+  //         "link": "/Confirm",
+  //         "subItems": [],
+  //         "parentId": 26,
+  //         "isTitle": false,
+  //         "isCollapsed": false,
+  //         "isLayout": false
+  //       },
+  //       {
+  //         "id": 38,
+  //         "label": "ยืนยันข้อมูลโครงการ (กยผ)",
+  //         "icon": "bx bx-check-circle",
+  //         "link": "/ConfirmSuperDept",
+  //         "subItems": [],
+  //         "parentId": 26,
+  //         "isTitle": false,
+  //         "isCollapsed": false,
+  //         "isLayout": false
+  //       },
+  //       {
+  //         "id": 39,
+  //         "label": "Sign off โครงการ (กยผ)",
+  //         "icon": "bx bx-check-circle",
+  //         "link": "/singOffSuperDept",
+  //         "subItems": [],
+  //         "parentId": 26,
+  //         "isTitle": false,
+  //         "isCollapsed": false,
+  //         "isLayout": false
+  //       },
+  //       {
+  //         "id": 40,
+  //         "label": "Sign off โครงการ (ปปท)",
+  //         "icon": "bx bx-check-circle",
+  //         "link": "/singOffMinistry",
+  //         "subItems": [],
+  //         "parentId": 26,
+  //         "isTitle": false,
+  //         "isCollapsed": false,
+  //         "isLayout": false
+  //       }
+  //     ],
+  //     "isTitle": false,
+  //     "isCollapsed": true,
+  //     "isLayout": false
+  //   },
+  //   {
+  //     "id": 27,
+  //     "label": "ระบบจัดทำคำของบประมาณ",
+  //     "icon": "bx bx-file",
+  //     "link": null,
+  //     "subItems": [
+  //       {
+  //         "id": 24,
+  //         "label": "จัดทำคำของบประมาณ",
+  //         "icon": "bx bx-file",
+  //         "link": "/ProjectBudgetProposal/Personnel",
+  //         "subItems": [],
+  //         "parentId": 27,
+  //         "isTitle": false,
+  //         "isCollapsed": false,
+  //         "isLayout": false
+  //       },
+  //       {
+  //         "id": 25,
+  //         "label": "Sign off คำของบประมาณ (ผู้อำนวยการกอง)",
+  //         "icon": "bx bx-check-shield",
+  //         "link": "/singOffBudgetProposal",
+  //         "subItems": [],
+  //         "parentId": 27,
+  //         "isTitle": false,
+  //         "isCollapsed": false,
+  //         "isLayout": false
+  //       },
+  //       {
+  //         "id": 41,
+  //         "label": "ยืนยันข้อมูลคำของบประมาณ (หน่วยงาน)",
+  //         "icon": "bx bx-check-circle",
+  //         "link": "/ConfirmBudgetProposal",
+  //         "subItems": [],
+  //         "parentId": 27,
+  //         "isTitle": false,
+  //         "isCollapsed": false,
+  //         "isLayout": false
+  //       },
+  //       {
+  //         "id": 42,
+  //         "label": "ยืนยันข้อมูลคำของบประมาณ (กยผ)",
+  //         "icon": "bx bx-check-circle",
+  //         "link": "/ConfirmSuperDeptBudgetProposal",
+  //         "subItems": [],
+  //         "parentId": 27,
+  //         "isTitle": false,
+  //         "isCollapsed": false,
+  //         "isLayout": false
+  //       },
+  //       {
+  //         "id": 43,
+  //         "label": "Sign off คำของบประมาณ (กยผ)",
+  //         "icon": "bx bx-check-circle",
+  //         "link": "/singOffSuperDeptBudgetProposal",
+  //         "subItems": [],
+  //         "parentId": 27,
+  //         "isTitle": false,
+  //         "isCollapsed": false,
+  //         "isLayout": false
+  //       },
+  //       {
+  //         "id": 44,
+  //         "label": "Sign off คำของบประมาณ (ปปท)",
+  //         "icon": "bx bx-check-circle",
+  //         "link": "/singOffMinistryBudgetProposal",
+  //         "subItems": [],
+  //         "parentId": 27,
+  //         "isTitle": false,
+  //         "isCollapsed": false,
+  //         "isLayout": false
+  //       }
+  //     ],
+  //     "isTitle": false,
+  //     "isCollapsed": true,
+  //     "isLayout": false
+  //   },
+  //   {
+  //     "id": 28,
+  //     "label": "ระบบจัดสรรงบประมาณ",
+  //     "icon": "bx bx-wallet",
+  //     "link": null,
+  //     "subItems": [
+  //       {
+  //         "id": 26,
+  //         "label": "จัดสรรงบประมาณ",
+  //         "icon": "bx bx-wallet",
+  //         "link": "/Allocation",
+  //         "subItems": [],
+  //         "parentId": 28,
+  //         "isTitle": false,
+  //         "isCollapsed": false,
+  //         "isLayout": false
+  //       },
+  //       {
+  //         "id": 27,
+  //         "label": "งบประมาณที่ได้รับจัดสรร",
+  //         "icon": "bx bx-money",
+  //         "link": "/PlanManagement/examine",
+  //         "subItems": [],
+  //         "parentId": 28,
+  //         "isTitle": false,
+  //         "isCollapsed": false,
+  //         "isLayout": false
+  //       }
+  //     ],
+  //     "isTitle": false,
+  //     "isCollapsed": true,
+  //     "isLayout": false
+  //   },
+  //   {
+  //     "id": 29,
+  //     "label": "ระบบจัดทำแผนที่ปฎิบัติการ",
+  //     "icon": "bx bx-money",
+  //     "link": null,
+  //     "subItems": [
+  //       {
+  //         "id": 28,
+  //         "label": "จัดทำแผนปฎิบัติการ",
+  //         "icon": "bx bx-edit-alt",
+  //         "link": "/PlanManagement",
+  //         "subItems": [],
+  //         "parentId": 29,
+  //         "isTitle": false,
+  //         "isCollapsed": false,
+  //         "isLayout": false
+  //       },
+  //       {
+  //         "id": 29,
+  //         "label": "Sign off แผนปฎิบัติการ (ผู้อำนวยการกอง)",
+  //         "icon": "bx bx-check-double",
+  //         "link": "/singOffAction",
+  //         "subItems": [],
+  //         "parentId": 29,
+  //         "isTitle": false,
+  //         "isCollapsed": false,
+  //         "isLayout": false
+  //       },
+  //       {
+  //         "id": 45,
+  //         "label": "ยืนยันข้อมูลแผนปฎิบัติการ (หน่วยงาน)",
+  //         "icon": "bx bx-check-double",
+  //         "link": "/ConfirmAction",
+  //         "subItems": [],
+  //         "parentId": 29,
+  //         "isTitle": false,
+  //         "isCollapsed": false,
+  //         "isLayout": false
+  //       },
+  //       {
+  //         "id": 46,
+  //         "label": "ยืนยันข้อมูลแผนปฎิบัติการ (กยผ)",
+  //         "icon": "bx bx-check-double",
+  //         "link": "/ConfirmSuperDeptAction",
+  //         "subItems": [],
+  //         "parentId": 29,
+  //         "isTitle": false,
+  //         "isCollapsed": false,
+  //         "isLayout": false
+  //       },
+  //       {
+  //         "id": 47,
+  //         "label": "Sign off แผนปฎิบัติการ (กยผ)",
+  //         "icon": "bx bx-check-double",
+  //         "link": "/singOffSuperDeptAction",
+  //         "subItems": [],
+  //         "parentId": 29,
+  //         "isTitle": false,
+  //         "isCollapsed": false,
+  //         "isLayout": false
+  //       },
+  //       {
+  //         "id": 48,
+  //         "label": "Sign off แผนปฎิบัติการ (ปปท)",
+  //         "icon": "bx bx-check-double",
+  //         "link": "/singOffMinistryAction",
+  //         "subItems": [],
+  //         "parentId": 29,
+  //         "isTitle": false,
+  //         "isCollapsed": false,
+  //         "isLayout": false
+  //       }
+  //     ],
+  //     "isTitle": false,
+  //     "isCollapsed": true,
+  //     "isLayout": false
+  //   },
+  //   {
+  //     "id": 30,
+  //     "label": "โอนเปลี่ยนแปลงงบประมาณ",
+  //     "icon": "bx bx-transfer",
+  //     "link": null,
+  //     "subItems": [
+  //       {
+  //         "id": 30,
+  //         "label": "โอนเปลี่ยนแปลงงบประมาณ",
+  //         "icon": "bx bx-transfer",
+  //         "link": "/Transfer",
+  //         "subItems": [],
+  //         "parentId": 30,
+  //         "isTitle": false,
+  //         "isCollapsed": false,
+  //         "isLayout": false
+  //       }
+  //     ],
+  //     "isTitle": false,
+  //     "isCollapsed": true,
+  //     "isLayout": false
+  //   },
+  //   {
+  //     "id": 31,
+  //     "label": "ระบบติดตามการดำเนินงาน",
+  //     "icon": "bx bx-target-lock",
+  //     "link": null,
+  //     "subItems": [
+  //       {
+  //         "id": 31,
+  //         "label": "เมนูกำหนดเป้าหมาย",
+  //         "icon": "bx bx-target-lock",
+  //         "link": "/Moniter/BudgetTarget",
+  //         "subItems": [],
+  //         "parentId": 31,
+  //         "isTitle": false,
+  //         "isCollapsed": false,
+  //         "isLayout": false
+  //       },
+  //       {
+  //         "id": 32,
+  //         "label": "เมนูรายงานผล",
+  //         "icon": "bx bx-bar-chart-alt-2",
+  //         "link": "/Moniter/ReportResult",
+  //         "subItems": [],
+  //         "parentId": 31,
+  //         "isTitle": false,
+  //         "isCollapsed": false,
+  //         "isLayout": false
+  //       },
+  //       {
+  //         "id": 33,
+  //         "label": "รายงานผลตามตัวชี้วัดแผนงาน",
+  //         "icon": "bx bx-line-chart",
+  //         "link": "/Moniter/ReportKPI",
+  //         "subItems": [],
+  //         "parentId": 31,
+  //         "isTitle": false,
+  //         "isCollapsed": false,
+  //         "isLayout": false
+  //       }
+  //     ],
+  //     "isTitle": false,
+  //     "isCollapsed": true,
+  //     "isLayout": false
+  //   },
+  //   {
+  //     "id": 32,
+  //     "label": "ข้อมูลกลาง",
+  //     "icon": "bx bx-id-card",
+  //     "link": null,
+  //     "subItems": [
+  //       {
+  //         "id": 34,
+  //         "label": "ระดับบุคลากร",
+  //         "icon": "bx bx-id-card",
+  //         "link": "/MasterData/MasBusinessLevel",
+  //         "subItems": [],
+  //         "parentId": 32,
+  //         "isTitle": false,
+  //         "isCollapsed": false,
+  //         "isLayout": false
+  //       },
+  //       {
+  //         "id": 35,
+  //         "label": "กำหนดอัตราค่าใช้จ่าย",
+  //         "icon": "bx bx-hotel",
+  //         "link": "/MasterData/MasExpenseDetail",
+  //         "subItems": [],
+  //         "parentId": 32,
+  //         "isTitle": false,
+  //         "isCollapsed": false,
+  //         "isLayout": false
+  //       },
+  //       {
+  //         "id": 36,
+  //         "label": "ความสอดคล้องโครงการ",
+  //         "icon": "bx bx-check-shield",
+  //         "link": "/MasterData/MasProjectPlan",
+  //         "subItems": [],
+  //         "parentId": 32,
+  //         "isTitle": false,
+  //         "isCollapsed": false,
+  //         "isLayout": false
+  //       }
+  //     ],
+  //     "isTitle": false,
+  //     "isCollapsed": true,
+  //     "isLayout": false
+  //   }
+  // ]
 
-  // menuItems : MenuItem[]  = [];
+  menuItems : MenuItem[]  = [];
   environment = environment; // เพิ่ม environment property
   @ViewChild('sideMenu') sideMenu!: ElementRef;
   @Output() mobileMenuButtonClicked = new EventEmitter();
