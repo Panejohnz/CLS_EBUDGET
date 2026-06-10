@@ -124,14 +124,16 @@
                         <!-- standard in -->
                         <td>
 
-                            <input type="checkbox" [(ngModel)]="item.standardIn" (ngModelChange)="updateDetailItems()">
+                            <input type="checkbox" class="readonly-checkbox" [checked]="item.standardIn"
+                                tabindex="-1" aria-disabled="true">
 
                         </td>
 
                         <!-- standard out -->
                         <td>
 
-                            <input type="checkbox" [(ngModel)]="item.standardOut" (ngModelChange)="updateDetailItems()">
+                            <input type="checkbox" class="readonly-checkbox" [checked]="item.standardOut"
+                                tabindex="-1" aria-disabled="true">
 
                         </td>
 

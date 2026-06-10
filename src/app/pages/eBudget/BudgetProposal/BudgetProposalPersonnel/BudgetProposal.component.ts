@@ -12,7 +12,15 @@ import { BudgetYearService } from 'src/app/core/services/budget-year.service';
   selector: 'app-project-budget-proposal',
   providers: [GridJsService, DecimalPipe, EbudgetService],
   templateUrl: './BudgetProposal.component.html',
-  styleUrls: ['./BudgetProposal.component.scss']
+  styleUrls: ['./BudgetProposal.component.scss'],
+  styles: [`
+    .readonly-select {
+      pointer-events: none;
+      background-color: var(--vz-secondary-bg, #e9ecef);
+      color: #6c757d;
+      opacity: 1;
+    }
+  `]
 })
 export class ProjectBudgetProposalComponent {
   constructor(private modalService: NgbModal, public service: GridJsService
@@ -81,13 +89,27 @@ export class ProjectBudgetProposalComponent {
     }, 0);
   }
   userSession: any
+
+  get isDepartmentLocked(): boolean {
+    return this.userSession?.permissionData?.VIEW_DATA == 3;
+  }
+
+  private resetDepartmentSelection(): void {
+    this.selectedDepartmentId = this.isDepartmentLocked
+      ? this.userSession?.permissionData?.Department_id ?? null
+      : null;
+  }
+
   ngOnInit(): void {
-    this.userSession = localStorage.getItem('userSession');
+    const sessionStr = localStorage.getItem('userSession');
+
+    if (sessionStr) {
+      this.userSession = JSON.parse(sessionStr);
+    }
     try {
 
-      if (this.userSession.VIEW_DATA == 3) {
-        this.selectedDepartmentId = this.userSession.Department_id
-        this.applyFilter()
+      if (this.userSession.permissionData.VIEW_DATA == 3) {
+        this.selectedDepartmentId = this.userSession.permissionData.Department_id
       } else {
 
       }
@@ -130,6 +152,18 @@ export class ProjectBudgetProposalComponent {
       this.department = Array.isArray(response.Mas_Department_Lists)
         ? response.Mas_Department_Lists
         : [];
+
+      if (this.selectedDepartmentId != null) {
+        const matchedDepartment = this.department.find(
+          (item: any) => String(item.Department_Id) === String(this.selectedDepartmentId)
+        );
+
+        if (matchedDepartment) {
+          this.selectedDepartmentId = matchedDepartment.Department_Id;
+        }
+      }
+
+      this.applyFilter();
 
     });
 
@@ -205,6 +239,7 @@ export class ProjectBudgetProposalComponent {
           this.model = {
             Budget_Type: 1,
             Budget_Request: res.Budget_Request || {},
+            Budget_Request_Attach_File: res.Budget_Request_Attach_File || [],
             Budget_Request_Detail_Item: res.Budget_Request_Detail_Item || [],
             Budget_Request_Detail: res.Budget_Request_Detail || [],
             Project_Plan: res.Project_Plan || {},
@@ -247,6 +282,7 @@ export class ProjectBudgetProposalComponent {
       this.model = {
         Budget_Type: 1,
         Budget_Request: {},
+        Budget_Request_Attach_File: [],
         Department_Id: this.selectedDepartmentId,
         Project_Plan: {},
 
@@ -336,12 +372,12 @@ export class ProjectBudgetProposalComponent {
 
     this.modalRef.result.then(
       (result: any) => {
-        this.selectedDepartmentId = null
+        this.resetDepartmentSelection();
         this.model = null;
         this.get_data()
       },
       (reason: any) => {
-        this.selectedDepartmentId = null
+        this.resetDepartmentSelection();
         this.model = null;
         this.get_data()
       }

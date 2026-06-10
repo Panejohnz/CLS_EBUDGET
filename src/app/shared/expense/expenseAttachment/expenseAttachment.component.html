@@ -1,21 +1,45 @@
 <div class="card shadow-sm mt-3">
   <div class="card-body bg-light">
-    <label class="fw-semibold mb-2">
-      แนบไฟล์
-    </label>
+    <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
+      <label class="fw-semibold mb-0">
+        แนบไฟล์
+      </label>
+
+      <small class="text-muted" *ngIf="files.length > 0">
+        {{ files.length }} ไฟล์
+      </small>
+    </div>
 
     <input type="file" multiple class="form-control form-control-sm" (change)="onFileChange($event)">
 
     <div class="attachment-list mt-2" *ngIf="files.length > 0">
-      <div class="d-flex align-items-center justify-content-between gap-2 py-1" *ngFor="let file of files; let i = index">
+      <div class="d-flex align-items-center justify-content-between gap-2 py-2 border-bottom"
+        *ngFor="let file of files; let i = index">
         <div class="text-truncate">
-          <i class="ri-attachment-2 me-1"></i>
-          {{ file.File_Name || file.file?.name }}
+          <div class="text-truncate">
+            <i class="ri-attachment-2 me-1"></i>
+            {{ file.File_Name || file.file?.name }}
+          </div>
+
+          <small class="text-muted" *ngIf="isExistingFile(file)">
+            ไฟล์เดิม
+          </small>
+
+          <small class="text-primary" *ngIf="!isExistingFile(file)">
+            ไฟล์ใหม่
+          </small>
         </div>
 
-        <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeFile(i)">
-          ลบ
-        </button>
+        <div class="d-flex align-items-center gap-2 flex-shrink-0">
+          <button type="button" class="btn btn-outline-primary btn-sm" *ngIf="canOpenFile(file)"
+            (click)="openFile(file)">
+            ดูไฟล์
+          </button>
+
+          <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeFile(i)">
+            ลบ
+          </button>
+        </div>
       </div>
     </div>
   </div>

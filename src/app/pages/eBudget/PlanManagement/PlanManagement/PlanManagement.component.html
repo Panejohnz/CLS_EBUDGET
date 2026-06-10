@@ -12,7 +12,9 @@
                     <!-- หน่วยงาน -->
                     <div style="width:300px;" class="me-3">
                         <label class="form-label">หน่วยงาน</label>
-                        <select class="form-select" [(ngModel)]="selectedDepartmentId" (change)="applyFilter()">
+                        <select class="form-select" [class.readonly-select]="isDepartmentLocked"
+                            [attr.aria-disabled]="isDepartmentLocked" [attr.tabindex]="isDepartmentLocked ? -1 : null"
+                            [(ngModel)]="selectedDepartmentId" (change)="applyFilter()">
 
                             <option [ngValue]="null">
                                 -- เลือกหน่วยงาน --

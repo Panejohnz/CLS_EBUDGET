@@ -16,7 +16,14 @@ import { MasterService } from 'src/app/core/services/Master.service';
     EbudgetService
   ],
   templateUrl: './ProjectAllocation.component.html',
-  styles: ``
+  styles: [`
+    .readonly-select {
+      pointer-events: none;
+      background-color: var(--vz-secondary-bg, #e9ecef);
+      color: #6c757d;
+      opacity: 1;
+    }
+  `]
 })
 export class ProjectAllocationComponent implements OnInit {
 
@@ -50,9 +57,33 @@ export class ProjectAllocationComponent implements OnInit {
   // =====================================
   // INIT
   // =====================================
+  userSession: any
+
+  get isDepartmentLocked(): boolean {
+    return this.userSession?.permissionData?.VIEW_DATA == 3;
+  }
+
+  private resetDepartmentSelection(): void {
+    this.selectedDepartmentId = this.isDepartmentLocked
+      ? this.userSession?.permissionData?.Department_id ?? null
+      : null;
+  }
 
   ngOnInit() {
+    const sessionStr = localStorage.getItem('userSession');
 
+    if (sessionStr) {
+      this.userSession = JSON.parse(sessionStr);
+    } try {
+
+      if (this.userSession.permissionData.VIEW_DATA == 3) {
+        this.selectedDepartmentId = this.userSession.permissionData.Department_id
+      } else {
+
+      }
+    } catch (error) {
+
+    }
     this.budgetYearService.yearChanged$
       .subscribe(async year => {
 
@@ -107,6 +138,17 @@ export class ProjectAllocationComponent implements OnInit {
           )
             ? response.Mas_Department_Lists
             : [];
+
+        if (this.selectedDepartmentId != null) {
+          const matchedDepartment = this.department.find(
+            (item: any) => String(item.Department_Id) === String(this.selectedDepartmentId)
+          );
+
+          if (matchedDepartment) {
+            this.selectedDepartmentId = matchedDepartment.Department_Id;
+          }
+        }
+
         this.Mas_Budget_Types =
           Array.isArray(response.Mas_Budget_Types)
             ? response.Mas_Budget_Types
@@ -118,6 +160,11 @@ export class ProjectAllocationComponent implements OnInit {
 
         if (afterLoad) {
           afterLoad();
+          return;
+        }
+
+        if (this.selectedDepartmentId) {
+          this.applyFilter();
         }
       });
 
@@ -1045,7 +1092,7 @@ export class ProjectAllocationComponent implements OnInit {
 
     this.groupData = [];
 
-    this.selectedDepartmentId = null;
+    this.resetDepartmentSelection();
 
   }
   sumTotal(node: any): number {
@@ -1198,6 +1245,10 @@ export class ProjectAllocationComponent implements OnInit {
       item[field] = result.numeric;
     });
 
+  }
+
+  allowNumericOnly(event: KeyboardEvent): void {
+    this.masterService.allowNumericOnly(event);
   }
 
   syncAdjustDisplays(item: any): void {

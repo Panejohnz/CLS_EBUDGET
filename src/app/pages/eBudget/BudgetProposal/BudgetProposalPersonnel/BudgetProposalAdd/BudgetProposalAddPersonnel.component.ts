@@ -995,11 +995,25 @@ export class ProjectBudgetProposalAddPersonnelComponent {
   }
 
   private uploadExpenseAttachFiles(): Promise<void> {
-    const attachFiles =
-      (this.model?.Budget_Request_Attach_File || [])
-        .filter((x: any) => x?.file instanceof File);
+    const allAttachFiles =
+      this.model?.Budget_Request_Attach_File || [];
 
-    if (attachFiles.length === 0) {
+    const attachFiles =
+      allAttachFiles
+        .filter((x: any) =>
+          x?.file instanceof File &&
+          !x?.Pending_Delete &&
+          Number(x?.Active ?? 1) !== 0
+        );
+
+    const deletedFiles =
+      allAttachFiles
+        .filter((x: any) =>
+          x?.Pending_Delete &&
+          !!(x?.IDA || x?.GEN_FILE || x?.PATH_FILE)
+        );
+
+    if (attachFiles.length === 0 && deletedFiles.length === 0) {
       return Promise.resolve();
     }
 
@@ -1017,11 +1031,36 @@ export class ProjectBudgetProposalAddPersonnelComponent {
         FUNC_CODE: 'FUNC-Upload_Budget_Request_File',
         Request_Id: requestId,
         Files: attachFiles.map((item: any) => ({
+          IDA: item.IDA || 0,
+          Client_Attachment_Id: item.Client_Attachment_Id || '',
+          Ref_Module: item.Ref_Module || 'BUDGET_REQUEST',
+          Ref_Level: item.Ref_Level || 'EXPENSE',
           Fk_Expense_Id: item.Fk_Expense_Id,
+          Fk_Request_Detail_Item_Id: item.Fk_Request_Detail_Item_Id || 0,
+          Row_Guid: item.Row_Guid || null,
           File_Name: item.File_Name || item.file?.name,
           File_Size: item.File_Size || item.file?.size,
           File_Type: item.File_Type || item.file?.type,
-          ATTACH: item.ATTACH || 1
+          NAME_FAKE: item.NAME_FAKE || item.File_Name || item.file?.name,
+          NAME_REAL: item.NAME_REAL || '',
+          ATTACH: item.ATTACH || 1,
+          Active: 1
+        })),
+        Deleted_Files: deletedFiles.map((item: any) => ({
+          IDA: item.IDA || 0,
+          Client_Attachment_Id: item.Client_Attachment_Id || '',
+          Ref_Module: item.Ref_Module || 'BUDGET_REQUEST',
+          Ref_Level: item.Ref_Level || 'EXPENSE',
+          Fk_Expense_Id: item.Fk_Expense_Id || 0,
+          Fk_Request_Detail_Item_Id: item.Fk_Request_Detail_Item_Id || 0,
+          Row_Guid: item.Row_Guid || null,
+          File_Name: item.File_Name || item.NAME_FAKE || '',
+          NAME_FAKE: item.NAME_FAKE || item.File_Name || '',
+          NAME_REAL: item.NAME_REAL || item.GEN_FILE || '',
+          GEN_FILE: item.GEN_FILE || '',
+          PATH_FILE: item.PATH_FILE || '',
+          ATTACH: item.ATTACH || 1,
+          Active: 0
         }))
       })
     );
