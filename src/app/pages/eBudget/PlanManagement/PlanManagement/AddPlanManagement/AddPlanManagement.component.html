@@ -211,9 +211,10 @@
 
                                         <td>
 
-                                            <input type="number" class="form-control form-control-sm"
-                                                [(ngModel)]="q.months[rowIndex].budget"
-                                                (ngModelChange)="onBudgetChange(q.months[rowIndex])">
+                                            <input type="text" class="form-control form-control-sm"
+                                                [ngModel]="q.months[rowIndex].budgetDisplay"
+                                                (keypress)="allowNumericOnly($event)"
+                                                (input)="formatBudgetCurrency($event, q.months[rowIndex])">
 
                                         </td>
 
