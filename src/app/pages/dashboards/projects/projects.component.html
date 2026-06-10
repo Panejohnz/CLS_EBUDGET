@@ -90,6 +90,16 @@
                         {{ chartNotes.barBudgetType }}
                     </div>
 
+<!-- <apx-chart
+    *ngIf="barLineChart?.series?.length"
+    [series]="barLineChart.series"
+    [chart]="barLineChart.chart"
+    [xaxis]="barLineChart.xaxis"
+    [yaxis]="barLineChart.yaxis"
+    [stroke]="barLineChart.stroke"
+    [colors]="barLineChart.colors"
+    [tooltip]="barLineChart.tooltip">
+</apx-chart> -->
 <apx-chart
     *ngIf="barLineChart?.series?.length"
     [series]="barLineChart.series"
@@ -100,7 +110,6 @@
     [colors]="barLineChart.colors"
     [tooltip]="barLineChart.tooltip">
 </apx-chart>
-
                     <div *ngIf="!barLineChart?.series?.length" class="text-center text-muted py-5">
                         ไม่พบข้อมูล
                     </div>

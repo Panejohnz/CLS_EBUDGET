@@ -205,35 +205,54 @@ export class ProjectsComponent implements OnInit {
       });
   }
 
-  getDashboard() {
-    const model = {
-      FUNC_CODE: 'FUNC-Get_Dashboard',
-      BgYear: this.currentYear,
-      Department_Id: this.selectedDepartmentId || 0
-    };
+  dashboardCheck: any = null;
 
-    this.servicebud.GatewayGetData(model).subscribe({
-      next: (response: any) => {
-        console.log('response.List_Dashboard?.Data', response.List_Dashboard?.Data);
+getDashboard() {
+  const model = {
+    FUNC_CODE: 'FUNC-Get_Dashboard',
+    BgYear: this.currentYear,
+    Department_Id: this.selectedDepartmentId || 0
+  };
 
-        this.dashboardData =
-          Array.isArray(response.List_Dashboard?.Data)
-            ? response.List_Dashboard.Data
-            : Array.isArray(response.Data)
-              ? response.Data
-              : Array.isArray(response)
-                ? response
-                : [];
+  this.servicebud.GatewayGetData(model).subscribe({
+    next: (response: any) => {
 
-        this.bindDashboard();
-      },
-      error: (err: any) => {
-        console.error('GET DASHBOARD ERROR', err);
-        this.dashboardData = [];
-        this.bindDashboard();
-      }
-    });
-  }
+      console.log('response.List_Dashboard?.Data', response.List_Dashboard?.Data);
+      console.log('response.List_Dashboard_Check?.Data', response.List_Dashboard_Check?.Data);
+      // console.log('List_Dashboard_Check', response.List_Dashboard_Check?.Data);
+      // Dashboard หลัก
+      this.dashboardData =
+        Array.isArray(response.List_Dashboard?.Data)
+          ? response.List_Dashboard.Data
+          : Array.isArray(response.Data)
+            ? response.Data
+            : Array.isArray(response)
+              ? response
+              : [];
+
+      // Dashboard Check (มีแค่ 1 แถว)
+      this.dashboardCheck =
+        Array.isArray(response.List_Dashboard_Check?.Data)
+          ? response.List_Dashboard_Check.Data[0]
+          : Array.isArray(response.List_Dashboard_Check)
+            ? response.List_Dashboard_Check[0]
+            : response.List_Dashboard_Check || null;
+
+      console.log('dashboardCheck', this.dashboardCheck);
+
+      this.bindDashboard();
+    },
+
+    error: (err: any) => {
+      console.error('GET DASHBOARD ERROR', err);
+
+      this.dashboardData = [];
+      this.dashboardCheck = null;
+
+      this.bindDashboard();
+    }
+  });
+}
 
   bindDashboard() {
     const data = this.dashboardData || [];
@@ -400,7 +419,7 @@ bindBarBudgetType(data: any[]) {
     data.length > 0 &&
     !this.hasAnyNonZero(data, ['Total_Plan', 'Adjust', 'Sum_Withdraw']);
 
-  // หมวดงบทั้งหมด (แสดงครบแม้ไม่มีข้อมูล)
+  // หมวดงบทั้งหมด
   const budgetTypes = [
     { id: 1, label: 'งบบุคลากร' },
     { id: 2, label: 'งบดำเนินงาน' },
@@ -409,15 +428,9 @@ bindBarBudgetType(data: any[]) {
     { id: 5, label: 'งบรายจ่ายอื่น' }
   ];
 
-  const map = new Map<number, {
-    label: string;
-    plan: number;
-    adjust: number;
-    withdraw: number;
-    count: number;
-  }>();
+  // เตรียมข้อมูลเริ่มต้น
+  const map = new Map<number, any>();
 
-  // กำหนดค่าเริ่มต้นเป็น 0
   budgetTypes.forEach(type => {
     map.set(type.id, {
       label: type.label,
@@ -430,13 +443,14 @@ bindBarBudgetType(data: any[]) {
 
   // รวมข้อมูลจริง
   data.forEach((x: any) => {
+
     const budgetTypeId = Number(x.Budget_Type_Id || 0);
 
     if (!map.has(budgetTypeId)) {
       return;
     }
 
-    const row = map.get(budgetTypeId)!;
+    const row = map.get(budgetTypeId);
 
     row.plan += Number(x.Total_Plan || 0);
     row.adjust += Number(x.Adjust || 0);
@@ -444,20 +458,104 @@ bindBarBudgetType(data: any[]) {
     row.count += 1;
   });
 
-  const items = budgetTypes.map(type => map.get(type.id)!);
+  const items = budgetTypes.map(type => ({
+    id: type.id,
+    ...map.get(type.id)
+  }));
+
+// เดือนปัจจุบัน (1-12)
+const currentMonth = new Date().getMonth() + 1;
+
+// แปลงเป็นเดือนงบประมาณ
+// ต.ค.=1, พ.ย.=2, ..., ก.ย.=12
+const fiscalMonth =
+  currentMonth >= 10
+    ? currentMonth - 9
+    : currentMonth + 3;
+
+// หาไตรมาสปัจจุบัน
+const currentQuarter = Math.ceil(fiscalMonth / 3);
+
+// เป้าหมายเบิกจ่าย (%) ตามไตรมาสปัจจุบัน
+const withdrawPercent =
+  Number(
+    this.dashboardCheck?.[
+      `Goals_Withdraw_Tri${currentQuarter}`
+    ] || 0
+  );
+
+console.log({
+  currentMonth,
+  fiscalMonth,
+  currentQuarter,
+  withdrawPercent
+});
+
+  // ยอดจัดสรรรวม
+  const totalAdjust = items.reduce(
+    (sum, x) => sum + Number(x.adjust || 0),
+    0
+  );
+
+  // เป้าหมายรวมเป็นจำนวนเงิน
+  const totalTargetWithdraw =
+    totalAdjust * withdrawPercent / 100;
+
+  // กระจายเป้าหมายตามสัดส่วนของแต่ละหมวดง
+
+  const targetWithdrawData = items.map(x => {
+
+  const adjust = Number(x.adjust || 0);
+
+  const ratio =
+    totalAdjust > 0
+      ? adjust / totalAdjust
+      : 0;
+
+  return totalTargetWithdraw * ratio;
+});
+
+// ผ่านเป้าหมาย = สีเขียว
+const targetPassData = targetWithdrawData.map((target, index) =>
+  Number(items[index].withdraw || 0) >= target
+    ? target
+    : null
+);
+
+// ไม่ผ่านเป้าหมาย = สีแดง
+const targetFailData = targetWithdrawData.map((target, index) =>
+  Number(items[index].withdraw || 0) < target
+    ? target
+    : null
+);
 
   this.barLineChart = {
     ...this.barLineChart,
 
-    // สีเรียงตามลำดับแท่ง:
-    // จัดสรร = ฟ้า, แผน = เขียว, เบิกจ่าย = เหลือง
+    plotOptions: {
+      bar: {
+        columnWidth: '35%',
+        borderRadius: 3
+      }
+    },
+
     colors: useCountFallback
       ? ['#0d6efd']
       : [
           '#0d6efd', // จัดสรร
           '#198754', // แผน
-          '#ffc107'  // เบิกจ่าย
+          '#ffc107', // เบิกจ่าย
+          '#dc3545'  // เป้าหมาย
         ],
+
+    stroke: useCountFallback
+      ? {
+          width: [0]
+        }
+      : {
+          width: [0, 0, 0, 3],
+          curve: 'smooth'
+        },
 
     series: useCountFallback
       ? [
@@ -468,23 +566,25 @@ bindBarBudgetType(data: any[]) {
           }
         ]
       : [
-          // จัดสรร ขึ้นก่อน
           {
             name: 'จัดสรร',
             type: 'column',
             data: items.map(x => x.adjust)
           },
-          // แผน
           {
             name: 'แผน',
             type: 'column',
             data: items.map(x => x.plan)
           },
-          // เบิกจ่าย
           {
             name: 'เบิกจ่าย',
-            type: 'column', // ถ้าต้องการเป็นเส้น เปลี่ยนเป็น 'line'
+            type: 'column',
             data: items.map(x => x.withdraw)
+          },
+          {
+            name: `เป้าหมาย ${withdrawPercent}%`,
+            type: 'line',
+            data: targetWithdrawData
           }
         ],
 
@@ -492,7 +592,25 @@ bindBarBudgetType(data: any[]) {
       categories: items.map(x => x.label)
     },
 
-    // Format ตัวเลขแกน Y
+    dataLabels: {
+      enabled: true,
+
+      enabledOnSeries: useCountFallback
+        ? [0]
+        : [0, 1, 2], // ไม่แสดงบนเส้นเป้าหมาย
+
+      formatter: (value: number) =>
+        value === 0
+          ? ''
+          : this.formatNumber(value),
+
+      style: {
+        fontSize: '11px',
+        fontWeight: 'bold',
+        colors: ['#ffffff']
+      }
+    },
+
     yaxis: {
       labels: {
         formatter: (value: number) =>
@@ -502,14 +620,21 @@ bindBarBudgetType(data: any[]) {
       }
     },
 
-    // Format Tooltip
     tooltip: {
+      shared: true,
+      intersect: false,
+
       y: {
         formatter: (value: number) =>
           useCountFallback
             ? Number(value || 0).toLocaleString('th-TH')
             : this.formatNumber(value)
       }
+    },
+
+    legend: {
+      show: true,
+      position: 'bottom'
     }
   };
 
@@ -535,6 +660,7 @@ bindPlanChart(data: any[]) {
 
   // รวมข้อมูลตามแผนงาน
   data.forEach((x: any) => {
+
     const key = x.Plan_Name || '-';
 
     if (!map.has(key)) {
@@ -560,20 +686,66 @@ bindPlanChart(data: any[]) {
     (a, b) => a[1].planOrder - b[1].planOrder
   );
 
-console.table(
-  sortedItems.map(([key, value]) => ({
-    key,
-    planOrder: value.planOrder
-  }))
-);
+  console.table(
+    sortedItems.map(([key, value]) => ({
+      key,
+      planOrder: value.planOrder
+    }))
+  );
 
   const labels = sortedItems.map(([key]) => key);
   const rows = sortedItems.map(([_, value]) => value);
 
+  // ==========================
+  // เป้าหมายตามไตรมาสปัจจุบัน
+  // ==========================
+
+  // เดือนปัจจุบัน
+  const currentMonth = new Date().getMonth() + 1;
+
+  // เดือนงบประมาณ (ต.ค.=1 ... ก.ย.=12)
+  const fiscalMonth =
+    currentMonth >= 10
+      ? currentMonth - 9
+      : currentMonth + 3;
+
+  // ไตรมาสปัจจุบัน
+  const currentQuarter = Math.ceil(fiscalMonth / 3);
+
+  // เป้าหมาย (%)
+  const withdrawPercent =
+    Number(
+      this.dashboardCheck?.[
+        `Goals_Withdraw_Tri${currentQuarter}`
+      ] || 0
+    );
+
+  // ยอดจัดสรรรวม
+  const totalAdjust = rows.reduce(
+    (sum, x) => sum + Number(x.adjust || 0),
+    0
+  );
+
+  // เป้าหมายรวมเป็นจำนวนเงิน
+  const totalTargetWithdraw =
+    totalAdjust * withdrawPercent / 100;
+
+  // เป้าหมายแต่ละแผนงาน
+  const targetWithdrawData = rows.map(x => {
+
+    const adjust = Number(x.adjust || 0);
+
+    const ratio =
+      totalAdjust > 0
+        ? adjust / totalAdjust
+        : 0;
+
+    return totalTargetWithdraw * ratio;
+  });
+
   this.comboChart = {
     ...this.comboChart,
 
-    // ขนาดแท่ง
     plotOptions: {
       bar: {
         columnWidth: '25%',
@@ -581,14 +753,23 @@ console.table(
       }
     },
 
-    // สีเรียงตามลำดับแท่ง
     colors: useCountFallback
       ? ['#0d6efd']
       : [
-          '#0d6efd', // จัดสรร (ฟ้า)
-          '#198754', // แผน (เขียว)
-          '#ffc107'  // เบิกจ่าย (เหลือง)
+          '#0d6efd', // จัดสรร
+          '#198754', // แผน
+          '#ffc107', // เบิกจ่าย
+          '#dc3545'  // เป้าหมาย
         ],
+
+    stroke: useCountFallback
+      ? {
+          width: [0]
+        }
+      : {
+          width: [0, 0, 0, 3],
+          curve: 'smooth'
+        },
 
     series: useCountFallback
       ? [
@@ -599,25 +780,25 @@ console.table(
           }
         ]
       : [
-          // จัดสรร
           {
             name: 'จัดสรร',
             type: 'column',
             data: rows.map(x => x.adjust)
           },
-
-          // แผน
           {
             name: 'แผน',
             type: 'column',
             data: rows.map(x => x.plan)
           },
-
-          // เบิกจ่าย
           {
             name: 'เบิกจ่าย',
-            type: 'column', // ถ้าต้องการเป็นเส้น เปลี่ยนเป็น 'line'
+            type: 'column',
             data: rows.map(x => x.withdraw)
+          },
+          {
+            name: `เป้าหมาย ${withdrawPercent}%`,
+            type: 'line',
+            data: targetWithdrawData
           }
         ],
 
@@ -625,7 +806,25 @@ console.table(
       categories: labels
     },
 
-    // Format แกน Y
+    dataLabels: {
+      enabled: true,
+
+      enabledOnSeries: useCountFallback
+        ? [0]
+        : [0, 1, 2],
+
+      formatter: (value: number) =>
+        value === 0
+          ? ''
+          : this.formatNumber(value),
+
+      style: {
+        fontSize: '11px',
+        fontWeight: 'bold',
+        colors: ['#ffffff']
+      }
+    },
+
     yaxis: {
       labels: {
         formatter: (value: number) =>
@@ -635,14 +834,21 @@ console.table(
       }
     },
 
-    // Format Tooltip
     tooltip: {
+      shared: true,
+      intersect: false,
+
       y: {
         formatter: (value: number) =>
           useCountFallback
             ? Number(value || 0).toLocaleString('th-TH')
             : this.formatNumber(value)
       }
+    },
+
+    legend: {
+      show: true,
+      position: 'bottom'
     }
   };
 
@@ -667,6 +873,7 @@ bindDepartmentChart(data: any[]) {
 
   // รวมข้อมูลตามหน่วยงาน
   data.forEach((x: any) => {
+
     const key = x.Department_Short_Name || '-';
 
     if (!map.has(key)) {
@@ -689,6 +896,53 @@ bindDepartmentChart(data: any[]) {
   const labels = Array.from(map.keys());
   const rows = Array.from(map.values());
 
+  // ==========================
+  // เป้าหมายตามไตรมาสปัจจุบัน
+  // ==========================
+
+  // เดือนปัจจุบัน (1-12)
+  const currentMonth = new Date().getMonth() + 1;
+
+  // เดือนงบประมาณ (ต.ค.=1 ... ก.ย.=12)
+  const fiscalMonth =
+    currentMonth >= 10
+      ? currentMonth - 9
+      : currentMonth + 3;
+
+  // ไตรมาสปัจจุบัน
+  const currentQuarter = Math.ceil(fiscalMonth / 3);
+
+  // เป้าหมายเบิกจ่าย (%)
+  const withdrawPercent =
+    Number(
+      this.dashboardCheck?.[
+        `Goals_Withdraw_Tri${currentQuarter}`
+      ] || 0
+    );
+
+  // ยอดจัดสรรรวมทุกหน่วยงาน
+  const totalAdjust = rows.reduce(
+    (sum, x) => sum + Number(x.adjust || 0),
+    0
+  );
+
+  // เป้าหมายรวมเป็นจำนวนเงิน
+  const totalTargetWithdraw =
+    totalAdjust * withdrawPercent / 100;
+
+  // เป้าหมายแต่ละหน่วยงานตามสัดส่วน Adjust
+  const targetWithdrawData = rows.map(x => {
+
+    const adjust = Number(x.adjust || 0);
+
+    const ratio =
+      totalAdjust > 0
+        ? adjust / totalAdjust
+        : 0;
+
+    return totalTargetWithdraw * ratio;
+  });
+
   this.comboChart2 = {
     ...this.comboChart2,
 
@@ -706,7 +960,8 @@ bindDepartmentChart(data: any[]) {
           width: [0]
         }
       : {
-          width: [0, 0, 0]
+          width: [0, 0, 0, 3],
+          curve: 'smooth'
         },
 
     colors: useCountFallback
@@ -714,7 +969,8 @@ bindDepartmentChart(data: any[]) {
       : [
           '#0d6efd', // จัดสรร
           '#198754', // แผน
-          '#ffc107'  // เบิกจ่าย
+          '#ffc107', // เบิกจ่าย
+          '#dc3545'  // เป้าหมาย
         ],
 
     series: useCountFallback
@@ -740,6 +996,11 @@ bindDepartmentChart(data: any[]) {
             name: 'เบิกจ่าย',
             type: 'column',
             data: rows.map(x => x.withdraw)
+          },
+          {
+            name: `เป้าหมาย ${withdrawPercent}%`,
+            type: 'line',
+            data: targetWithdrawData
           }
         ],
 
@@ -750,8 +1011,13 @@ bindDepartmentChart(data: any[]) {
     // ตัวเลขบนแท่งกราฟ
     dataLabels: {
       enabled: true,
+
+      enabledOnSeries: useCountFallback
+        ? [0]
+        : [0, 1, 2], // ไม่แสดงบนเส้นเป้าหมาย
+
       formatter: (value: number) => {
-        // ไม่แสดง 0
+
         if (Number(value || 0) === 0) {
           return '';
         }
@@ -760,6 +1026,7 @@ bindDepartmentChart(data: any[]) {
           ? Number(value).toLocaleString('th-TH')
           : this.formatNumber(value);
       },
+
       style: {
         fontSize: '11px',
         fontWeight: 'bold',
@@ -777,16 +1044,22 @@ bindDepartmentChart(data: any[]) {
       }
     },
 
-    // Tooltip แสดงครบทั้ง 3 ค่า
+    // Tooltip
     tooltip: {
       shared: true,
       intersect: false,
+
       y: {
         formatter: (value: number) =>
           useCountFallback
             ? Number(value || 0).toLocaleString('th-TH')
             : this.formatNumber(value)
       }
+    },
+
+    legend: {
+      show: true,
+      position: 'bottom'
     }
   };
 
@@ -860,7 +1133,7 @@ bindQuarterPieChart(data: any[]) {
 }
 
 // แท่งไตรมาส //
-// แท่งไตรมาส
+// แท่งไตรมาส //
 bindQuarterBarChart(data: any[]) {
 
   const hasQuarterAmount =
@@ -902,6 +1175,22 @@ bindQuarterBarChart(data: any[]) {
       ]
     : [];
 
+  // ==========================
+  // เป้าหมายแต่ละไตรมาส
+  // ==========================
+
+  const quarterPercents = [
+    Number(this.dashboardCheck?.Goals_Withdraw_Tri1 || 0),
+    Number(this.dashboardCheck?.Goals_Withdraw_Tri2 || 0),
+    Number(this.dashboardCheck?.Goals_Withdraw_Tri3 || 0),
+    Number(this.dashboardCheck?.Goals_Withdraw_Tri4 || 0)
+  ];
+
+  // เป้าหมายเป็นยอดเงินของแต่ละไตรมาส
+  const targetData = planData.map((plan, index) =>
+    Number(plan || 0) * quarterPercents[index] / 100
+  );
+
   this.barLineChart2 = {
     ...this.barLineChart2,
 
@@ -914,11 +1203,13 @@ bindQuarterBarChart(data: any[]) {
 
     colors: [
       '#0d6efd', // แผน
-      '#ffc107'  // เบิกจ่าย
+      '#ffc107', // เบิกจ่าย
+      '#dc3545'  // เป้าหมาย
     ],
 
     stroke: {
-      width: [0, 0]
+      width: [0, 0, 3],
+      curve: 'smooth'
     },
 
     series: hasQuarterAmount
@@ -932,6 +1223,11 @@ bindQuarterBarChart(data: any[]) {
             name: 'เบิกจ่าย',
             type: 'column',
             data: withdrawData
+          },
+          {
+            name: 'เป้าหมาย',
+            type: 'line',
+            data: targetData
           }
         ]
       : [],
@@ -940,7 +1236,7 @@ bindQuarterBarChart(data: any[]) {
       categories: hasQuarterAmount ? labels : []
     },
 
-    // ปิดตัวเลขบนแท่ง
+    // ปิดตัวเลขบนกราฟ
     dataLabels: {
       enabled: false
     },
@@ -955,9 +1251,26 @@ bindQuarterBarChart(data: any[]) {
     tooltip: {
       shared: true,
       intersect: false,
+
       y: {
-        formatter: (value: number) =>
-          this.formatNumber(value)
+        formatter: (
+          value: number,
+          opts?: any
+        ) => {
+
+          // เส้นเป้าหมาย
+          if (opts?.seriesIndex === 2) {
+
+            const percent =
+              quarterPercents[
+                opts.dataPointIndex
+              ] || 0;
+
+            return `${this.formatNumber(value)} (${percent.toFixed(2)}%)`;
+          }
+
+          return this.formatNumber(value);
+        }
       }
     },
 
