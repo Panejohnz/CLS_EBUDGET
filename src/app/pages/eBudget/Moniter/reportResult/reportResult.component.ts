@@ -345,7 +345,7 @@ export class ReportResultComponent
               res?.Budget_Plan_Details || [];
 
             const monthList =
-              res?.Budget_Plan_Details_Month || [];
+              res?.List_Report_Budget_Plan_Detail_Month || [];
             const investList =
               res?.List_Report_Budget_Plan_Investment || [];
             const items = res.Project_Plan_Detail_Item || [];
@@ -814,8 +814,28 @@ export class ReportResultComponent
 
           quarter.forEach(
             (month: any) => {
+              const planRemark =
+                month.planRemark || '';
+
+              const noPlanRemark =
+                month.noPlanRemark || '';
+
+              if (!month.monthId && !planRemark && !noPlanRemark) {
+                return;
+              }
 
               months.push({
+                BgYear:
+                  this.currentYear,
+
+                Fk_Plan_Id:
+                  +this.selectedItem?.Plan_Id || 0,
+
+                Fk_Activity_Id:
+                  item.activityId || 0,
+
+                Activity_Name:
+                  item.activity || '',
 
                 Month_Id:
                   month.monthId,
@@ -824,10 +844,10 @@ export class ReportResultComponent
                   month.monthName,
 
                 Plan:
-                  month.planRemark,
+                  planRemark,
 
                 NoPlan:
-                  month.noPlanRemark
+                  noPlanRemark
 
               });
 
@@ -973,10 +993,10 @@ export class ReportResultComponent
 
       Report_Budget_Plan: payload,
 
-      Budget_Plan_Details:
+      List_Report_Budget_Plan_Detail:
         this.buildDetailData(),
 
-      Budget_Plan_Details_Month:
+      List_Report_Budget_Plan_Detail_Month:
         this.buildMonthData(),
 
       List_Report_Budget_Plan_Investment:
