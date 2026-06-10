@@ -203,8 +203,7 @@
                 <label>ตั้งแต่</label>
                 <div class="input-group">
                     <input class="form-control" placeholder="วว/ดด/ปปปป" name="Start_Date" ngbDatepicker
-                        #startDp="ngbDatepicker" [(ngModel)]="projectDetail.Start_Date"
-                        (ngModelChange)="syncProjectDetailDate()">
+                        #startDp="ngbDatepicker" [(ngModel)]="projectDetail.Start_Date">
 
                     <button class="btn btn-outline-secondary" type="button" (click)="startDp.toggle()">
 
@@ -218,8 +217,7 @@
                 <label>ถึงวันที่</label>
                 <div class="input-group">
                     <input class="form-control" placeholder="วว/ดด/ปปปป" name="End_Date" ngbDatepicker
-                        #endDp="ngbDatepicker" [(ngModel)]="projectDetail.End_Date"
-                        (ngModelChange)="syncProjectDetailDate()">
+                        #endDp="ngbDatepicker" [(ngModel)]="projectDetail.End_Date">
 
                     <button class="btn btn-outline-secondary" type="button" (click)="endDp.toggle()">
 

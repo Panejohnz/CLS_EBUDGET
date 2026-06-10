@@ -787,42 +787,108 @@ export class ProjectPlanningComponent {
   activities: any
   mapActivities() {
 
-    const activities = [...(this.project_planing.activities || [])]
-      .sort((a: any, b: any) => (a.Seq ?? 0) - (b.Seq ?? 0));
+    const activities = [...(this.project_planing.activities || [])];
 
     return activities.map((act: any, i: number) => ({
 
       Project_Detail_Id: act.id,
       Activity_Name: act.name,
       Responsible: act.owner,
-      Seq: act.Seq ?? (i + 1),
+      Seq: i + 1,
 
       Used_BG: act.noBudget ? 0 : 1,
       Is_Consult: act.consult ? 1 : 0,
 
-      Months: act.quarters.flatMap((q: any) => q.months),
+      Months: this.mapMonthsForSave(act.quarters),
 
-      OtherExpenses: act.otherExpenses || [],
+      OtherExpenses: this.mapOtherExpensesForSave(act.otherExpenses),
 
       SubActivities: [...(act.SubActivities || [])]
-        .sort((a: any, b: any) => (a.Seq ?? 0) - (b.Seq ?? 0))
         .map((sub: any, j: number) => ({
 
           Project_Detail_Id: sub.Project_Detail_Id,
           Activity_Name: sub.name,
           Responsible: sub.owner,
-          Seq: sub.Seq ?? (j + 1),
+          Seq: j + 1,
 
           Used_BG: sub.noBudget ? 0 : 1,
           Is_Consult: sub.consult ? 1 : 0,
 
-          Months: sub.quarters.flatMap((q: any) => q.months),
+          Months: this.mapMonthsForSave(sub.quarters),
 
-          OtherExpenses: sub.otherExpenses || []
+          OtherExpenses: this.mapOtherExpensesForSave(sub.otherExpenses)
 
         }))
 
     }));
+  }
+
+  private mapMonthsForSave(quarters: any[]): any[] {
+    return (quarters || [])
+      .flatMap((q: any) => q.months || [])
+      .map((month: any) => ({
+        ...month,
+        budget: this.toSaveNumber(month?.budget)
+      }));
+  }
+
+  private mapOtherExpensesForSave(items: any[]): any[] {
+    return (items || []).map((item: any) => {
+      const times = this.toSaveNumber(item.Times ?? item.times);
+      const people = this.toSaveNumber(item.People ?? item.people);
+      const rate = this.toSaveNumber(item.Rate ?? item.rate);
+      const input3 = this.toSaveNumber(item.input3);
+      const input4 = this.toSaveNumber(item.input4);
+      const input5 = this.toSaveNumber(item.input5);
+      const total =
+        item.Total ?? item.total ?? this.multiplyFilledValues([
+          times,
+          people,
+          rate,
+          input3,
+          input4,
+          input5
+        ]);
+
+      return {
+        ...item,
+        Times: times,
+        People: people,
+        Rate: rate,
+        input3,
+        input4,
+        input5,
+        Total: this.toSaveNumber(total),
+        total: this.toSaveNumber(total)
+      };
+    });
+  }
+
+  private toSaveNumber(value: any): number {
+    if (value === null || value === undefined || value === '') {
+      return 0;
+    }
+
+    const normalized =
+      String(value).replace(/,/g, '').trim();
+
+    const numberValue = Number(normalized);
+
+    return isNaN(numberValue) ? 0 : numberValue;
+  }
+
+  private multiplyFilledValues(values: number[]): number {
+    const filledValues =
+      values.filter(value => value > 0);
+
+    if (!filledValues.length) {
+      return 0;
+    }
+
+    return filledValues.reduce(
+      (total, value) => total * value,
+      1
+    );
   }
   randomItem(arr: any[]) {
     return arr[Math.floor(Math.random() * arr.length)];
@@ -892,7 +958,7 @@ export class ProjectPlanningComponent {
 
       (q.months || []).forEach((m: any) => {
 
-        total += Number(m.budget) || 0;
+        total += this.toSaveNumber(m.budget);
 
       });
 
@@ -908,7 +974,7 @@ export class ProjectPlanningComponent {
 
       sub.quarters?.forEach((q: any) => {
         q.months?.forEach((m: any) => {
-          total += Number(m.budget) || 0;
+          total += this.toSaveNumber(m.budget);
         });
       });
 
@@ -927,7 +993,7 @@ export class ProjectPlanningComponent {
 
     // 🔥 คำนวณจาก otherExpenses ตรงๆ
     return (act.otherExpenses || []).reduce((sum: number, item: any) => {
-      return sum + (item.total || item.Total || 0);
+      return sum + this.toSaveNumber(item.total || item.Total || 0);
     }, 0);
   }
   prepareBeforeSave(activities: any[]) {
