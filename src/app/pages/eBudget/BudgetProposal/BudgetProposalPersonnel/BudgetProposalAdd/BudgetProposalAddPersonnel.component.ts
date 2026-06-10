@@ -107,10 +107,14 @@ export class ProjectBudgetProposalAddPersonnelComponent {
   userSession: any
   ngOnInit(): void {
     this.userSession = JSON.parse(localStorage.getItem('userSession') || '{}');
+
+    if (!Array.isArray(this.model.Budget_Request_Attach_File)) {
+      this.model.Budget_Request_Attach_File = [];
+    }
+
     this.budgetYearService.yearChanged$.subscribe(year => {
       if (year) {
-        this.currentYear = year
-
+        this.currentYear = year;
       }
     });
     let model = {
@@ -760,8 +764,8 @@ export class ProjectBudgetProposalAddPersonnelComponent {
 
       Proposer_Position:
         this.model.Project_Plan.Proposer_Position,
-      Create_User: this.userSession.permissionData?.IDENTIFY,
-      Update_User: this.userSession.permissionData?.IDENTIFY
+      Create_User: this.currentUserIdentify,
+      Update_User: this.currentUserIdentify
     };
 
     const getId = (obj: any, key: string) =>
@@ -874,8 +878,8 @@ export class ProjectBudgetProposalAddPersonnelComponent {
         Proposer_Position: data.Proposer_Position
       }),
 
-      Create_User: this.userSession.permissionData.IDENTIFY,
-      Update_User: this.userSession.permissionData.IDENTIFY
+      Create_User: this.userSession.permissionData?.IDENTIFY,
+      Update_User: this.userSession.permissionData?.IDENTIFY
     } : null;
 
     this.model.Project_Plan_Detail =
@@ -994,6 +998,8 @@ export class ProjectBudgetProposalAddPersonnelComponent {
   }
 
   private applySavedRequestId(response: any) {
+    console.log('rew',response);
+    
     const requestId =
       response?.Request_Id ||
       response?.Budget_Request?.Request_Id ||
@@ -1033,7 +1039,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
       this.model?.Budget_Request?.Request_Id || 0;
 
     attachFiles.forEach((item: any) => {
-      formData.append('', item.file);
+      formData.append('FILES', item.file, item.file.name);
     });
 
     formData.append(
@@ -1054,6 +1060,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
           File_Type: item.File_Type || item.file?.type,
           NAME_FAKE: item.NAME_FAKE || item.File_Name || item.file?.name,
           NAME_REAL: item.NAME_REAL || '',
+          Create_By: this.currentUserIdentify,
           ATTACH: item.ATTACH || 1,
           Active: 1
         })),
@@ -1070,6 +1077,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
           NAME_REAL: item.NAME_REAL || item.GEN_FILE || '',
           GEN_FILE: item.GEN_FILE || '',
           PATH_FILE: item.PATH_FILE || '',
+          Update_By: this.currentUserIdentify,
           ATTACH: item.ATTACH || 1,
           Active: 0
         }))
@@ -1309,6 +1317,14 @@ export class ProjectBudgetProposalAddPersonnelComponent {
 
   change_expense() {
 
+  }
+
+  private get currentUserIdentify(): string {
+    return (
+      this.userSession?.permissionData?.IDENTIFY ||
+      this.userSession?.IDENTIFY ||
+      ''
+    );
   }
 
 }

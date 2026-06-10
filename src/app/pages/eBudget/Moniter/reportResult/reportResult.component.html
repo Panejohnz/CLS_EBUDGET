@@ -786,7 +786,7 @@
 
                                     <!-- ส่วนล่าง SubActivities -->
                                     <tr style="background-color: #E0E8F0;">
-                                        <td colspan="15">
+                                        <td colspan="14">
 
                                             <div class="d-flex justify-content-end align-items-center gap-2">
                                                 <!-- กลุ่มผู้รับผิดชอบ -->
@@ -1087,10 +1087,10 @@
                                         {{ getTotalActual(item) | number }}
 
                                     </td>
-                                    <td *ngIf="mi === 0" [attr.rowspan]="3">
+                                    <!-- <td *ngIf="mi === 0" [attr.rowspan]="3">
 
                                         {{ getTotalWithdraw(item) | number }}
-                                    </td>
+                                    </td> -->
                                     <!-- REMARK -->
 
                                 </tr>
@@ -1121,7 +1121,7 @@
                                 <td>
                                     {{ getGrandWithdraw() | number }}
                                 </td>
-
+                                <td></td>
 
                             </tr>
 
