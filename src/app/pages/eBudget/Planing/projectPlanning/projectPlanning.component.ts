@@ -636,7 +636,8 @@ export class ProjectPlanningComponent {
 
       Proposer_Position:
         data.Proposer_Position,
-      Create_User: this.userSession.IDENTIFY
+      Create_User: this.userSession.IDENTIFY,
+      Update_User: this.userSession.IDENTIFY
     };
 
     this.project_planing.Project_Plan_Detail = this.mapActivities();

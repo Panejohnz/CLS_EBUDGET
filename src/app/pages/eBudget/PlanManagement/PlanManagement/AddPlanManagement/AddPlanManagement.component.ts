@@ -1212,7 +1212,10 @@ export class AddPlanManagementComponent
   Mas_Department_Lists: any[] = []
   Mas_Expense_Lists: any[] = []
   currentYear: any
+  userSession: any
   ngOnInit(): void {
+    this.userSession = localStorage.getItem('userSession');
+
     this.budgetYearService.yearChanged$
       .subscribe(async year => {
 
@@ -1366,7 +1369,7 @@ export class AddPlanManagementComponent
     });
   }
   mapInitialData() {
-debugger
+    debugger
     if (!this.model) return;
 
     if (!this.model.Budget_Plan) return;
@@ -2167,6 +2170,9 @@ debugger
       ...(data?.Proposer_Position && {
         Proposer_Position: data.Proposer_Position
       }),
+
+      Create_User: this.userSession.IDENTIFY,
+      Update_User: this.userSession.IDENTIFY
     };
     const payload_plan = {
 
