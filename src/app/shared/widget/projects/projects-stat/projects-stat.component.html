@@ -4,17 +4,11 @@
 
             <div class="avatar-sm flex-shrink-0">
                 <span class="avatar-title rounded-3 fs-4 stat-icon" [ngClass]="{
-                        'bg-primary-subtle': icon === 'briefcase',
-                        'bg-warning-subtle': icon === 'award',
-                        'bg-info-subtle': icon === 'clock'
+                        'stat-icon-primary': icon === 'ri-money-dollar-circle-line',
+                        'stat-icon-warning': icon === 'ri-wallet-3-line',
+                        'stat-icon-success': icon === 'ri-funds-line'
                     }">
-                    <i-feather [name]="icon" class="feather-icon-align" [ngClass]="{
-        'text-primary': icon === 'briefcase',
-        'text-warning': icon === 'award',
-        'text-info': icon === 'clock'
-    }">
-                    </i-feather>
-
+                    <i [class]="icon"></i>
                 </span>
             </div>
 
