@@ -190,49 +190,48 @@ export class ProjectsComponent implements OnInit {
   bindDashboard() {
     const data = this.dashboardData || [];
 
-    const totalPlan = this.sum(data, 'Total_Plan');
+    const totalBudget = this.sum(data, 'Total_Plan');
     const totalAdjust = this.sum(data, 'Adjust');
-    const totalUsed = this.sum(data, 'Sum_Used');
-    const totalWithdraw = this.sum(data, 'Sum_Withdraw');
-    const totalBalance = totalPlan - totalAdjust;
+    const totalburse = 0;
+    const totalRemaining = totalAdjust - totalburse;
+
+    const recurringAdjust = this.sumByBudgetTypeIds(data, 'Adjust', [1, 2, 4, 5]);
+    const recurringBudget = this.sumByBudgetTypeIds(data, 'Total_Plan', [1, 2, 4, 5]);
+    const recurringburse = 0;
+    const recurringRemaining =  recurringAdjust  - recurringburse;
+
+    const investmentAdjust = this.sumByBudgetTypeIds(data, 'Adjust', [3]);
+    const investmentBudget = this.sumByBudgetTypeIds(data, 'Total_Plan', [3]);
+    const investmentburse = 0;
+    const investmentRemaining = investmentAdjust - investmentburse;
 
     this.statData = [
       {
-        title: 'งบประมาณทั้งหมด',
-        value: this.formatMoney(totalPlan),
+        title: 'ภาพรวมงบประมาณ',
+        value: this.formatMoney(totalAdjust),
+        Reimburse: this.formatMoney(totalburse),
+        Remaining: this.formatMoney(totalRemaining),
         icon: 'ri-money-dollar-circle-line',
         persantage: '',
         profit: 'up',
         month: 'บาท'
       },
       {
-        title: 'จัดสรรแล้ว',
-        value: this.formatMoney(totalAdjust),
+        title: 'รายจ่ายประจำ',
+        value: this.formatMoney(recurringAdjust),
+        Reimburse: this.formatMoney(recurringburse),
+        Remaining: this.formatMoney(recurringRemaining),
         icon: 'ri-wallet-3-line',
         persantage: '',
         profit: 'up',
         month: 'บาท'
       },
       {
-        title: 'คงเหลือ',
-        value: this.formatMoney(totalBalance),
-        icon: 'ri-bank-card-line',
-        persantage: '',
-        profit: totalBalance >= 0 ? 'up' : 'down',
-        month: 'บาท'
-      },
-      {
-        title: 'ใช้ไป',
-        value: this.formatMoney(totalUsed),
+        title: 'รายจ่ายลงทุน',
+        value: this.formatMoney(investmentAdjust),
+        Reimburse: this.formatMoney(investmentburse),
+        Remaining: this.formatMoney(investmentRemaining),
         icon: 'ri-funds-line',
-        persantage: '',
-        profit: 'up',
-        month: 'บาท'
-      },
-      {
-        title: 'เบิกจ่าย',
-        value: this.formatMoney(totalWithdraw),
-        icon: 'ri-hand-coin-line',
         persantage: '',
         profit: 'up',
         month: 'บาท'
@@ -503,6 +502,17 @@ export class ProjectsComponent implements OnInit {
 
   sum(data: any[], field: string): number {
     return data.reduce((s: number, x: any) => s + Number(x[field] || 0), 0);
+  }
+
+  getBudgetTypeId(row: any): number {
+    const value = row?.Budget_Type_Id ?? row?.Fk_Budget_Type ?? row?.Budget_Type ?? row?.BudgetType_Id;
+    return Number(value || 0);
+  }
+
+  sumByBudgetTypeIds(data: any[], field: string, ids: number[]): number {
+    return data
+      .filter((row: any) => ids.includes(this.getBudgetTypeId(row)))
+      .reduce((s: number, row: any) => s + Number(row[field] || 0), 0);
   }
 
   hasAnyNonZero(data: any[], fields: string[]): boolean {
