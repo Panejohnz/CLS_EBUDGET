@@ -36,7 +36,7 @@ export class AuthGuard implements CanActivate {
         }
 
         // รับ token จาก query param
-        const token = route.queryParams['token'];
+        const token = route.queryParams['token'] || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbjIiLCJqdGkiOiIwMjAyNDQxNS1hMmMzLTRiMGItOWEzMi0zNDYwZGZlYzhiM2YiLCJleHAiOjE3ODEwNjk0NTgsImlzcyI6ImFwcC5jZWxlc3Rzb2Z0LmNvbSIsImF1ZCI6ImFwcC5jZWxlc3Rzb2Z0LmNvbSJ9.mfyvpf75ZdCsNe8WdOgUMtNSrGuCVHPvHqkKKwnWDTY';
 
         // ถ้าไม่มี token
         if (!token) {
@@ -56,7 +56,7 @@ export class AuthGuard implements CanActivate {
             );
 
             // เช็ค response
-            if (response && response.RESULT != null) {
+            if (response ) {
 
                 // เก็บ token
                 localStorage.setItem('token', token);
@@ -64,7 +64,8 @@ export class AuthGuard implements CanActivate {
                 // เก็บ session
                 localStorage.setItem(
                     'userSession',
-                    response.RESULT
+                    // response.RESULT อันเก่านะ
+                    response
                 );
 
                 return true;

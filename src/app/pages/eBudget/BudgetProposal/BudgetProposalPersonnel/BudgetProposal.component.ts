@@ -80,7 +80,20 @@ export class ProjectBudgetProposalComponent {
       return sum + Number(item?.Total || 0);
     }, 0);
   }
+  userSession: any
   ngOnInit(): void {
+    this.userSession = localStorage.getItem('userSession');
+    try {
+
+      if (this.userSession.VIEW_DATA == 3) {
+        this.selectedDepartmentId = this.userSession.Department_id
+        this.applyFilter()
+      } else {
+
+      }
+    } catch (error) {
+
+    }
     this.sortService.pageSize = 20;
     this.budgetYearService.yearChanged$.subscribe(async year => {
       if (year) {

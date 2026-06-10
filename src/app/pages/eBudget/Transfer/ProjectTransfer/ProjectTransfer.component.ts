@@ -42,6 +42,10 @@ import {
   BudgetYearService
 } from 'src/app/core/services/budget-year.service';
 
+import {
+  MasterService
+} from 'src/app/core/services/Master.service';
+
 @Component({
   selector: 'app-project-transfer',
   providers: [
@@ -73,7 +77,8 @@ export class ProjectTransferComponent
     private sortService: PaginationService,
     public servicebud: EbudgetService,
     private authService: AuthenticationService,
-    private budgetYearService: BudgetYearService
+    private budgetYearService: BudgetYearService,
+    public masterService: MasterService
   ) { }
 
   keyword = '';
@@ -230,7 +235,7 @@ export class ProjectTransferComponent
         row.Transfer_Doc_Date
     };
     this.displayAmount =
-      this.formatNumber(
+      this.masterService.formatNumber(
         row.Transfer_Amount
       );
 
@@ -252,58 +257,31 @@ export class ProjectTransferComponent
 
   }
 
-  formatNumber(value: any): string {
-
-    if (value === null || value === undefined || value === '') {
-      return '';
-    }
-
-    const number = Number(value.toString().replace(/,/g, ''));
-
-    if (isNaN(number)) {
-      return '';
-    }
-
-    return number.toLocaleString('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
-
-  }
-
   displayAmount: string = '';
+  displayProjectBudget: string = '';
+  displayBalance: string = '';
 
-  formatCurrency(event: any): void {
+  formatCurrency(
+    event: Event,
+    field: 'Transfer_Amount' | 'projectBudget' | 'balance' = 'Transfer_Amount'
+  ): void {
 
-    let value = event.target.value;
+    this.masterService.formatCurrency(event, (result) => {
+      if (field === 'projectBudget') {
+        this.displayProjectBudget = result.formatted;
+        this.form.projectBudget = result.raw;
+        return;
+      }
 
-    // เอา comma ออก
-    value = value.replace(/,/g, '');
+      if (field === 'balance') {
+        this.displayBalance = result.formatted;
+        this.form.balance = result.raw;
+        return;
+      }
 
-    // อนุญาตเฉพาะเลขกับ .
-    value = value.replace(/[^0-9.]/g, '');
-
-    // กัน . ซ้ำ
-    const parts = value.split('.');
-
-    if (parts.length > 2) {
-      return;
-    }
-
-    let integerPart = parts[0];
-    const decimalPart = parts[1];
-
-    // ใส่ comma
-    integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-    // รวมกลับ
-    this.displayAmount =
-      decimalPart !== undefined
-        ? `${integerPart}.${decimalPart}`
-        : integerPart;
-
-    // เก็บค่าจริงแบบไม่มี comma
-    this.form.Transfer_Amount = value;
+      this.displayAmount = result.formatted;
+      this.form.Transfer_Amount = result.raw;
+    });
 
   }
 
@@ -435,8 +413,14 @@ const plan =
     this.form.projectBudget =
       Number(plan?.Total_Plan || 0);
 
+    this.displayProjectBudget =
+      this.masterService.formatNumber(this.form.projectBudget);
+
     this.form.balance =
       Number(plan?.Total_Plan || 0);
+
+    this.displayBalance =
+      this.masterService.formatNumber(this.form.balance);
 
   }
 
@@ -811,6 +795,10 @@ const plan =
       Active: true
 
     };
+
+    this.displayAmount = '';
+    this.displayProjectBudget = '';
+    this.displayBalance = '';
 
   }
 

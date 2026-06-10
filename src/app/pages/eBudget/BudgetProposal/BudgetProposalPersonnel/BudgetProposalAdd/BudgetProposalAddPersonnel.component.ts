@@ -104,7 +104,9 @@ export class ProjectBudgetProposalAddPersonnelComponent {
     this.div_modal = true
   }
   currentYear: any
+  userSession: any
   ngOnInit(): void {
+    this.userSession = localStorage.getItem('userSession');
     this.budgetYearService.yearChanged$.subscribe(year => {
       if (year) {
         this.currentYear = year
@@ -758,7 +760,8 @@ export class ProjectBudgetProposalAddPersonnelComponent {
 
       Proposer_Position:
         this.model.Project_Plan.Proposer_Position,
-
+      Create_User: this.userSession.IDENTIFY,
+      Update_User: this.userSession.IDENTIFY
     };
 
     const getId = (obj: any, key: string) =>

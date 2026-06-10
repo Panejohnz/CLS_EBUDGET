@@ -6,6 +6,7 @@ import { DecimalPipe } from '@angular/common';
 import { EbudgetService } from 'src/app/core/services/ebudget.service';
 import { AuthenticationService } from 'src/app/core/services/auth.service';
 import { BudgetYearService } from 'src/app/core/services/budget-year.service';
+import { MasterService } from 'src/app/core/services/Master.service';
 
 @Component({
   selector: 'app-project-allocation',
@@ -25,7 +26,8 @@ export class ProjectAllocationComponent implements OnInit {
     private sortService: PaginationService,
     public servicebud: EbudgetService,
     private authService: AuthenticationService,
-    private budgetYearService: BudgetYearService
+    private budgetYearService: BudgetYearService,
+    public masterService: MasterService
   ) { }
 
   // =====================================
@@ -261,6 +263,7 @@ export class ProjectAllocationComponent implements OnInit {
             row.Adjust1Temp = adjust1;
             row.Adjust2Temp = adjust2;
             row.Adjust3Temp = adjust3;
+            this.syncAdjustDisplays(row);
 
             row.Update_Amount =
               Number(
@@ -486,6 +489,8 @@ export class ProjectAllocationComponent implements OnInit {
 
         });
 
+        this.syncAllAdjustDisplays();
+
       });
 
   }
@@ -516,7 +521,7 @@ export class ProjectAllocationComponent implements OnInit {
 
         budget.expanded = true;
 
-        budget.items.push({
+        const newItem = {
           Plan_Id: 0,
           FK_Request_Id: 0,
           Is_New_Request: true,
@@ -542,7 +547,10 @@ export class ProjectAllocationComponent implements OnInit {
           Adjust3Temp: 0,
 
           isNewBudget: true
-        });
+        };
+
+        budget.items.push(newItem);
+        this.syncAdjustDisplays(newItem);
 
       });
   }
@@ -749,6 +757,7 @@ export class ProjectAllocationComponent implements OnInit {
       item.Adjust1Temp = avg;
       item.Adjust2Temp = avg;
       item.Adjust3Temp = avg;
+      this.syncAdjustDisplays(item);
 
     });
 
@@ -761,6 +770,7 @@ export class ProjectAllocationComponent implements OnInit {
       item.Adjust1Temp = 0;
       item.Adjust2Temp = 0;
       item.Adjust3Temp = 0;
+      this.syncAdjustDisplays(item);
     });
 
   }
@@ -1011,6 +1021,8 @@ export class ProjectAllocationComponent implements OnInit {
 
                 row.Adjust3Temp =
                   Number(oldPlan.Adjust3 || 0);
+
+                this.syncAdjustDisplays(row);
               }
 
             });
@@ -1174,6 +1186,44 @@ export class ProjectAllocationComponent implements OnInit {
     return items;
 
   }
+  formatAdjustCurrency(
+    event: Event,
+    item: any,
+    field: 'Adjust1Temp' | 'Adjust2Temp' | 'Adjust3Temp'
+  ): void {
+
+    this.masterService.formatCurrency(event, (result) => {
+      const displayField = field.replace('Temp', 'Display');
+      item[displayField] = result.formatted;
+      item[field] = result.numeric;
+    });
+
+  }
+
+  syncAdjustDisplays(item: any): void {
+
+    item.Adjust1Display = this.masterService.formatNumber(item.Adjust1Temp);
+    item.Adjust2Display = this.masterService.formatNumber(item.Adjust2Temp);
+    item.Adjust3Display = this.masterService.formatNumber(item.Adjust3Temp);
+
+  }
+
+  syncAllAdjustDisplays(): void {
+
+    this.getAllItems().forEach((item: any) =>
+      this.syncAdjustDisplays(item)
+    );
+
+  }
+
+  getItemAllocateTotal(item: any): number {
+
+    return (Number(item.Adjust1Temp) || 0) +
+      (Number(item.Adjust2Temp) || 0) +
+      (Number(item.Adjust3Temp) || 0);
+
+  }
+
   sumAdjust1(node: any): number {
 
     return this.getItemsFromNode(node)
