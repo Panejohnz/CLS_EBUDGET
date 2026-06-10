@@ -2171,8 +2171,8 @@ export class AddPlanManagementComponent
         Proposer_Position: data.Proposer_Position
       }),
 
-      Create_User: this.userSession.IDENTIFY,
-      Update_User: this.userSession.IDENTIFY
+      Create_User: this.userSession.permissionData.IDENTIFY,
+      Update_User: this.userSession.permissionData.IDENTIFY
     };
     const payload_plan = {
 
