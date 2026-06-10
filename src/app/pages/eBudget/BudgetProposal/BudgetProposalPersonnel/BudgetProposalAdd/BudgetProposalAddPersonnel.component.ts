@@ -777,7 +777,16 @@ export class ProjectBudgetProposalAddPersonnelComponent {
       this.model?.Project_Plan ||
       this.model;
 
-    const payload_plan = {
+    const fkExpenseList =
+      Number(
+        this.model.Budget_Request?.Fk_Expense_List ||
+        this.model.selectedExpenseTypeId
+      );
+
+    const shouldIncludeProjectPlan =
+      [64, 70, 73, 74, 75].includes(fkExpenseList);
+
+    const payload_plan = shouldIncludeProjectPlan ? {
 
       BgYear: this.currentYear,
 
@@ -802,9 +811,9 @@ export class ProjectBudgetProposalAddPersonnelComponent {
         this.model.selectedPlan?.Plan_Name,
 
       Fk_Expense_List: getId(
-        this.model.projectType,
+        this.model.projectType || this.model.selectedExpenseTypeId,
         'Expense_Id'
-      ),
+      ) || this.model.selectedExpenseTypeId,
 
       Expense_List:
         this.model.projectType?.Expense_Name,
@@ -818,9 +827,9 @@ export class ProjectBudgetProposalAddPersonnelComponent {
         this.model.selectedProduct?.Product_Name,
 
       Fk_Activity_Id: getId(
-        this.model.selectedActivity,
+        this.model.selectedActivity || this.model.selectedActivityPropos,
         'Activity_Id'
-      ),
+      ) || this.model.selectedActivityPropos,
 
       Activity_Name:
         this.model.selectedActivity?.Activity_Name,
@@ -868,7 +877,10 @@ export class ProjectBudgetProposalAddPersonnelComponent {
       ...(data?.Proposer_Position && {
         Proposer_Position: data.Proposer_Position
       }),
-    };
+
+      Create_User: this.userSession.permissionData?.IDENTIFY,
+      Update_User: this.userSession.permissionData?.IDENTIFY
+    } : null;
 
     this.model.Project_Plan_Detail =
       this.mapActivities();
@@ -890,8 +902,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
             ? "FUNC-Update_Budget_Request"
             : "FUNC-Insert_Budget_Request",
 
-        ...(this.model?.Project_Plan &&
-          Object.keys(this.model.Project_Plan).length > 0 && {
+        ...(shouldIncludeProjectPlan && payload_plan && {
           Project_Plan: payload_plan
         }),
 

@@ -613,19 +613,19 @@ export class ProjectPlanningComponent implements OnInit, OnChanges {
       SubActivities: [...(act.SubActivities || [])]
         .sort((a: any, b: any) => (a.Seq ?? 0) - (b.Seq ?? 0))
         .map((sub: any, j: number) => ({
-        Project_Detail_Id: sub.Project_Detail_Id,
-        Activity_Name: sub.name,
-        Responsible: sub.owner,
-        Seq: sub.Seq ?? (j + 1),
+          Project_Detail_Id: sub.Project_Detail_Id,
+          Activity_Name: sub.name,
+          Responsible: sub.owner,
+          Seq: sub.Seq ?? (j + 1),
 
-        Used_BG: sub.noBudget ? 0 : 1,
-        Is_Consult: sub.consult ? 1 : 0,
+          Used_BG: sub.noBudget ? 0 : 1,
+          Is_Consult: sub.consult ? 1 : 0,
 
-        Months: sub.quarters.flatMap((q: any) => q.months),
+          Months: sub.quarters.flatMap((q: any) => q.months),
 
-        OtherExpenses: sub.otherExpenses || []
+          OtherExpenses: sub.otherExpenses || []
 
-      }))
+        }))
 
     }));
 

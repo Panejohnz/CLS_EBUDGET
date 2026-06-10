@@ -1127,6 +1127,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { EbudgetService } from 'src/app/core/services/ebudget.service';
 import { BudgetYearService } from 'src/app/core/services/budget-year.service';
+import { MasterService } from 'src/app/core/services/Master.service';
 import { ProjectPlanningComponent } from '../../Planing/projectPlanning/projectPlanning.component';
 
 @Component({
@@ -1147,7 +1148,8 @@ export class AddPlanManagementComponent
   constructor(
     private modalService: NgbModal,
     public serviceebud: EbudgetService,
-    private budgetYearService: BudgetYearService
+    private budgetYearService: BudgetYearService,
+    private masterService: MasterService
   ) { }
 
   dropdown_select = false;
@@ -1214,7 +1216,7 @@ export class AddPlanManagementComponent
   currentYear: any
   userSession: any
   ngOnInit(): void {
-    this.userSession = localStorage.getItem('userSession');
+    this.userSession = JSON.parse(localStorage.getItem('userSession') || '{}');
 
     this.budgetYearService.yearChanged$
       .subscribe(async year => {
@@ -1456,6 +1458,9 @@ export class AddPlanManagementComponent
           m.budget =
             Number(amounts[index] || 0);
 
+          m.budgetDisplay =
+            this.masterService.formatNumber(m.budget);
+
           m.selected =
             Number(amounts[index]) > 0;
 
@@ -1620,7 +1625,9 @@ export class AddPlanManagementComponent
 
               selected: false,
 
-              budget: 0
+              budget: 0,
+
+              budgetDisplay: ''
 
             }))
 
@@ -1637,6 +1644,23 @@ export class AddPlanManagementComponent
     month.selected =
       Number(month.budget) > 0;
 
+  }
+
+  formatBudgetCurrency(
+    event: Event,
+    month: any
+  ): void {
+
+    this.masterService.formatCurrency(event, (result) => {
+      month.budgetDisplay = result.formatted;
+      month.budget = result.numeric;
+      this.onBudgetChange(month);
+    });
+
+  }
+
+  allowNumericOnly(event: KeyboardEvent): void {
+    this.masterService.allowNumericOnly(event);
   }
 
   // openTargetModal(content: any) {
@@ -1680,9 +1704,142 @@ export class AddPlanManagementComponent
 
   }
 
-  getTotalMultiplier(item: any): any {
+  getDetailItemTotal(item: any): number {
 
-    return this.model?.Budget_Plan.Update_Amount
+    const totalFields = [
+      'Rate_Amount',
+      'Total',
+      'Per_Year',
+      'Salary_Amount',
+      'Budget_Amount',
+      'total'
+    ];
+
+    for (const field of totalFields) {
+
+      if (
+        item?.[field] !== undefined &&
+        item?.[field] !== null &&
+        item?.[field] !== ''
+      ) {
+
+        const value =
+          Number(
+            item[field].toString().replace(/,/g, '')
+          );
+
+        if (!isNaN(value)) {
+          return value;
+        }
+
+      }
+
+    }
+
+    return (
+      Number(item.Quantity || 0) *
+      Number(item.Price || 0) *
+      Number(item.Rate || 1)
+    ) || 0;
+
+  }
+
+  getItemAllocationTotal(item: any): number {
+
+    return this.getDetailItemTotal(item);
+
+  }
+
+  calculateSelectedExpenseTotal(): number {
+
+    const selectedExpenseId =
+      Number(this.model?.selectedExpenseTypeId || 0);
+
+    const rows =
+      (this.model?.Budget_Request_Detail_Item || [])
+        .filter((item: any) =>
+          Number(item?.Fk_Expense_Id || 0) === selectedExpenseId
+        );
+
+    return rows.reduce(
+      (sum: number, item: any) =>
+        sum + this.getDetailItemTotal(item),
+      0
+    );
+
+  }
+
+  syncDetailItemsToActivities() {
+
+    const items =
+      this.model?.Budget_Request_Detail_Item || [];
+
+    if (!items.length) return;
+
+    this.activities.forEach((act: any) => {
+
+      if (!act.otherExpenses?.length) {
+
+        act.otherExpenses =
+          JSON.parse(JSON.stringify(items));
+
+      }
+
+    });
+
+  }
+
+  resolveAllocationTotal(): number {
+
+    this.syncDetailItemsToActivities();
+
+    const fromActivities =
+      this.getAllAllocationTotal();
+
+    if (fromActivities > 0) {
+      return fromActivities;
+    }
+
+    const fromDetailItems =
+      this.calculateSelectedExpenseTotal();
+
+    if (fromDetailItems > 0) {
+      return fromDetailItems;
+    }
+
+    return Number(
+      this.model?.Budget_Plan?.Total ||
+      this.model?.Budget_Plan?.Update_Amount ||
+      0
+    );
+
+  }
+
+  getActivityAllocationTotal(act: any): number {
+
+    return (act.otherExpenses || []).reduce(
+      (sum: number, item: any) =>
+        sum + this.getItemAllocationTotal(item),
+      0
+    );
+
+  }
+
+  getAllAllocationTotal(): number {
+
+    return this.activities.reduce(
+      (sum: number, act: any) =>
+        sum + this.getActivityAllocationTotal(act),
+      0
+    );
+
+  }
+
+  getTotalMultiplier(): number {
+
+    return Number(
+      this.model?.Budget_Plan?.Update_Amount || 0
+    );
 
   }
 
@@ -1820,13 +1977,19 @@ export class AddPlanManagementComponent
 
     this.syncProjectPlanningPayload();
 
-    this.model.Total =
-      this.getAllBudget();
+    const totalPlan = this.getAllBudget();
+    const totalAllocation = this.resolveAllocationTotal();
+    const originalUpdateAmount =
+      Number(this.model?.Budget_Plan?.Update_Amount ?? 0);
 
-    this.model.Update_Amount =
-      this.getAllBudget();
+    this.model.Total = totalAllocation;
 
-    // if (this.model.Budget_Plan.Total_Plan != this.model.Total) {
+    if (this.model.Budget_Plan) {
+      this.model.Budget_Plan.Total = totalAllocation;
+      this.model.Budget_Plan.Total_Plan = totalPlan;
+    }
+
+    // if (this.model.Budget_Plan.Total_Plan != totalPlan) {
     //   basicAlert('info', 'จำนวนเงินไม่ตรงกัน', '')
     //   return
     // }
@@ -2079,7 +2242,20 @@ export class AddPlanManagementComponent
       this.model?.Project_Plan ||
       this.model;
 
-    const payload_project_plan = {
+    const fkExpenseList =
+      Number(
+        this.model.Budget_Plan?.Fk_Expense_List ||
+        this.model.selectedExpenseTypeId
+      );
+
+    const shouldIncludeProjectPlan =
+      [64, 70, 73, 74, 75].includes(fkExpenseList);
+
+    const planData =
+      this.model?.Budget_Plan ||
+      this.model;
+
+    const payload_project_plan = shouldIncludeProjectPlan ? {
 
       BgYear: this.currentYear,
 
@@ -2171,21 +2347,25 @@ export class AddPlanManagementComponent
         Proposer_Position: data.Proposer_Position
       }),
 
-      Create_User: this.userSession.permissionData.IDENTIFY,
-      Update_User: this.userSession.permissionData.IDENTIFY
-    };
+      Create_User: this.userSession.permissionData?.IDENTIFY,
+      Update_User: this.userSession.permissionData?.IDENTIFY
+    } : null;
     const payload_plan = {
 
-      BgYear: "2569",
+      BgYear: this.currentYear,
       Is_Bureau_Indicator: this.Is_Bureau_Indicator,
       Plan_Id:
-        this.model.Budget_Plan.Plan_Id,
+        this.model.Budget_Plan?.Plan_Id,
 
-      FK_Project_Plan_Id:
-        this.model.Budget_Plan.FK_Project_Plan_Id,
+      ...(shouldIncludeProjectPlan && planData?.FK_Project_Plan_Id != null && {
+        FK_Project_Plan_Id:
+          planData.FK_Project_Plan_Id
+      }),
 
-      Total: this.model.Total,
-      Total_Plan: this.model.Budget_Plan.Total_Plan,
+      Total: totalAllocation,
+      Total_Plan: totalPlan,
+      Update_Amount: originalUpdateAmount,
+
       Department_Id:
         this.model.Department_Id,
 
@@ -2228,32 +2408,46 @@ export class AddPlanManagementComponent
       Expense_Type:
         selectedGroupObj?.Expense_Group_Name,
 
-      Project_Name:
-        this.model.Budget_Plan.Project_Name,
+      ...(shouldIncludeProjectPlan && {
+        ...(planData?.Project_Name && {
+          Project_Name: planData.Project_Name
+        }),
 
-      Used_BG:
-        this.model.Budget_Plan.Used_BG,
+        ...(planData?.Used_BG != null && {
+          Used_BG: planData.Used_BG
+        }),
 
-      Project_Type_Id:
-        this.model.Budget_Plan.Project_Type_Id,
+        ...(planData?.Project_Type_Id != null && {
+          Project_Type_Id: planData.Project_Type_Id
+        }),
 
-      Project_Year_Count:
-        this.model.Budget_Plan.Project_Year_Count,
+        ...(planData?.Project_Year_Count && {
+          Project_Year_Count: planData.Project_Year_Count
+        }),
 
-      Project_Year_Number:
-        this.model.Budget_Plan.Project_Year_Number,
+        ...(planData?.Project_Year_Number && {
+          Project_Year_Number: planData.Project_Year_Number
+        }),
 
-      Operation1:
-        this.model.Budget_Plan.Operation1,
+        ...(planData?.Operation1 != null && {
+          Operation1: planData.Operation1
+        }),
 
-      Operation2:
-        this.model.Budget_Plan.Operation2,
+        ...(planData?.Operation2 != null && {
+          Operation2: planData.Operation2
+        }),
 
-      Proposer_Name:
-        this.model.Budget_Plan.Proposer_Name,
+        ...(planData?.Proposer_Name && {
+          Proposer_Name: planData.Proposer_Name
+        }),
 
-      Proposer_Position:
-        this.model.Budget_Plan.Proposer_Position,
+        ...(planData?.Proposer_Position && {
+          Proposer_Position: planData.Proposer_Position
+        }),
+      }),
+
+      Create_User: this.userSession.permissionData?.IDENTIFY,
+      Update_User: this.userSession.permissionData?.IDENTIFY
 
     };
 
@@ -2269,8 +2463,9 @@ export class AddPlanManagementComponent
       Budget_Plan:
         payload_plan,
 
-      Project_Plan:
-        payload_project_plan,
+      ...(shouldIncludeProjectPlan && payload_project_plan && {
+        Project_Plan: payload_project_plan
+      }),
 
       Budget_Plan_Detail:
         detailPayload,

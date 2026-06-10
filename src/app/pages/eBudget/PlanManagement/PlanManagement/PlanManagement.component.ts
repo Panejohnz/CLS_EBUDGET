@@ -596,19 +596,20 @@ export class PlanManagementComponent {
 
     });
   }
-  get Total(): number {
+  get TotalUpdateAmount(): number {
 
     return this.griddata.reduce(
 
       (sum: number, item: any) =>
 
-        sum + Number(item.Total || 0),
+        sum + Number(item.Update_Amount || 0),
 
       0
 
     );
 
   }
+
   get Total_Plan(): number {
 
     return this.griddata.reduce(

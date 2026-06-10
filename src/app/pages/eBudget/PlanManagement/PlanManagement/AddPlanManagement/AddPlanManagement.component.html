@@ -65,7 +65,7 @@
                     หมวดงบ
                 </label>
 
-                <input class="form-control" [value]="model.selectedBudgetName || ''" readonly>
+                <input class="form-control bg-light" [value]="model.selectedBudgetName || ''" readonly>
 
             </div>
 
@@ -75,8 +75,7 @@
                     หมวดค่าใช้จ่าย
                 </label>
 
-                <input class="form-control" [value]="model.selectedGroupName || ''" readonly>
-
+                <input class="form-control bg-light" [value]="model.selectedGroupName || ''" readonly>
             </div>
 
             <div class="col-md-4">
@@ -211,9 +210,10 @@
 
                                         <td>
 
-                                            <input type="number" class="form-control form-control-sm"
-                                                [(ngModel)]="q.months[rowIndex].budget"
-                                                (ngModelChange)="onBudgetChange(q.months[rowIndex])">
+                                            <input type="text" class="form-control form-control-sm"
+                                                [ngModel]="q.months[rowIndex].budgetDisplay"
+                                                (keypress)="allowNumericOnly($event)"
+                                                (input)="formatBudgetCurrency($event, q.months[rowIndex])">
 
                                         </td>
 
@@ -242,14 +242,14 @@
                                         <div [class.text-danger]="
                                             getTotalBudget(act)
                                             !=
-                                            getTotalMultiplier(act)
+                                            getTotalMultiplier()
                                         ">
 
                                             <strong>
                                                 รวมเงินจัดสรร:
                                             </strong>
 
-                                            {{ getTotalMultiplier(act) | number }}
+                                            {{ getTotalMultiplier() | number }}
 
                                         </div>
 
