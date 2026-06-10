@@ -6,6 +6,7 @@ import { DecimalPipe } from '@angular/common';
 import { EbudgetService } from 'src/app/core/services/ebudget.service';
 import { AuthenticationService } from 'src/app/core/services/auth.service';
 import { BudgetYearService } from 'src/app/core/services/budget-year.service';
+import { MasterService } from 'src/app/core/services/Master.service';
 
 @Component({
   selector: 'app-project-allocation',
@@ -25,7 +26,8 @@ export class ProjectAllocationComponent implements OnInit {
     private sortService: PaginationService,
     public servicebud: EbudgetService,
     private authService: AuthenticationService,
-    private budgetYearService: BudgetYearService
+    private budgetYearService: BudgetYearService,
+    public masterService: MasterService
   ) { }
 
   // =====================================
@@ -1184,101 +1186,25 @@ export class ProjectAllocationComponent implements OnInit {
     return items;
 
   }
-  formatNumber(value: any): string {
-
-    if (value === null || value === undefined || value === '') {
-      return '';
-    }
-
-    const number = Number(value.toString().replace(/,/g, ''));
-
-    if (isNaN(number)) {
-      return '';
-    }
-
-    return number.toLocaleString('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
-
-  }
-
-  allowNumericOnly(event: KeyboardEvent): void {
-
-    const key = event.key;
-
-    if (
-      key === 'Backspace' ||
-      key === 'Delete' ||
-      key === 'Tab' ||
-      key === 'ArrowLeft' ||
-      key === 'ArrowRight' ||
-      key === 'Home' ||
-      key === 'End'
-    ) {
-      return;
-    }
-
-    if (/^[0-9]$/.test(key)) {
-      return;
-    }
-
-    const input = event.target as HTMLInputElement;
-
-    if (key === '.' && !input.value.replace(/,/g, '').includes('.')) {
-      return;
-    }
-
-    event.preventDefault();
-
-  }
-
   formatAdjustCurrency(
-    event: any,
+    event: Event,
     item: any,
     field: 'Adjust1Temp' | 'Adjust2Temp' | 'Adjust3Temp'
   ): void {
 
-    let value = String(event.target.value || '');
-
-    value = value.replace(/,/g, '');
-    value = value.replace(/[^0-9.]/g, '');
-
-    const dotIndex = value.indexOf('.');
-
-    if (dotIndex !== -1) {
-      const integerPart = value.slice(0, dotIndex);
-      const decimalPart = value.slice(dotIndex + 1).replace(/\./g, '').slice(0, 2);
-      value = `${integerPart}.${decimalPart}`;
-    }
-
-    let integerPart = value;
-    let decimalPart: string | undefined;
-
-    if (value.includes('.')) {
-      [integerPart, decimalPart] = value.split('.');
-    }
-
-    integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-    const formatted =
-      decimalPart !== undefined
-        ? `${integerPart}.${decimalPart}`
-        : integerPart;
-
-    event.target.value = formatted;
-
-    const displayField = field.replace('Temp', 'Display');
-    item[displayField] = formatted;
-    item[field] = value === '' || value === '.' ? 0 : parseFloat(value) || 0;
+    this.masterService.formatCurrency(event, (result) => {
+      const displayField = field.replace('Temp', 'Display');
+      item[displayField] = result.formatted;
+      item[field] = result.numeric;
+    });
 
   }
 
   syncAdjustDisplays(item: any): void {
 
-    item.Adjust1Display = this.formatNumber(item.Adjust1Temp);
-    item.Adjust2Display = this.formatNumber(item.Adjust2Temp);
-    item.Adjust3Display = this.formatNumber(item.Adjust3Temp);
+    item.Adjust1Display = this.masterService.formatNumber(item.Adjust1Temp);
+    item.Adjust2Display = this.masterService.formatNumber(item.Adjust2Temp);
+    item.Adjust3Display = this.masterService.formatNumber(item.Adjust3Temp);
 
   }
 

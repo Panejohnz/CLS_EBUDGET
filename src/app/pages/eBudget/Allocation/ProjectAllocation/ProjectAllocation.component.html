@@ -419,7 +419,7 @@
                                                             <input type="text"
                                                                 class="form-control form-control-sm text-end border-danger"
                                                                 [value]="item.Adjust1Display"
-                                                                (keypress)="allowNumericOnly($event)"
+                                                                (keypress)="masterService.allowNumericOnly($event)"
                                                                 (input)="formatAdjustCurrency($event, item, 'Adjust1Temp')"
                                                                 inputmode="decimal">
 
@@ -431,7 +431,7 @@
                                                             <input type="text"
                                                                 class="form-control form-control-sm text-end border-danger"
                                                                 [value]="item.Adjust2Display"
-                                                                (keypress)="allowNumericOnly($event)"
+                                                                (keypress)="masterService.allowNumericOnly($event)"
                                                                 (input)="formatAdjustCurrency($event, item, 'Adjust2Temp')"
                                                                 inputmode="decimal">
 
@@ -443,7 +443,7 @@
                                                             <input type="text"
                                                                 class="form-control form-control-sm text-end border-danger"
                                                                 [value]="item.Adjust3Display"
-                                                                (keypress)="allowNumericOnly($event)"
+                                                                (keypress)="masterService.allowNumericOnly($event)"
                                                                 (input)="formatAdjustCurrency($event, item, 'Adjust3Temp')"
                                                                 inputmode="decimal">
 
