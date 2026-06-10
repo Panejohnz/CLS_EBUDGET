@@ -547,6 +547,55 @@ export class ExamineComponent {
 
   }
 
+  
+  get totalAdjust1(): number {
+
+    return this.getAllItems().reduce(
+
+      (sum: number, item: any) =>
+
+        sum +
+
+        (Number(item.Adjust1) || 0),
+
+      0
+
+    );
+
+  }
+
+    get totalAdjust2(): number {
+
+    return this.getAllItems().reduce(
+
+      (sum: number, item: any) =>
+
+        sum +
+
+        (Number(item.Adjust2) || 0),
+
+      0
+
+    );
+
+  }
+
+    get totalAdjust3(): number {
+
+    return this.getAllItems().reduce(
+
+      (sum: number, item: any) =>
+
+        sum +
+
+        (Number(item.Adjust3) || 0),
+
+      0
+
+    );
+
+  }
+
   get totalAllocated(): number {
 
     return this.getAllItems().reduce(
