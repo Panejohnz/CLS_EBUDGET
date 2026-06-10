@@ -1127,6 +1127,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { EbudgetService } from 'src/app/core/services/ebudget.service';
 import { BudgetYearService } from 'src/app/core/services/budget-year.service';
+import { MasterService } from 'src/app/core/services/Master.service';
 import { ProjectPlanningComponent } from '../../Planing/projectPlanning/projectPlanning.component';
 
 @Component({
@@ -1147,7 +1148,8 @@ export class AddPlanManagementComponent
   constructor(
     private modalService: NgbModal,
     public serviceebud: EbudgetService,
-    private budgetYearService: BudgetYearService
+    private budgetYearService: BudgetYearService,
+    private masterService: MasterService
   ) { }
 
   dropdown_select = false;
@@ -1456,6 +1458,9 @@ export class AddPlanManagementComponent
           m.budget =
             Number(amounts[index] || 0);
 
+          m.budgetDisplay =
+            this.masterService.formatNumber(m.budget);
+
           m.selected =
             Number(amounts[index]) > 0;
 
@@ -1620,7 +1625,9 @@ export class AddPlanManagementComponent
 
               selected: false,
 
-              budget: 0
+              budget: 0,
+
+              budgetDisplay: ''
 
             }))
 
@@ -1637,6 +1644,23 @@ export class AddPlanManagementComponent
     month.selected =
       Number(month.budget) > 0;
 
+  }
+
+  formatBudgetCurrency(
+    event: Event,
+    month: any
+  ): void {
+
+    this.masterService.formatCurrency(event, (result) => {
+      month.budgetDisplay = result.formatted;
+      month.budget = result.numeric;
+      this.onBudgetChange(month);
+    });
+
+  }
+
+  allowNumericOnly(event: KeyboardEvent): void {
+    this.masterService.allowNumericOnly(event);
   }
 
   // openTargetModal(content: any) {
