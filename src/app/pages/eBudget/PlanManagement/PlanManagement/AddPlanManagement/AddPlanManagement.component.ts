@@ -1214,7 +1214,7 @@ export class AddPlanManagementComponent
   currentYear: any
   userSession: any
   ngOnInit(): void {
-    this.userSession = localStorage.getItem('userSession');
+    this.userSession = JSON.parse(localStorage.getItem('userSession') || '{}');
 
     this.budgetYearService.yearChanged$
       .subscribe(async year => {
@@ -1811,28 +1811,10 @@ export class AddPlanManagementComponent
 
   }
 
-  getTotalMultiplier(item: any): number {
-
-    this.syncDetailItemsToActivities();
-
-    const fromActivity =
-      this.getActivityAllocationTotal(item);
-
-    if (fromActivity > 0) {
-      return fromActivity;
-    }
-
-    const fromDetailItems =
-      this.calculateSelectedExpenseTotal();
-
-    if (fromDetailItems > 0) {
-      return fromDetailItems;
-    }
+  getTotalMultiplier(): number {
 
     return Number(
-      this.model?.Budget_Plan?.Total ||
-      this.model?.Budget_Plan?.Update_Amount ||
-      0
+      this.model?.Budget_Plan?.Update_Amount || 0
     );
 
   }
@@ -1973,14 +1955,14 @@ export class AddPlanManagementComponent
 
     const totalPlan = this.getAllBudget();
     const totalAllocation = this.resolveAllocationTotal();
+    const originalUpdateAmount =
+      Number(this.model?.Budget_Plan?.Update_Amount ?? 0);
 
     this.model.Total = totalAllocation;
-    this.model.Update_Amount = totalAllocation;
 
     if (this.model.Budget_Plan) {
       this.model.Budget_Plan.Total = totalAllocation;
       this.model.Budget_Plan.Total_Plan = totalPlan;
-      this.model.Budget_Plan.Update_Amount = totalAllocation;
     }
 
     // if (this.model.Budget_Plan.Total_Plan != totalPlan) {
@@ -2343,7 +2325,7 @@ export class AddPlanManagementComponent
 
       Create_User: this.userSession.permissionData.IDENTIFY,
       Update_User: this.userSession.permissionData.IDENTIFY
-    };
+    } : null;
     const payload_plan = {
 
       BgYear: this.currentYear,
@@ -2358,7 +2340,7 @@ export class AddPlanManagementComponent
 
       Total: totalAllocation,
       Total_Plan: totalPlan,
-      Update_Amount: totalAllocation,
+      Update_Amount: originalUpdateAmount,
 
       Department_Id:
         this.model.Department_Id,
@@ -2440,8 +2422,8 @@ export class AddPlanManagementComponent
         }),
       }),
 
-      Create_User: this.userSession.IDENTIFY,
-      Update_User: this.userSession.IDENTIFY
+      Create_User: this.userSession.permissionData?.IDENTIFY,
+      Update_User: this.userSession.permissionData?.IDENTIFY
 
     };
 

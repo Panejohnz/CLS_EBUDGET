@@ -106,7 +106,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
   currentYear: any
   userSession: any
   ngOnInit(): void {
-    this.userSession = localStorage.getItem('userSession');
+    this.userSession = JSON.parse(localStorage.getItem('userSession') || '{}');
     this.budgetYearService.yearChanged$.subscribe(year => {
       if (year) {
         this.currentYear = year
@@ -760,8 +760,8 @@ export class ProjectBudgetProposalAddPersonnelComponent {
 
       Proposer_Position:
         this.model.Project_Plan.Proposer_Position,
-      Create_User: this.userSession.permissionData.IDENTIFY,
-      Update_User: this.userSession.permissionData.IDENTIFY
+      Create_User: this.userSession.permissionData?.IDENTIFY,
+      Update_User: this.userSession.permissionData?.IDENTIFY
     };
 
     const getId = (obj: any, key: string) =>
@@ -874,8 +874,8 @@ export class ProjectBudgetProposalAddPersonnelComponent {
         Proposer_Position: data.Proposer_Position
       }),
 
-      Create_User: this.userSession.IDENTIFY,
-      Update_User: this.userSession.IDENTIFY
+      Create_User: this.userSession.permissionData.IDENTIFY,
+      Update_User: this.userSession.permissionData.IDENTIFY
     } : null;
 
     this.model.Project_Plan_Detail =
