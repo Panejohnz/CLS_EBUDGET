@@ -356,9 +356,9 @@
                             คงเหลือ
                         </th>
 
-                        <th style="width:10%">
+                        <!-- <th style="width:10%">
                             สถานะ
-                        </th>
+                        </th> -->
 
                         <th style="width:10%">
                             รายงานผล
@@ -422,8 +422,8 @@
 
                         <td class="text-end">
 
-                            {{data.Total || 0 | number:'1.2-2'}}
 
+                            {{data.Total || 0 | number:'1.2-2'}}
                         </td>
 
                         <td class="text-end">
@@ -439,11 +439,11 @@
 
                         </td>
 
-                        <td class="text-center">
+                        <!-- <td class="text-center">
 
                             {{data.Status_Name}}
 
-                        </td>
+                        </td> -->
 
                         <td class="text-center">
 
@@ -1052,15 +1052,15 @@
                                         <td>
 
                                             <input class="form-control form-control-sm text-end"
-                                                [(ngModel)]="q[mi].plan">
+                                                [(ngModel)]="q[mi].actual">
 
                                         </td>
 
                                         <!-- ACTUAL -->
                                         <td>
-
                                             <input class="form-control form-control-sm text-end"
-                                                [(ngModel)]="q[mi].actual">
+                                                [(ngModel)]="q[mi].plan">
+
 
                                         </td>
 
@@ -1077,14 +1077,14 @@
                                     <!-- TOTAL PLAN -->
                                     <td *ngIf="mi === 0" [attr.rowspan]="3">
 
-                                        {{ getTotalPlan(item) | number }}
-
+                                        {{ getTotalActual(item) | number }}
                                     </td>
 
                                     <!-- TOTAL ACTUAL -->
                                     <td *ngIf="mi === 0" [attr.rowspan]="3">
+                                        {{ getTotalPlan(item) | number }}
 
-                                        {{ getTotalActual(item) | number }}
+
 
                                     </td>
                                     <!-- <td *ngIf="mi === 0" [attr.rowspan]="3">
@@ -1111,11 +1111,12 @@
                                 </td>
 
                                 <td>
-                                    {{ getGrandPlan() | number }}
+                                    {{ getGrandActual() | number }}
                                 </td>
 
                                 <td>
-                                    {{ getGrandActual() | number }}
+
+                                    {{ getGrandPlan() | number }}
                                 </td>
 
                                 <td>
