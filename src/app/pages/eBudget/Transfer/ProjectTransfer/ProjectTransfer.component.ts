@@ -272,37 +272,86 @@ export class ProjectTransferComponent
   }
 
   displayAmount: string = '';
+  displayProjectBudget: string = '';
+  displayBalance: string = '';
 
-  formatCurrency(event: any): void {
+  allowNumericOnly(event: KeyboardEvent): void {
 
-    let value = event.target.value;
+    const key = event.key;
 
-    // เอา comma ออก
-    value = value.replace(/,/g, '');
-
-    // อนุญาตเฉพาะเลขกับ .
-    value = value.replace(/[^0-9.]/g, '');
-
-    // กัน . ซ้ำ
-    const parts = value.split('.');
-
-    if (parts.length > 2) {
+    if (
+      key === 'Backspace' ||
+      key === 'Delete' ||
+      key === 'Tab' ||
+      key === 'ArrowLeft' ||
+      key === 'ArrowRight' ||
+      key === 'Home' ||
+      key === 'End'
+    ) {
       return;
     }
 
-    let integerPart = parts[0];
-    const decimalPart = parts[1];
+    if (/^[0-9]$/.test(key)) {
+      return;
+    }
 
-    // ใส่ comma
+    const input = event.target as HTMLInputElement;
+
+    if (key === '.' && !input.value.replace(/,/g, '').includes('.')) {
+      return;
+    }
+
+    event.preventDefault();
+
+  }
+
+  formatCurrency(
+    event: any,
+    field: 'Transfer_Amount' | 'projectBudget' | 'balance' = 'Transfer_Amount'
+  ): void {
+
+    let value = String(event.target.value || '');
+
+    value = value.replace(/,/g, '');
+    value = value.replace(/[^0-9.]/g, '');
+
+    const dotIndex = value.indexOf('.');
+
+    if (dotIndex !== -1) {
+      const integerPart = value.slice(0, dotIndex);
+      const decimalPart = value.slice(dotIndex + 1).replace(/\./g, '').slice(0, 2);
+      value = `${integerPart}.${decimalPart}`;
+    }
+
+    let integerPart = value;
+    let decimalPart: string | undefined;
+
+    if (value.includes('.')) {
+      [integerPart, decimalPart] = value.split('.');
+    }
+
     integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
-    // รวมกลับ
-    this.displayAmount =
+    const formatted =
       decimalPart !== undefined
         ? `${integerPart}.${decimalPart}`
         : integerPart;
 
-    // เก็บค่าจริงแบบไม่มี comma
+    event.target.value = formatted;
+
+    if (field === 'projectBudget') {
+      this.displayProjectBudget = formatted;
+      this.form.projectBudget = value;
+      return;
+    }
+
+    if (field === 'balance') {
+      this.displayBalance = formatted;
+      this.form.balance = value;
+      return;
+    }
+
+    this.displayAmount = formatted;
     this.form.Transfer_Amount = value;
 
   }
@@ -435,8 +484,14 @@ const plan =
     this.form.projectBudget =
       Number(plan?.Total_Plan || 0);
 
+    this.displayProjectBudget =
+      this.formatNumber(this.form.projectBudget);
+
     this.form.balance =
       Number(plan?.Total_Plan || 0);
+
+    this.displayBalance =
+      this.formatNumber(this.form.balance);
 
   }
 
@@ -811,6 +866,10 @@ const plan =
       Active: true
 
     };
+
+    this.displayAmount = '';
+    this.displayProjectBudget = '';
+    this.displayBalance = '';
 
   }
 

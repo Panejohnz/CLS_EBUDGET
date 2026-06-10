@@ -210,7 +210,9 @@
 
                                 <ng-container *ngIf="!isEdit; else viewBudget">
 
-                                    <input type="number" class="form-control" [(ngModel)]="form.projectBudget">
+                                    <input type="text" class="form-control text-end" [value]="displayProjectBudget"
+                                        (keypress)="allowNumericOnly($event)"
+                                        (input)="formatCurrency($event, 'projectBudget')" inputmode="decimal">
 
                                 </ng-container>
 
@@ -239,7 +241,9 @@
 
                                 <ng-container *ngIf="!isEdit; else viewBalance">
 
-                                    <input type="number" class="form-control" [(ngModel)]="form.balance">
+                                    <input type="text" class="form-control text-end" [value]="displayBalance"
+                                        (keypress)="allowNumericOnly($event)"
+                                        (input)="formatCurrency($event, 'balance')" inputmode="decimal">
 
                                 </ng-container>
 
@@ -385,7 +389,8 @@
                                     จำนวนเงินที่โอน :
                                 </label>
 
-                                <input type="text" class="form-control  text-end" [value]="displayAmount"
+                                <input type="text" class="form-control text-end" [value]="displayAmount"
+                                    (keypress)="allowNumericOnly($event)"
                                     (input)="formatCurrency($event)" inputmode="decimal">
 
                             </div>
