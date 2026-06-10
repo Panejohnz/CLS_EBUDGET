@@ -211,7 +211,7 @@
                                 <ng-container *ngIf="!isEdit; else viewBudget">
 
                                     <input type="text" class="form-control text-end" [value]="displayProjectBudget"
-                                        (keypress)="allowNumericOnly($event)"
+                                        (keypress)="masterService.allowNumericOnly($event)"
                                         (input)="formatCurrency($event, 'projectBudget')" inputmode="decimal">
 
                                 </ng-container>
@@ -242,7 +242,7 @@
                                 <ng-container *ngIf="!isEdit; else viewBalance">
 
                                     <input type="text" class="form-control text-end" [value]="displayBalance"
-                                        (keypress)="allowNumericOnly($event)"
+                                        (keypress)="masterService.allowNumericOnly($event)"
                                         (input)="formatCurrency($event, 'balance')" inputmode="decimal">
 
                                 </ng-container>
@@ -390,7 +390,7 @@
                                 </label>
 
                                 <input type="text" class="form-control text-end" [value]="displayAmount"
-                                    (keypress)="allowNumericOnly($event)"
+                                    (keypress)="masterService.allowNumericOnly($event)"
                                     (input)="formatCurrency($event)" inputmode="decimal">
 
                             </div>
