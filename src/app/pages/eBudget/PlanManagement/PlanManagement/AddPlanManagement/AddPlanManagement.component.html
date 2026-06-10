@@ -242,14 +242,14 @@
                                         <div [class.text-danger]="
                                             getTotalBudget(act)
                                             !=
-                                            getTotalMultiplier(act)
+                                            getTotalMultiplier()
                                         ">
 
                                             <strong>
                                                 รวมเงินจัดสรร:
                                             </strong>
 
-                                            {{ getTotalMultiplier(act) | number }}
+                                            {{ getTotalMultiplier() | number }}
 
                                         </div>
 
