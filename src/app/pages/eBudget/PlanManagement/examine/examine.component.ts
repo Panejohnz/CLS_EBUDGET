@@ -35,6 +35,14 @@ interface BudgetNode {
   selector: 'app-examine',
   providers: [GridJsService, DecimalPipe, EbudgetService],
   templateUrl: './examine.component.html',
+  styles: [`
+    .readonly-select {
+      pointer-events: none;
+      background-color: var(--vz-secondary-bg, #e9ecef);
+      color: #6c757d;
+      opacity: 1;
+    }
+  `]
 })
 export class ExamineComponent {
   constructor(
@@ -61,12 +69,35 @@ export class ExamineComponent {
   selectedDepartmentId: any = null;
 
   currentYear: any;
+  userSession: any;
+
+  get isDepartmentLocked(): boolean {
+    return this.userSession?.permissionData?.VIEW_DATA == 3;
+  }
+
+  private resetDepartmentSelection(): void {
+    this.selectedDepartmentId = this.isDepartmentLocked
+      ? this.userSession?.permissionData?.Department_id ?? null
+      : null;
+  }
 
   // =====================================
   // INIT
   // =====================================
 
   ngOnInit() {
+    const sessionStr = localStorage.getItem('userSession');
+
+    if (sessionStr) {
+      this.userSession = JSON.parse(sessionStr);
+    }
+
+    try {
+      if (this.userSession.permissionData.VIEW_DATA == 3) {
+        this.selectedDepartmentId = this.userSession.permissionData.Department_id;
+      }
+    } catch (error) {
+    }
 
     this.budgetYearService.yearChanged$
       .subscribe(async year => {
@@ -122,6 +153,20 @@ export class ExamineComponent {
           )
             ? response.Mas_Department_Lists
             : [];
+
+        if (this.selectedDepartmentId != null) {
+          const matchedDepartment = this.department.find(
+            (item: any) => String(item.Department_Id) === String(this.selectedDepartmentId)
+          );
+
+          if (matchedDepartment) {
+            this.selectedDepartmentId = matchedDepartment.Department_Id;
+          }
+        }
+
+        if (this.selectedDepartmentId) {
+          this.applyFilter();
+        }
 
       });
 
@@ -815,7 +860,7 @@ export class ExamineComponent {
 
     this.groupData = [];
 
-    this.selectedDepartmentId = null;
+    this.resetDepartmentSelection();
 
   }
   sumTotal(node: any): number {

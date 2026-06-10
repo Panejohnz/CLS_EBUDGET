@@ -1,19 +1,79 @@
-<div class="card card-animate">
-    <div class="card-body">
-        <div class="d-flex align-items-center">
+<div class="card card-animate stat-card h-100">
+    <div class="card-body p-3 p-xl-4">
+        <div class="d-flex align-items-start gap-3">
+
             <div class="avatar-sm flex-shrink-0">
-                <span class="avatar-title  text-primary rounded-2 fs-2" [ngClass]=" { 'bg-primary-subtle': icon === 'briefcase', 'bg-warning-subtle': icon === 'award', 'bg-info-subtle': icon === 'clock'}">
-                    <i-feather name="{{icon}}" class="feather-icon-align" [ngClass]=" { 'text-primary': icon === 'briefcase', 'text-warning': icon === 'award', 'text-info': icon === 'clock'}"></i-feather>
+                <span class="avatar-title rounded-3 fs-4 stat-icon" [ngClass]="{
+                        'bg-primary-subtle': icon === 'briefcase',
+                        'bg-warning-subtle': icon === 'award',
+                        'bg-info-subtle': icon === 'clock'
+                    }">
+                    <i-feather [name]="icon" class="feather-icon-align" [ngClass]="{
+        'text-primary': icon === 'briefcase',
+        'text-warning': icon === 'award',
+        'text-info': icon === 'clock'
+    }">
+                    </i-feather>
+
                 </span>
             </div>
-            <div class="flex-grow-1 overflow-hidden ms-3">
-                <p class="text-uppercase fw-medium text-muted text-truncate mb-3">{{title}}</p>
-                <div class="d-flex align-items-center mb-3">
-                    <h4 class="fs-4 flex-grow-1 mb-0"><span [countUp]="value" class="counter-value" [options]="option"></span></h4>
-                    <span class="badge fs-12" [ngClass]=" {'bg-success-subtle text-success': profit === 'up', 'bg-danger-subtle text-danger': profit === 'down'}"><i class="fs-13 align-middle me-1" [ngClass]=" {'ri-arrow-up-s-line': profit === 'up', 'ri-arrow-down-s-line': profit === 'down'}"></i>{{persantage}} %</span>
+
+            <div class="flex-grow-1 overflow-hidden">
+
+                <h4 class="fw-bold text-truncate mb-2 stat-title" style="color: #0d3b66; font-size: 1.5rem;">
+                    {{ title }}
+                </h4>
+
+                <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
+                    <h5 class="fs-5 fw-bold text-dark mb-0">
+                        <span>จัดสรรงบประมาณ</span>
+                    </h5>
+
+                    <h5 class="fs-5 fw-bold text-dark mb-0">
+                        <strong class="text-dark">{{ value || 0 }}</strong>
+                    </h5>
                 </div>
-                <p class="text-muted text-truncate mb-0">{{month}} this month</p>
+
+                <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
+                    <h5 class="fs-5 fw-bold text-dark mb-0">
+                        <span>ใช้จ่าย</span>
+                    </h5>
+
+                    <h5 class="fs-5 fw-bold text-dark mb-0">
+                        <strong class="text-dark">{{ Reimburse || 0 }}</strong>
+                    </h5>
+                </div>
+                <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
+                    <h5 class="fs-5 fw-bold text-dark mb-0">
+                        <span>คงเหลือ</span>
+                    </h5>
+
+                    <h5 class="fs-5 fw-bold text-dark mb-0">
+                        <strong class="text-dark">{{ Remaining || 0 }}</strong>
+                    </h5>
+                </div>
+
             </div>
+
+            <!--
+            <div class="stat-meta small text-muted">
+                <div class="d-flex justify-content-between gap-3">
+                    <span>จัดสรรงบประมาณ</span>
+                    <strong class="text-dark">{{ value || 0 }}</strong>
+                </div>
+
+                <div class="d-flex justify-content-between gap-3 mt-1">
+                    <span>ใช้จ่าย</span>
+                    <strong class="text-dark">{{ Reimburse || 0 }}</strong>
+                </div>
+
+                <div class="d-flex justify-content-between gap-3 mt-1">
+                    <span>คงเหลือ</span>
+                    <strong class="text-dark">{{ Remaining || 0 }}</strong>
+                </div>
+            </div>
+            -->
+
         </div>
-    </div><!-- end card body -->
+    </div>
 </div>

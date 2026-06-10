@@ -12,7 +12,14 @@ import { BudgetYearService } from 'src/app/core/services/budget-year.service';
   selector: 'app-plan-management',
   providers: [GridJsService, DecimalPipe, EbudgetService],
   templateUrl: './PlanManagement.component.html',
-  styles: ``
+  styles: [`
+    .readonly-select {
+      pointer-events: none;
+      background-color: var(--vz-secondary-bg, #e9ecef);
+      color: #6c757d;
+      opacity: 1;
+    }
+  `]
 })
 export class PlanManagementComponent {
 
@@ -75,13 +82,26 @@ export class PlanManagementComponent {
     return Math.min(this.sortService.page * this.sortService.pageSize, this.griddata.length);
   }
   userSession: any
-  ngOnInit(): void {
-    this.userSession = localStorage.getItem('userSession');
-    try {
 
-      if (this.userSession.VIEW_DATA == 3) {
-        this.selectedDepartmentId = this.userSession.Department_id
-        this.applyFilter()
+  get isDepartmentLocked(): boolean {
+    return this.userSession?.permissionData?.VIEW_DATA == 3;
+  }
+
+  private resetDepartmentSelection(): void {
+    this.selectedDepartmentId = this.isDepartmentLocked
+      ? this.userSession?.permissionData?.Department_id ?? null
+      : null;
+  }
+
+  ngOnInit(): void {
+    const sessionStr = localStorage.getItem('userSession');
+
+    if (sessionStr) {
+      this.userSession = JSON.parse(sessionStr);
+    } try {
+
+      if (this.userSession.permissionData.VIEW_DATA == 3) {
+        this.selectedDepartmentId = this.userSession.permissionData.Department_id
       } else {
 
       }
@@ -124,6 +144,18 @@ export class PlanManagementComponent {
       this.department = Array.isArray(response.Mas_Department_Lists)
         ? response.Mas_Department_Lists
         : [];
+
+      if (this.selectedDepartmentId != null) {
+        const matchedDepartment = this.department.find(
+          (item: any) => String(item.Department_Id) === String(this.selectedDepartmentId)
+        );
+
+        if (matchedDepartment) {
+          this.selectedDepartmentId = matchedDepartment.Department_Id;
+        }
+      }
+
+      this.applyFilter();
 
     });
 
@@ -500,8 +532,7 @@ export class PlanManagementComponent {
 
       (result: any) => {
 
-        this.selectedDepartmentId =
-          null;
+        this.resetDepartmentSelection();
 
         this.get_data();
 
@@ -509,8 +540,7 @@ export class PlanManagementComponent {
 
       (reason: any) => {
 
-        this.selectedDepartmentId =
-          null;
+        this.resetDepartmentSelection();
 
         this.get_data();
 

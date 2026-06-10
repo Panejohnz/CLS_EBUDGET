@@ -22,7 +22,15 @@ import { TabGuidelineComponent } from 'src/app/shared/planingtab/components/tab-
 @Component({
   selector: 'projectPlanning',
   providers: [GridJsService, DecimalPipe, EbudgetService],
-  templateUrl: './projectPlanning.component.html'
+  templateUrl: './projectPlanning.component.html',
+  styles: [`
+    .readonly-select {
+      pointer-events: none;
+      background-color: var(--vz-secondary-bg, #e9ecef);
+      color: #6c757d;
+      opacity: 1;
+    }
+  `]
 })
 export class ProjectPlanningComponent {
   @ViewChild(TabGuidelineComponent)
@@ -103,13 +111,21 @@ export class ProjectPlanningComponent {
   }
   currentYear: any
   userSession: any
+
+  get isDepartmentLocked(): boolean {
+    return this.userSession?.permissionData?.VIEW_DATA == 3;
+  }
+
   ngOnInit(): void {
-    this.userSession = localStorage.getItem('userSession');
+    const sessionStr = localStorage.getItem('userSession');
+
+    if (sessionStr) {
+      this.userSession = JSON.parse(sessionStr);
+    }
     try {
 
-      if (this.userSession.VIEW_DATA == 3) {
-        this.selectedDepartmentId = this.userSession.Department_id
-        this.applyFilter()
+      if (this.userSession.permissionData.VIEW_DATA == 3) {
+        this.selectedDepartmentId = this.userSession.permissionData.Department_id
       } else {
 
       }
@@ -148,8 +164,20 @@ export class ProjectPlanningComponent {
       this.department = Array.isArray(response.Mas_Department_Lists)
         ? response.Mas_Department_Lists
         : [];
+
+      if (this.selectedDepartmentId != null) {
+        const matchedDepartment = this.department.find(
+          (item: any) => String(item.Department_Id) === String(this.selectedDepartmentId)
+        );
+
+        if (matchedDepartment) {
+          this.selectedDepartmentId = matchedDepartment.Department_Id;
+        }
+      }
+
       this.griddataTemp = [...this.allData];
       this.griddata = [...this.allData];
+      this.applyFilter();
       this.currentTab = 1
       this.firstLoad = true;
     })
@@ -170,7 +198,6 @@ export class ProjectPlanningComponent {
   }
   selectedDepartmentId: any = null;
   applyFilter() {
-
     let data = [...this.griddataTemp];
 
     if (this.selectedDepartmentId) {
@@ -636,8 +663,8 @@ export class ProjectPlanningComponent {
 
       Proposer_Position:
         data.Proposer_Position,
-      Create_User: this.userSession.IDENTIFY,
-      Update_User: this.userSession.IDENTIFY
+      Create_User: this.userSession.permissionData.IDENTIFY,
+      Update_User: this.userSession.permissionData.IDENTIFY
     };
 
     this.project_planing.Project_Plan_Detail = this.mapActivities();
