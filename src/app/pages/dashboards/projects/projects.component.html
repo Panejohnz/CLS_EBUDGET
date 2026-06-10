@@ -12,10 +12,14 @@
 
                 <div class="col-xl-4 col-md-6" *ngFor="let stat of statData">
 
-                    <app-projects-stat [title]="stat.title" [value]="stat.value" [icon]="stat.icon"
-                        [persantage]="stat.persantage" [profit]="stat.profit" [month]="stat.month">
+                    <app-projects-stat [title]="stat.title" 
+                    [value]="stat.value" 
+                    [Reimburse]="stat.Reimburse"                                    
+                    [Remaining]="stat.Remaining"           
+                    [icon]="stat.icon" >
                     </app-projects-stat>
-
+                       <!-- [persantage]="stat.persantage"
+                        [profit]="stat.profit" [month]="stat.month" -->
                 </div>
 
             </div>

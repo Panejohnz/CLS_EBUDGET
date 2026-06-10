@@ -23,6 +23,10 @@ import { LoadingComponent } from './shared/components/loading/loading.component'
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 
+//icon
+import { FeatherModule } from 'angular-feather';
+import { Briefcase, Award, Clock } from 'angular-feather/icons';
+
 // Store
 import { rootReducer } from './store';
 import { StoreModule } from '@ngrx/store';
@@ -53,6 +57,12 @@ if (environment.defaultauth === 'firebase') {
   FakeBackendInterceptor;
 }
 
+const icons = {
+  Briefcase,
+  Award,
+  Clock
+};
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -73,6 +83,7 @@ if (environment.defaultauth === 'firebase') {
     HttpClientModule,
 
     BrowserModule,
+     FeatherModule.pick(icons),
     AppRoutingModule,
     LayoutsModule,
     PagesModule,

@@ -15,7 +15,8 @@ export class ProjectsStatComponent implements OnInit {
   @Input() value: any | undefined;
   @Input() Reimburse: any | undefined;
   @Input() Balance: any | undefined;
-  @Input() icon: string | undefined;
+  @Input() Remaining: any | undefined;
+@Input() icon!: string;
   @Input() persantage: string | undefined;
   @Input() profit: string | undefined;
   @Input() month: string | undefined;
@@ -25,6 +26,11 @@ export class ProjectsStatComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  isZero(value: any): boolean {
+    return value === null || value === undefined || value === '' || Number(value) === 0;
+  }
+
+  
   num: number = 0;
   option = {
     startVal: this.num,
