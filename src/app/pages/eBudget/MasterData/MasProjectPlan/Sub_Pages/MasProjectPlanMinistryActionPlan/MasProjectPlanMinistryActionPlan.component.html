@@ -179,7 +179,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (data of List_Mas_Indicators; track $index) {
+            @for (data of List_Mas_Indicator; track $index) {
             <tr>
               <td>{{ indicatorPagination.startIndex + $index }}</td>
               <td>{{ getGoalNameForChildRow(data) }}</td>

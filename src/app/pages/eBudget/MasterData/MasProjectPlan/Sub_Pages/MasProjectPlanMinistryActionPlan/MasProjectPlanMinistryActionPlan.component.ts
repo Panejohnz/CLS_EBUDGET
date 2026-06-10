@@ -37,7 +37,7 @@ export class MasProjectPlanMinistryActionPlanComponent implements OnInit {
 
   List_Mas_Project_Plan: any[] = [];
   List_Mas_Project_Plan_Goals: any[] = [];
-  List_Mas_Indicators: any[] = [];
+  List_Mas_Indicator: any[] = [];
   List_Mas_Project_Plan_Goals_Guidelines: any[] = [];
 
   listMasProjectPlanAll: any[] = [];
@@ -114,7 +114,7 @@ export class MasProjectPlanMinistryActionPlanComponent implements OnInit {
       });
 
       this.listMasIndicatorsAll = this.normalizeListIds(
-        this.extractList(response?.List_Mas_Indicators ?? response?.List_Mas_Indicator),
+        this.extractList(response?.List_Mas_Indicator),
         ['Indicators_Id', 'FK_Plan_Goals_Id', 'Fk_Plan_Goals_Id']
       ).map((indicator) => {
         const goalId = indicator.FK_Plan_Goals_Id ?? indicator.Fk_Plan_Goals_Id ?? null;
@@ -257,7 +257,7 @@ export class MasProjectPlanMinistryActionPlanComponent implements OnInit {
 
   private refreshIndicatorPage(): void {
     const result = this.slicePage(this.listMasIndicatorsFiltered, this.indicatorPagination.page);
-    this.List_Mas_Indicators = result.slice;
+    this.List_Mas_Indicator = result.slice;
     this.indicatorPagination = {
       page: result.page,
       startIndex: result.startIndex,
