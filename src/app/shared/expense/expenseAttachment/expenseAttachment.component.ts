@@ -1,7 +1,11 @@
 import { Component, Input } from '@angular/core';
+import { EbudgetService } from 'src/app/core/services/ebudget.service';
 
 @Component({
   selector: 'app-expense-attachment',
+  providers: [
+    EbudgetService
+  ],
   templateUrl: './expenseAttachment.component.html',
   styles: `
     .attachment-list {
@@ -11,6 +15,9 @@ import { Component, Input } from '@angular/core';
   `
 })
 export class ExpenseAttachmentComponent {
+  constructor(
+    public servicebud: EbudgetService,
+  ) { }
   @Input() model: any;
 
   private currentExpenseTypeId: any = null;
@@ -56,9 +63,39 @@ export class ExpenseAttachmentComponent {
   }
 
   openFile(fileItem: any) {
-    if (fileItem?.file instanceof File) {
-      const localUrl = URL.createObjectURL(fileItem.file);
-      window.open(localUrl, '_blank');
+    const localFile = this.getLocalFile(fileItem);
+
+    if (localFile) {
+      this.openLocalFile(localFile);
+      return;
+    }
+
+    if (fileItem?.IDA) {
+      const model = {
+        FUNC_CODE:
+          'FUNC-View_PDF',
+        Request_Id: fileItem.IDA
+
+      };
+      this.servicebud
+        .GatewayGetData(model)
+        .subscribe((response: any) => {
+
+          var byteArray = new Uint8Array(response.file.FileContents);
+          const blob = new Blob([byteArray], { type: response.fileType });
+          const url = window.URL.createObjectURL(blob);
+          const win = window.open(url, '_blank');
+
+          if (win) {
+            win.focus();
+          } else {
+            this.downloadBlob(url, fileItem.File_Name || fileItem.NAME_FAKE || 'attachment');
+          }
+
+        }
+
+        );
+
       return;
     }
 
@@ -70,7 +107,7 @@ export class ExpenseAttachmentComponent {
   }
 
   canOpenFile(fileItem: any): boolean {
-    return !!fileItem?.file || !!this.getFileUrl(fileItem);
+    return !!this.getLocalFile(fileItem) || !!fileItem?.IDA || !!this.getFileUrl(fileItem);
   }
 
   isExistingFile(fileItem: any): boolean {
@@ -87,15 +124,11 @@ export class ExpenseAttachmentComponent {
     if (!file) return;
 
     if (this.isExistingFile(file)) {
-      file.Pending_Delete = true;
-      file.Active = 0;
+      this.deleteExistingFile(file);
       return;
     }
 
-    const realIndex = this.model.Budget_Request_Attach_File.indexOf(file);
-    if (realIndex >= 0) {
-      this.model.Budget_Request_Attach_File.splice(realIndex, 1);
-    }
+    this.removeFromAttachmentList(file);
   }
 
   private ensureAttachmentList() {
@@ -136,41 +169,67 @@ export class ExpenseAttachmentComponent {
   private normalizeAttachmentItem(item: any): any {
     return {
       Client_Attachment_Id:
-        item?.Client_Attachment_Id || this.createClientAttachmentId(),
+        item?.Client_Attachment_Id ||
+        item?.CLIENT_ATTACHMENT_ID ||
+        this.createClientAttachmentId(),
       Ref_Module:
-        item?.Ref_Module || 'BUDGET_REQUEST',
+        item?.Ref_Module || item?.REF_MODULE || 'BUDGET_REQUEST',
       Ref_Level:
-        item?.Ref_Level || 'EXPENSE',
+        item?.Ref_Level || item?.REF_LEVEL || 'EXPENSE',
       Request_Id:
-        item?.Request_Id || this.model?.Budget_Request?.Request_Id || 0,
+        item?.Request_Id ||
+        item?.FK_REQUEST_ID ||
+        item?.Fk_Request_Id ||
+        this.model?.Budget_Request?.Request_Id ||
+        0,
       Fk_Expense_Id:
-        item?.Fk_Expense_Id ?? this.model?.selectedExpenseTypeId ?? 0,
+        item?.Fk_Expense_Id ??
+        item?.FK_EXPENSE_ID ??
+        item?.Expense_Id ??
+        this.model?.selectedExpenseTypeId ??
+        0,
       Fk_Request_Detail_Item_Id:
-        item?.Fk_Request_Detail_Item_Id || 0,
+        item?.Fk_Request_Detail_Item_Id ||
+        item?.FK_REQUEST_DETAIL_ITEM_ID ||
+        0,
       Row_Guid:
-        item?.Row_Guid || null,
+        item?.Row_Guid || item?.ROW_GUID || null,
       File_Name:
-        item?.File_Name || item?.NAME_FAKE || item?.file?.name || '',
+        item?.File_Name ||
+        item?.FILE_NAME ||
+        item?.NAME_FAKE ||
+        item?.file?.name ||
+        '',
       File_Size:
-        item?.File_Size || item?.file?.size || 0,
+        item?.File_Size || item?.FILE_SIZE || item?.file?.size || 0,
       File_Type:
-        item?.File_Type || item?.file?.type || '',
+        item?.File_Type || item?.FILE_TYPE || item?.file?.type || '',
       NAME_FAKE:
-        item?.NAME_FAKE || item?.File_Name || item?.file?.name || '',
+        item?.NAME_FAKE ||
+        item?.Name_Fake ||
+        item?.File_Name ||
+        item?.FILE_NAME ||
+        item?.file?.name ||
+        '',
       NAME_REAL:
-        item?.NAME_REAL || item?.GEN_FILE || '',
+        item?.NAME_REAL || item?.Name_Real || item?.GEN_FILE || '',
       GEN_FILE:
-        item?.GEN_FILE || '',
+        item?.GEN_FILE || item?.Gen_File || item?.NAME_REAL || '',
       PATH_FILE:
-        item?.PATH_FILE || '',
+        item?.PATH_FILE || item?.Path_File || '',
       File_Url:
-        item?.File_Url || '',
+        item?.File_Url ||
+        item?.FILE_URL ||
+        item?.View_Url ||
+        item?.VIEW_URL ||
+        item?.URL ||
+        '',
       IDA:
-        item?.IDA || 0,
+        item?.IDA || item?.Ida || 0,
       ATTACH:
         item?.ATTACH || 1,
       Active:
-        item?.Active ?? 1,
+        item?.Active ?? item?.ACTIVE ?? 1,
       Is_New:
         item?.Is_New ?? !!item?.file,
       Pending_Delete:
@@ -211,6 +270,74 @@ export class ExpenseAttachmentComponent {
     }
 
     return `${path.replace(/\/$/, '')}/${fileName}`;
+  }
+
+  private deleteExistingFile(file: any) {
+    if (!file?.IDA) {
+      this.markFileDeleted(file);
+      return;
+    }
+
+    const model = {
+      FUNC_CODE: 'FUNC-Delete_Budget_Request_File',
+      IDA: file.IDA,
+      Request_Id: file.Request_Id || this.model?.Budget_Request?.Request_Id || 0,
+      Fk_Expense_Id: file.Fk_Expense_Id || this.model?.selectedExpenseTypeId || 0
+    };
+
+    this.servicebud.GatewayGetData(model).subscribe({
+      next: () => {
+        this.removeFromAttachmentList(file);
+      },
+      error: () => {
+        basicAlert('warning', 'ลบไฟล์ไม่สำเร็จ', '');
+      }
+    });
+  }
+
+  private markFileDeleted(file: any) {
+    file.Pending_Delete = true;
+    file.Active = 0;
+  }
+
+  private removeFromAttachmentList(file: any) {
+    const realIndex = this.model.Budget_Request_Attach_File.indexOf(file);
+
+    if (realIndex >= 0) {
+      this.model.Budget_Request_Attach_File.splice(realIndex, 1);
+    }
+  }
+
+  private getLocalFile(fileItem: any): File | null {
+    const file = fileItem?.file;
+
+    if (typeof File !== 'undefined' && file instanceof File) {
+      return file;
+    }
+
+    return null;
+  }
+
+  private openLocalFile(file: File) {
+    const url = URL.createObjectURL(file);
+    const win = window.open(url, '_blank');
+
+    if (win) {
+      win.focus();
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+      return;
+    }
+
+    this.downloadBlob(url, file.name);
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+  }
+
+  private downloadBlob(url: string, fileName: string) {
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.download = fileName;
+    link.click();
   }
 
   private createClientAttachmentId(): string {

@@ -239,7 +239,10 @@ export class ProjectBudgetProposalComponent {
           this.model = {
             Budget_Type: 1,
             Budget_Request: res.Budget_Request || {},
-            Budget_Request_Attach_File: res.Budget_Request_Attach_File || [],
+            Budget_Request_Attach_File: this.mapFileUploadList(
+              res.FILE_UPLOAD_List || res.Budget_Request_Attach_File || [],
+              res.Budget_Request || {}
+            ),
             Budget_Request_Detail_Item: res.Budget_Request_Detail_Item || [],
             Budget_Request_Detail: res.Budget_Request_Detail || [],
             Project_Plan: res.Project_Plan || {},
@@ -263,6 +266,7 @@ export class ProjectBudgetProposalComponent {
             Project_Outcome: res.Project_Outcome || [],
             Project_Expected: res.Project_Expected || [],
             Project_TargetGroup: res.Project_TargetGroup || [],
+            FILE_UPLOAD_List: res.FILE_UPLOAD_List || []
           };
           const details = res.Project_Plan_Detail || [];
           const items = res.Project_Plan_Detail_Item || [];
@@ -637,5 +641,104 @@ export class ProjectBudgetProposalComponent {
 
   saveTarget() {
 
+  }
+
+  private mapFileUploadList(fileUploadList: any[], budgetRequest: any): any[] {
+    if (!Array.isArray(fileUploadList)) {
+      return [];
+    }
+
+    const requestId =
+      budgetRequest?.Request_Id || 0;
+
+    const requestExpenseId =
+      budgetRequest?.Fk_Expense_List || 0;
+
+    return fileUploadList.map((item: any) => {
+      const fileName =
+        item.File_Name ||
+        item.FILE_NAME ||
+        item.NAME_FAKE ||
+        item.Name_Fake ||
+        '';
+
+      const generatedFile =
+        item.GEN_FILE ||
+        item.Gen_File ||
+        item.NAME_REAL ||
+        item.Name_Real ||
+        '';
+
+      return {
+        IDA: item.IDA || item.Ida || 0,
+        TYPE_ID: item.TYPE_ID || item.Type_Id || 0,
+        FK_IDA: item.FK_IDA || item.Fk_Ida || requestId,
+        Client_Attachment_Id:
+          item.CLIENT_ATTACHMENT_ID ||
+          item.Client_Attachment_Id ||
+          '',
+        Ref_Module:
+          item.REF_MODULE ||
+          item.Ref_Module ||
+          'BUDGET_REQUEST',
+        Ref_Level:
+          item.REF_LEVEL ||
+          item.Ref_Level ||
+          'EXPENSE',
+        Request_Id:
+          item.FK_REQUEST_ID ||
+          item.Fk_Request_Id ||
+          item.Request_Id ||
+          requestId,
+        Fk_Expense_Id:
+          item.FK_EXPENSE_ID ||
+          item.Fk_Expense_Id ||
+          item.Expense_Id ||
+          requestExpenseId,
+        Fk_Request_Detail_Item_Id:
+          item.FK_REQUEST_DETAIL_ITEM_ID ||
+          item.Fk_Request_Detail_Item_Id ||
+          0,
+        Row_Guid:
+          item.ROW_GUID ||
+          item.Row_Guid ||
+          null,
+        File_Name: fileName || generatedFile,
+        File_Size:
+          item.FILE_SIZE ||
+          item.File_Size ||
+          0,
+        File_Type:
+          item.FILE_TYPE ||
+          item.File_Type ||
+          '',
+        NAME_FAKE: fileName,
+        NAME_REAL:
+          item.NAME_REAL ||
+          item.Name_Real ||
+          generatedFile,
+        GEN_FILE: generatedFile,
+        PATH_FILE:
+          item.PATH_FILE ||
+          item.Path_File ||
+          '',
+        File_Url:
+          item.File_Url ||
+          item.FILE_URL ||
+          item.View_Url ||
+          item.VIEW_URL ||
+          item.URL ||
+          '',
+        FILE_DATE:
+          item.FILE_DATE ||
+          item.File_Date ||
+          null,
+        Active:
+          item.Active ?? item.ACTIVE ?? 1,
+        Is_New: false,
+        Pending_Delete: false,
+        file: null
+      };
+    });
   }
 }
