@@ -292,11 +292,20 @@
         <div class="d-flex justify-content-between align-items-end mb-3">
             <div style="width: 400px;">
                 <label class="fw-semibold mb-1">หน่วยงาน</label>
-                <select class="form-select" [(ngModel)]="selectedDepartmentId" (change)="applyFilter()">
-                    <option [ngValue]="null">-- เลือกหน่วยงาน --</option>
-                    <option *ngFor="let item of department" [ngValue]="item.Department_Id">
-                        {{ item.Department_Name }}
+                <select class="form-select" [class.readonly-select]="isDepartmentLocked"
+                    [attr.aria-disabled]="isDepartmentLocked" [attr.tabindex]="isDepartmentLocked ? -1 : null"
+                    [(ngModel)]="selectedDepartmentId" (change)="applyFilter()">
+
+                    <option [ngValue]="null">
+                        -- เลือกหน่วยงาน --
                     </option>
+
+                    <option *ngFor="let item of department" [ngValue]="item.Department_Id">
+
+                        {{ item.Department_Name }}
+
+                    </option>
+
                 </select>
             </div>
         </div>

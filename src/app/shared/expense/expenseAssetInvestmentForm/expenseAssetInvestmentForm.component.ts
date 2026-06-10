@@ -34,6 +34,12 @@ import { EbudgetService } from 'src/app/core/services/ebudget.service'
       white-space: normal;
       line-height: 1.35;
     }
+
+    .readonly-checkbox {
+      pointer-events: none;
+      opacity: 1;
+      accent-color: #0d6efd;
+    }
   `
 })
 export class ExpenseAssetInvestmentFormComponent {

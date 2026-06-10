@@ -13,7 +13,9 @@
                     <div class="col-lg-4">
                         <label class="form-label">หน่วยงาน</label>
 
-                        <select class="form-select" [(ngModel)]="selectedDepartmentId" (change)="applyFilter()">
+                        <select class="form-select" [class.readonly-select]="isDepartmentLocked"
+                            [attr.aria-disabled]="isDepartmentLocked" [attr.tabindex]="isDepartmentLocked ? -1 : null"
+                            [(ngModel)]="selectedDepartmentId" (change)="applyFilter()">
 
                             <option [ngValue]="null">
                                 -- เลือกหน่วยงาน --
@@ -244,7 +246,7 @@
     </div>
 
     <div class="modal-footer">
-        <button  class="btn btn-success text-black" (click)="savePlan(modal)">
+        <button class="btn btn-success text-black" (click)="savePlan(modal)">
             บันทึก
         </button>
         <button class="btn btn-danger text-black" (click)="modal.dismiss()">

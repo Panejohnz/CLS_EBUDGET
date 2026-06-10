@@ -15,7 +15,15 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
     EbudgetService
   ],
   templateUrl:
-    './reportResult.component.html'
+    './reportResult.component.html',
+  styles: [`
+    .readonly-select {
+      pointer-events: none;
+      background-color: var(--vz-secondary-bg, #e9ecef);
+      color: #6c757d;
+      opacity: 1;
+    }
+  `]
 })
 export class ReportResultComponent
   implements OnInit {
@@ -80,7 +88,25 @@ export class ReportResultComponent
   steps: any[] = []
   reportData: any[] = [];
   currentStepIndex = -1;
+  userSession: any;
+
+  get isDepartmentLocked(): boolean {
+    return this.userSession?.permissionData?.VIEW_DATA == 3;
+  }
+
   ngOnInit(): void {
+    const sessionStr = localStorage.getItem('userSession');
+
+    if (sessionStr) {
+      this.userSession = JSON.parse(sessionStr);
+    }
+
+    try {
+      if (this.userSession.permissionData.VIEW_DATA == 3) {
+        this.selectedDepartmentId = this.userSession.permissionData.Department_id;
+      }
+    } catch (error) {
+    }
 
     this.budgetYearService.yearChanged$
       .subscribe(async year => {
@@ -111,107 +137,56 @@ export class ReportResultComponent
         this.currentYear,
 
       Department_Id:
-        this.selectedDepartmentId || 0,
+        this.isDepartmentLocked
+          ? (this.selectedDepartmentId || 0)
+          : 0,
 
       Status_Id:
         7
 
     };
+
     this.servicebud
       .GatewayGetData(model)
       .subscribe((response: any) => {
 
-        this.allData =
 
-          Array.isArray(
-            response
-              ?.List_Budget_Plan_Data_Table
-              ?.Data
-          )
+        this.allData = Array.isArray(response.List_Budget_Plan_Data_Table.Data)
+          ? response.List_Budget_Plan_Data_Table.Data
+          : [];
+        this.department = Array.isArray(response.Mas_Department_Lists)
+          ? response.Mas_Department_Lists
+          : [];
 
-            ? response
-              .List_Budget_Plan_Data_Table
-              .Data
+        if (this.selectedDepartmentId != null) {
+          const matchedDepartment = this.department.find(
+            (item: any) => String(item.Department_Id) === String(this.selectedDepartmentId)
+          );
 
-            : [];
+          if (matchedDepartment) {
+            this.selectedDepartmentId = matchedDepartment.Department_Id;
+          }
+        }
 
-        this.griddataTemp = [
-
-          ...this.allData
-
-        ];
-
-        this.griddata = [
-
-          ...this.allData
-
-        ];
-
-        this.department =
-
-          Array.isArray(
-            response
-              ?.Mas_Department_Lists
-          )
-
-            ? response
-              .Mas_Department_Lists
-
-            : [];
-
+        this.griddataTemp = [...this.allData];
+        this.griddata = [...this.allData];
+        this.applyFilter();
       });
 
   }
 
   applyFilter() {
+    let data = [
+      ...this.griddataTemp
+    ];
 
-    const model = {
+    if (this.selectedDepartmentId) {
+      data = data.filter(
+        (x: any) => x.Department_Id == this.selectedDepartmentId
+      );
+    }
 
-      FUNC_CODE:
-        'FUNC-Get_Budget_Plan_Moniter',
-
-      BgYear:
-        this.currentYear,
-
-      Department_Id:
-        this.selectedDepartmentId || 0,
-
-      Status_Id:
-        7
-
-    };
-
-    this.servicebud
-      .GatewayGetData(model)
-      .subscribe((response: any) => {
-
-        this.allData =
-
-          Array.isArray(
-            response
-              ?.List_Budget_Plan_Data_Table
-              ?.Data
-          )
-
-            ? response
-              .List_Budget_Plan_Data_Table
-              .Data
-
-            : [];
-
-        this.griddataTemp = [
-
-          ...this.allData
-
-        ];
-
-        this.griddata = [
-
-          ...this.allData
-
-        ];
-
-      });
+    this.griddata = data;
 
   }
   createQuarter() {
