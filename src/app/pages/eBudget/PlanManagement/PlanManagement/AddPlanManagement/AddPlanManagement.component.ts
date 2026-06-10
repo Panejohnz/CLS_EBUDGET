@@ -1682,7 +1682,7 @@ export class AddPlanManagementComponent
 
   getTotalMultiplier(item: any): any {
 
-    return this.model?.Budget_Plan.Total_Plan
+    return this.model?.Budget_Plan.Update_Amount
 
   }
 
