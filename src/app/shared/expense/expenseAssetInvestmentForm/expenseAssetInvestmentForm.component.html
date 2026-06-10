@@ -115,6 +115,10 @@
                                 (change)="onMaterialChange(item, $event, i)">
                             </ng-select>
 
+                            <input *ngIf="!isTextMode && isOtherDetail(item)" class="form-control form-control-sm mt-1"
+                                placeholder="ระบุรายการ" [(ngModel)]="item.customMaterialName"
+                                (ngModelChange)="updateDetailItems()">
+
                         </td>
 
                         <!-- standard in -->

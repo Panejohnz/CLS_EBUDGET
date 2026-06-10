@@ -64,8 +64,33 @@ export class ExpenseAssetInvestmentFormComponent {
   private currentExpenseTypeId: any = null;
   isTextMode = false;
 
+  get shouldDefaultStandardIn(): boolean {
+    return Number(this.currentExpenseTypeId || this.model?.selectedExpenseTypeId) !== 63;
+  }
+
   get shouldDefaultStandardOut(): boolean {
     return Number(this.currentExpenseTypeId || this.model?.selectedExpenseTypeId) === 63;
+  }
+
+  private getOtherDetailOption(): any {
+    return this.Mas_Expense_Detial_List.find(
+      (x: any) => x?.Expense_Detial_Name === 'อื่นๆ'
+    );
+  }
+
+  isOtherDetail(item: any): boolean {
+    const otherOption = this.getOtherDetailOption();
+    return Number(item?.material) === Number(otherOption?.Expense_Detial_Id);
+  }
+
+  private applyDefaultFlags(item: any): void {
+    if (item.standardIn == null) {
+      item.standardIn = this.shouldDefaultStandardIn;
+    }
+
+    if (item.standardOut == null) {
+      item.standardOut = this.shouldDefaultStandardOut;
+    }
   }
 
   ngOnInit() {
@@ -128,6 +153,14 @@ export class ExpenseAssetInvestmentFormComponent {
     item.materialName = obj?.Expense_Detial_Name || '';
     item.name = item.materialName;
 
+    if (this.isOtherDetail(item)) {
+      item.standardIn = false;
+      item.standardOut = true;
+    } else {
+      item.standardIn = this.shouldDefaultStandardIn;
+      item.standardOut = this.shouldDefaultStandardOut;
+    }
+
     const requestRate =
       obj?.Request_Rate ??
       obj?.request_rate ??
@@ -135,6 +168,10 @@ export class ExpenseAssetInvestmentFormComponent {
       0;
 
     item.price = Number(requestRate) || 0;
+
+    if (!this.isOtherDetail(item)) {
+      item.customMaterialName = '';
+    }
 
     this.calculate(index);
   }
@@ -269,8 +306,9 @@ export class ExpenseAssetInvestmentFormComponent {
       name: '',
       material: null,
       materialName: '',
+      customMaterialName: '',
 
-      standardIn: false,
+      standardIn: this.shouldDefaultStandardIn,
 
       standardOut: this.shouldDefaultStandardOut,
 
@@ -320,8 +358,12 @@ export class ExpenseAssetInvestmentFormComponent {
     this.items =
 
       rows.map((row: any) => {
+        const otherOption = this.getOtherDetailOption();
+        const isOtherRow = Number(row.Fk_Expense_Detail_Id) === Number(otherOption?.Expense_Detial_Id);
+        const hasPeopleTypeA = row.People_Type_A === 1 || row.People_Type_A === 0;
+        const hasPeopleTypeB = row.People_Type_B === 1 || row.People_Type_B === 0;
 
-        return {
+        const item = {
 
           requestItemId:
             row.Request_Item_Id || 0,
@@ -337,11 +379,18 @@ export class ExpenseAssetInvestmentFormComponent {
           materialName:
             row.Expense_Detail || '',
 
+          customMaterialName:
+            isOtherRow ? (row.Expense_Detail || '') : '',
+
           standardIn:
-            row.People_Type_A == 1,
+            isOtherRow
+              ? false
+              : (hasPeopleTypeA ? row.People_Type_A == 1 : this.shouldDefaultStandardIn),
 
           standardOut:
-            this.shouldDefaultStandardOut || row.People_Type_B == 1,
+            hasPeopleTypeB
+              ? (this.shouldDefaultStandardOut || row.People_Type_B == 1 || isOtherRow)
+              : (this.shouldDefaultStandardOut || isOtherRow),
           price:
             row.Price || 0,
 
@@ -364,6 +413,10 @@ export class ExpenseAssetInvestmentFormComponent {
             row.Reson || ''
 
         };
+
+        this.applyDefaultFlags(item);
+
+        return item;
 
       });
 
@@ -465,6 +518,12 @@ export class ExpenseAssetInvestmentFormComponent {
           Number(x.Expense_Detial_Id) ===
           Number(item.material)
       );
+      const isOtherDetail = this.isOtherDetail(item);
+      const expenseDetailName = this.isTextMode
+        ? (item.materialName || '')
+        : (isOtherDetail
+          ? (item.customMaterialName || '')
+          : (detail?.Expense_Detial_Name || item.materialName || item.name || ''));
 
       this.model.Budget_Request_Detail_Item.push({
 
@@ -478,9 +537,7 @@ export class ExpenseAssetInvestmentFormComponent {
           this.isTextMode ? 0 : (item.material || 0),
 
         Expense_Detail:
-          this.isTextMode
-            ? (item.materialName || '')
-            : (detail?.Expense_Detial_Name || item.materialName || item.name || ''),
+          expenseDetailName,
 
         Quantity:
           Number(item.qty?.toString().replace(/,/g, '') || 0),
