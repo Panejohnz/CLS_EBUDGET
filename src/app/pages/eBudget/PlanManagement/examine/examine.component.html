@@ -283,7 +283,7 @@
                                                     <td style="padding-left: 80px;">
 
                                                         <i class="ri-arrow-right-s-line me-1"
-                                                            *ngIf="!budget.expanded"></i>
+                                                            *ngIf="!budget.expanded"></i>aaa
 
                                                         <i class="ri-arrow-down-s-line me-1"
                                                             *ngIf="budget.expanded"></i>
@@ -434,36 +434,37 @@
 
                 <!-- FOOTER -->
         <tfoot class="table fw-bold" style="background-color: #556398; color: white;">
-
-                    <tr>
-
-                        <td class="text-end">
-                            รวมทั้งหมด
-                        </td>
-
-                        <!-- TOTAL REQUEST -->
-                        <td class="text-end fw-bold">
-
-                            {{ totalRequest | number:'1.2-2' }}
-
-                        </td>
-
-                        <td></td>
-
-                        <td></td>
-
-                        <td></td>
-
-                        <!-- TOTAL ALLOCATED -->
-                        <td class="text-end fw-bold">
-
-                            {{ totalAllocated | number:'1.2-2' }}
-
-                        </td>
-
-                    </tr>
-
-                </tfoot>
+        
+            <tr>
+        
+                <td class="text-end">
+                    รวมทั้งหมด
+                </td>
+        
+                <!-- TOTAL REQUEST -->
+                <td class="text-end fw-bold">
+        
+                    {{ totalRequest | number:'1.2-2' }}
+        
+                </td>
+        
+                <!-- TOTAL Adjust1 -->
+                <td class="text-end fw-bold">{{ totalAdjust1 | number:'1.2-2' }}</td>
+                <!-- TOTAL Adjust2 -->
+                <td class="text-end fw-bold">{{ totalAdjust2 | number:'1.2-2' }}</td>
+                <!-- TOTAL Adjust3 -->
+                <td class="text-end fw-bold">{{ totalAdjust3 | number:'1.2-2' }}</td>
+        
+                <!-- TOTAL ALLOCATED -->
+                <td class="text-end fw-bold">
+        
+                    {{ totalAllocated | number:'1.2-2' }}
+        
+                </td>
+        
+            </tr>
+        
+        </tfoot>
 
             </table>
 
