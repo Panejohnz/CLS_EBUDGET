@@ -104,9 +104,7 @@ export class ExpenseWitnessComponent {
       );
 
     if (rows.length == 0) {
-
       return;
-
     }
 
     this.list.forEach((item: any) => {

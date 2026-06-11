@@ -212,7 +212,13 @@ export class OtherExpenseProjectComponent {
     this.meetingCosts.push(newItem);
   }
 
-  removeCost(i: number) {
+  async removeCost(i: number) {
+
+    const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
+
+    if (!userConfirmed) {
+      return;
+    }
 
     this.meetingCosts.splice(i, 1)
 

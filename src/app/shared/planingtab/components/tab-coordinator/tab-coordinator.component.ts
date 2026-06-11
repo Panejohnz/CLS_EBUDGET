@@ -44,7 +44,13 @@ export class TabCoordinatorComponent implements OnChanges {
 
   }
 
-  removeContact(i: number) {
+  async removeContact(i: number) {
+
+    const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
+
+    if (!userConfirmed) {
+      return;
+    }
 
     this.model.Project_Coordinator.splice(i, 1);
 

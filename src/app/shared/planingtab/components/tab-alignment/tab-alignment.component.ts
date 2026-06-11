@@ -1030,7 +1030,13 @@ export class TabAlignmentComponent implements OnChanges {
     });
   }
 
-  removeSubStrategy(i: number, item: any) {
+  async removeSubStrategy(i: number, item: any) {
+
+    const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
+
+    if (!userConfirmed) {
+      return;
+    }
     if (!item.Project_Plan_Level1_Sub_Id) {
       this.subStrategies.splice(i, 1);
     }
@@ -1051,7 +1057,13 @@ export class TabAlignmentComponent implements OnChanges {
     });
   }
 
-  removePolicy(i: number) {
+  async removePolicy(i: number) {
+
+    const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
+
+    if (!userConfirmed) {
+      return;
+    }
     if (this.policyList.length > 1) {
       this.policyList.splice(i, 1);
     }
@@ -1064,7 +1076,13 @@ export class TabAlignmentComponent implements OnChanges {
     });
   }
 
-  removeUrgentPolicy(i: number) {
+  async removeUrgentPolicy(i: number) {
+
+    const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
+
+    if (!userConfirmed) {
+      return;
+    }
     this.urgentPolicies.splice(i, 1);
   }
 
@@ -1075,7 +1093,13 @@ export class TabAlignmentComponent implements OnChanges {
     });
   }
 
-  removeUrgentItem(i: number, j: number) {
+  async removeUrgentItem(i: number, j: number) {
+
+    const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
+
+    if (!userConfirmed) {
+      return;
+    }
     this.urgentPolicies[i].items.splice(j, 1);
   }
   addMidLongPolicy() {
@@ -1085,7 +1109,13 @@ export class TabAlignmentComponent implements OnChanges {
     });
   }
 
-  removeMidLongPolicy(i: number) {
+  async removeMidLongPolicy(i: number) {
+
+    const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
+
+    if (!userConfirmed) {
+      return;
+    }
     this.midLongPolicies.splice(i, 1);
   }
 
@@ -1096,7 +1126,13 @@ export class TabAlignmentComponent implements OnChanges {
     });
   }
 
-  removeMidLongItem(i: number, j: number) {
+  async removeMidLongItem(i: number, j: number) {
+
+    const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
+
+    if (!userConfirmed) {
+      return;
+    }
     this.midLongPolicies[i].items.splice(j, 1);
   }
   addCabinet() {
@@ -1105,7 +1141,13 @@ export class TabAlignmentComponent implements OnChanges {
     });
   }
 
-  removeCabinet(i: number, item: any) {
+  async removeCabinet(i: number, item: any) {
+
+    const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
+
+    if (!userConfirmed) {
+      return;
+    }
     if (!item.Project_Cabinet_Id) {
       this.model.Project_Cabinet.splice(i, 1);
       return
@@ -1125,7 +1167,13 @@ export class TabAlignmentComponent implements OnChanges {
     });
   }
 
-  removeSecurity(i: number, item: any) {
+  async removeSecurity(i: number, item: any) {
+
+    const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
+
+    if (!userConfirmed) {
+      return;
+    }
     if (!item.Project_Security_Id) {
       this.model.Project_Security.splice(i, 1);
       return
@@ -1148,7 +1196,13 @@ export class TabAlignmentComponent implements OnChanges {
     });
   }
 
-  removePpatPlan(i: number) {
+  async removePpatPlan(i: number) {
+
+    const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
+
+    if (!userConfirmed) {
+      return;
+    }
     this.ppatPlans.splice(i, 1);
   }
   callAPI(func: string, payload: any = {}) {

@@ -122,9 +122,7 @@ export class ExpenseCommitteeComponent {
 
     // ไม่มีข้อมูล
     if (rows.length == 0) {
-
       return;
-
     }
 
     // clear ก่อน
@@ -206,7 +204,13 @@ export class ExpenseCommitteeComponent {
 
     });
   }
-  removeItem(section: any, item: any) {
+  async removeItem(section: any, item: any) {
+
+    const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
+
+    if (!userConfirmed) {
+      return;
+    }
 
     section.items =
       section.items.filter(
