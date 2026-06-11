@@ -341,11 +341,32 @@ export class ReportResultComponent
 
               });
 
-            const detailList =
-              res?.Budget_Plan_Details || [];
+            const reportDetailList =
+              Array.isArray(res?.List_Report_Budget_Plan_Detail)
+                ? res.List_Report_Budget_Plan_Detail
+                : [];
 
+            const budgetDetailList =
+              Array.isArray(res?.Budget_Plan_Details)
+                ? res.Budget_Plan_Details
+                : [];
+
+            const detailList =
+              reportDetailList.length > 0
+                ? reportDetailList
+                : budgetDetailList;
             const monthList =
               res?.List_Report_Budget_Plan_Detail_Month || [];
+
+            console.log(
+              'List_Report_Budget_Plan_Detail',
+              detailList
+            );
+            console.log(
+              'List_Report_Budget_Plan_Detail_Month',
+              monthList
+            );
+
             const investList =
               res?.List_Report_Budget_Plan_Investment || [];
             const items = res.Project_Plan_Detail_Item || [];
@@ -359,6 +380,7 @@ export class ReportResultComponent
               : [];
             const activities = this.mapPlanDetail(details);
             this.mapItems(items, activities);
+            this.applyProjectReportData(activities, detailList, monthList);
 
             this.model.activities = activities;
 
@@ -381,63 +403,17 @@ export class ReportResultComponent
             this.Suggestions = Progress_list.Suggestions || ''
             this.Progress_Id = Progress_list.Progress_Id || 0
             this.selectedTri = Progress_list.Trimas_Id || null
-            if (detailList.length > 0) {
-              const detail = detailList[0];
+            this.reportData =
+              this.buildReportDataFromDetails(
+                detailList,
+                monthList,
+                data
+              );
 
-              const months = [
-                'Oct', 'Nov', 'Dec',
-                'Jan', 'Feb', 'Mar',
-                'Apr', 'May', 'Jun',
-                'Jul', 'Aug', 'Sep'
-              ];
-
-              months.forEach((month, index) => {
-                const q = Math.floor(index / 3);
-                const m = index % 3;
-
-                quarters[q][m] = {
-                  ...quarters[q][m],
-                  plan: detail[`${month}_Target`] || 0,
-                  actual: detail[`${month}_Amount`] || 0,
-                  resbill: detail[`${month}_Withdraw_Amount`] || 0
-                };
-              });
-            }
-
-            monthList.forEach((m: any) => {
-
-              const month =
-                quarters
-                  .flat()
-                  .find(
-                    (x: any) =>
-                      +x.monthId === +m.Month_Id
-                  );
-              if (month) {
-
-                month.planRemark =
-                  m.Plan || '';
-
-                month.noPlanRemark =
-                  m.NoPlan || '';
-
-              }
-
-            });
-
-            this.reportData.push({
-
-              activityId:
-                +data.Fk_Activity_Id || 0,
-
-              activity:
-                data.Activity_Name || '',
-
-              remark: '',
-
-              quarters
-
-            });
+            console.log(
+              'reportData after map',
+              this.reportData
+            );
             if (+data.Fk_Budget_Type === 3) {
 
               const investModel = {
@@ -522,6 +498,7 @@ export class ReportResultComponent
     return data.map(x => ({
 
       id: Number(x.Project_Detail_Id),
+      Project_Detail_Id: Number(x.Project_Detail_Id),
       name: x.Activity_Name,
       owner: x.Responsible,
 
@@ -668,12 +645,61 @@ export class ReportResultComponent
 
       item,
 
+      month:
+        monthData,
+
+      monthName:
+        monthData.monthName,
+
       quarterIndex:
         qIndex,
 
       monthIndex:
         mIndex
 
+    };
+
+    this.modalService.open(
+      modal,
+      {
+        backdrop: 'static'
+      }
+    );
+
+  }
+
+  openProjectMonthModal(
+    modal: any,
+    activity: any,
+    qIndex: number,
+    mIndex: number
+  ) {
+
+    const monthData =
+      activity.quarters?.[qIndex]?.months?.[mIndex];
+
+    if (!monthData) {
+      return;
+    }
+
+    monthData.monthId =
+      this.getMonthId(qIndex, mIndex);
+
+    monthData.monthName =
+      this.quarterMonths[qIndex][mIndex];
+
+    monthData.planRemark =
+      monthData.planRemark ?? monthData.Plan ?? '';
+
+    monthData.noPlanRemark =
+      monthData.noPlanRemark ?? monthData.NoPlan ?? '';
+
+    this.selectedMonth = {
+      item: activity,
+      month: monthData,
+      monthName: monthData.monthName,
+      quarterIndex: qIndex,
+      monthIndex: mIndex
     };
 
     this.modalService.open(
@@ -766,6 +792,10 @@ export class ReportResultComponent
   }
 
   buildDetailData() {
+    if (this.isProjectExpenseList(this.selectedItem)) {
+      return this.buildProjectDetailData();
+    }
+
     const months = [
       'Oct', 'Nov', 'Dec',
       'Jan', 'Feb', 'Mar',
@@ -803,11 +833,73 @@ export class ReportResultComponent
       return detail;
     });
   }
+
+  private buildProjectDetailData() {
+    const months = [
+      'Oct', 'Nov', 'Dec',
+      'Jan', 'Feb', 'Mar',
+      'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep'
+    ];
+
+    const activities =
+      this.flattenProjectActivities(this.model?.activities || []);
+
+    return activities.map((activity: any) => {
+      const allMonths =
+        (activity.quarters || [])
+          .flatMap((q: any) => q.months || []);
+
+      const detail: any = {
+        Report_Detail_Id: activity.Report_Detail_Id || 0,
+        Detail_Id: activity.Report_Detail_Id || 0,
+        BgYear: this.currentYear,
+        Fk_Activity_Id: activity.Project_Detail_Id || activity.id || 0,
+        Project_Detail_Id: activity.Project_Detail_Id || activity.id || 0,
+        Activity_Name: activity.name || '',
+        Sum_Used_Amount: 0
+      };
+
+      months.forEach((month, i) => {
+        const data = allMonths[i] || {};
+
+        detail[`${month}_Target`] =
+          data.budget || data.plan || 0;
+
+        detail[`${month}_Amount`] =
+          data.actual || 0;
+
+        detail[`${month}_Used_Amount`] = 0;
+
+        detail[`${month}_Withdraw_Amount`] =
+          data.resbill || 0;
+      });
+
+      detail.Sum_Target =
+        allMonths.reduce((sum: number, x: any) => sum + (+x?.budget || +x?.plan || 0), 0);
+
+      detail.Sum_Amount =
+        allMonths.reduce((sum: number, x: any) => sum + (+x?.actual || 0), 0);
+
+      detail.Sum_Withdraw_Amount =
+        allMonths.reduce((sum: number, x: any) => sum + (+x?.resbill || 0), 0);
+
+      return detail;
+    });
+  }
   buildMonthData() {
 
     const months: any[] = [];
+    const sourceItems =
+      this.isProjectExpenseList(this.selectedItem)
+        ? this.flattenProjectActivities(this.model?.activities || [])
+          .map((activity: any) => ({
+            reportDetailId: activity.Report_Detail_Id || 0,
+            quarters: (activity.quarters || []).map((q: any) => q.months || [])
+          }))
+        : this.reportData;
 
-    this.reportData.forEach(item => {
+    sourceItems.forEach(item => {
 
       item.quarters.forEach(
         (quarter: any[]) => {
@@ -825,30 +917,13 @@ export class ReportResultComponent
               }
 
               months.push({
-                BgYear:
-                  this.currentYear,
-
-                Fk_Plan_Id:
-                  +this.selectedItem?.Plan_Id || 0,
-
-                Fk_Activity_Id:
-                  item.activityId || 0,
-
-                Activity_Name:
-                  item.activity || '',
-
-                Month_Id:
-                  month.monthId,
-
-                Month_Name:
-                  month.monthName,
-
-                Plan:
-                  planRemark,
-
-                NoPlan:
-                  noPlanRemark
-
+                Report_Month_Id: month.Report_Month_Id || 0,
+                Fk_Report_Detail_Id: item.reportDetailId || month.Fk_Report_Detail_Id || 0,
+                BgYear: this.currentYear,
+                Month_Id: month.monthId,
+                Month_Name: month.monthName,
+                Plan: planRemark,
+                NoPlan: noPlanRemark
               });
 
             }
@@ -861,6 +936,181 @@ export class ReportResultComponent
 
     return months;
 
+  }
+
+  private buildReportDataFromDetails(
+    detailList: any[],
+    monthList: any[],
+    selectedPlan: any
+  ) {
+    const details =
+      detailList?.length
+        ? detailList
+        : [
+          {
+            Fk_Activity_Id: +selectedPlan?.Fk_Activity_Id || 0,
+            Activity_Name: selectedPlan?.Activity_Name || ''
+          }
+        ];
+    const monthFields = [
+      'Oct', 'Nov', 'Dec',
+      'Jan', 'Feb', 'Mar',
+      'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep'
+    ];
+
+    return details.map((detail: any) => {
+      const quarters: any[] = [
+        this.createQuarter(),
+        this.createQuarter(),
+        this.createQuarter(),
+        this.createQuarter()
+      ];
+      const reportDetailId =
+        this.getReportDetailId(detail);
+
+      quarters.forEach((q: any, qIndex: number) => {
+        q.forEach((m: any, mIndex: number) => {
+          m.monthId =
+            this.getMonthId(qIndex, mIndex);
+          m.monthName =
+            this.quarterMonths[qIndex][mIndex];
+        });
+      });
+
+      monthFields.forEach((month, index) => {
+        const q = Math.floor(index / 3);
+        const m = index % 3;
+        const monthData = quarters[q][m];
+        const reportMonth =
+          monthList.find((item: any) =>
+            Number(item.Month_Id || 0) === Number(monthData.monthId) &&
+            reportDetailId > 0 &&
+            Number(item.Fk_Report_Detail_Id || 0) === Number(reportDetailId)
+          );
+
+        quarters[q][m] = {
+          ...monthData,
+          plan: detail[`${month}_Target`] || 0,
+          actual: detail[`${month}_Amount`] || 0,
+          resbill: detail[`${month}_Withdraw_Amount`] || 0,
+          Report_Month_Id: reportMonth?.Report_Month_Id || 0,
+          Fk_Report_Detail_Id: reportMonth?.Fk_Report_Detail_Id || reportDetailId || 0,
+          Plan: reportMonth?.Plan || '',
+          NoPlan: reportMonth?.NoPlan || '',
+          planRemark: reportMonth?.Plan || '',
+          noPlanRemark: reportMonth?.NoPlan || ''
+        };
+      });
+
+      return {
+        activityId:
+          this.getDetailActivityId(detail) || +selectedPlan?.Fk_Activity_Id || 0,
+        reportDetailId,
+        activity:
+          detail.Activity_Name || selectedPlan?.Activity_Name || '',
+        remark: '',
+        quarters
+      };
+    });
+  }
+
+  private applyProjectReportData(
+    activities: any[],
+    detailList: any[],
+    monthList: any[]
+  ) {
+    const months = [
+      'Oct', 'Nov', 'Dec',
+      'Jan', 'Feb', 'Mar',
+      'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep'
+    ];
+
+    this.flattenProjectActivities(activities)
+      .forEach((activity: any, activityIndex: number) => {
+        const activityId =
+          Number(activity.Project_Detail_Id || activity.id || 0);
+
+        const detail =
+          detailList.find((item: any) =>
+            this.getDetailActivityId(item) === activityId
+          ) ||
+          detailList[activityIndex] ||
+          (detailList.length === 1 ? detailList[0] : null);
+
+        activity.Report_Detail_Id =
+          this.getReportDetailId(detail);
+
+        const allMonths =
+          (activity.quarters || [])
+            .flatMap((q: any) => q.months || []);
+
+        allMonths.forEach((month: any, index: number) => {
+          const qIndex = Math.floor(index / 3);
+          const mIndex = index % 3;
+          const monthName = months[index];
+          const monthId = this.getMonthId(qIndex, mIndex);
+
+          month.monthId = monthId;
+          month.monthName = this.quarterMonths[qIndex][mIndex];
+          month.plan = month.budget || 0;
+          month.actual = detail?.[`${monthName}_Amount`] || 0;
+          month.resbill = detail?.[`${monthName}_Withdraw_Amount`] || 0;
+
+          const reportMonth =
+            monthList.find((item: any) =>
+              Number(item.Month_Id || 0) === monthId &&
+              activity.Report_Detail_Id > 0 &&
+              Number(item.Fk_Report_Detail_Id || 0) === Number(activity.Report_Detail_Id)
+            );
+
+          month.Report_Month_Id =
+            reportMonth?.Report_Month_Id || 0;
+          month.Fk_Report_Detail_Id =
+            reportMonth?.Fk_Report_Detail_Id || activity.Report_Detail_Id || 0;
+          month.Plan = reportMonth?.Plan || '';
+          month.NoPlan = reportMonth?.NoPlan || '';
+          month.planRemark = month.Plan;
+          month.noPlanRemark = month.NoPlan;
+        });
+      });
+  }
+
+  hasMonthRemark(month: any): boolean {
+    return !!(
+      (month?.planRemark || month?.Plan || '').toString().trim() ||
+      (month?.noPlanRemark || month?.NoPlan || '').toString().trim()
+    );
+  }
+
+  private getDetailActivityId(detail: any): number {
+    return Number(
+      detail?.Fk_Activity_Id ||
+      detail?.Activity_Id ||
+      detail?.Project_Detail_Id ||
+      detail?.Fk_Project_Detail_Id ||
+      detail?.Fk_Project_Plan_Detail_Id ||
+      0
+    );
+  }
+
+  private getReportDetailId(detail: any): number {
+    return Number(
+      detail?.Report_Detail_Id ||
+      detail?.Report_Plan_Detail_Id ||
+      detail?.Report_Budget_Plan_Detail_Id ||
+      detail?.Budget_Plan_Detail_Id ||
+      detail?.Detail_Id ||
+      0
+    );
+  }
+
+  private flattenProjectActivities(activities: any[]): any[] {
+    return (activities || []).flatMap((activity: any) => [
+      activity,
+      ...(activity.SubActivities || [])
+    ]);
   }
   getGrandPlan() {
 
