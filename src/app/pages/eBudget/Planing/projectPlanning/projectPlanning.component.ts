@@ -262,6 +262,7 @@ export class ProjectPlanningComponent {
 
           this.project_planing = {
             ...(res.Project_Plan || {}),
+            Status_Id: res.Project_Plan?.Status_Id ?? data.Status_Id ?? 0,
             Project_Detail: res.Project_Detail || {},
             Project_Objective: res.Project_Objective || [],
             Project_Plan_Level1: res.Project_Plan_Level1 || [],
@@ -545,6 +546,14 @@ export class ProjectPlanningComponent {
   currentTab = 1;
   firstLoad = true;
 
+  get isSaveLocked(): boolean {
+    const data =
+      this.project_planing?.Project_Plan ||
+      this.project_planing;
+
+    return Number(data?.Status_Id || 0) > 1;
+  }
+
   goTab(tab: number) {
     this.currentTab = tab;
     this.firstLoad = false;
@@ -574,6 +583,10 @@ export class ProjectPlanningComponent {
   }
   Project_Plan: any
   async savePlan(modal: any) {
+    if (this.isSaveLocked) {
+      basicAlert('warning', '\u0e44\u0e21\u0e48\u0e2a\u0e32\u0e21\u0e32\u0e23\u0e16\u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01\u0e44\u0e14\u0e49', '');
+      return;
+    }
 
     const getId = (obj: any, key: string) =>
       typeof obj === 'object' ? obj?.[key] : obj;

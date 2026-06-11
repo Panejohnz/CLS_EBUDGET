@@ -238,7 +238,11 @@ export class ProjectBudgetProposalComponent {
 
           this.model = {
             Budget_Type: 1,
-            Budget_Request: res.Budget_Request || {},
+            Budget_Request: {
+              ...(res.Budget_Request || {}),
+              Status_Id: res.Budget_Request?.Status_Id ?? data.Status_Id ?? 0
+            },
+            Status_Id: res.Budget_Request?.Status_Id ?? data.Status_Id ?? 0,
             Budget_Request_Attach_File: this.mapFileUploadList(
               res.FILE_UPLOAD_List || res.Budget_Request_Attach_File || [],
               res.Budget_Request || {}
@@ -287,6 +291,7 @@ export class ProjectBudgetProposalComponent {
         Budget_Type: 1,
         Budget_Request: {},
         Budget_Request_Attach_File: [],
+        Status_Id: 0,
         Department_Id: this.selectedDepartmentId,
         Project_Plan: {},
 

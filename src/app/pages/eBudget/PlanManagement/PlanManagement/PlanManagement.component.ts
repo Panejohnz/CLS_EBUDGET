@@ -254,7 +254,12 @@ export class PlanManagementComponent {
           this.model = {
             Budget_Type: 1,
             Budget_Plan:
-              res.Budget_Plan || {},
+              {
+                ...(res.Budget_Plan || {}),
+                Status_Id: res.Budget_Plan?.Status_Id ?? data.Status_Id ?? 0
+              },
+            Status_Id:
+              res.Budget_Plan?.Status_Id ?? data.Status_Id ?? 0,
 
             Budget_Request_Detail_Item:
               res.Budget_Plan_Detail_Items || [],
@@ -379,6 +384,7 @@ export class PlanManagementComponent {
       this.model = {
         Budget_Type: 1,
         Budget_Plan: {},
+        Status_Id: 0,
 
         Department_Id:
           this.selectedDepartmentId,

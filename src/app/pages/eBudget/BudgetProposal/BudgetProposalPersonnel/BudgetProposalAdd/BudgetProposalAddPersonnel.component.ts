@@ -20,6 +20,14 @@ export class ProjectBudgetProposalAddPersonnelComponent {
     private budgetYearService: BudgetYearService
   ) { }
 
+  get isSaveLocked(): boolean {
+    return Number(
+      this.model?.Status_Id ||
+      this.model?.Budget_Request?.Status_Id ||
+      0
+    ) > 1;
+  }
+
   closeModal() {
 
     this.modalRef.dismiss();
@@ -461,6 +469,10 @@ export class ProjectBudgetProposalAddPersonnelComponent {
 
   }
   saveTarget(modal: any) {
+    if (this.isSaveLocked) {
+      basicAlert('warning', '\u0e44\u0e21\u0e48\u0e2a\u0e32\u0e21\u0e32\u0e23\u0e16\u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01\u0e44\u0e14\u0e49', '');
+      return;
+    }
 
     this.targetDetail =
       this.targetList.map((t: any) => ({
@@ -624,6 +636,10 @@ export class ProjectBudgetProposalAddPersonnelComponent {
   }
 
   async save() {
+    if (this.isSaveLocked) {
+      basicAlert('warning', '\u0e44\u0e21\u0e48\u0e2a\u0e32\u0e21\u0e32\u0e23\u0e16\u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01\u0e44\u0e14\u0e49', '');
+      return;
+    }
 
     const findById = (
       list: any[],

@@ -379,7 +379,7 @@
 
                 </button>
 
-                <button class="btn btn-success text-black" (click)="saveTarget(modal)">
+                <button class="btn btn-success text-black" [disabled]="isSaveLocked" (click)="saveTarget(modal)">
 
                     บันทึก
 
@@ -699,7 +699,7 @@
                     ยกเลิก
                 </button>
 
-                <button class="btn btn-success text-black" (click)="save()">
+                <button class="btn btn-success text-black" [disabled]="isSaveLocked" (click)="save()">
                     บันทึก
                 </button>
 

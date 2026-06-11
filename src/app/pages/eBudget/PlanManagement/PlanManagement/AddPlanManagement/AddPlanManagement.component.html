@@ -288,7 +288,7 @@
 
         </button>
 
-        <button class="btn btn-success text-black" (click)="save()">
+        <button class="btn btn-success text-black" [disabled]="isSaveLocked" (click)="save()">
 
             บันทึก
 
@@ -348,7 +348,7 @@
 
             </button>
 
-            <button class="btn btn-success text-black" (click)="saveMultiplier(modal)">
+            <button class="btn btn-success text-black" [disabled]="isSaveLocked" (click)="saveMultiplier(modal)">
 
                 บันทึก
 
@@ -612,7 +612,7 @@
 
             </button>
 
-            <button class="btn btn-success text-black" (click)="saveTarget(modal)">
+            <button class="btn btn-success text-black" [disabled]="isSaveLocked" (click)="saveTarget(modal)">
 
                 บันทึก
 
