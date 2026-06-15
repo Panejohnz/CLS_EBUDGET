@@ -26,8 +26,8 @@
                 </thead>
 
                 <tbody>
-                    <tr *ngFor="let item of kpis; let i = index">
-                        <td>{{i+1}}</td>
+                    <tr *ngFor="let item of pagedKpis; let i = index">
+                        <td>{{pageStartIndex + i}}</td>
                         <td>{{item.BgYear}}</td>
                         <td class="text-start">{{item.Indicators_Name}}</td>
                         <td>
@@ -39,6 +39,23 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+
+        <div class="row justify-content-md-between align-items-md-center mt-3">
+            <div class="col col-sm-6">
+                <div class="dataTables_info mb-2" role="status" aria-live="polite">
+                    แสดง {{ kpis.length ? pageStartIndex : 0 }} ถึง {{ kpis.length ? pageEndIndex : 0 }}
+                    จากทั้งหมด {{ kpis.length }} รายการ
+                </div>
+            </div>
+
+            <div class="col col-sm-6">
+                <div class="text-sm-right float-end listjs-pagination">
+                    <ngb-pagination [collectionSize]="kpis.length" [(page)]="sortService.page"
+                        [pageSize]="sortService.pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true">
+                    </ngb-pagination>
+                </div>
+            </div>
         </div>
     </div>
 </div>

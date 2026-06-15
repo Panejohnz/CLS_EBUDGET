@@ -19,6 +19,10 @@ import {
   BudgetYearService
 } from 'src/app/core/services/budget-year.service';
 
+import {
+  PaginationService
+} from 'src/app/core/services/pagination.service';
+
 @Component({
   selector: 'app-report-kpi',
   templateUrl: './reportKPI.component.html'
@@ -29,7 +33,8 @@ export class ReportKPIComponent implements OnInit {
     public servicebud: EbudgetService,
     private authService: AuthenticationService,
     private budgetYearService: BudgetYearService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    public sortService: PaginationService
   ) { }
 
   // =====================================
@@ -37,6 +42,27 @@ export class ReportKPIComponent implements OnInit {
   // =====================================
 
   kpis: any[] = [];
+
+  get pagedKpis(): any[] {
+    return this.sortService.changePage(this.kpis);
+  }
+
+  get pageStartIndex(): number {
+    const total = this.kpis.length;
+    const pageSize = Number(this.sortService.pageSize) || 1;
+    const currentPage = Math.max(1, Number(this.sortService.page) || 1);
+    const start = (currentPage - 1) * pageSize + 1;
+
+    return total ? Math.min(start, total) : 0;
+  }
+
+  get pageEndIndex(): number {
+    const total = this.kpis.length;
+    const pageSize = Number(this.sortService.pageSize) || 1;
+    const currentPage = Math.max(1, Number(this.sortService.page) || 1);
+
+    return total ? Math.min(currentPage * pageSize, total) : 0;
+  }
 
   currentYear: any;
 
@@ -75,6 +101,9 @@ export class ReportKPIComponent implements OnInit {
   // =====================================
 
   ngOnInit(): void {
+
+    this.sortService.page = 1;
+    this.sortService.pageSize = 20;
 
     this.budgetYearService.yearChanged$
       .subscribe(async year => {
@@ -118,6 +147,8 @@ export class ReportKPIComponent implements OnInit {
 
           response
             ?.List_Mas_Indicator || [];
+
+        this.sortService.page = 1;
 
       });
 
