@@ -332,9 +332,9 @@
 
     }
 </style>
-<div class="card shadow-sm">
+<div class="card">
     <div class="card-header">
-        <h5 class="mb-0">รายงานผล</h5>
+        <h4 class="card-title mb-0 flex-grow-1">รายงานผล</h4>
     </div>
 
     <div class="card-body">
@@ -359,9 +359,9 @@
             </div>
         </div>
 
-        <div class="table-responsive">
+        <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
             <table class="table table-bordered align-middle text-center mb-0" style="table-layout: fixed;">
-                <thead class="text-center text-white sticky-header">
+                <thead class="text-center text-white sticky-header" style="background-color: #556398;">
 
                     <tr>
 
@@ -552,7 +552,7 @@
             <!-- BODY -->
             <div class="modal-body">
 
-                <div class="table-responsive">
+                <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
                     @if (isInvestmentBudgetType(selectedItem)) {
                     <div class="d-flex justify-content-between align-items-center mb-3">
 
@@ -992,7 +992,7 @@
                     <table class="table table-bordered align-middle text-center">
 
                         <!-- HEADER -->
-                        <thead class="table-light">
+                        <thead class="text-center text-white sticky-header" style="background-color: #556398;">
 
                             <tr>
 

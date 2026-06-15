@@ -447,24 +447,26 @@ export class ProjectBudgetProposalAddPersonnelComponent {
   async removeTargetRow(index: number, data: any) {
     const userConfirmed = await confirmAlert('info', 'ต้องการลบข้อมูล ?', '');
 
-    if (userConfirmed) {
-      if (data.Request_Detail_Id) {
-
-        const model = {
-          FUNC_CODE: "FUNC-Delete_Budget_Request_Detail",
-
-          Request_Detail_Id: data.Request_Detail_Id
-        };
-
-        this.serviceebud.GatewayGetData(model).subscribe(async () => {
-          this.targetList.splice(index, 1);
-
-
-        });
-      }
-    } else {
-      this.targetList.splice(index, 1);
+    if (!userConfirmed) {
+      return;
     }
+
+    if (!data?.Request_Detail_Id) {
+      this.targetList.splice(index, 1);
+      return;
+    }
+
+    const model = {
+      FUNC_CODE: "FUNC-Delete_Budget_Request_Detail",
+
+      Request_Detail_Id: data.Request_Detail_Id
+    };
+
+    this.serviceebud.GatewayGetData(model).subscribe(async () => {
+      this.targetList.splice(index, 1);
+
+
+    });
 
 
   }

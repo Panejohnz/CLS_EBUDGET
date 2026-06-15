@@ -13,13 +13,24 @@ export class PaginationService {
 
     // Pagination
     changePage(alldata: any[]) {
-        const startItem = (this.page - 1) * this.pageSize + 1;
-        const endItem = (this.page - 1) * this.pageSize + this.pageSize;
-        this.endIndex = endItem;
-        if (this.endIndex > alldata.length) {
-            this.endIndex = alldata.length;
+        const rows = alldata || [];
+        const total = rows.length;
+        const pageSizeNumber = Number(this.pageSize) || 1;
+
+        if (!total) {
+            this.page = 1;
+            this.startIndex = 0;
+            this.endIndex = 0;
+            return [];
         }
-        return alldata.slice(startItem - 1, endItem);
+
+        const maxPage = Math.max(1, Math.ceil(total / pageSizeNumber));
+        const safePage = Math.min(Math.max(1, Number(this.page) || 1), maxPage);
+        this.page = safePage;
+        this.startIndex = (safePage - 1) * pageSizeNumber + 1;
+        this.endIndex = Math.min(safePage * pageSizeNumber, total);
+
+        return rows.slice(this.startIndex - 1, this.endIndex);
     }
 
     // Sort Data

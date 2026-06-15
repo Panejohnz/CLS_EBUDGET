@@ -79,9 +79,9 @@
                         </thead>
 
                         <tbody>
-                            @for(data of griddata; track $index){
+                            @for(data of pagedGriddata; track $index){
                             <tr>
-                                <td>{{$index + 1}}</td>
+                                <td>{{pageStartIndex + $index}}</td>
                                 <td>{{data.Department_Name}}</td>
 
                                 <td>
@@ -164,14 +164,14 @@
                 <div class="row justify-content-md-between align-items-md-center mt-2">
                     <div class="col col-sm-6">
                         <div class="dataTables_info mb-2 text-start">
-                            แสดง {{ service.startIndex }} ถึง {{ service.endIndex }}
-                            จากทั้งหมด {{ service.totalRecords }} รายการ
+                            แสดง {{ griddata.length ? pageStartIndex : 0 }} ถึง {{ griddata.length ? pageEndIndex : 0 }}
+                            จากทั้งหมด {{ griddata.length }} รายการ
                         </div>
                     </div>
                     <div class="col col-sm-6">
                         <div class="d-flex justify-content-sm-end">
-                            <ngb-pagination [collectionSize]="(total$ | async)!" [(page)]="service.page"
-                                [pageSize]="service.pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true">
+                            <ngb-pagination [collectionSize]="griddata.length" [(page)]="sortService.page"
+                                [pageSize]="sortService.pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true">
                             </ngb-pagination>
                         </div>
                     </div>
@@ -287,7 +287,7 @@
 
             <table class="table table-bordered align-middle text-center">
 
-                <thead class="sticky-header text-white" style="background:#556398;">
+                <thead class="text-center text-white sticky-header" style="background-color: #556398;">
 
                     <tr>
                         <th width="5%">

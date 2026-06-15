@@ -74,13 +74,23 @@ export class ProjectBudgetProposalComponent {
   }
 
   get pageStartIndex(): number {
-    return this.griddata.length
-      ? ((this.sortService.page - 1) * this.sortService.pageSize) + 1
-      : 0;
+    const total = this.griddata.length;
+    if (!total) return 0;
+
+    const pageSize = Number(this.sortService.pageSize) || 1;
+    const maxPage = Math.max(1, Math.ceil(total / pageSize));
+    const safePage = Math.min(Math.max(1, Number(this.sortService.page) || 1), maxPage);
+    return (safePage - 1) * pageSize + 1;
   }
 
   get pageEndIndex(): number {
-    return Math.min(this.sortService.page * this.sortService.pageSize, this.griddata.length);
+    const total = this.griddata.length;
+    if (!total) return 0;
+
+    const pageSize = Number(this.sortService.pageSize) || 1;
+    const maxPage = Math.max(1, Math.ceil(total / pageSize));
+    const safePage = Math.min(Math.max(1, Number(this.sortService.page) || 1), maxPage);
+    return Math.min(safePage * pageSize, total);
   }
 
   get Total(): number {
