@@ -70,16 +70,17 @@
 
                             <!-- <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-center" [(ngModel)]="item.qty"
                                 (ngModelChange)="calculate(i)"> -->
-                                     <input type="text" class="form-control form-control-sm text-center" [value]="displayInputNumber(item.qty)"
-                            (input)="formatInput($event, item, 'qty'); calculate(i)" inputmode="decimal">
+                            <input type="text" class="form-control form-control-sm text-center"
+                                [value]="displayInputNumber(item.qty)"
+                                (input)="formatInput($event, item, 'qty'); calculate(i)" inputmode="decimal">
 
 
                         </td>
-                   
+
                         <!-- unit -->
                         <td>
 
-                            <select class="form-select form-select-sm" [(ngModel)]="item.unit"
+                            <!-- <select class="form-select form-select-sm" [(ngModel)]="item.unit"
                                 (change)="updateDetailItems()">
 
                                 <option>คน</option>
@@ -92,8 +93,12 @@
 
                                 <option>เครื่อง</option>
 
-                            </select>
-
+                            </select> -->
+                            <ng-select appendTo="body" dropdownPosition="auto" (change)="updateDetailItems()"
+                                [items]="Mas_Unit_Lists" bindLabel="Unit_Name" bindValue="Unit_Id"
+                                [(ngModel)]="item.Unit" name="output_unit_{{i}}"
+                                placeholder="-- เลือกหน่วยนับ --" [clearable]="false">
+                            </ng-select>
                         </td>
 
                         <!-- month -->
@@ -101,7 +106,8 @@
 
                             <!-- <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-center" [(ngModel)]="item.month"
                                 (ngModelChange)="calculate(i)"> -->
-                            <input type="text" class="form-control form-control-sm text-center" [value]="displayInputNumber(item.month)"
+                            <input type="text" class="form-control form-control-sm text-center"
+                                [value]="displayInputNumber(item.month)"
                                 (input)="formatInput($event, item, 'month'); calculate(i)" inputmode="decimal">
 
                         </td>
@@ -111,7 +117,8 @@
 
                             <!-- <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.price"
                                 (ngModelChange)="calculate(i)"> -->
-                            <input type="text" class="form-control form-control-sm text-end pe-3" [value]="displayInputNumber(item.price)"
+                            <input type="text" class="form-control form-control-sm text-end pe-3"
+                                [value]="displayInputNumber(item.price)"
                                 (input)="formatInput($event, item, 'price'); calculate(i)" inputmode="decimal">
 
                         </td>
@@ -120,9 +127,9 @@
                         <!-- total -->
                         <td class="text-end fw-bold">
 
-                           {{
-item.total
-}}
+                            {{
+                            item.total
+                            }}
 
                         </td>
 

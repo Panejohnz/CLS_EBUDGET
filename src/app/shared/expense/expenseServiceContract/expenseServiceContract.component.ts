@@ -40,9 +40,21 @@ export class ExpenseServiceContractComponent {
     this.model.dismiss();
 
   }
-
+  allData: any
+  Mas_Unit_Lists: any
   bindData() {
+    let model = {
+      FUNC_CODE: "FUNC-Get_List_Mas_Unit",
+    }
+    var getData = this.serviceebud.GatewayGetData(model);
+    getData.subscribe((response: any) => {
 
+      this.allData = Array.isArray(response.List_Mas_Unit)
+        ? response.List_Mas_Unit
+        : [];
+      this.Mas_Unit_Lists = [...this.allData];
+
+    })
     const rows =
 
       this.model.Budget_Request_Detail_Item.filter(
@@ -77,22 +89,22 @@ export class ExpenseServiceContractComponent {
         name:
           row.Expense_Detail || '',
 
-    price:
-  this.formatNumber(row.Price),
+        price:
+          this.formatNumber(row.Price),
 
-    qty:
-  this.formatNumber(row.Quantity),
+        qty:
+          this.formatNumber(row.Quantity),
 
 
 
         unit:
           row.Unit_Name || 'คน',
 
- month:
-  this.formatNumber(row.Month),
+        month:
+          this.formatNumber(row.Month),
 
-     total:
-  this.formatNumber(row.Total),
+        total:
+          this.formatNumber(row.Total),
 
         file:
           null
@@ -107,76 +119,76 @@ export class ExpenseServiceContractComponent {
 
   formatNumber(value: any): string {
 
-  if (value === null || value === undefined || value === '') {
-    return '';
-  }
+    if (value === null || value === undefined || value === '') {
+      return '';
+    }
 
-  if (Number(value) === 0) {
-    return '';
-  }
+    if (Number(value) === 0) {
+      return '';
+    }
 
-  return Number(value).toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
-
-}
-
-formatInput(event: any, item: any, field: string): void {
-
-  let value = event.target.value;
-
-  // อนุญาตเฉพาะเลขและ .
-  value = value.replace(/[^0-9.]/g, '');
-
-  // กัน . ซ้ำ
-  const parts = value.split('.');
-
-  if (parts.length > 2) {
-
-    value = parts[0] + '.' + parts[1];
+    return Number(value).toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
 
   }
 
-  let integerPart = parts[0];
-  let decimalPart = parts[1];
+  formatInput(event: any, item: any, field: string): void {
 
-  // ลบ 0 นำหน้า
-  integerPart = integerPart.replace(/^0+(?!$)/, '');
+    let value = event.target.value;
 
-  // ใส่ comma
-  if (integerPart !== '') {
+    // อนุญาตเฉพาะเลขและ .
+    value = value.replace(/[^0-9.]/g, '');
 
-    integerPart = Number(integerPart).toLocaleString('en-US');
+    // กัน . ซ้ำ
+    const parts = value.split('.');
+
+    if (parts.length > 2) {
+
+      value = parts[0] + '.' + parts[1];
+
+    }
+
+    let integerPart = parts[0];
+    let decimalPart = parts[1];
+
+    // ลบ 0 นำหน้า
+    integerPart = integerPart.replace(/^0+(?!$)/, '');
+
+    // ใส่ comma
+    if (integerPart !== '') {
+
+      integerPart = Number(integerPart).toLocaleString('en-US');
+
+    }
+
+    // รวมกลับ
+    value = decimalPart !== undefined
+      ? `${integerPart}.${decimalPart}`
+      : integerPart;
+
+    item[field] = value;
+
+    event.target.value = value;
 
   }
 
-  // รวมกลับ
-  value = decimalPart !== undefined
-    ? `${integerPart}.${decimalPart}`
-    : integerPart;
+  displayInputNumber(value: any): string {
 
-  item[field] = value;
+    if (value === null || value === undefined || value === '') {
+      return '';
+    }
 
-  event.target.value = value;
+    const numericValue = Number(
+      value?.toString().replace(/,/g, '')
+    ) || 0;
 
-}
+    return numericValue === 0
+      ? ''
+      : value;
 
-displayInputNumber(value: any): string {
-
-  if (value === null || value === undefined || value === '') {
-    return '';
   }
-
-  const numericValue = Number(
-    value?.toString().replace(/,/g, '')
-  ) || 0;
-
-  return numericValue === 0
-    ? ''
-    : value;
-
-}
 
   newItem() {
 
@@ -225,34 +237,34 @@ displayInputNumber(value: any): string {
 
   }
 
-calculate(i: number) {
+  calculate(i: number) {
 
-  let item = this.items[i];
+    let item = this.items[i];
 
-  const price = Number(
-    item.price?.toString().replace(/,/g, '')
-  ) || 0;
+    const price = Number(
+      item.price?.toString().replace(/,/g, '')
+    ) || 0;
 
-  const qty = Number(
-    item.qty?.toString().replace(/,/g, '')
-  ) || 0;
+    const qty = Number(
+      item.qty?.toString().replace(/,/g, '')
+    ) || 0;
 
-  const month = Number(
-    item.month?.toString().replace(/,/g, '')
-  ) || 0;
+    const month = Number(
+      item.month?.toString().replace(/,/g, '')
+    ) || 0;
 
-  const total = price * qty * month;
+    const total = price * qty * month;
 
-  item.total = total.toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
+    item.total = total.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
 
-  this.calculateGrand();
+    this.calculateGrand();
 
-  this.updateDetailItems();
+    this.updateDetailItems();
 
-}
+  }
   // calculate(i: number) {
 
   //   let item = this.items[i];
@@ -271,27 +283,27 @@ calculate(i: number) {
 
   // }
 
-calculateGrand() {
+  calculateGrand() {
 
-  this.grandTotal =
+    this.grandTotal =
 
-    this.items.reduce(
+      this.items.reduce(
 
-      (sum: number, x: any) =>
+        (sum: number, x: any) =>
 
-        sum + (
+          sum + (
 
-          Number(
-            x.total?.toString().replace(/,/g, '')
-          ) || 0
+            Number(
+              x.total?.toString().replace(/,/g, '')
+            ) || 0
 
-        ),
+          ),
 
-      0
+        0
 
-    );
+      );
 
-}
+  }
 
   updateDetailItems() {
 
