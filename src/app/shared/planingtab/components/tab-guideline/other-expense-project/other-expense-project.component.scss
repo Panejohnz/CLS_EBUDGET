@@ -10,3 +10,23 @@
 .sticky-header tr:nth-child(2) th {
     top: 48px;
 }
+
+.multiplier-grid{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:10px 8px;
+}
+
+.multi-item{
+    display:grid;
+    grid-template-columns: 45px 1fr 110px;
+}
+
+.multi-no{
+    background:#b3cffa;
+    color:#0d4fb3;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}

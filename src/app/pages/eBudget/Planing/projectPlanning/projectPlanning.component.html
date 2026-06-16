@@ -244,16 +244,17 @@
         </div>
 
     </div>
-
+    <div style="height:10px"></div>
     <div class="modal-footer">
-        <button class="btn btn-success text-black" [disabled]="isSaveLocked" (click)="savePlan(modal)">
-            บันทึก
-        </button>
         <button class="btn btn-danger text-black" (click)="modal.dismiss()">
             ยกเลิก
         </button>
-    </div>
+        <button class="btn btn-success text-black" [disabled]="isSaveLocked" (click)="savePlan(modal)">
+            บันทึก
+        </button>
 
+    </div>
+    <div style="height:10px"></div>
 </ng-template>
 <ng-template #copyProjectModal let-modal>
 

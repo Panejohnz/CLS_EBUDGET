@@ -3,198 +3,215 @@
     <div class="card shadow-sm">
         <div class="card-body p-0">
 
-         
+      <div class="table-responsive" style="max-height:1000px; overflow-y:auto;">
 
-            <div class="table-responsive" style="max-height: 1000px; overflow-y: auto;">
-                <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
-                    <thead class="text-center text-white sticky-header" style="background-color: #556398;">
+    <table class="table table-bordered align-middle text-center">
 
-                    <tr class="table-light ">
+        <thead class="text-white sticky-header"
+                style="background-color:#556398;">
 
-                        <th rowspan="2" style="width:60px">
-                            ลำดับ
-                        </th>
+            <tr>
+                <th style="width:60px">ลำดับ</th>
 
-                        <th rowspan="2" style="width:250px">
-                            ค่าใช้จ่าย
-                        </th>
+                <th style="width:380px">
+                    ค่าใช้จ่าย
+                </th>
 
-                        <!-- เปลี่ยน colspan เป็น 12 -->
-                        <th colspan="18">รายละเอียดค่าใช้จ่าย</th>
+                <th>
+                    รายละเอียดค่าใช้จ่าย
+                </th>
 
-                        <th rowspan="2" style="width:140px">
-                            รวมทั้งสิ้น
-                        </th>
+                <th style="width:140px">
+                    รวมทั้งสิ้น
+                </th>
 
-                        <th rowspan="2" style="width:60px">ลบ</th>
+                <th style="width:60px">
+                    ลบ
+                </th>
+            </tr>
 
-                    </tr>
-                    <!-- แถวย่อย -->
-                    <tr>
-                        <th>1</th>
-                        <th>จำนวน</th>
-                        <th>หน่วยนับ</th>
-                        <th>2</th>
-                        <th>จำนวน</th>
-                        <th>หน่วยนับ</th>
-                        <th>3</th>
-                        <th>จำนวน</th>
-                        <th>หน่วยนับ</th>
-                        <th>4</th>
-                        <th>จำนวน</th>
-                        <th>หน่วยนับ</th>
-                        <th>5</th>
-                        <th>จำนวน</th>
-                        <th>หน่วยนับ</th>
-                        <th>6</th>
-                        <th>จำนวน</th>
-                        <th>หน่วยนับ</th>
+        </thead>
 
+        <tbody>
 
-                    </tr>
-                    </thead>
+            <tr *ngFor="let item of meetingCosts; let i=index">
 
-                    <tbody>
+                <!-- ลำดับ -->
+                <td class="fw-bold align-middle">
+                    {{ i + 1 }}
+                </td>
 
-                        <tr *ngFor="let item of meetingCosts; let i=index">
-                            <td class="fw-bold">
-                                {{i+1}}
-                            </td>
-                            <td class="text-start">
-                                <div *ngIf="model.Fk_Budget_Type == '3'" class="d-flex gap-3 mb-1">
+                <!-- ค่าใช้จ่าย -->
+                <td class="text-start">
 
-                                    <div class="form-check m-0">
-                                        <input type="checkbox" class="form-check-input" [(ngModel)]="item.isStandard"
-                                            name="standard_{{i}}">
-                                        <label class="form-check-label">ในมาตรฐาน</label>
-                                    </div>
+                    <textarea rows="2"
+                              class="form-control mb-2"
+                              [(ngModel)]="item.name"
+                              placeholder="ระบุค่าใช้จ่าย">
+                    </textarea>
 
-                                    <div class="form-check m-0">
-                                        <input type="checkbox" class="form-check-input" [(ngModel)]="item.isNonStandard"
-                                            name="nonstandard_{{i}}">
-                                        <label class="form-check-label">นอกมาตรฐาน</label>
-                                    </div>
+                    <div *ngIf="model.Fk_Budget_Type == '3'"
+                         class="d-flex gap-4 flex-wrap">
 
-                                </div>
-                                <textarea rows="2" class="form-control form-control-sm" [(ngModel)]="item.name"></textarea>
+                        <div class="form-check m-0">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   [(ngModel)]="item.isStandard"
+                                   name="standard_{{i}}">
 
-                            </td>
+                            <label class="form-check-label">
+                                ในมาตรฐาน
+                            </label>
+                        </div>
 
+                        <div class="form-check m-0">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   [(ngModel)]="item.isNonStandard"
+                                   name="nonstandard_{{i}}">
 
-                            <!-- ตัวคูณ 1 -->
+                            <label class="form-check-label">
+                                นอกมาตรฐาน
+                            </label>
+                        </div>
 
-                            <td class="bg-light fw-bold">1</td>
+                    </div>
 
-                        <td>
-                            <input type="text" class="form-control form-control-sm text-center"
-                                [ngModel]="formatNumber(item.times)" (input)="onNumberInput($event, item, 'times')">
-                        </td>
+                </td>
 
-                            <td><input type="text" class="form-control form-control-sm text-center"
-                                    placeholder="ระบุหน่วยนับ" [(ngModel)]="item.Unit_Name_Times">
-                            </td>
+                <!-- รายละเอียด -->
+                <td>
 
+                    <div class="multiplier-grid">
 
-                            <!-- ตัวคูณ 2 -->
+                        <!-- 1 -->
+                        <div class="multi-item">
+                            <span class="multi-no">1</span>
 
-                            <td class="bg-light fw-bold">2</td>
+                            <input class="form-control text-end"
+                                   [ngModel]="formatNumber(item.times)"  placeholder="ระบุจำนวน"
+                                   (input)="onNumberInput($event,item,'times')">
 
-                        <td>
-                            <input type="text" class="form-control form-control-sm text-center"
-                                [ngModel]="formatNumber(item.people)" (input)="onNumberInput($event, item, 'people')">
-                        </td>
+                            <input class="form-control text-center"
+                                   placeholder="ระบุหน่วยนับ"
+                                   [(ngModel)]="item.Unit_Name_Times">
+                        </div>
 
-                            <td><input type="text" class="form-control form-control-sm text-center"
-                                    placeholder="ระบุหน่วยนับ" [(ngModel)]="item.Unit_Name_People"></td>
+                        <!-- 2 -->
+                        <div class="multi-item">
+                            <span class="multi-no">2</span>
 
+                            <input class="form-control text-end"
+                                   [ngModel]="formatNumber(item.people)" placeholder="ระบุจำนวน"
+                                   (input)="onNumberInput($event,item,'people')">
 
-                            <!-- ตัวคูณ 3 -->
+                            <input class="form-control  text-center"
+                                   placeholder="ระบุหน่วยนับ"
+                                   [(ngModel)]="item.Unit_Name_People">
+                        </div>
 
-                            <td class="bg-light fw-bold">3</td>
+                        <!-- 3 -->
+                        <div class="multi-item">
+                            <span class="multi-no">3</span>
 
-                        <td>
-                            <input type="text" class="form-control form-control-sm text-center"
-                                [ngModel]="formatNumber(item.rate)" (input)="onNumberInput($event, item, 'rate')">
-                        </td>
+                            <input class="form-control  text-end"
+                                   [ngModel]="formatNumber(item.rate)" placeholder="ระบุจำนวน"
+                                   (input)="onNumberInput($event,item,'rate')">
 
-                            <td><input type="text" class="form-control form-control-sm text-center"
-                                    placeholder="ระบุหน่วยนับ" [(ngModel)]="item.Unit_Name_Rate">
-                            </td>
+                            <input class="form-control  text-center"
+                                   placeholder="ระบุหน่วยนับ"
+                                   [(ngModel)]="item.Unit_Name_Rate">
+                        </div>
 
+                        <!-- 4 -->
+                        <div class="multi-item">
+                            <span class="multi-no">4</span>
 
-                            <!-- ตัวคูณ 4 -->
+                            <input class="form-control  text-end"
+                                   [ngModel]="formatNumber(item.input3)" placeholder="ระบุจำนวน"
+                                   (input)="onNumberInput($event,item,'input3')">
 
-                            <td class="bg-light fw-bold">4</td>
+                            <input class="form-control text-center"
+                                   placeholder="ระบุหน่วยนับ"
+                                   [(ngModel)]="item.Unit_Name_input3">
+                        </div>
 
-                        <td>
-                            <input type="text" class="form-control form-control-sm text-center"
-                                [ngModel]="formatNumber(item.input3)" (input)="onNumberInput($event, item, 'input3')">
-                        </td>
+                        <!-- 5 -->
+                        <div class="multi-item">
+                            <span class="multi-no">5</span>
 
-                            <td>
-                                <input type="text" class="form-control form-control-sm text-center"
-                                    placeholder="ระบุหน่วยนับ" [(ngModel)]="item.Unit_Name_input3">
-                            </td>
+                            <input class="form-control  text-end"
+                                   [ngModel]="formatNumber(item.input4)" placeholder="ระบุจำนวน"
+                                   (input)="onNumberInput($event,item,'input4')">
 
+                            <input class="form-control  text-center"
+                                   placeholder="ระบุหน่วยนับ"
+                                   [(ngModel)]="item.Unit_Name_input4">
+                        </div>
 
-                            <!-- ตัวคูณ 5 -->
+                        <!-- 6 -->
+                        <div class="multi-item">
+                            <span class="multi-no">6</span>
 
-                            <td class="bg-light fw-bold">5</td>
+                            <input class="form-control  text-end"
+                                   [ngModel]="formatNumber(item.input5)" placeholder="ระบุจำนวน"
+                                   (input)="onNumberInput($event,item,'input5')">
 
-                        <td>
-                            <input type="text" class="form-control form-control-sm text-center"
-                                [ngModel]="formatNumber(item.input4)" (input)="onNumberInput($event, item, 'input4')">
-                        </td>
+                            <input class="form-control text-center"
+                                   placeholder="ระบุหน่วยนับ"
+                                   [(ngModel)]="item.Unit_Name_input5">
+                        </div>
 
-                            <td>
-                                <input type="text" class="form-control form-control-sm text-center"
-                                    placeholder="ระบุหน่วยนับ" [(ngModel)]="item.Unit_Name_input4">
-                            </td>
+                    </div>
 
-                            <!-- ตัวคูณ 6 -->
+                </td>
 
-                            <td class="bg-light fw-bold">6</td>
+                <!-- รวม -->
+                <td class="text-end fw-bold align-middle">
 
-                        <td>
-                            <input type="text" class="form-control form-control-sm"
-                                [ngModel]="formatNumber(item.input5)" (input)="onNumberInput($event, item, 'input5')">
-                        </td>
+                    {{ calcItemTotal(item)
+                        ? (calcItemTotal(item) | number:'1.2-2')
+                        : '0.00' }}
 
-                            <td>
-                                <input type="text" class="form-control form-control-sm text-center"
-                                    placeholder="ระบุหน่วยนับ" [(ngModel)]="item.Unit_Name_input5">
-                            </td>
+                </td>
 
-                            <td class="text-end fw-bold">
-                                {{ calcItemTotal(item) ? (calcItemTotal(item) | number:'1.2-2') : '' }}
-                            </td>
+                <!-- ลบ -->
+                <td class="align-middle">
 
+                    <button class="btn btn-sm btn-danger"
+                            (click)="removeCost(i)">
+                        🗑
+                    </button>
 
-                            <td>
+                </td>
 
-                                <button class="btn btn-sm btn-danger" (click)="removeCost(i)">
-                                    🗑
-                                </button>
+            </tr>
 
-                            </td>
+            <!-- รวมทั้งหมด -->
+            <tr style="background-color:#556398;">
 
-                        </tr>
-                        <tr class="table fw-bold" style="background-color: #556398;">
-                            <td colspan="20" class="text-end text-white">
-                                รวมทั้งสิ้น
-                            </td>
+                <td colspan="3"
+                    class="text-end text-white fw-bold">
 
-                            <td class="text-end text-white">
-                                {{ getTotal() | number:'1.2-2' }}
-                            </td>
+                    รวมทั้งสิ้น
 
-                            <td></td>
-                        </tr>
-                    </tbody>
+                </td>
 
-                </table>
+                <td class="text-end text-white fw-bold">
 
-            </div>
+                    {{ getTotal() | number:'1.2-2' }}
+
+                </td>
+
+                <td></td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
             <div class="p-2">
 
                 <button class="btn btn-success text-black btn-sm" (click)="addCost()">
