@@ -9,8 +9,7 @@
             <div class="flex-grow-1 border rounded-end p-3">
                 <div class="d-flex mb-2">
                     <input class="form-control me-2" [(ngModel)]="section.description"
-                        (ngModelChange)="updateDetailItems()"
-                        placeholder="คำอธิบายรายการ เช่น เดินทางไปประชุม เป็นต้น">
+                        (ngModelChange)="updateDetailItems()" placeholder="คำอธิบายรายการ เช่น เดินทางไปประชุม เป็นต้น">
 
                     <button class="btn btn-sm btn-outline-primary me-2" (click)="addDetail(section)">
                         + เพิ่มรายละเอียด
@@ -31,6 +30,7 @@
                                     <br>
                                     ระดับ
                                 </th>
+                                <th style="width:260px">รายการ</th>
                                 <th style="width:120px">ครั้ง</th>
                                 <th style="width:180px"></th>
                                 <th>ค่าเบี้ยเลี้ยง</th>
@@ -46,13 +46,27 @@
                             <ng-container *ngFor="let detail of section.details; let i=index">
                                 <tr>
                                     <td rowspan="4">
-                                        <select class="form-select" [(ngModel)]="detail.level"
+                                        <!-- <select class="form-select" [(ngModel)]="detail.level"
                                             (change)="updateDetailItems()">
                                             <option value="">--- ระดับ ---</option>
                                             <option value="8">ระดับ 8 ลงมา</option>
                                             <option value="9">ระดับ 9 ขึ้นไป</option>
                                             <option value="10">ระดับ 10 ขึ้นไป</option>
-                                        </select>
+                                        </select> -->
+                                        <ng-select appendTo="body" dropdownPosition="auto"
+                                            (change)="updateDetailItems()" [items]="Mas_Business_Level"
+                                            bindLabel="Level_Name" bindValue="Level_Id" [(ngModel)]="detail.level"
+                                            name="output_unit_{{i}}" placeholder="-- เลือกระดับ --" [clearable]="false">
+                                        </ng-select>
+                                    </td>
+
+                                    <td rowspan="4">
+                                        <ng-select appendTo="body" dropdownPosition="auto"
+                                            (change)="updateDetailItems()" [items]="Mas_Expense_Detial_List"
+                                            bindLabel="Expense_Detial_Name" bindValue="Expense_Detial_Id"
+                                            [(ngModel)]="detail.pairId" name="expense_detail_{{s}}_{{i}}"
+                                            placeholder="-- เลือกรายการ --" [clearable]="false">
+                                        </ng-select>
                                     </td>
 
                                     <td>
@@ -92,8 +106,7 @@
                                     </td>
 
                                     <td rowspan="4">
-                                        <button class="btn btn-sm btn-outline-danger"
-                                            (click)="removeDetail(section,i)">
+                                        <button class="btn btn-sm btn-outline-danger" (click)="removeDetail(section,i)">
                                             <i class="bx bx-trash"></i>
                                         </button>
                                     </td>
