@@ -58,6 +58,14 @@ export class SignoffMinistryBudgetProposalComponent {
     ];
     modalRef: any;
     total$!: Observable<number>;
+  get Total(): number {
+    return this.griddata.reduce(
+      (sum: number, item: any) =>
+        sum + Number(item.Total || item.budget || 0),
+      0
+    );
+  }
+
   get pagedGriddata(): any[] {
     return this.sortService.changePage(this.griddata);
   }

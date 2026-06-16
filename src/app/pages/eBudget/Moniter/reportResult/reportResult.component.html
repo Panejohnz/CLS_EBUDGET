@@ -509,6 +509,21 @@
                     </tr>
 
                 </tbody>
+                <tfoot>
+                    <tr style="font-weight: bold; background-color: #556398;">
+                        <td colspan="7" class="text-end text-white">รวมทั้งหมด</td>
+                        <td class="text-end text-white">
+                            {{ totalPlanBudget | number:'1.2-2' }}
+                        </td>
+                        <td class="text-end text-white">
+                            {{ totalUsedBudget | number:'1.2-2' }}
+                        </td>
+                        <td class="text-end text-white">
+                            {{ totalBalanceBudget | number:'1.2-2' }}
+                        </td>
+                        <td></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>

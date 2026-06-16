@@ -728,6 +728,14 @@ const plan =
     return rows.slice((safePage - 1) * this.pageSize, safePage * this.pageSize);
   }
 
+  get Total(): number {
+    return this.filteredRows.reduce(
+      (sum: number, item: any) =>
+        sum + Number(item.Transfer_Amount || 0),
+      0
+    );
+  }
+
   get pageStartIndex(): number {
     const total = this.filteredRows.length;
     if (!total) return 0;

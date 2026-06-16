@@ -250,6 +250,7 @@ async function cancelTracking() {
         inputAttributes: {
             "aria-label": "Type your message here"
         },
+       
     });
 
     return text;

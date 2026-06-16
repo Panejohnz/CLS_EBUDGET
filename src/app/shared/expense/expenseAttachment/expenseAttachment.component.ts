@@ -19,6 +19,14 @@ export class ExpenseAttachmentComponent {
     public servicebud: EbudgetService,
   ) { }
   @Input() model: any;
+  @Input() listKey = 'Budget_Request_Attach_File';
+  @Input() title = 'แนบไฟล์';
+  @Input() refModule = 'BUDGET_REQUEST';
+  @Input() refLevel = 'EXPENSE';
+  @Input() filterField = 'Fk_Expense_Id';
+  @Input() filterValue: any = null;
+  @Input() requestId: any = null;
+  @Input() deleteFuncCode = 'FUNC-Delete_Budget_Request_File';
 
   private currentExpenseTypeId: any = null;
 
@@ -36,12 +44,15 @@ export class ExpenseAttachmentComponent {
   }
 
   get files(): any[] {
-    if (!this.model?.Budget_Request_Attach_File) return [];
+    const list = this.attachmentList;
+    if (!list) return [];
 
-    return this.model.Budget_Request_Attach_File.filter(
+    const currentFilterValue = this.currentFilterValue;
+
+    return list.filter(
       (x: any) =>
-        Number(x.Fk_Expense_Id) ===
-        Number(this.model.selectedExpenseTypeId) &&
+        String(x?.[this.filterField] ?? '') ===
+        String(currentFilterValue ?? '') &&
         !x.Pending_Delete &&
         Number(x.Active ?? 1) !== 0
     );
@@ -54,7 +65,7 @@ export class ExpenseAttachmentComponent {
     const files = Array.from(input.files || []);
 
     files.forEach((file: File) => {
-      this.model.Budget_Request_Attach_File.push(
+      this.attachmentList.push(
         this.createAttachmentItem(file)
       );
     });
@@ -140,23 +151,31 @@ export class ExpenseAttachmentComponent {
   private ensureAttachmentList() {
     if (!this.model) return;
 
-    if (!Array.isArray(this.model.Budget_Request_Attach_File)) {
-      this.model.Budget_Request_Attach_File = [];
+    if (!Array.isArray(this.model[this.listKey])) {
+      this.model[this.listKey] = [];
     }
 
-    this.model.Budget_Request_Attach_File =
-      this.model.Budget_Request_Attach_File.map((item: any) =>
+    this.model[this.listKey] =
+      this.model[this.listKey].map((item: any) =>
         this.normalizeAttachmentItem(item)
       );
+  }
+
+  private get attachmentList(): any[] {
+    return this.model?.[this.listKey] || [];
+  }
+
+  private get currentFilterValue(): any {
+    return this.filterValue ?? this.model?.selectedExpenseTypeId ?? 0;
   }
 
   private createAttachmentItem(file: File): any {
     return this.normalizeAttachmentItem({
       Client_Attachment_Id: this.createClientAttachmentId(),
-      Ref_Module: 'BUDGET_REQUEST',
-      Ref_Level: 'EXPENSE',
-      Request_Id: this.model?.Budget_Request?.Request_Id || 0,
-      Fk_Expense_Id: this.model.selectedExpenseTypeId,
+      Ref_Module: this.refModule,
+      Ref_Level: this.refLevel,
+      Request_Id: this.requestId ?? this.model?.Budget_Request?.Request_Id ?? this.model?.Project_Id ?? 0,
+      [this.filterField]: this.currentFilterValue,
       Fk_Request_Detail_Item_Id: 0,
       Row_Guid: null,
       File_Name: file.name,
@@ -179,14 +198,16 @@ export class ExpenseAttachmentComponent {
         item?.CLIENT_ATTACHMENT_ID ||
         this.createClientAttachmentId(),
       Ref_Module:
-        item?.Ref_Module || item?.REF_MODULE || 'BUDGET_REQUEST',
+        item?.Ref_Module || item?.REF_MODULE || this.refModule,
       Ref_Level:
-        item?.Ref_Level || item?.REF_LEVEL || 'EXPENSE',
+        item?.Ref_Level || item?.REF_LEVEL || this.refLevel,
       Request_Id:
         item?.Request_Id ||
         item?.FK_REQUEST_ID ||
         item?.Fk_Request_Id ||
+        this.requestId ||
         this.model?.Budget_Request?.Request_Id ||
+        this.model?.Project_Id ||
         0,
       Fk_Expense_Id:
         item?.Fk_Expense_Id ??
@@ -194,6 +215,10 @@ export class ExpenseAttachmentComponent {
         item?.Expense_Id ??
         this.model?.selectedExpenseTypeId ??
         0,
+      TYPE_ID:
+        item?.TYPE_ID ?? item?.Type_Id ?? item?.type_id ?? 0,
+      FK_IDA:
+        item?.FK_IDA ?? item?.Fk_Ida ?? item?.fk_ida ?? 0,
       Fk_Request_Detail_Item_Id:
         item?.Fk_Request_Detail_Item_Id ||
         item?.FK_REQUEST_DETAIL_ITEM_ID ||
@@ -241,7 +266,11 @@ export class ExpenseAttachmentComponent {
       Pending_Delete:
         item?.Pending_Delete ?? false,
       file:
-        item?.file || null
+        item?.file || null,
+      [this.filterField]:
+        item?.[this.filterField] ??
+        item?.[this.filterField?.toUpperCase?.()] ??
+        this.currentFilterValue
     };
   }
 
@@ -279,13 +308,13 @@ export class ExpenseAttachmentComponent {
   }
 
   private deleteExistingFile(file: any) {
-    if (!file?.IDA) {
+    if (!file?.IDA || !this.deleteFuncCode) {
       this.markFileDeleted(file);
       return;
     }
 
     const model = {
-      FUNC_CODE: 'FUNC-Delete_Budget_Request_File',
+      FUNC_CODE: this.deleteFuncCode,
       IDA: file.IDA,
       Request_Id: file.Request_Id || this.model?.Budget_Request?.Request_Id || 0,
       Fk_Expense_Id: file.Fk_Expense_Id || this.model?.selectedExpenseTypeId || 0
@@ -307,10 +336,10 @@ export class ExpenseAttachmentComponent {
   }
 
   private removeFromAttachmentList(file: any) {
-    const realIndex = this.model.Budget_Request_Attach_File.indexOf(file);
+    const realIndex = this.attachmentList.indexOf(file);
 
     if (realIndex >= 0) {
-      this.model.Budget_Request_Attach_File.splice(realIndex, 1);
+      this.attachmentList.splice(realIndex, 1);
     }
   }
 

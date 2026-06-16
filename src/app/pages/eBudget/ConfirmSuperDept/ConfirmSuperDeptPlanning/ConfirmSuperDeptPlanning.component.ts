@@ -59,6 +59,14 @@ export class ConfirmSuperDeptPlanningComponent {
   ];
   modalRef: any;
   total$!: Observable<number>;
+  get Total(): number {
+    return this.griddata.reduce(
+      (sum: number, item: any) =>
+        sum + Number(item.Total || item.budget || 0),
+      0
+    );
+  }
+
   get pagedGriddata(): any[] {
     return this.sortService.changePage(this.griddata);
   }
@@ -179,15 +187,16 @@ export class ConfirmSuperDeptPlanningComponent {
   //   }
   // }
 
-  async CancelConfirm(projectId: number) {
+  async CancelConfirm(data: any) {
 
-    const userConfirmed = await confirmAlert(
-      'info',
-      'ต้องการยกเลิกการยืนยันโครงการ ?',
-      ''
-    );
+    const projectId = Number(data?.Project_Id || data || 0);
+    const remarkId = Number(data?.Remark_Id || data?.SignOff_Remark_Id || 0);
+    const cancelRemark = (await cancelTracking() || '').trim();
 
-    if (!userConfirmed) return;
+    if (!cancelRemark) {
+      basicAlert('warning', 'กรุณาระบุหมายเหตุ', '');
+      return;
+    }
 
     const payload = [
       {
@@ -195,10 +204,17 @@ export class ConfirmSuperDeptPlanningComponent {
         Status_Number: 8
       }
     ];
+    const SignOff_Remark = {
+      Remark_Id: remarkId,
+      Remark: cancelRemark,
+      Status_Id: 8,
+      Fk_Plan_Id: projectId
+    };
 
     let model = {
       FUNC_CODE: "FUNC-Cancel_Confirm_SuperDept_Project_Plan",
-      List_Project_Plan: payload
+      List_Project_Plan: payload,
+      SignOff_Remark: SignOff_Remark
     };
 
     this.serviceebud.GatewayGetData(model).subscribe((res: any) => {

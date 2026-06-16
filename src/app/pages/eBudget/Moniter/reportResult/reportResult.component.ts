@@ -55,6 +55,26 @@ export class ReportResultComponent
   Progress_Id: any
   selectedTri = null;
   Mas_Unit_Lists: any
+  get totalPlanBudget(): number {
+    return this.griddata.reduce(
+      (sum: number, item: any) =>
+        sum + Number(item.Total_Plan || 0),
+      0
+    );
+  }
+
+  get totalUsedBudget(): number {
+    return this.griddata.reduce(
+      (sum: number, item: any) =>
+        sum + Number(item.Total || 0),
+      0
+    );
+  }
+
+  get totalBalanceBudget(): number {
+    return this.totalPlanBudget - this.totalUsedBudget;
+  }
+
   Tri_lists = [
 
     {

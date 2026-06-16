@@ -53,11 +53,19 @@ export class TabGuidelineComponent {
       this.activities = this.model.activities;
       this.model.activities.forEach((act: any) => {
 
+        if (act.noBudget == null) {
+          act.noBudget = this.getDefaultNoBudget();
+        }
+
         if (act.SubActivities?.length) {
 
           let subSum = 0;
 
           act.SubActivities.forEach((sub: any) => {
+
+            if (sub.noBudget == null) {
+              sub.noBudget = act.noBudget;
+            }
 
             const subTotal = (sub.otherExpenses || []).reduce((sum: number, item: any) => {
               return sum + (item.total || item.Total || 0);
@@ -109,9 +117,12 @@ export class TabGuidelineComponent {
   selectedActivity: any;
 
   addActivity() {
+    const noBudget = this.getDefaultNoBudget();
+
     this.model.activities.push({
       name: '',
       owner: '',
+      noBudget,
       quarters: this.generateYear(),
       SubActivities: [],
       otherExpenses: []
@@ -131,6 +142,7 @@ export class TabGuidelineComponent {
     activity.SubActivities?.push({
       id: Date.now(),
       name: '',
+      noBudget: activity.noBudget ?? this.getDefaultNoBudget(),
       quarters: this.generateYear(),
       SubActivities: []
     });
@@ -693,5 +705,11 @@ export class TabGuidelineComponent {
 
     });
   }
+  private getDefaultNoBudget(): boolean {
+    const data = this.model?.Project_Plan || this.model;
+
+    return Number(data?.Used_BG) === 2;
+  }
+
   movingIndex: number | null = null;
 }

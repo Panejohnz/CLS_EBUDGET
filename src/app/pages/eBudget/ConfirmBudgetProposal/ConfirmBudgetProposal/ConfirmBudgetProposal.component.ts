@@ -59,6 +59,14 @@ export class ConfirmBudgetProposalComponent {
     ];
     modalRef: any;
     total$!: Observable<number>;
+  get Total(): number {
+    return this.griddata.reduce(
+      (sum: number, item: any) =>
+        sum + Number(item.Total || item.budget || 0),
+      0
+    );
+  }
+
   get pagedGriddata(): any[] {
     return this.sortService.changePage(this.griddata);
   }
@@ -179,25 +187,34 @@ export class ConfirmBudgetProposalComponent {
     //   }
     // }
 
-    async CancelConfirm(Request_Id: number) {
+    async CancelConfirm(data: any) {
 
-        const userConfirmed = await confirmAlert(
-            'info',
-            'ต้องการยกเลิกการยืนยันโครงการ ?',
-            ''
-        );
+        const requestId = Number(data?.Request_Id || data || 0);
+        const remarkId = Number(data?.Remark_Id || data?.SignOff_Remark_Id || 0);
+        const cancelRemark = (await cancelTracking() || '').trim();
 
-        if (!userConfirmed) return;
+        if (!cancelRemark) {
+            basicAlert('warning', 'กรุณาระบุหมายเหตุ', '');
+            return;
+        }
 
         const payload = [
             {
-                Request_Id: Request_Id
+                Request_Id: requestId
             }
         ];
+        const SignOff_Remark = {
+            Remark_Id: remarkId,
+            Remark: cancelRemark,
+            Status_Id: 8,
+            Fk_Request_Id: requestId,
+            Fk_Plan_Id: requestId
+        };
 
         let model = {
             FUNC_CODE: "FUNC-Cancel_Confirm_Budget_Request",
-            List_Budget_Request: payload
+            List_Budget_Request: payload,
+            SignOff_Remark: SignOff_Remark
         };
 
         this.serviceebud.GatewayGetData(model).subscribe((res: any) => {

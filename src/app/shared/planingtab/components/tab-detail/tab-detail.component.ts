@@ -62,6 +62,7 @@ export class TabDetailComponent implements OnInit, OnChanges {
     if (!this.model.Project_Detail || Array.isArray(this.model.Project_Detail)) {
       this.model.Project_Detail = {
         Principle: '',
+        PrincipleFiles: [],
         Area: '',
         Start_Date: '',
         End_Date: ''
@@ -69,6 +70,11 @@ export class TabDetailComponent implements OnInit, OnChanges {
     }
 
     this.projectDetail = this.model.Project_Detail;
+
+    if (!Array.isArray(this.projectDetail.PrincipleFiles)) {
+      this.projectDetail.PrincipleFiles = [];
+    }
+
     this.projectDetail.Start_Date =
       this.convertJsonDateToInput(this.projectDetail.Start_Date);
 
@@ -136,6 +142,10 @@ export class TabDetailComponent implements OnInit, OnChanges {
 
   projectDetail: any;
 
+  get projectId(): any {
+    return this.model?.Project_Id || 0;
+  }
+
   objectives!: any[];
 
   outputs!: any[];
@@ -148,6 +158,7 @@ export class TabDetailComponent implements OnInit, OnChanges {
 
 
   }
+
   convertJsonDateToInput(
     dateStr: any
   ): NgbDateStruct | null {

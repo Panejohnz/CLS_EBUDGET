@@ -247,6 +247,7 @@ export class ProjectBudgetProposalComponent {
         .subscribe((res: any) => {
 
           this.model = {
+            newdata: false,
             Budget_Type: 1,
             Budget_Request: {
               ...(res.Budget_Request || {}),
@@ -298,6 +299,7 @@ export class ProjectBudgetProposalComponent {
         });
     } else {
       this.model = {
+        newdata: true,
         Budget_Type: 1,
         Budget_Request: {},
         Budget_Request_Attach_File: [],

@@ -541,13 +541,24 @@ export class ProjectBudgetProposalAddPersonnelComponent {
     this.Is_Bureau_Indicator
   }
   Get_Dropdown_list() {
-
-    let model = {
-      FUNC_CODE: "FUNC-GET_Mas_Expense_List",
-      Mas_Expense_List: {
-        Fk_Expense_Type_Id: 1
+    let model: any
+    if (this.model.newdata) {
+      model = {
+        FUNC_CODE: "FUNC-GET_Mas_Expense_List_Not_Project",
+        Mas_Expense_List: {
+          Fk_Expense_Type_Id: 1
+        }
       }
-    };
+    } else {
+
+      model = {
+        FUNC_CODE: "FUNC-GET_Mas_Expense_List",
+        Mas_Expense_List: {
+          Fk_Expense_Type_Id: 1
+        }
+      };
+    }
+
 
     this.serviceebud.GatewayGetData(model)
       .subscribe((response: any) => {
@@ -1016,8 +1027,8 @@ export class ProjectBudgetProposalAddPersonnelComponent {
   }
 
   private applySavedRequestId(response: any) {
-    console.log('rew',response);
-    
+    console.log('rew', response);
+
     const requestId =
       response?.Request_Id ||
       response?.Budget_Request?.Request_Id ||

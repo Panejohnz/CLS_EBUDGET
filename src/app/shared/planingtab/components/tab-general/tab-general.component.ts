@@ -421,10 +421,14 @@ export class TabGeneralComponent {
       budget?.Budget_Type_Id;
   }
 
-  onBudgetChangebox() {
+  onBudgetChangebox(value?: number) {
+
+    if (value != null) {
+      this.data.Used_BG = Number(value);
+    }
 
     const isNoBudget =
-      this.data.Used_BG == 1;
+      Number(this.data.Used_BG) === 2;
 
     this.model.activities?.forEach((act: any) => {
 
@@ -444,6 +448,18 @@ export class TabGeneralComponent {
 
       act.SubActivities?.forEach((sub: any) => {
         sub.noBudget = isNoBudget;
+
+        if (isNoBudget) {
+
+          sub.quarters?.forEach((q: any) => {
+
+            q.months?.forEach((m: any) => {
+
+              m.budget = null;
+              m.selected = false;
+            });
+          });
+        }
       });
     });
   }
