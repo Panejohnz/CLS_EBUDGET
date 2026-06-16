@@ -31,6 +31,9 @@
     z-index: 99999 !important;
 }
 
+::ng-deep .ng-select.ng-select-disabled .ng-select-container {
+    background-color: #ebeff3 !important;
+}
 
 /* ส่วน content */
 .expense-body{
