@@ -19,6 +19,7 @@ export class ExpenseCopierRentComponent {
   ) { }
 
   items: any[] = [];
+  Mas_Expense_Detial_Rate_List: any[] = [];
 
   grandTotal: number = 0;
 
@@ -32,7 +33,7 @@ export class ExpenseCopierRentComponent {
 
     }
 
-    this.bindData();
+    this.loadExpenseRates();
 
   }
 
@@ -40,6 +41,87 @@ export class ExpenseCopierRentComponent {
 
     this.model.dismiss();
 
+  }
+
+  loadExpenseRates() {
+    let model = {
+      FUNC_CODE: "FUNC-Get_Mas_Expense_Rate",
+      Fk_Expense_Id: this.model.selectedExpenseTypeId
+    };
+
+    this.serviceebud.GatewayGetData(model)
+      .subscribe((response: any) => {
+        const expenseRateList =
+          response.List_Mas_Expense_Rate;
+
+        this.Mas_Expense_Detial_Rate_List =
+          Array.isArray(expenseRateList)
+            ? expenseRateList
+            : [];
+
+        this.bindData();
+        this.applyRatesToExistingRows();
+      }, () => {
+        this.bindData();
+      });
+  }
+
+  private normalizeText(value: any): string {
+    return (value ?? '').toString().trim().toLowerCase().replace(/\s+/g, '');
+  }
+
+  private getRateRowText(row: any): string {
+    return this.normalizeText([
+      row?.Expense_Detail,
+      row?.Expense_Name,
+      row?.Expense_Short_Name,
+      row?.Expense_Detial_Name,
+      row?.Expense_Detial_Short_Name,
+      row?.Rate_Name,
+      row?.Type_Name,
+      row?.Code
+    ].filter(Boolean).join(' '));
+  }
+
+  private getRowRate(row: any): number {
+    return Number(
+      row?.Expense_Rate ??
+      row?.Rate ??
+      row?.Price ??
+      row?.Total ??
+      0
+    ) || 0;
+  }
+
+  private getRateForType(type: any): number {
+    if (!type || type === 'other') {
+      return 0;
+    }
+
+    const typeText = this.normalizeText(type);
+    const byName = this.Mas_Expense_Detial_Rate_List.find((row: any) => {
+      const rateText = this.getRateRowText(row);
+
+      return rateText.includes(typeText);
+    });
+
+    const fallbackIndex = type === '5000' ? 0 : 1;
+    return this.getRowRate(byName ?? this.Mas_Expense_Detial_Rate_List[fallbackIndex]);
+  }
+
+  private applyRatesToExistingRows() {
+    this.items.forEach((item: any, index: number) => {
+      if (item.type === 'other' || Number(item.price) > 0) {
+        return;
+      }
+
+      const rate = this.getRateForType(item.type);
+
+      if (rate > 0) {
+        item.price = rate;
+        this.calculate(index);
+      }
+    });
   }
 
   bindData() {
@@ -134,6 +216,22 @@ export class ExpenseCopierRentComponent {
       this.newItem()
     );
 
+  }
+
+  onTypeChange(item: any, index: number) {
+    if (item.type === 'other') {
+      item.price = 0;
+      this.calculate(index);
+      return;
+    }
+
+    const rate = this.getRateForType(item.type);
+
+    if (rate > 0) {
+      item.price = rate;
+    }
+
+    this.calculate(index);
   }
   async removeItem(index: number) {
 

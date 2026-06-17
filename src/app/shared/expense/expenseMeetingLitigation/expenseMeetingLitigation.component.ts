@@ -23,6 +23,7 @@ export class ExpenseMeetingLitigationComponent {
   grandTotal = 0;
 
   meetingList: any[] = [];
+  Mas_Expense_Detial_Rate_List: any[] = [];
 
   // =========================
   // init
@@ -37,7 +38,7 @@ export class ExpenseMeetingLitigationComponent {
 
     }
 
-    this.bindData();
+    this.loadExpenseRates();
 
   }
 
@@ -45,6 +46,27 @@ export class ExpenseMeetingLitigationComponent {
 
     this.model.dismiss();
 
+  }
+
+  loadExpenseRates() {
+    let model = {
+      FUNC_CODE: "FUNC-Get_Mas_Expense_Rate",
+      Fk_Expense_Id: this.model.selectedExpenseTypeId
+    };
+
+    this.serviceebud.GatewayGetData(model)
+      .subscribe((response: any) => {
+        const expenseRateList =
+          response.List_Mas_Expense_Rate;
+
+        this.Mas_Expense_Detial_Rate_List =
+          Array.isArray(expenseRateList)
+            ? expenseRateList
+            : [];
+
+        this.bindData();
+        this.applyMasterRates();
+      });
   }
 
   // =========================
@@ -172,6 +194,67 @@ export class ExpenseMeetingLitigationComponent {
 
   }
 
+  private normalizeText(value: any): string {
+    return (value ?? '').toString().trim().toLowerCase().replace(/\s+/g, '');
+  }
+
+  private getRowRate(row: any): number {
+    return Number(
+      row?.Expense_Rate ??
+      row?.Rate ??
+      row?.Price ??
+      row?.Total ??
+      0
+    ) || 0;
+  }
+
+  private getRateRowText(row: any): string {
+    return this.normalizeText([
+      row?.Expense_Detail,
+      row?.Expense_Name,
+      row?.Expense_Short_Name,
+      row?.Expense_Detial_Name,
+      row?.Expense_Detial_Short_Name,
+      row?.Rate_Name,
+      row?.Type_Name,
+      row?.Position_Name,
+      row?.Code
+    ].filter(Boolean).join(' '));
+  }
+
+  private findRateRowForMeeting(row: any, index: number): any {
+    const rowName = this.normalizeText(row?.name);
+    const byName = this.Mas_Expense_Detial_Rate_List.find((rateRow: any) => {
+      const rateText = this.getRateRowText(rateRow);
+
+      return rateText &&
+        (
+          rowName.includes(rateText) ||
+          rateText.includes(rowName) ||
+          (rowName.includes('ประธาน') && rowName.includes('คนนอก') && rateText.includes('ประธาน') && rateText.includes('คนนอก')) ||
+          (rowName.includes('ประธาน') && rowName.includes('คนใน') && rateText.includes('ประธาน') && rateText.includes('คนใน')) ||
+          (rowName.includes('กรรมการ') && rateText.includes('กรรมการ'))
+        );
+    });
+
+    return byName ?? this.Mas_Expense_Detial_Rate_List[index];
+  }
+
+  private applyMasterRates() {
+    this.meetingList.forEach((row: any, index: number) => {
+      if (Number(row.rate) > 0 && Number(row.requestItemId) > 0) {
+        return;
+      }
+
+      const rateRow = this.findRateRowForMeeting(row, index);
+
+      if (rateRow) {
+        row.rate = this.getRowRate(rateRow);
+        this.calculate(row);
+      }
+    });
+  }
+
   // =========================
   // คำนวณ
   // =========================
@@ -202,6 +285,7 @@ export class ExpenseMeetingLitigationComponent {
       committee * row.meetingTotal;
 
     this.calculateGrandTotal();
+    this.updateDetailItems();
 
   }
   calculateGrandTotal() {

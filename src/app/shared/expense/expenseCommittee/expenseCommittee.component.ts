@@ -89,6 +89,7 @@ export class ExpenseCommitteeComponent {
     3: 350
 
   };
+  Mas_Expense_Detial_Rate_List: any[] = [];
 
   grandTotal = 0;
 
@@ -102,7 +103,7 @@ export class ExpenseCommitteeComponent {
 
     }
 
-    this.bindData();
+    this.loadExpenseRates();
 
   }
 
@@ -110,6 +111,96 @@ export class ExpenseCommitteeComponent {
 
     this.model.dismiss();
 
+  }
+
+  loadExpenseRates() {
+    let model = {
+      FUNC_CODE: "FUNC-Get_Mas_Expense_Rate",
+      Fk_Expense_Id: this.model.selectedExpenseTypeId
+    };
+
+    this.serviceebud.GatewayGetData(model)
+      .subscribe((response: any) => {
+        const expenseRateList =
+          response.List_Mas_Expense_Rate;
+
+        this.Mas_Expense_Detial_Rate_List =
+          Array.isArray(expenseRateList)
+            ? expenseRateList
+            : [];
+
+        this.applyRateConfig();
+        this.bindData();
+      });
+  }
+
+  private normalizeText(value: any): string {
+    return (value ?? '').toString().trim().toLowerCase().replace(/\s+/g, '');
+  }
+
+  private getRateRowText(row: any): string {
+    return this.normalizeText([
+      row?.Expense_Detail,
+      row?.Expense_Name,
+      row?.Expense_Short_Name,
+      row?.Expense_Detial_Name,
+      row?.Expense_Detial_Short_Name,
+      row?.Rate_Name,
+      row?.Type_Name,
+      row?.Position_Name,
+      row?.Code
+    ].filter(Boolean).join(' '));
+  }
+
+  private getRowRate(row: any): number {
+    return Number(
+      row?.Expense_Rate ??
+      row?.Rate ??
+      row?.Price ??
+      row?.Total ??
+      0
+    ) || 0;
+  }
+
+  private findRateRowByType(type: string, fallbackIndex: number): any {
+    const byName = this.Mas_Expense_Detial_Rate_List.find((row: any) => {
+      const text = this.getRateRowText(row);
+
+      if (type === '1') {
+        return text.includes('ประธาน') || text.includes('chairman');
+      }
+
+      if (type === '2') {
+        return (text.includes('กรรมการ') && !text.includes('คณะกรรมการ')) ||
+          text.includes('committee');
+      }
+
+      if (type === '3') {
+        return text.includes('คณะกรรมการ') || text.includes('board');
+      }
+
+      return false;
+    });
+
+    return byName ?? this.Mas_Expense_Detial_Rate_List[fallbackIndex];
+  }
+
+  private applyRateConfig() {
+    const chairmanRate = this.findRateRowByType('1', 0);
+    const committeeRate = this.findRateRowByType('2', 1);
+    const boardRate = this.findRateRowByType('3', 2);
+
+    if (chairmanRate) {
+      this.rateConfig[1] = this.getRowRate(chairmanRate);
+    }
+
+    if (committeeRate) {
+      this.rateConfig[2] = this.getRowRate(committeeRate);
+    }
+
+    if (boardRate) {
+      this.rateConfig[3] = this.getRowRate(boardRate);
+    }
   }
   bindData() {
 
@@ -170,6 +261,15 @@ export class ExpenseCommitteeComponent {
 
       });
 
+    });
+
+    this.sections.forEach((section: any) => {
+      section.items.forEach((item: any) => {
+        if ((!Number(item.rate)) && item.type) {
+          item.rate = this.rateConfig[item.type] || 0;
+          this.calculate(item);
+        }
+      });
     });
     this.model.Total = this.grandTotal;
     this.calculateGrand();

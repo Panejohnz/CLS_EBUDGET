@@ -75,7 +75,7 @@
                     <tr *ngFor="let item of expenseList; let i=index">
                         <td class="text-start">
                             <select class="form-select" [(ngModel)]="item.expenseType"
-                                (ngModelChange)="updateDetailItems()">
+                                (ngModelChange)="onExpenseTypeChange(item)">
                                 <option value="">--- ค่าใช้จ่าย ---</option>
                                 <option value="ค่าตอบแทนวิทยากร">ค่าตอบแทนวิทยากร</option>
                                 <option value="ค่าอาหารและเครื่องดื่ม">ค่าอาหารและเครื่องดื่ม</option>
