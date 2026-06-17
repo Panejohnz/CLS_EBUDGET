@@ -601,6 +601,15 @@ export class ProjectAllocationComponent implements OnInit {
 
       });
   }
+
+  removeBudgetItem(budget: any, item: any) {
+    if (!item?.isNewBudget || !Array.isArray(budget?.items)) {
+      return;
+    }
+
+    budget.items = budget.items.filter((row: any) => row !== item);
+  }
+
   onExpenseListChange(item: any, selected: any) {
     const selectedExpense = typeof selected === 'object'
       ? selected

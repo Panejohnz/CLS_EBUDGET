@@ -83,7 +83,7 @@
                         <tr class="table fw-bold" style="cursor:pointer; background-color: #dff5e4; color: #243524;"
                             (click)="plan.expanded = !plan.expanded">
 
-                            <td>
+                            <td class="text-start" style="padding-left: 12px;">
 
                                 <i class="ri-arrow-right-s-line me-1" *ngIf="!plan.expanded"></i>
 
@@ -148,7 +148,7 @@
                                 <tr class="table fw-bold" style="cursor:pointer; background-color: #f4e3f7; color: #3b2a3f;"
                                     (click)="product.expanded = !product.expanded">
 
-                                    <td class="ps-4">
+                                    <td class="text-start" style="padding-left: 36px;">
 
                                         <i class="ri-arrow-right-s-line me-1" *ngIf="!product.expanded"></i>
 
@@ -213,7 +213,7 @@
                                         <tr class="table fw-bold" style="cursor:pointer; background-color: #fff4c7; color: #3b3418;"
                                             (click)="activity.expanded = !activity.expanded">
 
-                                            <td class="ps-5">
+                                            <td class="text-start" style="padding-left: 60px;">
 
                                                 <i class="ri-arrow-right-s-line me-1" *ngIf="!activity.expanded"></i>
 
@@ -280,10 +280,10 @@
 
 
                                                      <!-- NAME -->
-                                                    <td style="padding-left: 80px;">
+                                                    <td class="text-start" style="padding-left: 80px;">
 
                                                         <i class="ri-arrow-right-s-line me-1"
-                                                            *ngIf="!budget.expanded"></i>aaa
+                                                            *ngIf="!budget.expanded"></i>
 
                                                         <i class="ri-arrow-down-s-line me-1"
                                                             *ngIf="budget.expanded"></i>
@@ -350,8 +350,8 @@
                                                     <tr *ngFor="let item of budget.items">
 
                                                              <!-- EXPENSE -->
-                                                        <td class="ps-3 text-start">
-                                                            <div style="padding-left: 100px;">
+                                                        <td class="text-start">
+                                                            <div style="padding-left: 108px;">
                                                                 - {{
                                                                 item.Expense_Name ||
                                                                 item.Expense_List ||
@@ -359,7 +359,7 @@
                                                                 }}
                                                             </div>
 
-                                                            <div class="small text-muted" style="padding-left: 100px;">
+                                                            <div class="small text-muted" style="padding-left: 108px;">
 
                                                                 {{
                                                                 item.Project_Name ||
