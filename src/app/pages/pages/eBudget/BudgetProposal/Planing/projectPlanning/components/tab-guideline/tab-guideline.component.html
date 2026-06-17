@@ -41,7 +41,7 @@
                                         {{ i + 1 }}
                                     </td>
                                     <td *ngIf="rowIndex === 0" rowspan="3" class="text-start">
-                                        <textarea rows="2" class="form-control form-control-sm mb-2"
+                                        <textarea rows="2" class="form-control mb-2"
                                             [(ngModel)]="act.name">
     </textarea>
 
@@ -76,7 +76,7 @@
                                         </td>
 
                                         <td>
-                                            <input type="number" class="form-control form-control-sm"
+                                            <input type="number" class="form-control"
                                                 [(ngModel)]="q.months[rowIndex].budget"
                                                 (ngModelChange)="onBudgetChange(q.months[rowIndex])">
                                         </td>
@@ -103,7 +103,7 @@
 
                                             <label class="mb-0">ผู้รับผิดชอบ</label>
 
-                                            <input type="text" class="form-control form-control-sm" style="width:220px"
+                                            <input type="text" class="form-control" style="width:220px"
                                                 [(ngModel)]="act.owner">
 
                                             <button class="btn btn-sm btn-primary" (click)="addSub(act)">
@@ -136,7 +136,7 @@
 
                                         <td *ngIf="rowIndex === 0" rowspan="3" class="text-start">
 
-                                            <textarea rows="2" class="form-control form-control-sm mb-2"
+                                            <textarea rows="2" class="form-control mb-2"
                                                 [(ngModel)]="sub.name">    </textarea>
 
                                             <div class="d-flex gap-3 mb-2">
@@ -171,7 +171,7 @@
                                             </td>
 
                                             <td>
-                                                <input type="number" class="form-control form-control-sm"
+                                                <input type="number" class="form-control"
                                                     [(ngModel)]="q.months[rowIndex].budget"
                                                     (ngModelChange)="onBudgetChange(q.months[rowIndex])">
                                             </td>
@@ -231,7 +231,7 @@
 
 <ng-template #fullDataModal let-modal>
     <div class="modal-header">
-        <h5 class="modal-title">แบบฟอร์มตัวคูณ</h5>
+        <h5 class="modal-title">แบบฟอร์มกำหนดตัวคูณของกิจกรรม</h5>
         <button type="button" class="btn-close" (click)="modal.dismiss('Close click')"></button>
     </div>
 

@@ -1,6 +1,6 @@
-<div class="card shadow-sm">
+<div class="card">
   <div class="card-header d-flex justify-content-between align-items-center">
-    <h5 class="mb-0">ความสอดคล้องกับแผนแม่บทภายใต้ยุทธศาสตร์ชาติ (Y)</h5>
+    <h4 class="card-title mb-0 flex-grow-1">ความสอดคล้องกับแผนแม่บทภายใต้ยุทธศาสตร์ชาติ (Y)</h4>
     <button type="button" class="btn btn-outline-secondary btn-sm" (click)="goBackToPlan()">กลับหน้าแผนงาน</button>
   </div>
   <div class="card-body">
@@ -103,7 +103,7 @@
         <div class="row justify-content-md-between align-items-md-center mt-2">
           <div class="col col-sm-6">
             <div class="dataTables_info mb-2 text-start">
-              แสดง {{ planPagination.startIndex }} ถึง {{ planPagination.endIndex }}
+              แสดง {{ planPagination.total ? planPagination.startIndex : 0 }} ถึง {{ planPagination.total ? planPagination.endIndex : 0 }}
               จากทั้งหมด {{ planPagination.total }} รายการ
             </div>
           </div>
@@ -177,7 +177,7 @@
         <div class="row justify-content-md-between align-items-md-center mt-2">
           <div class="col col-sm-6">
             <div class="dataTables_info mb-2 text-start">
-              แสดง {{ goalPagination.startIndex }} ถึง {{ goalPagination.endIndex }}
+              แสดง {{ goalPagination.total ? goalPagination.startIndex : 0 }} ถึง {{ goalPagination.total ? goalPagination.endIndex : 0 }}
               จากทั้งหมด {{ goalPagination.total }} รายการ
             </div>
           </div>
@@ -255,7 +255,7 @@
         <div class="row justify-content-md-between align-items-md-center mt-2">
           <div class="col col-sm-6">
             <div class="dataTables_info mb-2 text-start">
-              แสดง {{ tacticPagination.startIndex }} ถึง {{ tacticPagination.endIndex }}
+              แสดง {{ tacticPagination.total ? tacticPagination.startIndex : 0 }} ถึง {{ tacticPagination.total ? tacticPagination.endIndex : 0 }}
               จากทั้งหมด {{ tacticPagination.total }} รายการ
             </div>
           </div>
@@ -286,9 +286,9 @@
           </div>
         </div>
 
-        <div class="table-responsive">
+        <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
           <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
-            <thead class="text-center text-white sticky-header">
+            <thead class="text-center text-white sticky-header" style="background-color: #556398;">
               <tr>
                 <th style="width:5%">ลำดับ</th>
                 <!-- <th style="width:15%">ประเด็น</th> -->
@@ -330,7 +330,7 @@
         <div class="row justify-content-md-between align-items-md-center mt-2">
           <div class="col col-sm-6">
             <div class="dataTables_info mb-2 text-start">
-              แสดง {{ subPlanPagination.startIndex }} ถึง {{ subPlanPagination.endIndex }}
+              แสดง {{ subPlanPagination.total ? subPlanPagination.startIndex : 0 }} ถึง {{ subPlanPagination.total ? subPlanPagination.endIndex : 0 }}
               จากทั้งหมด {{ subPlanPagination.total }} รายการ
             </div>
           </div>
@@ -361,9 +361,9 @@
           </div>
         </div>
 
-        <div class="table-responsive">
+        <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
           <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
-            <thead class="text-center text-white sticky-header">
+            <thead class="text-center text-white sticky-header" style="background-color: #556398;">
               <tr>
                 <th style="width:5%">ลำดับ</th>
                 <!-- <th style="width:12%">ประเด็น</th>
@@ -407,7 +407,7 @@
         <div class="row justify-content-md-between align-items-md-center mt-2">
           <div class="col col-sm-6">
             <div class="dataTables_info mb-2 text-start">
-              แสดง {{ subGoalPagination.startIndex }} ถึง {{ subGoalPagination.endIndex }}
+              แสดง {{ subGoalPagination.total ? subGoalPagination.startIndex : 0 }} ถึง {{ subGoalPagination.total ? subGoalPagination.endIndex : 0 }}
               จากทั้งหมด {{ subGoalPagination.total }} รายการ
             </div>
           </div>
@@ -438,9 +438,9 @@
           </div>
         </div>
 
-        <div class="table-responsive">
+        <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
           <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
-            <thead class="text-center text-white sticky-header">
+            <thead class="text-center text-white sticky-header" style="background-color: #556398;">
               <tr>
                 <th style="width:5%">ลำดับ</th>
                 <!-- <th style="width:12%">ประเด็น</th>
@@ -484,7 +484,7 @@
         <div class="row justify-content-md-between align-items-md-center mt-2">
           <div class="col col-sm-6">
             <div class="dataTables_info mb-2 text-start">
-              แสดง {{ guidelinePagination.startIndex }} ถึง {{ guidelinePagination.endIndex }}
+              แสดง {{ guidelinePagination.total ? guidelinePagination.startIndex : 0 }} ถึง {{ guidelinePagination.total ? guidelinePagination.endIndex : 0 }}
               จากทั้งหมด {{ guidelinePagination.total }} รายการ
             </div>
           </div>
@@ -510,9 +510,9 @@
           </div>
           <button class="btn btn-success text-black" (click)="openAddChainMainModal(addValueChainModal)">เพิ่มข้อมูล</button>
         </div>
-        <div class="table-responsive">
+        <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
           <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
-            <thead class="text-center text-white sticky-header">
+            <thead class="text-center text-white sticky-header" style="background-color: #556398;">
               <tr>
                 <th style="width:4%">ลำดับ</th>
                 <!-- <th style="width:12%">ประเด็น</th> -->
@@ -556,7 +556,7 @@
         <div class="row justify-content-md-between align-items-md-center mt-2">
           <div class="col col-sm-6">
             <div class="dataTables_info mb-2 text-start">
-              แสดง {{ chainMainPagination.startIndex }} ถึง {{ chainMainPagination.endIndex }}
+              แสดง {{ chainMainPagination.total ? chainMainPagination.startIndex : 0 }} ถึง {{ chainMainPagination.total ? chainMainPagination.endIndex : 0 }}
               จากทั้งหมด {{ chainMainPagination.total }} รายการ
             </div>
           </div>
@@ -582,9 +582,9 @@
           </div>
           <button class="btn btn-success text-black" (click)="openAddFactorMainModal(addValueChainFactorModal)">เพิ่มข้อมูล</button>
         </div>
-        <div class="table-responsive">
+        <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
           <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
-            <thead class="text-center text-white sticky-header">
+            <thead class="text-center text-white sticky-header" style="background-color: #556398;">
               <tr>
                 <th style="width:4%">ลำดับ</th>
                 <!-- <th style="width:12%">หลัก</th> -->
@@ -629,7 +629,7 @@
         <div class="row justify-content-md-between align-items-md-center mt-2">
           <div class="col col-sm-6">
             <div class="dataTables_info mb-2 text-start">
-              แสดง {{ factorMainPagination.startIndex }} ถึง {{ factorMainPagination.endIndex }}
+              แสดง {{ factorMainPagination.total ? factorMainPagination.startIndex : 0 }} ถึง {{ factorMainPagination.total ? factorMainPagination.endIndex : 0 }}
               จากทั้งหมด {{ factorMainPagination.total }} รายการ
             </div>
           </div>

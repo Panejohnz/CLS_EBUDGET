@@ -7,10 +7,10 @@
 
             <div class="card-body">
                 <br />
-                <div class="d-flex align-items-end mb-3">
+                <div class="row align-items-end">
 
                     <!-- หน่วยงาน -->
-                    <div style="width:300px;" class="me-3">
+                    <div class="col-lg-4">
                         <label class="form-label">หน่วยงาน</label>
                         <select class="form-select">
                             <option value="" disabled selected>-- เลือกหน่วยงาน --</option>
@@ -21,24 +21,30 @@
                     </div>
 
                     <!-- ค้นหา + ปุ่ม -->
-                    <div class="d-flex align-items-end gap-2 ms-auto">
+                    <div class="col-lg-8">
+                        <div class="d-flex justify-content-end align-items-end gap-2">
 
-                        <div style="width:300px;">
+                        <div style="width:250px;">
                             <label class="form-label">ค้นหา</label>
+                            <div class="search-box">
                             <input type="text" class="form-control" placeholder="ค้นหาโครงการ..."
                                 [(ngModel)]="service.searchTerm" (input)="filterSearch()">
+                                <i class="ri-search-line search-icon"></i>
+                            </div>
                         </div>
 
                         <button class="btn btn-success text-black" (click)="fullModal(fullDataModal,emptyplan)">
+                            <i class="ri-add-line me-1"></i>
                             เพิ่มคำขอ
                         </button>
 
+                        </div>
                     </div>
 
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-gridjs">
-                        <thead>
+                <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+                    <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+                        <thead class="text-center text-white sticky-header" style="background-color: #556398;">
                             <tr class="text-center">
 
                                 <th style="width:5%">ลำดับ</th>
@@ -56,13 +62,13 @@
                         </thead>
 
                         <tbody>
-                            @for(data of griddata; track $index){
+                            @for(data of pagedGriddata; track $index){
                             <tr>
 
                                 <!-- checkbox -->
 
 
-                                <td class="text-center">{{$index + 1}}</td>
+                                <td class="text-center">{{pageStartIndex + $index}}</td>
                                 <td class="text-center">{{data.department}}</td>
 
                                 <td>
@@ -111,19 +117,28 @@
                             </tr>
                             }
                         </tbody>
+                        <tfoot>
+                            <tr style="font-weight: bold; background-color: #556398;">
+                                <td colspan="7" class="text-end text-white">รวมทั้งหมด</td>
+                                <td class="text-end text-white">
+                                    {{ Total | number:'1.2-2' }}
+                                </td>
+                                <td colspan="3"></td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
                 <div class="row justify-content-md-between align-items-md-center mt-2">
                     <div class="col col-sm-6">
                         <div class="dataTables_info mb-2 text-start">
-                            แสดง {{ service.startIndex }} ถึง {{ service.endIndex }}
-                            จากทั้งหมด {{ service.totalRecords }} รายการ
+                            แสดง {{ griddata.length ? pageStartIndex : 0 }} ถึง {{ griddata.length ? pageEndIndex : 0 }}
+                            จากทั้งหมด {{ griddata.length }} รายการ
                         </div>
                     </div>
                     <div class="col col-sm-6">
                         <div class="d-flex justify-content-sm-end">
-                            <ngb-pagination [collectionSize]="(total$ | async)!" [(page)]="service.page"
-                                [pageSize]="service.pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true">
+                            <ngb-pagination [collectionSize]="griddata.length" [(page)]="sortService.page"
+                                [pageSize]="sortService.pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true">
                             </ngb-pagination>
                         </div>
                     </div>

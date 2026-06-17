@@ -728,14 +728,28 @@ const plan =
     return rows.slice((safePage - 1) * this.pageSize, safePage * this.pageSize);
   }
 
+  get Total(): number {
+    return this.filteredRows.reduce(
+      (sum: number, item: any) =>
+        sum + Number(item.Transfer_Amount || 0),
+      0
+    );
+  }
+
   get pageStartIndex(): number {
-    return this.filteredRows.length
-      ? (this.pagination.page - 1) * this.pageSize + 1
-      : 0;
+    const total = this.filteredRows.length;
+    if (!total) return 0;
+
+    const safePage = this.clampPage(this.pagination.page, total);
+    return (safePage - 1) * this.pageSize + 1;
   }
 
   get pageEndIndex(): number {
-    return Math.min(this.pagination.page * this.pageSize, this.filteredRows.length);
+    const total = this.filteredRows.length;
+    if (!total) return 0;
+
+    const safePage = this.clampPage(this.pagination.page, total);
+    return Math.min(safePage * this.pageSize, total);
   }
 
   onFilterChange(): void {

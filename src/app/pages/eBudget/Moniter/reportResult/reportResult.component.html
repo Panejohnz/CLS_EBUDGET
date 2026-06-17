@@ -257,6 +257,55 @@
         color: white;
     }
 
+    .activity-label-box {
+        border: 1px solid #d7deea;
+        border-left: 4px solid #556398;
+        border-radius: 8px;
+        background: #f8fbff;
+        padding: 10px 12px;
+    }
+
+    .activity-label-box.sub {
+        border-left-color: #7c9bbf;
+        background: #ffffff;
+    }
+
+    .activity-title {
+        color: #24324a;
+        font-weight: 700;
+        line-height: 1.45;
+        white-space: pre-line;
+        word-break: break-word;
+    }
+
+    .activity-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 8px;
+    }
+
+    .activity-pill {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        padding: 3px 9px;
+        font-size: 12px;
+        font-weight: 600;
+        background: #edf2f7;
+        color: #43526b;
+    }
+
+    .activity-pill.success {
+        background: #e8f7ef;
+        color: #18794e;
+    }
+
+    .activity-pill.muted {
+        background: #f1f3f5;
+        color: #6c757d;
+    }
+
     /* Responsive */
 
     @media (max-width: 768px) {
@@ -283,9 +332,9 @@
 
     }
 </style>
-<div class="card shadow-sm">
+<div class="card">
     <div class="card-header">
-        <h5 class="mb-0">รายงานผล</h5>
+        <h4 class="card-title mb-0 flex-grow-1">รายงานผล</h4>
     </div>
 
     <div class="card-body">
@@ -310,9 +359,9 @@
             </div>
         </div>
 
-        <div class="table-responsive">
+        <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
             <table class="table table-bordered align-middle text-center mb-0" style="table-layout: fixed;">
-                <thead class="text-center text-white sticky-header">
+                <thead class="text-center text-white sticky-header" style="background-color: #556398;">
 
                     <tr>
 
@@ -356,9 +405,9 @@
                             คงเหลือ
                         </th>
 
-                        <th style="width:10%">
+                        <!-- <th style="width:10%">
                             สถานะ
-                        </th>
+                        </th> -->
 
                         <th style="width:10%">
                             รายงานผล
@@ -422,8 +471,8 @@
 
                         <td class="text-end">
 
-                            {{data.Total || 0 | number:'1.2-2'}}
 
+                            {{data.Total || 0 | number:'1.2-2'}}
                         </td>
 
                         <td class="text-end">
@@ -439,11 +488,11 @@
 
                         </td>
 
-                        <td class="text-center">
+                        <!-- <td class="text-center">
 
                             {{data.Status_Name}}
 
-                        </td>
+                        </td> -->
 
                         <td class="text-center">
 
@@ -460,6 +509,21 @@
                     </tr>
 
                 </tbody>
+                <tfoot>
+                    <tr style="font-weight: bold; background-color: #556398;">
+                        <td colspan="7" class="text-end text-white">รวมทั้งหมด</td>
+                        <td class="text-end text-white">
+                            {{ totalPlanBudget | number:'1.2-2' }}
+                        </td>
+                        <td class="text-end text-white">
+                            {{ totalUsedBudget | number:'1.2-2' }}
+                        </td>
+                        <td class="text-end text-white">
+                            {{ totalBalanceBudget | number:'1.2-2' }}
+                        </td>
+                        <td></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
@@ -503,8 +567,8 @@
             <!-- BODY -->
             <div class="modal-body">
 
-                <div class="table-responsive">
-                    @if (['3'].includes(selectedItem.Fk_Budget_Type)) {
+                <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+                    @if (isInvestmentBudgetType(selectedItem)) {
                     <div class="d-flex justify-content-between align-items-center mb-3">
 
 
@@ -551,7 +615,7 @@
 
                     }
 
-                    @if (['64', '70', '73', '74', '75'].includes(selectedItem.Fk_Expense_List)) {
+                    @if (isProjectExpenseList(selectedItem)) {
 
                     <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
                         <!-- sticky header -->
@@ -559,18 +623,19 @@
                             <tr>
                                 <th rowspan="2" style="width:3%;">ลำดับ</th>
                                 <th rowspan="2" style="width:22%">กิจกรรม</th>
-                                <th colspan="3">ไตรมาส 1</th>
-                                <th colspan="3">ไตรมาส 2</th>
-                                <th colspan="3">ไตรมาส 3</th>
-                                <th colspan="3">ไตรมาส 4</th>
+                                <th colspan="4">ไตรมาส 1</th>
+                                <th colspan="4">ไตรมาส 2</th>
+                                <th colspan="4">ไตรมาส 3</th>
+                                <th colspan="4">ไตรมาส 4</th>
                                 <!-- <th rowspan="2">ลบ</th> -->
                             </tr>
 
                             <tr>
                                 <ng-container *ngFor="let i of [1,2,3,4]">
                                     <th style="width:2%">เดือน</th>
-                                    <th style="width:4%">แผนงาน</th>
                                     <th style="width:6%">แผนเงิน</th>
+                                    <th style="width:6%">ผลใช้จ่าย</th>
+                                    <th style="width:6%">ผลเบิกจ่าย</th>
                                 </ng-container>
                             </tr>
                         </thead>
@@ -606,49 +671,41 @@
                                             </div> -->
 
                                         </td>
-                                        <td *ngIf="rowIndex === 0" rowspan="3" class="text-start">
-                                            <textarea rows="2" class="form-control form-control-sm mb-2"
-                                                [(ngModel)]="act.name">
-                        </textarea>
-
-                                            <div class="d-flex gap-3 mb-2">
-
-                                                <div class="form-check m-0">
-                                                    <input type="radio" name="budget_{{i}}" [value]="false"
-                                                        [(ngModel)]="act.noBudget">
-                                                    <label class="form-check-label">ใช้งบ</label>
+                                        <td *ngIf="rowIndex === 0" rowspan="3" class="text-start align-top">
+                                            <div class="activity-label-box">
+                                                <div class="activity-title">
+                                                    {{ act.name || '-' }}
                                                 </div>
 
-                                                <div class="form-check m-0">
-                                                    <input type="radio" name="budget_{{i}}" [value]="true"
-                                                        [(ngModel)]="act.noBudget"
-                                                        (ngModelChange)="onBudgetChange(act)">
-                                                    <label class="form-check-label">ไม่ใช้งบ</label>
-                                                </div>
+                                                <div class="activity-meta">
+                                                    <span class="activity-pill" [class.success]="!act.noBudget"
+                                                        [class.muted]="act.noBudget">
+                                                        {{ act.noBudget ? 'ไม่ใช้งบ' : 'ใช้งบ' }}
+                                                    </span>
 
-                                                <div class="form-check m-0">
-                                                    <input type="checkbox" [(ngModel)]="act.consultSelf">
-                                                    ดำเนินการเอง
-                                                </div>
+                                                    <span class="activity-pill muted" *ngIf="act.consultSelf">
+                                                        ดำเนินการเอง
+                                                    </span>
 
-                                                <div class="form-check m-0">
-                                                    <input type="checkbox" [(ngModel)]="act.consultHire">
-                                                    จ้างที่ปรึกษา
-                                                </div>
+                                                    <span class="activity-pill muted" *ngIf="act.consultHire || act.consult">
+                                                        จ้างที่ปรึกษา
+                                                    </span>
 
+                                                    <span class="activity-pill muted" *ngIf="act.owner">
+                                                        ผู้รับผิดชอบ: {{ act.owner }}
+                                                    </span>
+                                                </div>
                                             </div>
                                         </td>
-
                                         <ng-container *ngFor="let q of act.quarters">
 
-                                            <td>{{ q.months[rowIndex].month }}</td>
+                                            <td class="fw-semibold text-primary" style="cursor:pointer"
+                                                (click)="openProjectMonthModal(monthModal, act, q.quarter - 1, rowIndex)">
+                                                {{ q.months[rowIndex].month }}
 
-                                            <td>
-                                                <div class="form-check d-flex justify-content-center">
-                                                    <input type="checkbox" class="form-check-input"
-                                                        [(ngModel)]="q.months[rowIndex].selected"
-                                                        (ngModelChange)="syncMainFromSub(act)">
-                                                </div>
+                                                <i *ngIf="hasMonthRemark(q.months[rowIndex])"
+                                                    class="ri-file-text-line text-success ms-1">
+                                                </i>
                                             </td>
 
                                             <td>
@@ -657,6 +714,16 @@
                                                     (input)="onInputFormat($event, q.months[rowIndex])"
                                                     (keypress)="allowOnlyNumber($event)"
                                                     [disabled]="act.noBudget || act.SubActivities?.length > 0">
+                                            </td>
+
+                                            <td>
+                                                <input class="form-control form-control-sm text-end"
+                                                    [(ngModel)]="q.months[rowIndex].actual">
+                                            </td>
+
+                                            <td>
+                                                <input class="form-control form-control-sm text-end"
+                                                    [(ngModel)]="q.months[rowIndex].resbill">
                                             </td>
 
                                         </ng-container>
@@ -674,7 +741,7 @@
 
                                 <!-- ส่วนล่างกิจกรรมหลัก -->
                                 <tr>
-                                    <td colspan="14" style="background-color: #556398;">
+                                    <td colspan="18" style="background-color: #556398;">
 
                                         <div class="d-flex justify-content-end align-items-center gap-2 flex-wrap">
 
@@ -721,48 +788,42 @@
                                             <td *ngIf="rowIndex === 0" rowspan="3">
                                                 {{ i + 1 }}.{{ subIndex + 1 }}
                                             </td>
+                                            <td *ngIf="rowIndex === 0" rowspan="3" class="text-start align-top">
 
-                                            <td *ngIf="rowIndex === 0" rowspan="3" class="text-start">
-
-                                                <textarea rows="2" class="form-control form-control-sm mb-2"
-                                                    [(ngModel)]="sub.name">
-                            </textarea>
-
-                                                <div class="d-flex gap-3 mb-2">
-
-                                                    <div class="form-check m-0">
-                                                        <input type="radio" [value]="false" [(ngModel)]="sub.noBudget">
-                                                        <label>ใช้งบ</label>
+                                                <div class="activity-label-box sub">
+                                                    <div class="activity-title">
+                                                        {{ sub.name || '-' }}
                                                     </div>
 
-                                                    <div class="form-check m-0">
-                                                        <input type="radio" [value]="true" [(ngModel)]="sub.noBudget">
-                                                        <label>ไม่ใช้งบ</label>
-                                                    </div>
+                                                    <div class="activity-meta">
+                                                        <span class="activity-pill" [class.success]="!sub.noBudget"
+                                                            [class.muted]="sub.noBudget">
+                                                            {{ sub.noBudget ? 'ไม่ใช้งบ' : 'ใช้งบ' }}
+                                                        </span>
 
-                                                    <div class="form-check m-0">
-                                                        <input type="checkbox" [(ngModel)]="sub.consultSelf">
-                                                        ดำเนินการเอง
-                                                    </div>
+                                                        <span class="activity-pill muted" *ngIf="sub.consultSelf">
+                                                            ดำเนินการเอง
+                                                        </span>
 
-                                                    <div class="form-check m-0">
-                                                        <input type="checkbox" [(ngModel)]="sub.consultHire">
-                                                        จ้างที่ปรึกษา
-                                                    </div>
+                                                        <span class="activity-pill muted" *ngIf="sub.consultHire || sub.consult">
+                                                            จ้างที่ปรึกษา
+                                                        </span>
 
+                                                        <span class="activity-pill muted" *ngIf="sub.owner">
+                                                            ผู้รับผิดชอบ: {{ sub.owner }}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </td>
-
                                             <ng-container *ngFor="let q of sub.quarters; let qIndex = index">
 
-                                                <td>{{ q.months[rowIndex].month }}</td>
+                                                <td class="fw-semibold text-primary" style="cursor:pointer"
+                                                    (click)="openProjectMonthModal(monthModal, sub, q.quarter - 1, rowIndex)">
+                                                    {{ q.months[rowIndex].month }}
 
-                                                <td>
-                                                    <div class="form-check d-flex justify-content-center">
-                                                        <input type="checkbox" class="form-check-input"
-                                                            [(ngModel)]="q.months[rowIndex].selected"
-                                                            (ngModelChange)="syncMainFromSub(act)">
-                                                    </div>
+                                                    <i *ngIf="hasMonthRemark(q.months[rowIndex])"
+                                                        class="ri-file-text-line text-success ms-1">
+                                                    </i>
                                                 </td>
 
                                                 <td>
@@ -770,6 +831,16 @@
                                                         [ngModel]="displayValue(q.months[rowIndex].budget)"
                                                         (input)="onSubBudgetChange($event, sub, qIndex, rowIndex)"
                                                         [disabled]="sub.noBudget">
+                                                </td>
+
+                                                <td>
+                                                    <input class="form-control form-control-sm text-end"
+                                                        [(ngModel)]="q.months[rowIndex].actual">
+                                                </td>
+
+                                                <td>
+                                                    <input class="form-control form-control-sm text-end"
+                                                        [(ngModel)]="q.months[rowIndex].resbill">
                                                 </td>
 
                                             </ng-container>
@@ -786,7 +857,7 @@
 
                                     <!-- ส่วนล่าง SubActivities -->
                                     <tr style="background-color: #E0E8F0;">
-                                        <td colspan="14">
+                                        <td colspan="18">
 
                                             <div class="d-flex justify-content-end align-items-center gap-2">
                                                 <!-- กลุ่มผู้รับผิดชอบ -->
@@ -936,10 +1007,16 @@
                     <table class="table table-bordered align-middle text-center">
 
                         <!-- HEADER -->
-                        <thead class="table-light">
+                        <thead class="text-center text-white sticky-header" style="background-color: #556398;">
 
                             <tr>
 
+
+                                <th rowspan="2" style="min-width: 220px;">
+
+                                    รายการ
+
+                                </th>
 
 
                                 <th colspan="4">
@@ -1029,6 +1106,15 @@
                                 <tr *ngFor="let m of quarterMonths[0]; let mi = index">
 
                                     <!-- ACTIVITY -->
+                                    <td *ngIf="mi === 0" [attr.rowspan]="3" class="text-start align-top">
+
+                                        <div class="activity-label-box">
+                                            <div class="activity-title">
+                                                {{ item.activity || '-' }}
+                                            </div>
+                                        </div>
+
+                                    </td>
 
 
                                     <!-- QUARTERS -->
@@ -1052,15 +1138,15 @@
                                         <td>
 
                                             <input class="form-control form-control-sm text-end"
-                                                [(ngModel)]="q[mi].plan">
+                                                [(ngModel)]="q[mi].actual">
 
                                         </td>
 
                                         <!-- ACTUAL -->
                                         <td>
-
                                             <input class="form-control form-control-sm text-end"
-                                                [(ngModel)]="q[mi].actual">
+                                                [(ngModel)]="q[mi].plan">
+
 
                                         </td>
 
@@ -1077,20 +1163,20 @@
                                     <!-- TOTAL PLAN -->
                                     <td *ngIf="mi === 0" [attr.rowspan]="3">
 
-                                        {{ getTotalPlan(item) | number }}
-
+                                        {{ getTotalActual(item) | number }}
                                     </td>
 
                                     <!-- TOTAL ACTUAL -->
                                     <td *ngIf="mi === 0" [attr.rowspan]="3">
+                                        {{ getTotalPlan(item) | number }}
 
-                                        {{ getTotalActual(item) | number }}
+
 
                                     </td>
-                                    <!-- <td *ngIf="mi === 0" [attr.rowspan]="3">
+                                    <td *ngIf="mi === 0" [attr.rowspan]="3">
 
                                         {{ getTotalWithdraw(item) | number }}
-                                    </td> -->
+                                    </td>
                                     <!-- REMARK -->
 
                                 </tr>
@@ -1111,11 +1197,12 @@
                                 </td>
 
                                 <td>
-                                    {{ getGrandPlan() | number }}
+                                    {{ getGrandActual() | number }}
                                 </td>
 
                                 <td>
-                                    {{ getGrandActual() | number }}
+
+                                    {{ getGrandPlan() | number }}
                                 </td>
 
                                 <td>
@@ -1167,11 +1254,7 @@
 
             รายละเอียดเดือน
 
-            {{
-            quarterMonths
-            [selectedMonth?.quarterIndex]
-            [selectedMonth?.monthIndex]
-            }}
+            {{ selectedMonth?.monthName }}
 
         </h5>
 
@@ -1192,12 +1275,7 @@
 
                 </label>
 
-                <textarea rows="6" class="form-control" [(ngModel)]="
-                        selectedMonth.item.quarters
-                        [selectedMonth.quarterIndex]
-                        [selectedMonth.monthIndex]
-                        .planRemark
-                    ">
+                <textarea rows="6" class="form-control" [(ngModel)]="selectedMonth.month.planRemark">
                 </textarea>
 
             </div>
@@ -1210,12 +1288,7 @@
 
                 </label>
 
-                <textarea rows="6" class="form-control" [(ngModel)]="
-                        selectedMonth.item.quarters
-                        [selectedMonth.quarterIndex]
-                        [selectedMonth.monthIndex]
-                        .noPlanRemark
-                    ">
+                <textarea rows="6" class="form-control" [(ngModel)]="selectedMonth.month.noPlanRemark">
                 </textarea>
 
             </div>

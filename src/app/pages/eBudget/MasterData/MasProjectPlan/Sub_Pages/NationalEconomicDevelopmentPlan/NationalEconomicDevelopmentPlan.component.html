@@ -1,6 +1,6 @@
-<div class="card shadow-sm">
+<div class="card">
   <div class="card-header d-flex justify-content-between align-items-center">
-    <h5 class="mb-0">ความสอดคล้องกับแผนปฏิบัติการราชการ ปปท (แผน 5 ปี)</h5>
+    <h4 class="card-title mb-0 flex-grow-1">ความสอดคล้องกับแผนปฏิบัติการราชการ ปปท (แผน 5 ปี)</h4>
     <button type="button" class="btn btn-outline-secondary btn-sm" (click)="goBackToPlan()">กลับหน้าแผนงาน</button>
   </div>
   <div class="card-body">
@@ -36,9 +36,9 @@
         </div>
         <button class="btn btn-success text-black" (click)="openAddPlanModal(addPlanModal)">เพิ่มข้อมูล</button>
       </div>
-      <div class="table-responsive">
+      <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
         <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
-          <thead class="text-center text-white sticky-header">
+          <thead class="text-center text-white sticky-header" style="background-color: #556398;">
             <tr>
               <th style="width:5%">ลำดับ</th>
               <th style="width:8%">ปีเริ่ม</th>
@@ -77,7 +77,7 @@
       <div class="row justify-content-md-between align-items-md-center mt-2">
         <div class="col col-sm-6">
           <div class="dataTables_info mb-2 text-start">
-            แสดง {{ planPagination.startIndex }} ถึง {{ planPagination.endIndex }}
+            แสดง {{ planPagination.total ? planPagination.startIndex : 0 }} ถึง {{ planPagination.total ? planPagination.endIndex : 0 }}
             จากทั้งหมด {{ planPagination.total }} รายการ
           </div>
         </div>
@@ -101,9 +101,9 @@
         </div>
         <button class="btn btn-success text-black" (click)="openAddGoalModal(addGoalModal)">เพิ่มข้อมูล</button>
       </div>
-      <div class="table-responsive">
+      <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
         <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
-          <thead class="text-center text-white sticky-header">
+          <thead class="text-center text-white sticky-header" style="background-color: #556398;">
             <tr>
               <th style="width:5%">ลำดับ</th>
               <th style="width:15%">แผนงานที่</th>
@@ -144,7 +144,7 @@
       <div class="row justify-content-md-between align-items-md-center mt-2">
         <div class="col col-sm-6">
           <div class="dataTables_info mb-2 text-start">
-            แสดง {{ goalPagination.startIndex }} ถึง {{ goalPagination.endIndex }}
+            แสดง {{ goalPagination.total ? goalPagination.startIndex : 0 }} ถึง {{ goalPagination.total ? goalPagination.endIndex : 0 }}
             จากทั้งหมด {{ goalPagination.total }} รายการ
           </div>
         </div>
@@ -168,9 +168,9 @@
         </div>
         <button class="btn btn-success text-black" (click)="openAddIndicatorModal(addIndicatorModal)">เพิ่มข้อมูล</button>
       </div>
-      <div class="table-responsive">
+      <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
         <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
-          <thead class="text-center text-white sticky-header">
+          <thead class="text-center text-white sticky-header" style="background-color: #556398;">
             <tr>
               <th style="width:5%">ลำดับ</th>
               <th style="width:18%">เป้าหมายที่</th>
@@ -212,7 +212,7 @@
       <div class="row justify-content-md-between align-items-md-center mt-2">
         <div class="col col-sm-6">
           <div class="dataTables_info mb-2 text-start">
-            แสดง {{ indicatorPagination.startIndex }} ถึง {{ indicatorPagination.endIndex }}
+            แสดง {{ indicatorPagination.total ? indicatorPagination.startIndex : 0 }} ถึง {{ indicatorPagination.total ? indicatorPagination.endIndex : 0 }}
             จากทั้งหมด {{ indicatorPagination.total }} รายการ
           </div>
         </div>
@@ -236,9 +236,9 @@
         </div>
         <button class="btn btn-success text-black" (click)="openAddGuidelineModal(addGuidelineModal)">เพิ่มข้อมูล</button>
       </div>
-      <div class="table-responsive">
+      <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
         <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
-          <thead class="text-center text-white sticky-header">
+          <thead class="text-center text-white sticky-header" style="background-color: #556398;">
             <tr>
               <th style="width:5%">ลำดับ</th>
               <th style="width:18%">เป้าหมายที่</th>
@@ -281,7 +281,7 @@
       <div class="row justify-content-md-between align-items-md-center mt-2">
         <div class="col col-sm-6">
           <div class="dataTables_info mb-2 text-start">
-            แสดง {{ guidelinePagination.startIndex }} ถึง {{ guidelinePagination.endIndex }}
+            แสดง {{ guidelinePagination.total ? guidelinePagination.startIndex : 0 }} ถึง {{ guidelinePagination.total ? guidelinePagination.endIndex : 0 }}
             จากทั้งหมด {{ guidelinePagination.total }} รายการ
           </div>
         </div>

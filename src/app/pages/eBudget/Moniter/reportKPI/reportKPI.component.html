@@ -8,15 +8,15 @@
     }
 </style>
 
-<div class="card shadow-sm">
+<div class="card">
     <div class="card-header">
-        <h5 class="mb-0">รายงานผลตามตัวชี้วัดแผนงาน</h5>
+        <h4 class="card-title mb-0 flex-grow-1">รายงานผลตามตัวชี้วัดแผนงาน</h4>
     </div>
 
     <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered text-center align-middle mb-0" style="table-layout: fixed;">
-                <thead class="text-center text-white sticky-header">
+        <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+            <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+                <thead class="text-center text-white sticky-header" style="background-color: #556398;">
                     <tr>
                         <th style="width:5%">ลำดับ</th>
                         <th style="width:10%">ปีงบประมาณ</th>
@@ -26,8 +26,8 @@
                 </thead>
 
                 <tbody>
-                    <tr *ngFor="let item of kpis; let i = index">
-                        <td>{{i+1}}</td>
+                    <tr *ngFor="let item of pagedKpis; let i = index">
+                        <td>{{pageStartIndex + i}}</td>
                         <td>{{item.BgYear}}</td>
                         <td class="text-start">{{item.Indicators_Name}}</td>
                         <td>
@@ -39,6 +39,23 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+
+        <div class="row justify-content-md-between align-items-md-center mt-3">
+            <div class="col col-sm-6">
+                <div class="dataTables_info mb-2" role="status" aria-live="polite">
+                    แสดง {{ kpis.length ? pageStartIndex : 0 }} ถึง {{ kpis.length ? pageEndIndex : 0 }}
+                    จากทั้งหมด {{ kpis.length }} รายการ
+                </div>
+            </div>
+
+            <div class="col col-sm-6">
+                <div class="text-sm-right float-end listjs-pagination">
+                    <ngb-pagination [collectionSize]="kpis.length" [(page)]="sortService.page"
+                        [pageSize]="sortService.pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true">
+                    </ngb-pagination>
+                </div>
+            </div>
         </div>
     </div>
 </div>

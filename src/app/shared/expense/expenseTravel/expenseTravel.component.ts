@@ -19,7 +19,9 @@ export class ExpenseTravelComponent {
   ) { }
 
   sections: any[] = [];
-
+  Mas_Business_Level: any[] = [];
+  Mas_Expense_Detial_List: any[] = [];
+  private currentExpenseTypeId: any = null;
   ngOnInit() {
 
     if (!this.model) return;
@@ -30,7 +32,7 @@ export class ExpenseTravelComponent {
 
     }
 
-    this.bindData();
+    this.loadExpenseType();
 
   }
 
@@ -39,9 +41,55 @@ export class ExpenseTravelComponent {
     this.model.dismiss();
 
   }
+  allData: any[] = [];
+  loadExpenseType() {
+    this.currentExpenseTypeId = this.model.selectedExpenseTypeId;
+    this.Mas_Expense_Detial_List = [];
+
+    let model = {
+      FUNC_CODE: "FUNC-Get_Mas_Expense_Detial",
+      Fk_Expense_Id: 21
+    };
+
+    this.serviceebud.GatewayGetData(model)
+      .subscribe((response: any) => {
+
+        const expenseDetailList =
+          response.List_Mas_Expense_Detial ??
+          response.List_Mas_Expense_Detail;
+
+        this.Mas_Expense_Detial_List =
+          Array.isArray(expenseDetailList)
+            ? expenseDetailList
+            : [];
+
+        this.bindData();
+
+      });
+
+  }
+
+  ngDoCheck() {
+    if (!this.model) return;
+
+    if (this.currentExpenseTypeId != this.model.selectedExpenseTypeId) {
+      this.loadExpenseType();
+    }
+  }
 
   bindData() {
+    let model = {
+      FUNC_CODE: "FUNC-Get_Mas_BusinessLevel",
+    }
+    var getData = this.serviceebud.GatewayGetData(model);
+    getData.subscribe((response: any) => {
 
+      this.allData = Array.isArray(response.List_Mas_Business_Level)
+        ? response.List_Mas_Business_Level
+        : [];
+      this.Mas_Business_Level = [...this.allData];
+
+    })
     const rows =
       this.model.Budget_Request_Detail_Item.filter(
         (x: any) =>
@@ -101,10 +149,10 @@ export class ExpenseTravelComponent {
           key,
 
         pairId:
-          row.Fk_Expense_Detail_Id || 0,
+          row.Fk_Expense_Detail_Id || null,
 
         level:
-          row.Level_Name || '',
+          row.Level_Name || null,
 
         times:
           row.Times || 0,
@@ -202,8 +250,13 @@ export class ExpenseTravelComponent {
     });
 
   }
+  async remove(i: number) {
 
-  remove(i: number) {
+    const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
+
+    if (!userConfirmed) {
+      return;
+    }
 
     this.sections.splice(i, 1);
 
@@ -218,8 +271,13 @@ export class ExpenseTravelComponent {
     );
 
   }
+  async removeDetail(section: any, i: number) {
 
-  removeDetail(section: any, i: number) {
+    const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
+
+    if (!userConfirmed) {
+      return;
+    }
 
     section.details.splice(i, 1);
 
@@ -235,9 +293,9 @@ export class ExpenseTravelComponent {
 
       sectionId: sectionId,
 
-      pairId: 0,
+      pairId: null,
 
-      level: '',
+      level: null,
 
       times: 0,
 
@@ -343,7 +401,7 @@ export class ExpenseTravelComponent {
           Fk_Request_Detail_Id:
             d.sectionId,
           Fk_Expense_Detail_Id:
-            d.pairId,
+            d.pairId || 0,
 
           Expense_Detail:
             section.description,

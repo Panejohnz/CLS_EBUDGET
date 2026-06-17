@@ -20,6 +20,14 @@ export class ProjectBudgetProposalAddPersonnelComponent {
     private budgetYearService: BudgetYearService
   ) { }
 
+  get isSaveLocked(): boolean {
+    return Number(
+      this.model?.Status_Id ||
+      this.model?.Budget_Request?.Status_Id ||
+      0
+    ) > 1;
+  }
+
   closeModal() {
 
     this.modalRef.dismiss();
@@ -439,28 +447,34 @@ export class ProjectBudgetProposalAddPersonnelComponent {
   async removeTargetRow(index: number, data: any) {
     const userConfirmed = await confirmAlert('info', 'ต้องการลบข้อมูล ?', '');
 
-    if (userConfirmed) {
-      if (data.Request_Detail_Id) {
-
-        const model = {
-          FUNC_CODE: "FUNC-Delete_Budget_Request_Detail",
-
-          Request_Detail_Id: data.Request_Detail_Id
-        };
-
-        this.serviceebud.GatewayGetData(model).subscribe(async () => {
-          this.targetList.splice(index, 1);
-
-
-        });
-      }
-    } else {
-      this.targetList.splice(index, 1);
+    if (!userConfirmed) {
+      return;
     }
+
+    if (!data?.Request_Detail_Id) {
+      this.targetList.splice(index, 1);
+      return;
+    }
+
+    const model = {
+      FUNC_CODE: "FUNC-Delete_Budget_Request_Detail",
+
+      Request_Detail_Id: data.Request_Detail_Id
+    };
+
+    this.serviceebud.GatewayGetData(model).subscribe(async () => {
+      this.targetList.splice(index, 1);
+
+
+    });
 
 
   }
   saveTarget(modal: any) {
+    if (this.isSaveLocked) {
+      basicAlert('warning', '\u0e44\u0e21\u0e48\u0e2a\u0e32\u0e21\u0e32\u0e23\u0e16\u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01\u0e44\u0e14\u0e49', '');
+      return;
+    }
 
     this.targetDetail =
       this.targetList.map((t: any) => ({
@@ -527,13 +541,24 @@ export class ProjectBudgetProposalAddPersonnelComponent {
     this.Is_Bureau_Indicator
   }
   Get_Dropdown_list() {
-
-    let model = {
-      FUNC_CODE: "FUNC-GET_Mas_Expense_List",
-      Mas_Expense_List: {
-        Fk_Expense_Type_Id: 1
+    let model: any
+    if (this.model.newdata) {
+      model = {
+        FUNC_CODE: "FUNC-GET_Mas_Expense_List_Not_Project",
+        Mas_Expense_List: {
+          Fk_Expense_Type_Id: 1
+        }
       }
-    };
+    } else {
+
+      model = {
+        FUNC_CODE: "FUNC-GET_Mas_Expense_List",
+        Mas_Expense_List: {
+          Fk_Expense_Type_Id: 1
+        }
+      };
+    }
+
 
     this.serviceebud.GatewayGetData(model)
       .subscribe((response: any) => {
@@ -624,6 +649,10 @@ export class ProjectBudgetProposalAddPersonnelComponent {
   }
 
   async save() {
+    if (this.isSaveLocked) {
+      basicAlert('warning', '\u0e44\u0e21\u0e48\u0e2a\u0e32\u0e21\u0e32\u0e23\u0e16\u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01\u0e44\u0e14\u0e49', '');
+      return;
+    }
 
     const findById = (
       list: any[],
@@ -998,8 +1027,8 @@ export class ProjectBudgetProposalAddPersonnelComponent {
   }
 
   private applySavedRequestId(response: any) {
-    console.log('rew',response);
-    
+    console.log('rew', response);
+
     const requestId =
       response?.Request_Id ||
       response?.Budget_Request?.Request_Id ||

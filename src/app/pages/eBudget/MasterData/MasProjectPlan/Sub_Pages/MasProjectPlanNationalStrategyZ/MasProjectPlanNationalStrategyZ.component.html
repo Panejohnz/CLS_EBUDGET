@@ -1,6 +1,6 @@
-<div class="card shadow-sm">
+<div class="card">
   <div class="card-header d-flex justify-content-between align-items-center">
-    <h5 class="mb-0">ยุทธศาสตร์ชาติที่เกี่ยวข้องโดยตรง (Z)</h5>
+    <h4 class="card-title mb-0 flex-grow-1">ยุทธศาสตร์ชาติที่เกี่ยวข้องโดยตรง (Z)</h4>
     <button type="button" class="btn btn-outline-secondary btn-sm" (click)="goBackToPlan()">กลับหน้าแผนงาน</button>
   </div>
   <div class="card-body">
@@ -81,7 +81,7 @@
         <div class="row justify-content-md-between align-items-md-center mt-2">
           <div class="col col-sm-6">
             <div class="dataTables_info mb-2 text-start">
-              แสดง {{ strategicPagination.startIndex }} ถึง {{ strategicPagination.endIndex }}
+              แสดง {{ strategicPagination.total ? strategicPagination.startIndex : 0 }} ถึง {{ strategicPagination.total ? strategicPagination.endIndex : 0 }}
               จากทั้งหมด {{ strategicPagination.total }} รายการ
             </div>
           </div>
@@ -153,7 +153,7 @@
         <div class="row justify-content-md-between align-items-md-center mt-2">
           <div class="col col-sm-6">
             <div class="dataTables_info mb-2 text-start">
-              แสดง {{ issuePagination.startIndex }} ถึง {{ issuePagination.endIndex }}
+              แสดง {{ issuePagination.total ? issuePagination.startIndex : 0 }} ถึง {{ issuePagination.total ? issuePagination.endIndex : 0 }}
               จากทั้งหมด {{ issuePagination.total }} รายการ
             </div>
           </div>
@@ -225,7 +225,7 @@
         <div class="row justify-content-md-between align-items-md-center mt-2">
           <div class="col col-sm-6">
             <div class="dataTables_info mb-2 text-start">
-              แสดง {{ subIssuePagination.startIndex }} ถึง {{ subIssuePagination.endIndex }}
+              แสดง {{ subIssuePagination.total ? subIssuePagination.startIndex : 0 }} ถึง {{ subIssuePagination.total ? subIssuePagination.endIndex : 0 }}
               จากทั้งหมด {{ subIssuePagination.total }} รายการ
             </div>
           </div>

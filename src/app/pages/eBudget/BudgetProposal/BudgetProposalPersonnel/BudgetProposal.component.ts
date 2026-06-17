@@ -74,13 +74,23 @@ export class ProjectBudgetProposalComponent {
   }
 
   get pageStartIndex(): number {
-    return this.griddata.length
-      ? ((this.sortService.page - 1) * this.sortService.pageSize) + 1
-      : 0;
+    const total = this.griddata.length;
+    if (!total) return 0;
+
+    const pageSize = Number(this.sortService.pageSize) || 1;
+    const maxPage = Math.max(1, Math.ceil(total / pageSize));
+    const safePage = Math.min(Math.max(1, Number(this.sortService.page) || 1), maxPage);
+    return (safePage - 1) * pageSize + 1;
   }
 
   get pageEndIndex(): number {
-    return Math.min(this.sortService.page * this.sortService.pageSize, this.griddata.length);
+    const total = this.griddata.length;
+    if (!total) return 0;
+
+    const pageSize = Number(this.sortService.pageSize) || 1;
+    const maxPage = Math.max(1, Math.ceil(total / pageSize));
+    const safePage = Math.min(Math.max(1, Number(this.sortService.page) || 1), maxPage);
+    return Math.min(safePage * pageSize, total);
   }
 
   get Total(): number {
@@ -237,8 +247,13 @@ export class ProjectBudgetProposalComponent {
         .subscribe((res: any) => {
 
           this.model = {
+            newdata: false,
             Budget_Type: 1,
-            Budget_Request: res.Budget_Request || {},
+            Budget_Request: {
+              ...(res.Budget_Request || {}),
+              Status_Id: res.Budget_Request?.Status_Id ?? data.Status_Id ?? 0
+            },
+            Status_Id: res.Budget_Request?.Status_Id ?? data.Status_Id ?? 0,
             Budget_Request_Attach_File: this.mapFileUploadList(
               res.FILE_UPLOAD_List || res.Budget_Request_Attach_File || [],
               res.Budget_Request || {}
@@ -284,9 +299,11 @@ export class ProjectBudgetProposalComponent {
         });
     } else {
       this.model = {
+        newdata: true,
         Budget_Type: 1,
         Budget_Request: {},
         Budget_Request_Attach_File: [],
+        Status_Id: 0,
         Department_Id: this.selectedDepartmentId,
         Project_Plan: {},
 

@@ -27,7 +27,7 @@ import { BudgetYearService } from 'src/app/core/services/budget-year.service';
 })
 export class ConfirmSuperDeptBudgetProposalComponent {
     constructor(private modalService: NgbModal, public service: GridJsService
-        , private sortService: PaginationService, public serviceebud: EbudgetService
+        , public sortService: PaginationService, public serviceebud: EbudgetService
         , private authService: AuthenticationService, private budgetYearService: BudgetYearService) {
     }
     allData: any[] = [];
@@ -59,6 +59,37 @@ export class ConfirmSuperDeptBudgetProposalComponent {
     ];
     modalRef: any;
     total$!: Observable<number>;
+  get Total(): number {
+    return this.griddata.reduce(
+      (sum: number, item: any) =>
+        sum + Number(item.Total || item.budget || 0),
+      0
+    );
+  }
+
+  get pagedGriddata(): any[] {
+    return this.sortService.changePage(this.griddata);
+  }
+
+  get pageStartIndex(): number {
+    const total = this.griddata.length;
+    if (!total) return 0;
+
+    const pageSize = Number(this.sortService.pageSize) || 1;
+    const maxPage = Math.max(1, Math.ceil(total / pageSize));
+    const safePage = Math.min(Math.max(1, Number(this.sortService.page) || 1), maxPage);
+    return (safePage - 1) * pageSize + 1;
+  }
+
+  get pageEndIndex(): number {
+    const total = this.griddata.length;
+    if (!total) return 0;
+
+    const pageSize = Number(this.sortService.pageSize) || 1;
+    const maxPage = Math.max(1, Math.ceil(total / pageSize));
+    const safePage = Math.min(Math.max(1, Number(this.sortService.page) || 1), maxPage);
+    return Math.min(safePage * pageSize, total);
+  }
 
     emptyplan: any = {
         Plan_Id: 0,
@@ -67,6 +98,7 @@ export class ConfirmSuperDeptBudgetProposalComponent {
     };
     currentYear: any
     ngOnInit(): void {
+    this.sortService.pageSize = this.service.pageSize;
 
         this.budgetYearService.yearChanged$.subscribe(async year => {
             if (year) {
@@ -185,26 +217,35 @@ export class ConfirmSuperDeptBudgetProposalComponent {
 
     }
 
-    async CancelConfirm(Request_Id: number) {
+    async CancelConfirm(data: any) {
 
-        const userConfirmed = await confirmAlert(
-            'info',
-            'ต้องการยกเลิกการยืนยันข้อมูลคำของบประมาณ ?',
-            ''
-        );
+        const requestId = Number(data?.Request_Id || data || 0);
+        const remarkId = Number(data?.Remark_Id || data?.SignOff_Remark_Id || 0);
+        const cancelRemark = (await cancelTracking() || '').trim();
 
-        if (!userConfirmed) return;
+        if (!cancelRemark) {
+            basicAlert('warning', 'กรุณาระบุหมายเหตุ', '');
+            return;
+        }
 
         const payload = [
             {
-                Request_Id: Request_Id,
+                Request_Id: requestId,
                 Status_Number: 8
             }
         ];
+        const SignOff_Remark = {
+            Remark_Id: remarkId,
+            Remark: cancelRemark,
+            Status_Id: 8,
+            Fk_Request_Id: requestId,
+            Fk_Plan_Id: requestId
+        };
 
         let model = {
             FUNC_CODE: "FUNC-Cancel_Confirm_Budget_Request_SuperDept_Proposal",
-            List_Budget_Request: payload
+            List_Budget_Request: payload,
+            SignOff_Remark: SignOff_Remark
         };
 
         this.serviceebud.GatewayGetData(model).subscribe((res: any) => {

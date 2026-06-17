@@ -148,8 +148,13 @@ export class ExpenseOtherComponent {
     );
 
   }
+  async removeItem(index: number) {
 
-  removeItem(index: number) {
+    const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
+
+    if (!userConfirmed) {
+      return;
+    }
 
     this.rentItems.splice(index, 1);
 

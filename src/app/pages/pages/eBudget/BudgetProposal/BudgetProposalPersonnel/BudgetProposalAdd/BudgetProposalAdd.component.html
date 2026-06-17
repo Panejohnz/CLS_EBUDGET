@@ -9,7 +9,7 @@
     <div class="row mb-3">
 
         <div class="col-md-4">
-            <label class="form-label">แผนงาน</label>
+            <label class="form-label">แผนงาน</label><span class="text-danger">*</span>
             <select class="form-select" [(ngModel)]="plan.projectName">
                 <option value="">-- เลือกแผนงาน --</option>
                 <option *ngFor="let item of planOptions" [value]="item.id">
@@ -19,7 +19,7 @@
         </div>
 
         <div class="col-md-4">
-            <label class="form-label">ผลผลิต</label>
+            <label class="form-label">ผลผลิต</label><span class="text-danger">*</span>
             <select class="form-select" [(ngModel)]="plan.unit">
                 <option value="">-- เลือกผลผลิต --</option>
                 <option *ngFor="let item of outputOptions" [value]="item.id">
@@ -29,7 +29,7 @@
         </div>
 
         <div class="col-md-4">
-            <label class="form-label">กิจกรรม</label>
+            <label class="form-label">กิจกรรม</label><span class="text-danger">*</span>
             <select class="form-select" [(ngModel)]="plan.mainDeptActivity">
                 <option value="">-- เลือกกิจกรรมหลักกรม --</option>
                 <option *ngFor="let item of mainDeptActivityOptions" [value]="item.id">
@@ -43,7 +43,7 @@
     <div class="row mb-3">
 
         <div class="col-md-4">
-            <label class="form-label">หมวดงบ</label>
+            <label class="form-label">หมวดงบ</label><span class="text-danger">*</span>
             <select disabled class="form-select" [(ngModel)]="plan.subUnitActivity">
 
                 <option *ngFor="let item of subUnitActivityOptions" [value]="item.id">
@@ -53,7 +53,7 @@
         </div>
 
         <div class="col-md-4">
-            <label class="form-label">หมวดค่าใช้จ่าย</label>
+            <label class="form-label">หมวดค่าใช้จ่าย</label><span class="text-danger">*</span>
             <select disabled class="form-select" [(ngModel)]="plan.subActivity">
                 <option *ngFor="let item of subActivityOptions" [value]="item.id">
                     {{ item.name }}
@@ -62,7 +62,7 @@
         </div>
 
         <div class="col-md-4">
-            <label class="form-label">รายการค่าใช้จ่าย</label>
+            <label class="form-label">รายการค่าใช้จ่าย</label><span class="text-danger">*</span>
             <ng-select [items]="expenseOptions" bindLabel="Expense_Name" [(ngModel)]="expenseItem"
                 (ngModelChange)="onExpenseChange($event)" appendTo="body"
                 placeholder="-- กรุณาเลือกรายการค่าใช้จ่าย --">

@@ -1,6 +1,6 @@
-<div class="card shadow-sm">
+<div class="card">
   <div class="card-header">
-    <h5 class="mb-0">กำหนดอัตราค่าใช้จ่าย</h5>
+    <h4 class="card-title mb-0 flex-grow-1">กำหนดอัตราค่าใช้จ่าย</h4>
   </div>
 
   <div class="card-body">
@@ -23,9 +23,9 @@
         </button>
       </div>
 
-      <div class="table-responsive">
+      <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
         <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
-          <thead class="text-center text-white sticky-header">
+          <thead class="text-center text-white sticky-header" style="background-color: #556398;">
             <tr>
               <th style="width:5%">ลำดับ</th>
               <th style="width:15%">ชื่อระดับ</th>
@@ -73,7 +73,7 @@
       <div class="row justify-content-md-between align-items-md-center mt-2">
         <div class="col col-sm-6">
           <div class="dataTables_info mb-2 text-start">
-            แสดง {{ pagination.startIndex }} ถึง {{ pagination.endIndex }}
+            แสดง {{ pagination.total ? pagination.startIndex : 0 }} ถึง {{ pagination.total ? pagination.endIndex : 0 }}
             จากทั้งหมด {{ pagination.total }} รายการ
           </div>
         </div>
@@ -110,9 +110,9 @@
       </button>
     </div>
 
-    <div class="table-responsive">
+    <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
       <table class="table table-bordered align-middle text-center mb-0">
-        <thead class="table-light">
+        <thead class="text-center text-white sticky-header" style="background-color: #556398;">
           <tr>
             <th style="width:8%">ลำดับ</th>
             <th style="width:18%">ปีที่เริ่ม</th>

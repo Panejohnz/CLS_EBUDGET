@@ -27,7 +27,7 @@ import { BudgetYearService } from 'src/app/core/services/budget-year.service';
 })
 export class SingOffPlaningComponent {
   constructor(private modalService: NgbModal, public service: GridJsService
-    , private sortService: PaginationService, public serviceebud: EbudgetService
+    , public sortService: PaginationService, public serviceebud: EbudgetService
     , private authService: AuthenticationService, private budgetYearService: BudgetYearService) {
   }
   allData: any[] = [];
@@ -59,6 +59,37 @@ export class SingOffPlaningComponent {
   ];
   modalRef: any;
   total$!: Observable<number>;
+  get Total(): number {
+    return this.griddata.reduce(
+      (sum: number, item: any) =>
+        sum + Number(item.Total || item.budget || 0),
+      0
+    );
+  }
+
+  get pagedGriddata(): any[] {
+    return this.sortService.changePage(this.griddata);
+  }
+
+  get pageStartIndex(): number {
+    const total = this.griddata.length;
+    if (!total) return 0;
+
+    const pageSize = Number(this.sortService.pageSize) || 1;
+    const maxPage = Math.max(1, Math.ceil(total / pageSize));
+    const safePage = Math.min(Math.max(1, Number(this.sortService.page) || 1), maxPage);
+    return (safePage - 1) * pageSize + 1;
+  }
+
+  get pageEndIndex(): number {
+    const total = this.griddata.length;
+    if (!total) return 0;
+
+    const pageSize = Number(this.sortService.pageSize) || 1;
+    const maxPage = Math.max(1, Math.ceil(total / pageSize));
+    const safePage = Math.min(Math.max(1, Number(this.sortService.page) || 1), maxPage);
+    return Math.min(safePage * pageSize, total);
+  }
 
   emptyplan: any = {
     Plan_Id: 0,
@@ -68,6 +99,7 @@ export class SingOffPlaningComponent {
 
   currentYear: any
   ngOnInit(): void {
+    this.sortService.pageSize = this.service.pageSize;
 
     this.budgetYearService.yearChanged$.subscribe(async year => {
       if (year) {

@@ -27,7 +27,7 @@ import { BudgetYearService } from 'src/app/core/services/budget-year.service';
 })
 export class ConfirmPlanningComponent {
   constructor(private modalService: NgbModal, public service: GridJsService
-    , private sortService: PaginationService, public serviceebud: EbudgetService
+    , public sortService: PaginationService, public serviceebud: EbudgetService
     , private authService: AuthenticationService, private budgetYearService: BudgetYearService) {
   }
   allData: any[] = [];
@@ -59,6 +59,37 @@ export class ConfirmPlanningComponent {
   ];
   modalRef: any;
   total$!: Observable<number>;
+  get Total(): number {
+    return this.griddata.reduce(
+      (sum: number, item: any) =>
+        sum + Number(item.Total || item.budget || 0),
+      0
+    );
+  }
+
+  get pagedGriddata(): any[] {
+    return this.sortService.changePage(this.griddata);
+  }
+
+  get pageStartIndex(): number {
+    const total = this.griddata.length;
+    if (!total) return 0;
+
+    const pageSize = Number(this.sortService.pageSize) || 1;
+    const maxPage = Math.max(1, Math.ceil(total / pageSize));
+    const safePage = Math.min(Math.max(1, Number(this.sortService.page) || 1), maxPage);
+    return (safePage - 1) * pageSize + 1;
+  }
+
+  get pageEndIndex(): number {
+    const total = this.griddata.length;
+    if (!total) return 0;
+
+    const pageSize = Number(this.sortService.pageSize) || 1;
+    const maxPage = Math.max(1, Math.ceil(total / pageSize));
+    const safePage = Math.min(Math.max(1, Number(this.sortService.page) || 1), maxPage);
+    return Math.min(safePage * pageSize, total);
+  }
 
   emptyplan: any = {
     Plan_Id: 0,
@@ -67,6 +98,7 @@ export class ConfirmPlanningComponent {
   };
   currentYear: any
   ngOnInit(): void {
+    this.sortService.pageSize = this.service.pageSize;
 
     this.budgetYearService.yearChanged$.subscribe(async year => {
       if (year) {
@@ -127,26 +159,35 @@ export class ConfirmPlanningComponent {
 
   }
 
-  async CancelConfirm(projectId: number) {
+  async CancelConfirm(data: any) {
 
-    const userConfirmed = await confirmAlert(
-      'info',
-      'ต้องการยกเลิกการยืนยันโครงการ ?',
-      ''
-    );
+    const projectId = Number(data?.Project_Id || data || 0);
+    const remarkId = Number(data?.Remark_Id || data?.SignOff_Remark_Id || 0);
 
-    if (!userConfirmed) return;
+    const cancelRemark = (await cancelTracking() || '').trim();
+
+    if (!cancelRemark) {
+      basicAlert('warning', 'กรุณาระบุหมายเหตุ', '');
+      return;
+    }
 
     const payload = [
       {
         Project_Id: projectId,
-        Status_Number: 8
+        Status_Number: 8,
       }
     ];
-
+    const SignOff_Remark = {
+      Remark_Id: remarkId,
+      Remark: cancelRemark,
+      Status_Id: 8,
+      Fk_Plan_Id: projectId,
+      Plan_Type : 1
+    };
     let model = {
       FUNC_CODE: "FUNC-Cancel_Confirm_Project_Plan",
-      List_Project_Plan: payload
+      List_Project_Plan: payload,
+      SignOff_Remark: SignOff_Remark
     };
 
     this.serviceebud.GatewayGetData(model).subscribe((res: any) => {

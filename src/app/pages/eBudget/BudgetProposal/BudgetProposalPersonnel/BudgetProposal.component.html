@@ -1,13 +1,16 @@
-<div class="card shadow-sm">
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
     <div class="card-header">
-        <h5 class="mb-0">จัดทำคำของบประมาณ</h5>
+        <h4 class="card-title mb-0 flex-grow-1">จัดทำคำของบประมาณ</h4>
     </div>
 
     <div class="card-body">
-        <div class="d-flex align-items-end mb-3">
+        <br />
+        <div class="row align-items-end">
 
             <!-- หน่วยงาน -->
-            <div style="width:400px;" class="me-3">
+            <div class="col-lg-4">
                 <label class="form-label">หน่วยงาน</label>
                 <select class="form-select" [class.readonly-select]="isDepartmentLocked"
                     [attr.aria-disabled]="isDepartmentLocked" [attr.tabindex]="isDepartmentLocked ? -1 : null"
@@ -27,12 +30,16 @@
             </div>
 
             <!-- ค้นหา + ปุ่ม -->
-            <div class="d-flex align-items-end gap-2 ms-auto">
+            <div class="col-lg-8">
+                <div class="d-flex justify-content-end align-items-end gap-2">
 
-                <div style="width:300px;">
+                <div style="width:250px;">
                     <label class="form-label">ค้นหา</label>
+                    <div class="search-box">
                     <input type="text" class="form-control" placeholder="ค้นหาโครงการ..."
                         [(ngModel)]="service.searchTerm" (input)="applyFilter()">
+                        <i class="ri-search-line search-icon"></i>
+                    </div>
                 </div>
 
                 <button class="btn btn-success text-black" (click)="fullModal(fullDataModal,emptyplan)">
@@ -46,12 +53,14 @@
                     คัดลอกโครงการ
                 </button>
 
+                </div>
             </div>
         </div>
-        <div class="table-responsive">
+        <br>
+        <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
             <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
 
-                <thead class="text-center text-white sticky-header">
+                <thead class="text-center text-white sticky-header" style="background-color: #556398;">
                     <tr>
 
                         <th style="width:5%">ลำดับ</th>
@@ -149,7 +158,7 @@
         <div class="row justify-content-md-between align-items-md-center mt-2">
             <div class="col col-sm-6">
                 <div class="dataTables_info mb-2 text-start">
-                    แสดง {{ pageStartIndex }} ถึง {{ pageEndIndex }}
+                    แสดง {{ griddata.length ? pageStartIndex : 0 }} ถึง {{ griddata.length ? pageEndIndex : 0 }}
                     จากทั้งหมด {{ griddata.length }} รายการ
                 </div>
             </div>
@@ -161,6 +170,8 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
     </div>
 </div>
 
@@ -195,9 +206,9 @@
 
         <div class="table-responsive" style="max-height:500px; overflow-y:auto;">
 
-            <table class="table table-bordered align-middle">
+            <table class="table table-bordered align-middle text-center">
 
-                <thead class="text-center text-white sticky-header">
+                <thead class="text-center text-white sticky-header" style="background-color: #556398;">
 
                     <tr>
                         <th style="width:5%">

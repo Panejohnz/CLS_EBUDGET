@@ -40,25 +40,26 @@
                                 <td class="text-center">{{i+1}}</td>
 
                                 <td>
-                                    <input class="form-control form-control-sm" [(ngModel)]="item.Full_Name">
+                                    <input class="form-control" [(ngModel)]="item.Full_Name" placeholder="ระบุชื่อ - สกุล ผู้ประสานงาน">
                                 </td>
 
                                 <td>
-                                    <input class="form-control form-control-sm" [(ngModel)]="item.Phone">
+                                    <input class="form-control" [(ngModel)]="item.Phone" placeholder="ระบุโทรศัพท์">
                                 </td>
 
                                 <td>
-                                    <input class="form-control form-control-sm" [(ngModel)]="item.Email">
+                                    <input class="form-control" [(ngModel)]="item.Email"  placeholder="ระบุอีเมล">
                                 </td>
 
                                 <td>
-                                    <input class="form-control form-control-sm" [(ngModel)]="item.Fax">
+                                    <input class="form-control" [(ngModel)]="item.Fax" placeholder="ระบุโทรสาร">
                                 </td>
 
                                 <td class="text-center">
-                                    <button class="btn btn-sm btn-outline-danger" (click)="removeContact(i)">
-                                        🗑
+                                    <button class="btn btn-danger" (click)="removeContact(i)" >
+                                             <i class="bx bx-trash"></i>
                                     </button>
+                          
                                 </td>
 
                             </tr>
@@ -87,7 +88,7 @@
 
                     <label>ชื่อ - สกุล</label>
 
-                    <input [(ngModel)]="model.Proposer_Name" class="form-control form-control-sm">
+                    <input [(ngModel)]="model.Proposer_Name" class="form-control" placeholder="ระบุชื่อ - สกุล ผู้เสนอโครงการ">
 
                 </div>
 
@@ -95,7 +96,7 @@
 
                     <label>ตำแหน่ง</label>
 
-                    <input [(ngModel)]="model.Proposer_Position" class="form-control form-control-sm">
+                    <input [(ngModel)]="model.Proposer_Position" class="form-control" placeholder="ระบุตำแหน่ง">
 
                 </div>
 

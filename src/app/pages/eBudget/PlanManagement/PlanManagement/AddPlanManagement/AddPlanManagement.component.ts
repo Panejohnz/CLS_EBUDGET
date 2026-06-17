@@ -1152,6 +1152,14 @@ export class AddPlanManagementComponent
     private masterService: MasterService
   ) { }
 
+  get isSaveLocked(): boolean {
+    return Number(
+      this.model?.Status_Id ||
+      this.model?.Budget_Plan?.Status_Id ||
+      0
+    ) > 1;
+  }
+
   dropdown_select = false;
 
   multiplierModalRef: any;
@@ -1880,6 +1888,10 @@ export class AddPlanManagementComponent
   }
 
   saveMultiplier(modal: any) {
+    if (this.isSaveLocked) {
+      basicAlert('warning', '\u0e44\u0e21\u0e48\u0e2a\u0e32\u0e21\u0e32\u0e23\u0e16\u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01\u0e44\u0e14\u0e49', '');
+      return;
+    }
 
     const items =
       JSON.parse(
@@ -1974,6 +1986,10 @@ export class AddPlanManagementComponent
   }
 
   save() {
+    if (this.isSaveLocked) {
+      basicAlert('warning', '\u0e44\u0e21\u0e48\u0e2a\u0e32\u0e21\u0e32\u0e23\u0e16\u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01\u0e44\u0e14\u0e49', '');
+      return;
+    }
 
     this.syncProjectPlanningPayload();
 
@@ -2626,6 +2642,10 @@ export class AddPlanManagementComponent
   }
   targetDetail: any = {}
   saveTarget(modal: any) {
+    if (this.isSaveLocked) {
+      basicAlert('warning', '\u0e44\u0e21\u0e48\u0e2a\u0e32\u0e21\u0e32\u0e23\u0e16\u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01\u0e44\u0e14\u0e49', '');
+      return;
+    }
 
     this.targetDetail =
       this.targetList.map((t: any) => ({

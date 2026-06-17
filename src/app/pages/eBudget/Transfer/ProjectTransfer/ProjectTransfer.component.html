@@ -114,13 +114,22 @@
                     </tr>
 
                 </tbody>
+                <tfoot>
+                    <tr style="font-weight: bold; background-color: #556398;">
+                        <td colspan="7" class="text-end text-white">รวมทั้งหมด</td>
+                        <td class="text-end text-white">
+                            {{ Total | number:'1.2-2' }}
+                        </td>
+                        <td colspan="2"></td>
+                    </tr>
+                </tfoot>
 
             </table>
         </div>
         <div class="row justify-content-md-between align-items-md-center mt-2">
             <div class="col col-sm-6">
                 <div class="dataTables_info mb-2 text-start">
-                    แสดง {{ pageStartIndex }} ถึง {{ pageEndIndex }}
+                    แสดง {{ filteredRows.length ? pageStartIndex : 0 }} ถึง {{ filteredRows.length ? pageEndIndex : 0 }}
                     จากทั้งหมด {{ filteredRows.length }} รายการ
                 </div>
             </div>

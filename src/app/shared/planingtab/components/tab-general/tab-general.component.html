@@ -15,6 +15,43 @@
                     placeholder="-- เลือกประเภทโครงการ --" (ngModelChange)="Onchange_type()">
                 </ng-select>
             </div>
+            <!-- หมวดงบ -->
+            <div class="col-lg-4 col-md-6">
+                <label class="form-label">
+                    หมวดงบ <span class="text-danger">*</span>
+                </label>
+
+                <ng-select [items]="Mas_Budget_Types" bindLabel="Budget_Type_Name" [(ngModel)]="model.selectedBudget"
+                    name="selectedBudget" [compareWith]="compareById" appendTo="body" placeholder="-- เลือกหมวดงบ --"
+                    [clearable]="false" [searchable]="true" [disabled]="Mas_Budget_Types.length === 1"
+                    (ngModelChange)="onBudgetChange($event)">
+                </ng-select>
+            </div>
+            <!-- ลักษณะโครงการ -->
+            <div class="col-lg-4 col-md-6">
+                <label class="form-label d-block">
+                    ลักษณะโครงการ<span class="text-danger">*</span>
+                </label>
+
+                <div class="form-check form-check-inline">
+
+                    <input (ngModelChange)="onBudgetChangebox($event)" type="radio" class="form-check-input" name="Used_BG"
+                        [value]="1" [(ngModel)]="data.Used_BG">
+
+                    ใช้งบ
+
+                </div>
+
+                <div class="form-check form-check-inline">
+
+                    <input (ngModelChange)="onBudgetChangebox($event)" type="radio" class="form-check-input" name="Used_BG"
+                        [value]="2" [(ngModel)]="data.Used_BG">
+
+                    ไม่ใช้งบ
+
+                </div>
+
+            </div>
 
             <!-- แผนงาน -->
             <div class="col-lg-4 col-md-6">
@@ -41,7 +78,7 @@
             </div>
 
             <!-- กิจกรรม -->
-            <div class="col-lg-6 col-md-6">
+            <div class="col-lg-4 col-md-6">
                 <label class="form-label">
                     กิจกรรม <span class="text-danger">*</span>
                 </label>
@@ -51,20 +88,6 @@
                     (ngModelChange)="onActivityChange($event)">
                 </ng-select>
             </div>
-
-            <!-- หมวดงบ -->
-            <div class="col-lg-6 col-md-6">
-                <label class="form-label">
-                    หมวดงบ <span class="text-danger">*</span>
-                </label>
-
-                <ng-select [items]="Mas_Budget_Types" bindLabel="Budget_Type_Name" [(ngModel)]="model.selectedBudget"
-                    name="selectedBudget" [compareWith]="compareById" appendTo="body" placeholder="-- เลือกหมวดงบ --"
-                    [clearable]="false" [searchable]="true" [disabled]="Mas_Budget_Types.length === 1"
-                    (ngModelChange)="onBudgetChange($event)">
-                </ng-select>
-            </div>
-
         </div>
 
         <!-- ชื่อโครงการ -->
@@ -76,40 +99,10 @@
             <input [(ngModel)]="data.Project_Name" name="Project_Name" type="text" class="form-control">
         </div>
 
-    </div>
-
-    <div class="row mt-4">
-
-        <div class="col-md-3">
+        <div class="col-lg-4 col-md-6">
 
             <label class="form-label d-block">
-                ลักษณะโครงการ
-            </label>
-
-            <div class="form-check form-check-inline">
-
-                <input (ngModelChange)="onBudgetChangebox()" type="radio" class="form-check-input" name="Used_BG"
-                    [value]="1" [(ngModel)]="data.Used_BG">
-
-                ใช้งบ
-
-            </div>
-
-            <div class="form-check form-check-inline">
-
-                <input (ngModelChange)="onBudgetChangebox()" type="radio" class="form-check-input" name="Used_BG"
-                    [value]="2" [(ngModel)]="data.Used_BG">
-
-                ไม่ใช้งบ
-
-            </div>
-
-        </div>
-
-        <div class="col-md-3">
-
-            <label class="form-label d-block">
-                การดำเนินการ
+                การดำเนินการ <span class="text-danger">*</span>
             </label>
 
             <div class="form-check form-check-inline">
@@ -132,16 +125,10 @@
 
         </div>
 
-    </div>
-
-    <div style="height:15px"></div>
-
-    <div class="row mt-4">
-
-        <div class="col-md-3">
+        <div class="col-lg-4 col-md-6">
 
             <label class="form-label d-block">
-                ประเภทโครงการ
+                ประเภทโครงการ <span class="text-danger">*</span>
             </label>
 
             <div class="d-flex gap-3">
@@ -167,29 +154,39 @@
             </div>
 
         </div>
+       <div class="col-lg-4 col-md-6" *ngIf="data.Project_Type_Id === 2">
+    <div class="row g-2">
 
-        <div class="col-md-2" *ngIf="data.Project_Type_Id === 2">
-
+        <div class="col-6">
             <label class="form-label">
                 จำนวนปีที่ดำเนินการ
             </label>
 
-            <input type="number" name="Project_Year_Count" class="form-control" placeholder="กรอกจำนวนปี"
-                [(ngModel)]="data.Project_Year_Count">
-
+            <input type="number"
+                   name="Project_Year_Count"
+                   class="form-control"
+                   placeholder="ระบุจำนวนปี"
+                   [(ngModel)]="data.Project_Year_Count">
         </div>
 
-        <div class="col-md-2" *ngIf="data.Project_Type_Id === 2">
-
+        <div class="col-6">
             <label class="form-label">
                 ปีนี้เป็นปีที่
             </label>
 
-            <input type="number" name="Project_Year_Number" class="form-control" placeholder="กรอกปี"
-                [(ngModel)]="data.Project_Year_Number">
-
+            <input type="number"
+                   name="Project_Year_Number"
+                   class="form-control"
+                   placeholder="ระบุปีที่"
+                   [(ngModel)]="data.Project_Year_Number">
         </div>
 
     </div>
+</div>
+    </div>
+
+
+
+    <div style="height:15px"></div>
 
 </div>

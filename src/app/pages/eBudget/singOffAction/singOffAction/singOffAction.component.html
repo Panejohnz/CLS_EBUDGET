@@ -48,7 +48,7 @@
                         </thead>
 
                         <tbody>
-                            @for(data of griddata; track $index){
+                            @for(data of pagedGriddata; track $index){
                             <tr>
                                   <td class="text-center">
                                     <input type="checkbox" [(ngModel)]="data.selected" [disabled]="data.Status_Id == 3"
@@ -56,7 +56,7 @@
                                         [style.opacity]="data.Status_Id == 3 ? '0.5' : '1'"
                                         [style.cursor]="data.Status_Id == 3 ? 'not-allowed' : 'pointer'">
                                 </td>
-                                       <td>{{$index + 1}}</td>
+                                       <td>{{pageStartIndex + $index}}</td>
                                 <td class="text-center">{{data.Department_Name}}</td>
                                 <td class="text-center">
                                     <ngb-highlight [result]="data.Plan_Name"
@@ -107,19 +107,28 @@
                             </tr>
                             }
                         </tbody>
+                        <tfoot>
+                            <tr style="font-weight: bold; background-color: #556398;">
+                                <td colspan="8" class="text-end text-white">รวมทั้งหมด</td>
+                                <td class="text-end text-white">
+                                    {{ Total | number:'1.2-2' }}
+                                </td>
+                                <td colspan="2"></td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
                 <div class="row justify-content-md-between align-items-md-center mt-2">
                     <div class="col col-sm-6">
                         <div class="dataTables_info mb-2 text-start">
-                            แสดง {{ service.startIndex }} ถึง {{ service.endIndex }}
-                            จากทั้งหมด {{ service.totalRecords }} รายการ
+                            แสดง {{ griddata.length ? pageStartIndex : 0 }} ถึง {{ griddata.length ? pageEndIndex : 0 }}
+                            จากทั้งหมด {{ griddata.length }} รายการ
                         </div>
                     </div>
                     <div class="col col-sm-6">
                         <div class="d-flex justify-content-sm-end">
-                            <ngb-pagination [collectionSize]="(total$ | async)!" [(page)]="service.page"
-                                [pageSize]="service.pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true">
+                            <ngb-pagination [collectionSize]="griddata.length" [(page)]="sortService.page"
+                                [pageSize]="sortService.pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true">
                             </ngb-pagination>
                         </div>
                     </div>

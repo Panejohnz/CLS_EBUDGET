@@ -10,6 +10,11 @@
         </textarea>
     </div>
 
+    <app-expense-attachment [model]="projectDetail" listKey="PrincipleFiles" title="แนบไฟล์หลักการและเหตุผล"
+        refModule="PROJECT_PLAN" refLevel="PRINCIPLE" filterField="Ref_Level" filterValue="PRINCIPLE"
+        [requestId]="projectId" deleteFuncCode="">
+    </app-expense-attachment>
+
 </div>
 <div style="height:15px"></div>
 

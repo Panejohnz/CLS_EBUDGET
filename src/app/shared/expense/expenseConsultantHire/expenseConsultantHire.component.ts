@@ -356,8 +356,13 @@ export class ExpenseConsultantHireComponent {
     this.updateDetailItems();
 
   }
+  async removeProject(index: number) {
 
-  removeProject(index: number) {
+    const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
+
+    if (!userConfirmed) {
+      return;
+    }
 
     if (this.projects.length <= 1) {
       return;
@@ -388,8 +393,13 @@ export class ExpenseConsultantHireComponent {
     this.updateDetailItems();
 
   }
+  async removeMain(pIndex: number, i: number) {
 
-  removeMain(pIndex: number, i: number) {
+    const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
+
+    if (!userConfirmed) {
+      return;
+    }
 
     this.projects[pIndex].mainStaff.splice(i, 1);
 
@@ -434,8 +444,13 @@ export class ExpenseConsultantHireComponent {
     this.updateDetailItems();
 
   }
+  async removeSupport(pIndex: number, i: number) {
 
-  removeSupport(pIndex: number, i: number) {
+    const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
+
+    if (!userConfirmed) {
+      return;
+    }
 
     this.projects[pIndex].supportStaff.splice(i, 1);
 
@@ -480,8 +495,13 @@ export class ExpenseConsultantHireComponent {
     this.updateDetailItems();
 
   }
+  async removeOther(pIndex: number, i: number) {
 
-  removeOther(pIndex: number, i: number) {
+    const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
+
+    if (!userConfirmed) {
+      return;
+    }
 
     this.projects[pIndex].otherCost.splice(i, 1);
 

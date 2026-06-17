@@ -160,20 +160,26 @@ export class OtherExpenseProjectComponent {
       isNonStandard: false
     }
   ];
-  calcItemTotal(item: any): number | null {
-    const values = [
-      item.times,
-      item.people,
-      item.rate,
-      item.input3,
-      item.input4,
-      item.input5
-    ].filter(v => v != null && v !== '');
+calcItemTotal(item: any): number | null {
 
-    if (values.length === 0) return null;
+  const values = [
+    item.times,
+    item.people,
+    item.rate,
+    item.input3,
+    item.input4,
+    item.input5
+  ]
+  .map(v => Number(v))
+  .filter(v => !isNaN(v) && v > 0);   // เอาเฉพาะค่าที่มากกว่า 0
 
-    return values.reduce((acc, val) => acc * val, 1);
+  if (values.length === 0) {
+    return null;
   }
+
+  return values.reduce((acc, val) => acc * val, 1);
+}
+
   getTotal() {
     return this.meetingCosts.reduce((sum, item) => {
 
@@ -212,7 +218,13 @@ export class OtherExpenseProjectComponent {
     this.meetingCosts.push(newItem);
   }
 
-  removeCost(i: number) {
+  async removeCost(i: number) {
+
+    const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
+
+    if (!userConfirmed) {
+      return;
+    }
 
     this.meetingCosts.splice(i, 1)
 

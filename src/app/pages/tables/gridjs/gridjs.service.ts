@@ -207,15 +207,25 @@ export class GridJsService {
     });
 
     const total = countries.length;
+    const pageSizeNumber = Number(pageSize) || 1;
 
     // แบ่งหน้า
-    this.totalRecords = countries.length;
-    this._state.startIndex = (page - 1) * this.pageSize + 1;
-    this._state.endIndex = (page - 1) * this.pageSize + this.pageSize;
-    if (this.endIndex > this.totalRecords) {
-      this.endIndex = this.totalRecords;
+    this.totalRecords = total;
+
+    if (!total) {
+      this._state.page = 1;
+      this._state.startIndex = 0;
+      this._state.endIndex = 0;
+      countries = [];
+    } else {
+      const maxPage = Math.max(1, Math.ceil(total / pageSizeNumber));
+      const safePage = Math.min(Math.max(1, Number(page) || 1), maxPage);
+      this._state.page = safePage;
+      this._state.startIndex = (safePage - 1) * pageSizeNumber + 1;
+      this._state.endIndex = Math.min(safePage * pageSizeNumber, total);
+      countries = countries.slice(this._state.startIndex - 1, this._state.endIndex);
     }
-    countries = countries.slice(this._state.startIndex - 1, this._state.endIndex);
+
     return of({ countries, total });
   }
 }

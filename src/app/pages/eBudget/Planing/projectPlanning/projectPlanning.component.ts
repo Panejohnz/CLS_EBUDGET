@@ -27,8 +27,23 @@ import { TabGuidelineComponent } from 'src/app/shared/planingtab/components/tab-
     .readonly-select {
       pointer-events: none;
       background-color: var(--vz-secondary-bg, #e9ecef);
-      color: #6c757d;
       opacity: 1;
+    }
+
+    .readonly-select ::ng-deep .ng-select-container {
+      background-color: var(--vz-secondary-bg, #e9ecef);
+      opacity: 1;
+    }
+
+    .readonly-select ::ng-deep .ng-value,
+    .readonly-select ::ng-deep .ng-value.ng-value-disabled {
+      background-color: #e2e6ea;
+      color: #212529;
+    }
+
+    .readonly-select ::ng-deep .ng-value-label,
+    .readonly-select ::ng-deep .ng-placeholder {
+      color: #212529;
     }
   `]
 })
@@ -88,7 +103,7 @@ export class ProjectPlanningComponent {
 
 
   constructor(private modalService: NgbModal, public service: GridJsService
-    , private sortService: PaginationService, public serviceebud: EbudgetService
+    , public sortService: PaginationService, public serviceebud: EbudgetService
     , private authService: AuthenticationService, private ProjectPlanService: ProjectPlanService
     , private budgetYearService: BudgetYearService) {
   }
@@ -116,7 +131,15 @@ export class ProjectPlanningComponent {
     return this.userSession?.permissionData?.VIEW_DATA == 3;
   }
 
+  get lockedDepartmentId(): any {
+    return this.userSession?.permissionData?.Department_id ??
+      this.userSession?.permissionData?.Department_Id ??
+      null;
+  }
+
   ngOnInit(): void {
+    this.sortService.pageSize = this.service.pageSize;
+
     const sessionStr = localStorage.getItem('userSession');
 
     if (sessionStr) {
@@ -125,7 +148,7 @@ export class ProjectPlanningComponent {
     try {
 
       if (this.userSession.permissionData.VIEW_DATA == 3) {
-        this.selectedDepartmentId = this.userSession.permissionData.Department_id
+        this.syncLockedDepartmentFilter();
       } else {
 
       }
@@ -150,6 +173,38 @@ export class ProjectPlanningComponent {
   }
   department: any[] = []
   griddataTemp: any[] = [];
+  selectedDepartmentIds: any[] = [];
+  selectedPlanName: string | null = null;
+  selectedProductName: string | null = null;
+  selectedActivityName: string | null = null;
+  planFilterOptions: any[] = [];
+  productFilterOptions: any[] = [];
+  activityFilterOptions: any[] = [];
+
+  get pagedGriddata(): any[] {
+    return this.sortService.changePage(this.griddata);
+  }
+
+  get pageStartIndex(): number {
+    const total = this.griddata.length;
+    if (!total) return 0;
+
+    const pageSize = Number(this.sortService.pageSize) || 1;
+    const maxPage = Math.max(1, Math.ceil(total / pageSize));
+    const safePage = Math.min(Math.max(1, Number(this.sortService.page) || 1), maxPage);
+    return (safePage - 1) * pageSize + 1;
+  }
+
+  get pageEndIndex(): number {
+    const total = this.griddata.length;
+    if (!total) return 0;
+
+    const pageSize = Number(this.sortService.pageSize) || 1;
+    const maxPage = Math.max(1, Math.ceil(total / pageSize));
+    const safePage = Math.min(Math.max(1, Number(this.sortService.page) || 1), maxPage);
+    return Math.min(safePage * pageSize, total);
+  }
+
   get_data() {
     let model = {
       FUNC_CODE: "FUNC-Get_Project_Plan",
@@ -172,10 +227,14 @@ export class ProjectPlanningComponent {
 
         if (matchedDepartment) {
           this.selectedDepartmentId = matchedDepartment.Department_Id;
+          this.selectedDepartmentIds = [matchedDepartment.Department_Id];
         }
       }
 
+      this.syncLockedDepartmentFilter();
+
       this.griddataTemp = [...this.allData];
+      this.buildFilterOptions();
       this.griddata = [...this.allData];
       this.applyFilter();
       this.currentTab = 1
@@ -197,15 +256,140 @@ export class ProjectPlanningComponent {
 
   }
   selectedDepartmentId: any = null;
+  private buildFilterOptions() {
+    this.updateCascadingFilterOptions();
+  }
+
+  private getUniqueFilterOptions(data: any[], key: string): any[] {
+    const seen = new Set<string>();
+
+    return data
+      .map((item: any) => (item?.[key] || '').toString().trim())
+      .filter((name: string) => {
+        if (!name || seen.has(name)) {
+          return false;
+        }
+
+        seen.add(name);
+        return true;
+      })
+      .map((name: string) => ({ name }));
+  }
+
+  private syncLockedDepartmentFilter() {
+    if (!this.isDepartmentLocked || this.lockedDepartmentId == null) {
+      return;
+    }
+
+    const matchedDepartment = this.department.find(
+      (item: any) => String(item.Department_Id) === String(this.lockedDepartmentId)
+    );
+
+    this.selectedDepartmentId = matchedDepartment?.Department_Id ?? this.lockedDepartmentId;
+    this.selectedDepartmentIds = [this.selectedDepartmentId];
+  }
+
+  private getSelectedDepartmentIds(): any[] {
+    return this.selectedDepartmentIds.length
+      ? this.selectedDepartmentIds
+      : (this.selectedDepartmentId ? [this.selectedDepartmentId] : []);
+  }
+
+  private filterByDepartment(data: any[]): any[] {
+    const selectedDepartmentIds = this.getSelectedDepartmentIds();
+
+    if (!selectedDepartmentIds.length) {
+      return data;
+    }
+
+    return data.filter(
+      x => selectedDepartmentIds.some(
+        departmentId => String(x.Department_Id) === String(departmentId)
+      )
+    );
+  }
+
+  private hasFilterOption(options: any[], value: string | null): boolean {
+    return !value || options.some(option => option.name === value);
+  }
+
+  private updateCascadingFilterOptions() {
+    const departmentData = this.filterByDepartment([...this.griddataTemp]);
+
+    this.planFilterOptions = this.getUniqueFilterOptions(departmentData, 'Plan_Name');
+    if (!this.hasFilterOption(this.planFilterOptions, this.selectedPlanName)) {
+      this.selectedPlanName = null;
+      this.selectedProductName = null;
+      this.selectedActivityName = null;
+    }
+
+    const planData = this.selectedPlanName
+      ? departmentData.filter(x => x.Plan_Name == this.selectedPlanName)
+      : departmentData;
+
+    this.productFilterOptions = this.getUniqueFilterOptions(planData, 'Product_Name');
+    if (!this.hasFilterOption(this.productFilterOptions, this.selectedProductName)) {
+      this.selectedProductName = null;
+      this.selectedActivityName = null;
+    }
+
+    const productData = this.selectedProductName
+      ? planData.filter(x => x.Product_Name == this.selectedProductName)
+      : planData;
+
+    this.activityFilterOptions = this.getUniqueFilterOptions(productData, 'Activity_Name');
+    if (!this.hasFilterOption(this.activityFilterOptions, this.selectedActivityName)) {
+      this.selectedActivityName = null;
+    }
+  }
+
+  onDepartmentFilterChange() {
+    if (this.isDepartmentLocked) {
+      this.syncLockedDepartmentFilter();
+      this.applyFilter();
+      return;
+    }
+
+    if (this.selectedDepartmentIds.length === 1) {
+      this.selectedDepartmentId = this.selectedDepartmentIds[0];
+    } else if (!this.isDepartmentLocked) {
+      this.selectedDepartmentId = null;
+    }
+
+    this.selectedPlanName = null;
+    this.selectedProductName = null;
+    this.selectedActivityName = null;
+    this.applyFilter();
+  }
+
+  onPlanFilterChange() {
+    this.selectedProductName = null;
+    this.selectedActivityName = null;
+    this.applyFilter();
+  }
+
+  onProductFilterChange() {
+    this.selectedActivityName = null;
+    this.applyFilter();
+  }
+
   applyFilter() {
     let data = [...this.griddataTemp];
+    this.syncLockedDepartmentFilter();
+    this.updateCascadingFilterOptions();
 
-    if (this.selectedDepartmentId) {
+    data = this.filterByDepartment(data);
 
-      data = data.filter(
-        x => x.Department_Id == this.selectedDepartmentId
-      );
+    if (this.selectedPlanName) {
+      data = data.filter(x => x.Plan_Name == this.selectedPlanName);
+    }
 
+    if (this.selectedProductName) {
+      data = data.filter(x => x.Product_Name == this.selectedProductName);
+    }
+
+    if (this.selectedActivityName) {
+      data = data.filter(x => x.Activity_Name == this.selectedActivityName);
     }
 
     if (this.service.searchTerm) {
@@ -228,23 +412,11 @@ export class ProjectPlanningComponent {
     }
 
     this.griddata = data;
+    this.sortService.page = 1;
 
   }
   filterSearch() {
-
-    const keyword = (this.service.searchTerm || '').toLowerCase().trim();
-
-    if (!keyword) {
-      this.griddata = [...this.allData];
-      return;
-    }
-
-    this.griddata = this.allData.filter((row: any) =>
-      Object.values(row)
-        .join(' ')
-        .toLowerCase()
-        .includes(keyword)
-    );
+    this.applyFilter();
   }
   fullModal(modal: any, data: any) {
 
@@ -262,8 +434,16 @@ export class ProjectPlanningComponent {
 
           this.project_planing = {
             ...(res.Project_Plan || {}),
-            Project_Detail: res.Project_Detail || {},
+            Status_Id: res.Project_Plan?.Status_Id ?? data.Status_Id ?? 0,
+            Project_Detail: {
+              ...(res.Project_Detail || {}),
+              PrincipleFiles: this.extractProjectPrincipleFiles(res, data.Project_Id)
+            },
             Project_Objective: res.Project_Objective || [],
+            Project_Plan_Attach_File: this.mapFileUploadList(
+              res.FILE_UPLOAD_List || res.Project_Plan_Attach_File || [],
+              data.Project_Id
+            ),
             Project_Plan_Level1: res.Project_Plan_Level1 || [],
             Project_Plan_Level1_Sub: res.Project_Plan_Level1_Sub || [],
             Project_Cabinet: res.Project_Cabinet || [],
@@ -545,6 +725,14 @@ export class ProjectPlanningComponent {
   currentTab = 1;
   firstLoad = true;
 
+  get isSaveLocked(): boolean {
+    const data =
+      this.project_planing?.Project_Plan ||
+      this.project_planing;
+
+    return Number(data?.Status_Id || 0) > 1;
+  }
+
   goTab(tab: number) {
     this.currentTab = tab;
     this.firstLoad = false;
@@ -574,6 +762,10 @@ export class ProjectPlanningComponent {
   }
   Project_Plan: any
   async savePlan(modal: any) {
+    if (this.isSaveLocked) {
+      basicAlert('warning', '\u0e44\u0e21\u0e48\u0e2a\u0e32\u0e21\u0e32\u0e23\u0e16\u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01\u0e44\u0e14\u0e49', '');
+      return;
+    }
 
     const getId = (obj: any, key: string) =>
       typeof obj === 'object' ? obj?.[key] : obj;
@@ -678,6 +870,9 @@ export class ProjectPlanningComponent {
 
     if (!userConfirmed) return;
 
+    const projectDetail =
+      this.createProjectDetailPayload();
+
     const model = {
       FUNC_CODE: this.project_planing.Project_Id > 0
         ? "FUNC-Update_Project_Plan"
@@ -685,12 +880,7 @@ export class ProjectPlanningComponent {
 
       Project_Plan: payload,
 
-      Project_Detail: {
-        ...this.project_planing.Project_Detail,
-
-        Start_Date: this.toDotNetDate(this.project_planing.Project_Detail.Start_Date),
-        End_Date: this.toDotNetDate(this.project_planing.Project_Detail.End_Date)
-      },
+      Project_Detail: projectDetail,
       Project_Objective: this.project_planing.Project_Objective,
       Project_Plan_Detail: this.project_planing.Project_Plan_Detail,
       Project_Plan_Level1: this.project_planing.Project_Plan_Level1,
@@ -706,10 +896,316 @@ export class ProjectPlanningComponent {
       Project_TargetGroup: this.project_planing.Project_TargetGroup,
     };
 
-    this.serviceebud.GatewayGetData(model).subscribe(() => {
-      basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
+    this.serviceebud.GatewayGetData(model).subscribe(async (response: any) => {
+      this.applySavedProjectId(response);
+
+      try {
+        await this.uploadProjectPrincipleFiles();
+      } catch (error) {
+        await basicAlert(
+          'warning',
+          'บันทึกข้อมูลแล้ว แต่แนบไฟล์ไม่สำเร็จ',
+          ''
+        );
+        return;
+      }
+
+      await basicAlert('success', 'บันทึกข้อมูลแล้ว', '');
       this.get_data();
       modal.dismiss();
+    });
+  }
+
+  private createProjectDetailPayload(): any {
+    const detail =
+      Array.isArray(this.project_planing.Project_Detail)
+        ? {}
+        : (this.project_planing.Project_Detail || {});
+
+    const projectDetail: any = { ...detail };
+    delete projectDetail.PrincipleFiles;
+
+    return {
+      ...projectDetail,
+      Start_Date:
+        this.toDotNetDate(detail.Start_Date),
+      End_Date:
+        this.toDotNetDate(detail.End_Date)
+    };
+  }
+
+  private applySavedProjectId(response: any) {
+    const projectId =
+      response?.Project_Id ||
+      response?.Project_Plan?.Project_Id ||
+      response?.PROJECT_PLAN?.Project_Id ||
+      response?.Data?.Project_Id ||
+      response?.data?.Project_Id ||
+      response?.Result?.Project_Id ||
+      response?.PROJECT_ID ||
+      response?.ID ||
+      response?.Project_Plan_Id;
+
+    if (!projectId) {
+      return;
+    }
+
+    this.project_planing.Project_Id = projectId;
+
+    if (this.project_planing.Project_Plan) {
+      this.project_planing.Project_Plan.Project_Id = projectId;
+    }
+  }
+
+  private extractProjectPrincipleFiles(response: any, projectId: any): any[] {
+    const projectDetail =
+      response?.Project_Detail || {};
+
+    const rawList =
+      response?.FILE_UPLOAD_List ||
+      response?.Project_Plan_Attach_File ||
+      response?.Project_Attach_File ||
+      response?.FILE_UPLOAD_List?.Data ||
+      response?.FILE_UPLOAD_List ||
+      response?.Attach_File?.Data ||
+      response?.Attach_File ||
+      projectDetail?.FILE_UPLOAD_List ||
+      projectDetail?.Project_Plan_Attach_File ||
+      projectDetail?.Project_Attach_File ||
+      projectDetail?.FILE_UPLOAD_List?.Data ||
+      projectDetail?.FILE_UPLOAD_List ||
+      projectDetail?.Attach_File?.Data ||
+      projectDetail?.Attach_File ||
+      projectDetail?.PrincipleFiles ||
+      [];
+
+    const list =
+      this.mapFileUploadList(rawList, projectId);
+
+    return list.filter((item: any) => {
+      const typeId =
+        item?.TYPE_ID ?? item?.Type_Id ?? item?.type_id;
+
+      const fkIda =
+        item?.FK_IDA ?? item?.Fk_Ida ?? item?.fk_ida ?? item?.Fk_Project_Id ?? item?.Project_Id;
+
+      const refModule =
+        item?.REF_MODULE ?? item?.Ref_Module ?? '';
+
+      const refLevel =
+        item?.REF_LEVEL ?? item?.Ref_Level ?? '';
+
+      const active =
+        item?.Active ?? item?.ACTIVE ?? 1;
+
+      return Number(active) !== 0 &&
+        (!typeId || Number(typeId) === 2) &&
+        (!fkIda || String(fkIda) === String(projectId)) &&
+        (!refModule || refModule === 'PROJECT_PLAN') &&
+        (!refLevel || refLevel === 'PRINCIPLE');
+    });
+  }
+
+  private mapFileUploadList(fileUploadList: any, projectId: any): any[] {
+    const list =
+      Array.isArray(fileUploadList?.Data)
+        ? fileUploadList.Data
+        : (Array.isArray(fileUploadList) ? fileUploadList : []);
+
+    return list.map((item: any) => {
+      const fileName =
+        item.File_Name ||
+        item.FILE_NAME ||
+        item.NAME_FAKE ||
+        item.Name_Fake ||
+        '';
+
+      const generatedFile =
+        item.GEN_FILE ||
+        item.Gen_File ||
+        item.NAME_REAL ||
+        item.Name_Real ||
+        '';
+
+      return {
+        IDA: item.IDA || item.Ida || 0,
+        TYPE_ID: item.TYPE_ID || item.Type_Id || 2,
+        FK_IDA: item.FK_IDA || item.Fk_Ida || projectId,
+        Client_Attachment_Id:
+          item.CLIENT_ATTACHMENT_ID ||
+          item.Client_Attachment_Id ||
+          '',
+        Ref_Module:
+          item.REF_MODULE ||
+          item.Ref_Module ||
+          'PROJECT_PLAN',
+        Ref_Level:
+          item.REF_LEVEL ||
+          item.Ref_Level ||
+          'PRINCIPLE',
+        Request_Id:
+          item.FK_REQUEST_ID ||
+          item.Fk_Request_Id ||
+          item.Request_Id ||
+          projectId,
+        Project_Id:
+          item.Project_Id ||
+          item.FK_IDA ||
+          item.Fk_Ida ||
+          projectId,
+        Fk_Project_Id:
+          item.Fk_Project_Id ||
+          item.FK_PROJECT_ID ||
+          item.Project_Id ||
+          item.FK_IDA ||
+          item.Fk_Ida ||
+          projectId,
+        Fk_Expense_Id:
+          item.FK_EXPENSE_ID ||
+          item.Fk_Expense_Id ||
+          item.Expense_Id ||
+          0,
+        Fk_Request_Detail_Item_Id:
+          item.FK_REQUEST_DETAIL_ITEM_ID ||
+          item.Fk_Request_Detail_Item_Id ||
+          0,
+        Row_Guid:
+          item.ROW_GUID ||
+          item.Row_Guid ||
+          null,
+        File_Name: fileName || generatedFile,
+        File_Size:
+          item.FILE_SIZE ||
+          item.File_Size ||
+          0,
+        File_Type:
+          item.FILE_TYPE ||
+          item.File_Type ||
+          '',
+        NAME_FAKE: fileName,
+        NAME_REAL:
+          item.NAME_REAL ||
+          item.Name_Real ||
+          generatedFile,
+        GEN_FILE: generatedFile,
+        PATH_FILE:
+          item.PATH_FILE ||
+          item.Path_File ||
+          '',
+        File_Url:
+          item.File_Url ||
+          item.FILE_URL ||
+          item.View_Url ||
+          item.VIEW_URL ||
+          item.URL ||
+          '',
+        FILE_DATE:
+          item.FILE_DATE ||
+          item.File_Date ||
+          null,
+        Active:
+          item.Active ?? item.ACTIVE ?? 1,
+        Is_New: false,
+        Pending_Delete: false,
+        file: null
+      };
+    });
+  }
+
+  private uploadProjectPrincipleFiles(): Promise<void> {
+    const projectDetail =
+      this.project_planing?.Project_Detail || {};
+
+    const allAttachFiles =
+      Array.isArray(projectDetail.PrincipleFiles)
+        ? projectDetail.PrincipleFiles
+        : [];
+
+    const attachFiles =
+      allAttachFiles.filter((x: any) =>
+        x?.file instanceof File &&
+        !x?.Pending_Delete &&
+        Number(x?.Active ?? 1) !== 0
+      );
+
+    const deletedFiles =
+      allAttachFiles.filter((x: any) =>
+        x?.Pending_Delete &&
+        !!(x?.IDA || x?.GEN_FILE || x?.PATH_FILE)
+      );
+
+    if (attachFiles.length === 0 && deletedFiles.length === 0) {
+      return Promise.resolve();
+    }
+
+    const formData = new FormData();
+    const projectId =
+      this.project_planing?.Project_Id ||
+      this.project_planing?.Project_Plan?.Project_Id ||
+      0;
+
+    if (!projectId) {
+      return Promise.reject('Project_Id is required for file upload.');
+    }
+
+    attachFiles.forEach((item: any) => {
+      formData.append('FILES', item.file, item.file.name);
+    });
+
+    formData.append(
+      'MODEL',
+      JSON.stringify({
+        FUNC_CODE: 'FUNC-Upload_Project_Plan_File',
+        Project_Id: projectId,
+        Request_Id: projectId,
+        Files: attachFiles.map((item: any) => ({
+          IDA: item.IDA || 0,
+          Client_Attachment_Id: item.Client_Attachment_Id || '',
+          Ref_Module: item.Ref_Module || 'PROJECT_PLAN',
+          Ref_Level: item.Ref_Level || 'PRINCIPLE',
+          Request_Id: projectId,
+          Project_Id: projectId,
+          Fk_Project_Id: projectId,
+          Fk_Expense_Id: 0,
+          Fk_Request_Detail_Item_Id: 0,
+          Row_Guid: item.Row_Guid || null,
+          File_Name: item.File_Name || item.file?.name,
+          File_Size: item.File_Size || item.file?.size,
+          File_Type: item.File_Type || item.file?.type,
+          NAME_FAKE: item.NAME_FAKE || item.File_Name || item.file?.name,
+          NAME_REAL: item.NAME_REAL || '',
+          Create_By: this.userSession?.permissionData?.IDENTIFY || '',
+          ATTACH: item.ATTACH || 1,
+          Active: 1
+        })),
+        Deleted_Files: deletedFiles.map((item: any) => ({
+          IDA: item.IDA || 0,
+          Client_Attachment_Id: item.Client_Attachment_Id || '',
+          Ref_Module: item.Ref_Module || 'PROJECT_PLAN',
+          Ref_Level: item.Ref_Level || 'PRINCIPLE',
+          Request_Id: projectId,
+          Project_Id: projectId,
+          Fk_Project_Id: projectId,
+          Fk_Expense_Id: 0,
+          Fk_Request_Detail_Item_Id: 0,
+          Row_Guid: item.Row_Guid || null,
+          File_Name: item.File_Name || item.NAME_FAKE || '',
+          NAME_FAKE: item.NAME_FAKE || item.File_Name || '',
+          NAME_REAL: item.NAME_REAL || item.GEN_FILE || '',
+          GEN_FILE: item.GEN_FILE || '',
+          PATH_FILE: item.PATH_FILE || '',
+          Update_By: this.userSession?.permissionData?.IDENTIFY || '',
+          ATTACH: item.ATTACH || 1,
+          Active: 0
+        }))
+      })
+    );
+
+    return new Promise((resolve, reject) => {
+      this.serviceebud.UploadData(formData).subscribe({
+        next: () => resolve(),
+        error: error => reject(error)
+      });
     });
   }
   validateHeader(): boolean {

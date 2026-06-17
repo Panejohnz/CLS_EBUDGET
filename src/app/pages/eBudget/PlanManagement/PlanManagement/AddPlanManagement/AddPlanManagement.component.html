@@ -128,11 +128,11 @@
             </projectPlanning>
 
             }@else{
-            <div class="table-responsive">
+            <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
 
                 <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
 
-                    <thead class="table-light">
+                    <thead class="text-center text-white sticky-header" style="background-color: #556398;">
 
                         <tr>
 
@@ -288,7 +288,7 @@
 
         </button>
 
-        <button class="btn btn-success text-black" (click)="save()">
+        <button class="btn btn-success text-black" [disabled]="isSaveLocked" (click)="save()">
 
             บันทึก
 
@@ -348,7 +348,7 @@
 
             </button>
 
-            <button class="btn btn-success text-black" (click)="saveMultiplier(modal)">
+            <button class="btn btn-success text-black" [disabled]="isSaveLocked" (click)="saveMultiplier(modal)">
 
                 บันทึก
 
@@ -408,12 +408,12 @@
             <!-- TABLE CARD -->
             <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
 
-                <div class="table-responsive">
+                <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
 
-                    <table class="table align-middle mb-0">
+                    <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
 
                         <!-- HEADER -->
-                        <thead class="table-primary">
+                        <thead class="text-center text-white sticky-header" style="background-color: #556398;">
 
                             <tr>
 
@@ -612,7 +612,7 @@
 
             </button>
 
-            <button class="btn btn-success text-black" (click)="saveTarget(modal)">
+            <button class="btn btn-success text-black" [disabled]="isSaveLocked" (click)="saveTarget(modal)">
 
                 บันทึก
 

@@ -7,29 +7,54 @@
 
             <div class="card-body">
                 <br />
-                <div class="row align-items-end">
+                <div class="row g-3 align-items-end">
 
                     <!-- หน่วยงาน -->
-                    <div class="col-lg-4">
+                    <div class="col-lg-3">
                         <label class="form-label">หน่วยงาน</label>
 
-                        <select class="form-select" [class.readonly-select]="isDepartmentLocked"
-                            [attr.aria-disabled]="isDepartmentLocked" [attr.tabindex]="isDepartmentLocked ? -1 : null"
-                            [(ngModel)]="selectedDepartmentId" (change)="applyFilter()">
-
-                            <option [ngValue]="null">
-                                -- เลือกหน่วยงาน --
-                            </option>
-
-                            <option *ngFor="let item of department" [ngValue]="item.Department_Id">
-                                {{ item.Department_Name }}
-                            </option>
-
-                        </select>
+                        <ng-select [class.readonly-select]="isDepartmentLocked" [items]="department"
+                            bindLabel="Department_Name" bindValue="Department_Id" [(ngModel)]="selectedDepartmentIds"
+                            [multiple]="true" [closeOnSelect]="false" [clearable]="!isDepartmentLocked"
+                            [disabled]="isDepartmentLocked" [searchable]="!isDepartmentLocked" appendTo="body"
+                            placeholder="-- เลือกหน่วยงาน --" (change)="onDepartmentFilterChange()">
+                        </ng-select>
                     </div>
 
-                    <!-- ดันไปขวา -->
-                    <div class="col-lg-8">
+                    <!-- แผนงาน -->
+                    <div class="col-lg-3">
+                        <label class="form-label">แผนงาน</label>
+
+                        <ng-select [items]="planFilterOptions" bindLabel="name" bindValue="name"
+                            [(ngModel)]="selectedPlanName" appendTo="body" placeholder="-- เลือกแผนงาน --"
+                            (change)="onPlanFilterChange()">
+                        </ng-select>
+                    </div>
+
+                    <!-- ผลผลิต -->
+                    <div class="col-lg-3">
+                        <label class="form-label">ผลผลิต</label>
+
+                        <ng-select [items]="productFilterOptions" bindLabel="name" bindValue="name"
+                            [(ngModel)]="selectedProductName" appendTo="body" placeholder="-- เลือกผลผลิต --"
+                            (change)="onProductFilterChange()">
+                        </ng-select>
+                    </div>
+
+                    <!-- กิจกรรม -->
+                    <div class="col-lg-3">
+                        <label class="form-label">กิจกรรม</label>
+
+                        <ng-select [items]="activityFilterOptions" bindLabel="name" bindValue="name"
+                            [(ngModel)]="selectedActivityName" appendTo="body" placeholder="-- เลือกกิจกรรม --"
+                            (change)="applyFilter()">
+                        </ng-select>
+                    </div>
+
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-lg-12">
                         <div class="d-flex justify-content-end align-items-end gap-2">
 
                             <!-- ค้นหา -->
@@ -54,7 +79,6 @@
 
                         </div>
                     </div>
-
                 </div>
                 <br>
                 <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
@@ -65,6 +89,7 @@
                             <tr>
                                 <th style="width:5%">ลำดับ</th>
                                 <th style="width:10%">หน่วยงาน</th>
+                                <th style="width:10%">แผนปี ป.ป.ท.</th>
                                 <th style="width:10%">แผนงาน</th>
                                 <th style="width:10%">ผลผลิต</th>
                                 <th style="width:10%">กิจกรรม</th>
@@ -79,11 +104,15 @@
                         </thead>
 
                         <tbody>
-                            @for(data of griddata; track $index){
+                            @for(data of pagedGriddata; track $index){
                             <tr>
-                                <td>{{$index + 1}}</td>
-                                <td>{{data.Department_Name}}</td>
-
+                                <td>{{pageStartIndex + $index}}</td>
+                                <td>{{data.Department_Short_Name}}</td>
+                                <td>
+                                    <ngb-highlight [result]="data.mas_plan_name" >
+                                        {{data.mas_plan_name}}
+                                    </ngb-highlight>
+                                </td>
                                 <td>
                                     <ngb-highlight [result]="data.Plan_Name" [term]="service.searchTerm">
                                         {{data.Plan_Name}}
@@ -148,7 +177,7 @@
 
                         <tfoot>
                             <tr style="font-weight: bold; background-color: #556398;">
-                                <td colspan="7" class="text-end text-white">รวมทั้งหมด</td>
+                                <td colspan="8" class="text-end text-white">รวมทั้งหมด</td>
 
                                 <td class="text-end text-white">
                                     {{ Total | number:'1.2-2' }}
@@ -164,14 +193,14 @@
                 <div class="row justify-content-md-between align-items-md-center mt-2">
                     <div class="col col-sm-6">
                         <div class="dataTables_info mb-2 text-start">
-                            แสดง {{ service.startIndex }} ถึง {{ service.endIndex }}
-                            จากทั้งหมด {{ service.totalRecords }} รายการ
+                            แสดง {{ griddata.length ? pageStartIndex : 0 }} ถึง {{ griddata.length ? pageEndIndex : 0 }}
+                            จากทั้งหมด {{ griddata.length }} รายการ
                         </div>
                     </div>
                     <div class="col col-sm-6">
                         <div class="d-flex justify-content-sm-end">
-                            <ngb-pagination [collectionSize]="(total$ | async)!" [(page)]="service.page"
-                                [pageSize]="service.pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true">
+                            <ngb-pagination [collectionSize]="griddata.length" [(page)]="sortService.page"
+                                [pageSize]="sortService.pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true">
                             </ngb-pagination>
                         </div>
                     </div>
@@ -244,16 +273,17 @@
         </div>
 
     </div>
-
+    <div style="height:10px"></div>
     <div class="modal-footer">
-        <button class="btn btn-success text-black" (click)="savePlan(modal)">
-            บันทึก
-        </button>
         <button class="btn btn-danger text-black" (click)="modal.dismiss()">
             ยกเลิก
         </button>
-    </div>
+        <button class="btn btn-success text-black" [disabled]="isSaveLocked" (click)="savePlan(modal)">
+            บันทึก
+        </button>
 
+    </div>
+    <div style="height:10px"></div>
 </ng-template>
 <ng-template #copyProjectModal let-modal>
 
@@ -287,7 +317,7 @@
 
             <table class="table table-bordered align-middle text-center">
 
-                <thead class="sticky-header text-white" style="background:#556398;">
+                <thead class="text-center text-white sticky-header" style="background-color: #556398;">
 
                     <tr>
                         <th width="5%">

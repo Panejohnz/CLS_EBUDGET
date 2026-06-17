@@ -53,11 +53,19 @@ export class TabGuidelineComponent {
       this.activities = this.model.activities;
       this.model.activities.forEach((act: any) => {
 
+        if (act.noBudget == null) {
+          act.noBudget = this.getDefaultNoBudget();
+        }
+
         if (act.SubActivities?.length) {
 
           let subSum = 0;
 
           act.SubActivities.forEach((sub: any) => {
+
+            if (sub.noBudget == null) {
+              sub.noBudget = act.noBudget;
+            }
 
             const subTotal = (sub.otherExpenses || []).reduce((sum: number, item: any) => {
               return sum + (item.total || item.Total || 0);
@@ -109,15 +117,24 @@ export class TabGuidelineComponent {
   selectedActivity: any;
 
   addActivity() {
+    const noBudget = this.getDefaultNoBudget();
+
     this.model.activities.push({
       name: '',
       owner: '',
+      noBudget,
       quarters: this.generateYear(),
       SubActivities: [],
       otherExpenses: []
     });
   }
-  removeActivity(i: number) {
+  async removeActivity(i: number) {
+
+    const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
+
+    if (!userConfirmed) {
+      return;
+    }
     this.model.activities.splice(i, 1);
     this.reIndexSort();
   }
@@ -125,6 +142,7 @@ export class TabGuidelineComponent {
     activity.SubActivities?.push({
       id: Date.now(),
       name: '',
+      noBudget: activity.noBudget ?? this.getDefaultNoBudget(),
       quarters: this.generateYear(),
       SubActivities: []
     });
@@ -171,7 +189,13 @@ export class TabGuidelineComponent {
     });
 
   }
-  removeSub(act: any, i: number) {
+  async removeSub(act: any, i: number) {
+
+    const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
+
+    if (!userConfirmed) {
+      return;
+    }
 
     const sub = act.SubActivities[i];
     if (!sub.Project_Detail_Id) {
@@ -681,5 +705,11 @@ export class TabGuidelineComponent {
 
     });
   }
+  private getDefaultNoBudget(): boolean {
+    const data = this.model?.Project_Plan || this.model;
+
+    return Number(data?.Used_BG) === 2;
+  }
+
   movingIndex: number | null = null;
 }
