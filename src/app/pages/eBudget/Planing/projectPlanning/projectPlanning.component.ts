@@ -771,6 +771,7 @@ export class ProjectPlanningComponent {
       typeof obj === 'object' ? obj?.[key] : obj;
 
     if (!this.validateHeader()) return;
+    if (!this.validateRequiredPlanningTabs()) return;
     const data =
       this.project_planing?.Project_Plan ||
       this.project_planing;
@@ -1248,6 +1249,171 @@ export class ProjectPlanningComponent {
         basicAlert('info', f.msg, '');
         return false;
       }
+    }
+
+    return true;
+  }
+
+  private isEmptyRequiredValue(value: any): boolean {
+    if (value === null || value === undefined) {
+      return true;
+    }
+
+    if (typeof value === 'string') {
+      return value.trim() === '';
+    }
+
+    if (Array.isArray(value)) {
+      return value.length === 0;
+    }
+
+    return false;
+  }
+
+  private hasFilledRows(rows: any, keys: string[]): boolean {
+    if (!Array.isArray(rows)) {
+      return false;
+    }
+
+    return rows.some((row: any) =>
+      keys.every(key => !this.isEmptyRequiredValue(row?.[key]))
+    );
+  }
+
+  private failRequired(tab: number, message: string): false {
+    this.goTab(tab);
+    basicAlert('info', message, '');
+    return false;
+  }
+
+  private requireValue(value: any, message: string, tab: number): boolean {
+    if (this.isEmptyRequiredValue(value)) {
+      return this.failRequired(tab, message);
+    }
+
+    return true;
+  }
+
+  private validateRequiredPlanningTabs(): boolean {
+    const data =
+      this.project_planing?.Project_Plan ||
+      this.project_planing;
+
+    const showPlanningSelectors =
+      Number(this.project_planing?.Budget_Type ?? data?.Budget_Type) !== 1;
+
+    const generalFields = [
+      ...(showPlanningSelectors ? [
+        { value: this.project_planing.projectType, msg: 'กรุณาเลือกประเภทโครงการ' },
+        { value: this.project_planing.selectedPlan, msg: 'กรุณาเลือกแผนงาน' },
+        { value: this.project_planing.selectedProduct, msg: 'กรุณาเลือกผลผลิต' },
+        { value: this.project_planing.selectedActivity, msg: 'กรุณาเลือกกิจกรรม' },
+      ] : []),
+      { value: this.project_planing.selectedBudget, msg: 'กรุณาเลือกหมวดงบ' },
+      { value: data?.Used_BG, msg: 'กรุณาเลือกลักษณะโครงการ' },
+      { value: data?.Project_Name, msg: 'กรุณากรอกชื่อโครงการ' },
+      { value: data?.Project_Type_Id, msg: 'กรุณาเลือกประเภทโครงการ ใหม่/ต่อเนื่อง' },
+    ];
+
+    for (const field of generalFields) {
+      if (!this.requireValue(field.value, field.msg, 1)) {
+        return false;
+      }
+    }
+
+    if (Number(data?.Operation1 || 0) !== 1 && Number(data?.Operation2 || 0) !== 2) {
+      return this.failRequired(1, 'กรุณาเลือกการดำเนินการ');
+    }
+
+    const level1 =
+      Array.isArray(this.project_planing.Project_Plan_Level1)
+        ? (this.project_planing.Project_Plan_Level1[0] || {})
+        : (this.project_planing.Project_Plan_Level1 || {});
+
+    const level2 = this.project_planing.Project_Plan_Level2 || {};
+    const level3 = this.project_planing.Project_Plan_Level3 || {};
+
+    const alignmentFields = [
+      { value: level1.Strategic_Id, msg: 'กรุณาเลือกยุทธศาสตร์ชาติด้าน' },
+      { value: level1.Issues_Id, msg: 'กรุณาเลือกประเด็นยุทธศาสตร์' },
+      { value: level1.Issues_Sub_Id, msg: 'กรุณาเลือกประเด็นย่อย' },
+      { value: level1.Target, msg: 'กรุณากรอกเป้าหมายยุทธศาสตร์ชาติ' },
+      { value: level2.Master_Plan_Id, msg: 'กรุณาเลือกแผนแม่บทฯ ประเด็น' },
+      { value: level2.Plan_Goals_Id, msg: 'กรุณาเลือกเป้าหมายระดับประเด็น (Y2)' },
+      { value: level2.Plan_Tactics_Id, msg: 'กรุณาเลือกตัวชี้วัดเป้าหมายระดับประเด็น' },
+      { value: level2.Description, msg: 'กรุณากรอกความสอดคล้องของโครงการกับแผนแม่บทฯ' },
+      { value: level2.Subplan_Id, msg: 'กรุณาเลือกแผนย่อยของแผนแม่บทฯ' },
+      { value: level2.Target_Y1_Id, msg: 'กรุณาเลือกเป้าหมายแผนแม่บทย่อย (Y1)' },
+      { value: level2.SubplanDesc, msg: 'กรุณากรอกความสอดคล้องของโครงการกับเป้าหมายแผนย่อย' },
+      { value: level2.DevGuideline_Id, msg: 'กรุณาเลือกแนวทางการพัฒนาภายใต้แผนย่อย' },
+      { value: level2.Landmark_Id, msg: 'กรุณาเลือกหมุดหมายแผนพัฒนาเศรษฐกิจและสังคมแห่งชาติ' },
+      { value: level2.Landmark_Gloals_Id, msg: 'กรุณาเลือกเป้าหมายแผนพัฒนาเศรษฐกิจและสังคมแห่งชาติ' },
+      { value: level2.Landmark_Tacticts_Id, msg: 'กรุณาเลือกตัวชี้วัดแผนพัฒนาเศรษฐกิจและสังคมแห่งชาติ' },
+      { value: level2.Landmark_Guidelines_Id, msg: 'กรุณาเลือกกลยุทธ์การพัฒนา' },
+      { value: level2.Landmark_Sub_Guidelines_Id, msg: 'กรุณาเลือกกลยุทธ์ย่อย' },
+      { value: level3.Master_Plan_Id, msg: 'กรุณาเลือกแผนปฏิบัติราชการ 5 ปี ประเด็น' },
+      { value: level3.Plan_Goals_Id, msg: 'กรุณาเลือกแผนปฏิบัติราชการ 5 ปี เป้าหมายระดับประเด็น' },
+      { value: level3.Plan_Tactics_Id, msg: 'กรุณาเลือกแผนปฏิบัติราชการ 5 ปี ตัวชี้วัด' },
+      { value: level3.Description, msg: 'กรุณากรอกความสอดคล้องของแผนปฏิบัติราชการ 5 ปี' },
+      { value: level3.Sub_Master_Plan_Id, msg: 'กรุณาเลือกแผนปฏิบัติราชการ 5 ปี แผนย่อย' },
+      { value: level3.Sub_Plan_Goals_Id, msg: 'กรุณาเลือกแผนปฏิบัติราชการ 5 ปี เป้าหมายแผนย่อย' },
+      { value: level3.SubplanDesc, msg: 'กรุณากรอกความสอดคล้องของแผนปฏิบัติราชการ 5 ปี กับเป้าหมายแผนย่อย' },
+      { value: level3.Guidelines_Id, msg: 'กรุณาเลือกแผนปฏิบัติราชการ 5 ปี แนวทางการพัฒนา' },
+      { value: level3.Project_Plan_Id_5, msg: 'กรุณาเลือกแผนปฏิบัติราชการ ปปท. แผน 5 ปี แผนงาน' },
+      { value: level3.Project_Plan_Goals_Id_5, msg: 'กรุณาเลือกแผนปฏิบัติราชการ ปปท. แผน 5 ปี เป้าหมาย' },
+      { value: level3.Indicators_Id_5, msg: 'กรุณาเลือกแผนปฏิบัติราชการ ปปท. แผน 5 ปี ตัวชี้วัด' },
+      { value: level3.Goals_Guidelines_Id_5, msg: 'กรุณาเลือกแผนปฏิบัติราชการ ปปท. แผน 5 ปี แนวทางการพัฒนา' },
+      { value: level3.Project_Plan_Id, msg: 'กรุณาเลือกแผนปฏิบัติราชการ ปปท. แผน 1 ปี แผนงาน' },
+      { value: level3.Project_Plan_Goals_Id, msg: 'กรุณาเลือกแผนปฏิบัติราชการ ปปท. แผน 1 ปี เป้าหมาย' },
+      { value: level3.Indicators_Id, msg: 'กรุณาเลือกแผนปฏิบัติราชการ ปปท. แผน 1 ปี ตัวชี้วัด' },
+      { value: level3.Measure_Id, msg: 'กรุณาเลือกแผนปฏิบัติราชการ ปปท. แผน 1 ปี แนวทางการพัฒนา' },
+    ];
+
+    for (const field of alignmentFields) {
+      if (!this.requireValue(field.value, field.msg, 2)) {
+        return false;
+      }
+    }
+
+    const detail =
+      Array.isArray(this.project_planing.Project_Detail)
+        ? {}
+        : (this.project_planing.Project_Detail || {});
+
+    if (!this.requireValue(detail.Principle, 'กรุณากรอกหลักการและเหตุผล', 3)) {
+      return false;
+    }
+
+    if (!this.hasFilledRows(this.project_planing.Project_Objective, ['Name'])) {
+      return this.failRequired(3, 'กรุณากรอกวัตถุประสงค์');
+    }
+
+    if (!this.hasFilledRows(this.project_planing.Project_Output, ['Name', 'Target', 'Unit'])) {
+      return this.failRequired(3, 'กรุณากรอกเป้าหมายเชิงผลผลิตให้ครบ');
+    }
+
+    if (!this.hasFilledRows(this.project_planing.Project_Outcome, ['Name'])) {
+      return this.failRequired(3, 'กรุณากรอกเป้าหมายเชิงผลลัพธ์');
+    }
+
+    if (!this.hasFilledRows(this.project_planing.Project_Expected, ['Name'])) {
+      return this.failRequired(3, 'กรุณากรอกผลที่คาดว่าจะได้รับ');
+    }
+
+    if (!this.hasFilledRows(this.project_planing.Project_TargetGroup, ['Name', 'Amount', 'Unit'])) {
+      return this.failRequired(3, 'กรุณากรอกกลุ่มเป้าหมาย / ผู้ที่ได้รับผลประโยชน์ให้ครบ');
+    }
+
+    if (!this.requireValue(detail.Area, 'กรุณากรอกพื้นที่การดำเนินการ', 3)) {
+      return false;
+    }
+
+    if (!this.requireValue(detail.Start_Date, 'กรุณาเลือกวันที่เริ่มต้นโครงการ', 3)) {
+      return false;
+    }
+
+    if (!this.requireValue(detail.End_Date, 'กรุณาเลือกวันที่สิ้นสุดโครงการ', 3)) {
+      return false;
     }
 
     return true;
