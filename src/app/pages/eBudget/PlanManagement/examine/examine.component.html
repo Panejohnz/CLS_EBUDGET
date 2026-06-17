@@ -80,7 +80,7 @@
                     <!-- PLAN -->
                     <ng-container *ngFor="let plan of groupData">
 
-                        <tr class="table fw-bold" style="cursor:pointer; background-color: #7bff86;"
+                        <tr class="table fw-bold" style="cursor:pointer; background-color: #dff5e4; color: #243524;"
                             (click)="plan.expanded = !plan.expanded">
 
                             <td>
@@ -145,7 +145,7 @@
                             <!-- PRODUCT -->
                             <ng-container *ngFor="let product of plan.products">
 
-                                <tr class="table fw-bold" style="cursor:pointer; background-color: #f1b0f7;"
+                                <tr class="table fw-bold" style="cursor:pointer; background-color: #f4e3f7; color: #3b2a3f;"
                                     (click)="product.expanded = !product.expanded">
 
                                     <td class="ps-4">
@@ -210,7 +210,7 @@
                                     <!-- ACTIVITY -->
                                     <ng-container *ngFor="let activity of product.activities">
 
-                                        <tr class="table fw-bold" style="cursor:pointer; background-color: #f8f187;"
+                                        <tr class="table fw-bold" style="cursor:pointer; background-color: #fff4c7; color: #3b3418;"
                                             (click)="activity.expanded = !activity.expanded">
 
                                             <td class="ps-5">
@@ -275,7 +275,7 @@
                                             <!-- BUDGET -->
                                             <ng-container *ngFor="let budget of activity.budgets">
 
-                                                <tr class="table fw-bold" style="cursor:pointer; background-color: #a1e3f7;"
+                                                <tr class="table fw-bold" style="cursor:pointer; background-color: #dff3fb; color: #213844;"
                                                     (click)="budget.expanded = !budget.expanded">
 
 
