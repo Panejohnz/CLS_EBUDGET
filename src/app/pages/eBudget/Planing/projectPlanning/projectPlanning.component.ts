@@ -27,8 +27,23 @@ import { TabGuidelineComponent } from 'src/app/shared/planingtab/components/tab-
     .readonly-select {
       pointer-events: none;
       background-color: var(--vz-secondary-bg, #e9ecef);
-      color: #6c757d;
       opacity: 1;
+    }
+
+    .readonly-select ::ng-deep .ng-select-container {
+      background-color: var(--vz-secondary-bg, #e9ecef);
+      opacity: 1;
+    }
+
+    .readonly-select ::ng-deep .ng-value,
+    .readonly-select ::ng-deep .ng-value.ng-value-disabled {
+      background-color: #e2e6ea;
+      color: #212529;
+    }
+
+    .readonly-select ::ng-deep .ng-value-label,
+    .readonly-select ::ng-deep .ng-placeholder {
+      color: #212529;
     }
   `]
 })
@@ -242,9 +257,7 @@ export class ProjectPlanningComponent {
   }
   selectedDepartmentId: any = null;
   private buildFilterOptions() {
-    this.planFilterOptions = this.getUniqueFilterOptions(this.griddataTemp, 'Plan_Name');
-    this.productFilterOptions = this.getUniqueFilterOptions(this.griddataTemp, 'Product_Name');
-    this.activityFilterOptions = this.getUniqueFilterOptions(this.griddataTemp, 'Activity_Name');
+    this.updateCascadingFilterOptions();
   }
 
   private getUniqueFilterOptions(data: any[], key: string): any[] {
@@ -276,6 +289,60 @@ export class ProjectPlanningComponent {
     this.selectedDepartmentIds = [this.selectedDepartmentId];
   }
 
+  private getSelectedDepartmentIds(): any[] {
+    return this.selectedDepartmentIds.length
+      ? this.selectedDepartmentIds
+      : (this.selectedDepartmentId ? [this.selectedDepartmentId] : []);
+  }
+
+  private filterByDepartment(data: any[]): any[] {
+    const selectedDepartmentIds = this.getSelectedDepartmentIds();
+
+    if (!selectedDepartmentIds.length) {
+      return data;
+    }
+
+    return data.filter(
+      x => selectedDepartmentIds.some(
+        departmentId => String(x.Department_Id) === String(departmentId)
+      )
+    );
+  }
+
+  private hasFilterOption(options: any[], value: string | null): boolean {
+    return !value || options.some(option => option.name === value);
+  }
+
+  private updateCascadingFilterOptions() {
+    const departmentData = this.filterByDepartment([...this.griddataTemp]);
+
+    this.planFilterOptions = this.getUniqueFilterOptions(departmentData, 'Plan_Name');
+    if (!this.hasFilterOption(this.planFilterOptions, this.selectedPlanName)) {
+      this.selectedPlanName = null;
+      this.selectedProductName = null;
+      this.selectedActivityName = null;
+    }
+
+    const planData = this.selectedPlanName
+      ? departmentData.filter(x => x.Plan_Name == this.selectedPlanName)
+      : departmentData;
+
+    this.productFilterOptions = this.getUniqueFilterOptions(planData, 'Product_Name');
+    if (!this.hasFilterOption(this.productFilterOptions, this.selectedProductName)) {
+      this.selectedProductName = null;
+      this.selectedActivityName = null;
+    }
+
+    const productData = this.selectedProductName
+      ? planData.filter(x => x.Product_Name == this.selectedProductName)
+      : planData;
+
+    this.activityFilterOptions = this.getUniqueFilterOptions(productData, 'Activity_Name');
+    if (!this.hasFilterOption(this.activityFilterOptions, this.selectedActivityName)) {
+      this.selectedActivityName = null;
+    }
+  }
+
   onDepartmentFilterChange() {
     if (this.isDepartmentLocked) {
       this.syncLockedDepartmentFilter();
@@ -289,27 +356,29 @@ export class ProjectPlanningComponent {
       this.selectedDepartmentId = null;
     }
 
+    this.selectedPlanName = null;
+    this.selectedProductName = null;
+    this.selectedActivityName = null;
+    this.applyFilter();
+  }
+
+  onPlanFilterChange() {
+    this.selectedProductName = null;
+    this.selectedActivityName = null;
+    this.applyFilter();
+  }
+
+  onProductFilterChange() {
+    this.selectedActivityName = null;
     this.applyFilter();
   }
 
   applyFilter() {
     let data = [...this.griddataTemp];
     this.syncLockedDepartmentFilter();
+    this.updateCascadingFilterOptions();
 
-    const selectedDepartmentIds =
-      this.selectedDepartmentIds.length
-        ? this.selectedDepartmentIds
-        : (this.selectedDepartmentId ? [this.selectedDepartmentId] : []);
-
-    if (selectedDepartmentIds.length) {
-
-      data = data.filter(
-        x => selectedDepartmentIds.some(
-          departmentId => String(x.Department_Id) === String(departmentId)
-        )
-      );
-
-    }
+    data = this.filterByDepartment(data);
 
     if (this.selectedPlanName) {
       data = data.filter(x => x.Plan_Name == this.selectedPlanName);

@@ -27,7 +27,7 @@
 
                         <ng-select [items]="planFilterOptions" bindLabel="name" bindValue="name"
                             [(ngModel)]="selectedPlanName" appendTo="body" placeholder="-- เลือกแผนงาน --"
-                            (change)="applyFilter()">
+                            (change)="onPlanFilterChange()">
                         </ng-select>
                     </div>
 
@@ -37,7 +37,7 @@
 
                         <ng-select [items]="productFilterOptions" bindLabel="name" bindValue="name"
                             [(ngModel)]="selectedProductName" appendTo="body" placeholder="-- เลือกผลผลิต --"
-                            (change)="applyFilter()">
+                            (change)="onProductFilterChange()">
                         </ng-select>
                     </div>
 
