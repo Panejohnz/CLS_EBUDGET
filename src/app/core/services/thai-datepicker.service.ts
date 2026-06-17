@@ -104,29 +104,24 @@ export class ThaiDatepickerService {
     return new Date();
   }
 
-  getFlatpickrOptions(): Record<string, unknown> {
+  getFlatpickrOptions(): Record<string, any> {
     return {
       locale: this.flatpickrLocale,
       clickOpens: true,
       allowInput: true,
       parseDate: (datestr: string) => this.parseDate(datestr),
-      onReady: (_selectedDates: Date[], _dateStr: string, instance: any) =>
-        this.attachThaiBuddhistCalendar(instance),
-      onMonthChange: (_selectedDates: Date[], _dateStr: string, instance: any) =>
-        this.updateThaiBuddhistYearDisplay(instance),
-      onYearChange: (_selectedDates: Date[], _dateStr: string, instance: any) =>
-        this.updateThaiBuddhistYearDisplay(instance),
-      onOpen: (_selectedDates: Date[], _dateStr: string, instance: any) =>
-        this.updateThaiBuddhistYearDisplay(instance),
     };
   }
 
   open(picker: FlatpickrDirective): void {
     picker?.instance?.open();
+    this.updateThaiBuddhistYearDisplayLater(picker?.instance);
   }
 
-  private attachThaiBuddhistCalendar(instance: any): void {
+  attachThaiBuddhistCalendar(eventOrInstance: any): void {
+    const instance = eventOrInstance?.instance || eventOrInstance;
     this.updateThaiBuddhistYearDisplay(instance);
+    this.updateThaiBuddhistYearDisplayLater(instance);
 
     if (this.thaiCalendarAttached.has(instance)) {
       return;
@@ -155,12 +150,27 @@ export class ThaiDatepickerService {
     });
   }
 
-  private updateThaiBuddhistYearDisplay(instance: any): void {
+  updateThaiBuddhistYearDisplay(eventOrInstance: any): void {
+    const instance = eventOrInstance?.instance || eventOrInstance;
+    if (!instance) {
+      return;
+    }
+
     const yearInput = instance.currentYearElement as HTMLInputElement | undefined;
     if (!yearInput) {
       return;
     }
 
     yearInput.value = String(instance.currentYear + 543);
+  }
+
+  updateThaiBuddhistYearDisplayLater(eventOrInstance: any): void {
+    const instance = eventOrInstance?.instance || eventOrInstance;
+
+    if (!instance) {
+      return;
+    }
+
+    setTimeout(() => this.updateThaiBuddhistYearDisplay(instance));
   }
 }

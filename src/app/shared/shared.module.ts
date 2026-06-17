@@ -89,6 +89,7 @@ import { OtherExpenseProjectComponent } from '../shared/planingtab/components/ta
 
 import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { FlatpickrModule } from 'angularx-flatpickr';
 import { ThaiDatePickerComponent } from '../pages/thai-date-picker/thai-date-picker.component';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { EmptyZeroNumberDirective } from './directives/empty-zero-number.directive';
@@ -176,6 +177,7 @@ import { EmptyZeroNumberDirective } from './directives/empty-zero-number.directi
     SlickCarouselModule,
     CountUpModule,
     NgSelectModule, NgbDatepickerModule,
+    FlatpickrModule,
     NgxMaskDirective
 
   ],
