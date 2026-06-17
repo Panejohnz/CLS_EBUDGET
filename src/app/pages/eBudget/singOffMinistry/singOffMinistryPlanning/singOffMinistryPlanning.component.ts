@@ -177,16 +177,31 @@ export class SignoffMinistryPlanningComponent {
 
     if (!userConfirmed) return;
 
+    const cancelRemark = (await cancelTracking() || '').trim();
+
+    if (!cancelRemark) {
+      // // basicAlert('warning', 'กรุณาระบุหมายเหตุ', '');
+      return;
+    }
+
     const payload = [
       {
         Project_Id: projectId,
         Status_Number: 8
       }
     ];
+    const SignOff_Remark = {
+      Remark_Id: 0,
+      Remark: cancelRemark,
+      Status_Id: 8,
+      Fk_Plan_Id: projectId,
+      Plan_Type: 1
+    };
 
     let model = {
       FUNC_CODE: "FUNC-Cancel_SignOff_Ministry_Project_Plan",
-      List_Project_Plan: payload
+      List_Project_Plan: payload,
+      SignOff_Remark: SignOff_Remark
     };
 
     this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
