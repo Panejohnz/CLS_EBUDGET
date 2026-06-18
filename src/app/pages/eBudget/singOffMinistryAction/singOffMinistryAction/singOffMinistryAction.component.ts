@@ -323,7 +323,7 @@ export class SingOffMinistryActionComponent {
 
         this.serviceebud.GatewayGetData(model).subscribe((res: any) => {
 
-            basicAlert('success', 'ยกเลิกการ Sign Off แผนปฎิบัติการ (ปปท) แล้ว', '');
+            basicAlert('success', 'ยกเลิกการ Sign Off แผนปฎิบัติการ (ป.ป.ท.) แล้ว', '');
 
             this.get_data();
 

@@ -1355,14 +1355,14 @@ export class ProjectPlanningComponent {
       { value: level3.Sub_Plan_Goals_Id, msg: 'กรุณาเลือกแผนปฏิบัติราชการ 5 ปี เป้าหมายแผนย่อย' },
       { value: level3.SubplanDesc, msg: 'กรุณากรอกความสอดคล้องของแผนปฏิบัติราชการ 5 ปี กับเป้าหมายแผนย่อย' },
       { value: level3.Guidelines_Id, msg: 'กรุณาเลือกแผนปฏิบัติราชการ 5 ปี แนวทางการพัฒนา' },
-      { value: level3.Project_Plan_Id_5, msg: 'กรุณาเลือกแผนปฏิบัติราชการ ปปท. แผน 5 ปี แผนงาน' },
-      { value: level3.Project_Plan_Goals_Id_5, msg: 'กรุณาเลือกแผนปฏิบัติราชการ ปปท. แผน 5 ปี เป้าหมาย' },
-      { value: level3.Indicators_Id_5, msg: 'กรุณาเลือกแผนปฏิบัติราชการ ปปท. แผน 5 ปี ตัวชี้วัด' },
-      { value: level3.Goals_Guidelines_Id_5, msg: 'กรุณาเลือกแผนปฏิบัติราชการ ปปท. แผน 5 ปี แนวทางการพัฒนา' },
-      { value: level3.Project_Plan_Id, msg: 'กรุณาเลือกแผนปฏิบัติราชการ ปปท. แผน 1 ปี แผนงาน' },
-      { value: level3.Project_Plan_Goals_Id, msg: 'กรุณาเลือกแผนปฏิบัติราชการ ปปท. แผน 1 ปี เป้าหมาย' },
-      { value: level3.Indicators_Id, msg: 'กรุณาเลือกแผนปฏิบัติราชการ ปปท. แผน 1 ปี ตัวชี้วัด' },
-      { value: level3.Measure_Id, msg: 'กรุณาเลือกแผนปฏิบัติราชการ ปปท. แผน 1 ปี แนวทางการพัฒนา' },
+      { value: level3.Project_Plan_Id_5, msg: 'กรุณาเลือกแผนปฏิบัติราชการ ป.ป.ท. แผน 5 ปี แผนงาน' },
+      { value: level3.Project_Plan_Goals_Id_5, msg: 'กรุณาเลือกแผนปฏิบัติราชการ ป.ป.ท. แผน 5 ปี เป้าหมาย' },
+      { value: level3.Indicators_Id_5, msg: 'กรุณาเลือกแผนปฏิบัติราชการ ป.ป.ท. แผน 5 ปี ตัวชี้วัด' },
+      { value: level3.Goals_Guidelines_Id_5, msg: 'กรุณาเลือกแผนปฏิบัติราชการ ป.ป.ท. แผน 5 ปี แนวทางการพัฒนา' },
+      { value: level3.Project_Plan_Id, msg: 'กรุณาเลือกแผนปฏิบัติราชการ ป.ป.ท. แผน 1 ปี แผนงาน' },
+      { value: level3.Project_Plan_Goals_Id, msg: 'กรุณาเลือกแผนปฏิบัติราชการ ป.ป.ท. แผน 1 ปี เป้าหมาย' },
+      { value: level3.Indicators_Id, msg: 'กรุณาเลือกแผนปฏิบัติราชการ ป.ป.ท. แผน 1 ปี ตัวชี้วัด' },
+      { value: level3.Measure_Id, msg: 'กรุณาเลือกแผนปฏิบัติราชการ ป.ป.ท. แผน 1 ปี แนวทางการพัฒนา' },
     ];
 
     for (const field of alignmentFields) {
