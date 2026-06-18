@@ -5,24 +5,23 @@
 
     <div class="card-body">
         <div class="expense-table-responsive">
-            <table class="table table-bordered align-middle expense-table text-center expense-table mb-0" style="table-layout: fixed;">
+            <table class="table table-bordered align-middle expense-table mb-0" style="table-layout: fixed;">
                 <thead class="text-center text-white expense-table-header">
                     <tr>
-                        <th style="width:35%">รายการ</th>
-                        <th style="width:20%">ประเภท</th>
-                        <th style="width:10%">จำนวนคน</th>
-                        <th style="width:10%">จำนวนครั้ง</th>
-                        <th style="width:10%">อัตรา</th>
-                        <th style="width:10%">รวม</th>
-                        <th style="width:5%"></th>
+                        <th style="width:38%">รายการ</th>
+                        <th style="width:12%">จำนวนคน</th>
+                        <th style="width:12%">จำนวนครั้ง</th>
+                        <th style="width:14%">อัตรา</th>
+                        <th style="width:16%">รวม</th>
+                        <th style="width:8%"></th>
                     </tr>
                 </thead>
 
                 <tbody *ngFor="let section of sections">
                     <tr class="table-light fw-bold">
-                        <td colspan="7" class="text-start">
-                            {{section.title}}
-                            <button class="btn btn-sm btn-primary float-end" (click)="addItem(section)">
+                        <td colspan="6" class="text-start">
+                            {{ section.title }}
+                            <button type="button" class="btn btn-sm btn-primary float-end" (click)="addItem(section)">
                                 <i class="bx bx-plus"></i>
                                 เพิ่มรายการ
                             </button>
@@ -30,47 +29,44 @@
                     </tr>
 
                     <tr *ngFor="let item of section.items">
-                        <td class="text-start">
-                            <input class="form-control" [(ngModel)]="item.name" (ngModelChange)="updateDetailItems()"
-                                placeholder="ระบุรายการ">
-                        </td>
-
                         <td>
                             <select class="form-select" [(ngModel)]="item.type" (change)="updateRate(item)">
-                                <option value="" disabled>-- เลือกประเภท --</option>
-                                <option value="1">ประธาน</option>
-                                <option value="2">กรรมการ</option>
-                                <option value="3">คณะกรรมการ</option>
+                                <option value="" disabled>-- เลือกรายการ --</option>
+                                <option *ngFor="let option of section.options" [value]="option.Expense_Detial_Id">
+                                    {{ getOptionText(option) }}
+                                </option>
                             </select>
                         </td>
 
                         <td>
-
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center" [(ngModel)]="item.qty"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                inputmode="decimal" class="form-control text-center" [(ngModel)]="item.qty"
                                 (ngModelChange)="calculate(item)">
                         </td>
 
                         <td>
-
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center" [(ngModel)]="item.times"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                inputmode="decimal" class="form-control text-center" [(ngModel)]="item.times"
                                 (ngModelChange)="calculate(item)">
                         </td>
 
-                        <td class="text-end">{{item.rate | number:'1.2-2'}}</td>
+                        <td class="text-end">
+                            {{ item.rate | number:'1.2-2' }}
+                        </td>
 
                         <td class="fw-bold text-end text-primary">
-                            {{item.total | number:'1.2-2'}}
+                            {{ item.total | number:'1.2-2' }}
                         </td>
 
-                        <td>
-                            <button class="btn btn-danger btn-sm" (click)="removeItem(section,item)">
+                        <td class="text-center">
+                            <button type="button" class="btn btn-danger btn-sm" (click)="removeItem(section,item)">
                                 <i class="bx bx-trash"></i>
                             </button>
                         </td>
                     </tr>
 
                     <tr class="table-light fw-bold">
-                        <td colspan="5" class="text-end">รวม</td>
+                        <td colspan="4" class="text-end">รวม</td>
                         <td class="text-end text-primary">
                             {{ getSectionTotal(section) | number:'1.2-2' }}
                         </td>
@@ -80,7 +76,7 @@
 
                 <tfoot>
                     <tr>
-                        <td colspan="5" class="text-end">รวมทั้งสิ้น</td>
+                        <td colspan="4" class="text-end">รวมทั้งสิ้น</td>
                         <td class="text-end">{{ grandTotal | number:'1.2-2' }}</td>
                         <td></td>
                     </tr>
