@@ -26,9 +26,9 @@ export class ExpenseOTComponent {
   // =========================
   // rate
   // =========================
-  workRate: number = 50;
+  workRate: number = 0;
 
-  holidayRate: number = 60;
+  holidayRate: number = 0;
 
   // =========================
   // summary
@@ -47,6 +47,7 @@ export class ExpenseOTComponent {
   // =========================
   // init
   // =========================
+  Mas_Expense_Detial_Rate_List: any[] = [];
   ngOnInit() {
 
     if (!this.model) return;
@@ -57,7 +58,27 @@ export class ExpenseOTComponent {
 
     }
 
-    this.bindData();
+    let model = {
+      FUNC_CODE: "FUNC-Get_Mas_Expense_Rate",
+      Fk_Expense_Id: 13
+    };
+
+    this.serviceebud.GatewayGetData(model)
+      .subscribe((response: any) => {
+
+        const expenseDetailList =
+          response.List_Mas_Expense_Rate
+
+        this.Mas_Expense_Detial_Rate_List =
+          Array.isArray(expenseDetailList)
+            ? expenseDetailList
+            : [];
+
+        this.applyMasterRates();
+        this.bindData();
+
+      });
+
 
     this.calculateTotal();
 
@@ -165,6 +186,73 @@ export class ExpenseOTComponent {
 
     });
 
+  }
+
+  private normalizeText(value: any): string {
+    return (value ?? '').toString().trim().toLowerCase().replace(/\s+/g, '');
+  }
+
+  private isWorkRateRow(row: any): boolean {
+    const text = this.normalizeText([
+      row?.Expense_Detail,
+      row?.Expense_Name,
+      row?.Expense_Short_Name,
+      row?.Expense_Detial_Name,
+      row?.Expense_Detial_Short_Name,
+      row?.Rate_Name,
+      row?.Type_Name,
+      row?.Code
+    ].filter(Boolean).join(' '));
+
+    return text.includes('วันทำการ') ||
+      text.includes('ทำการ') ||
+      text.includes('work') ||
+      text.includes('weekday');
+  }
+
+  private isHolidayRateRow(row: any): boolean {
+    const text = this.normalizeText([
+      row?.Expense_Detail,
+      row?.Expense_Name,
+      row?.Expense_Short_Name,
+      row?.Expense_Detial_Name,
+      row?.Expense_Detial_Short_Name,
+      row?.Rate_Name,
+      row?.Type_Name,
+      row?.Code
+    ].filter(Boolean).join(' '));
+
+    return text.includes('วันหยุด') ||
+      text.includes('หยุด') ||
+      text.includes('holiday') ||
+      text.includes('weekend');
+  }
+
+  private getRowRate(row: any): number {
+    return Number(
+      row?.Expense_Rate ??
+      row?.Rate ??
+      row?.Price ??
+      row?.Total ??
+      0
+    ) || 0;
+  }
+
+  private applyMasterRates() {
+    const workRateRow = this.Mas_Expense_Detial_Rate_List.find((row: any) =>
+      this.isWorkRateRow(row)
+    ) ?? this.Mas_Expense_Detial_Rate_List[0];
+    const holidayRateRow = this.Mas_Expense_Detial_Rate_List.find((row: any) =>
+      this.isHolidayRateRow(row)
+    ) ?? this.Mas_Expense_Detial_Rate_List[1];
+
+    if (workRateRow) {
+      this.workRate = this.getRowRate(workRateRow);
+    }
+
+    if (holidayRateRow) {
+      this.holidayRate = this.getRowRate(holidayRateRow);
+    }
   }
 
   // =========================

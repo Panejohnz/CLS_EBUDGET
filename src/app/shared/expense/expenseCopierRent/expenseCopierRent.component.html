@@ -20,7 +20,7 @@
 
                         <td class="text-start">
                             <select class="form-select mb-1" [(ngModel)]="item.type"
-                                (change)="updateDetailItems()">
+                                (change)="onTypeChange(item, i)">
                                 <option value="">--- รายการ ---</option>
                                 <option value="5000">ปริมาณขั้นต่ำ 5,000 แผ่น</option>
                                 <option value="10000">ปริมาณขั้นต่ำ 10,000 แผ่น</option>

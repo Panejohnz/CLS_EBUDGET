@@ -250,6 +250,12 @@ async function cancelTracking() {
         inputAttributes: {
             "aria-label": "Type your message here"
         },
+        didOpen: () => {
+            const inputLabel = document.querySelector('.swal2-input-label');
+            if (inputLabel) {
+                inputLabel.style.fontSize = '22px';
+            }
+        },
        
     });
 

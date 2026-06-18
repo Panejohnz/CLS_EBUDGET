@@ -206,13 +206,20 @@
 
             <div class="col-md-6">
                 <label>ตั้งแต่</label>
-                <div class="input-group">
-                    <input class="form-control" placeholder="วว/ดด/ปปปป" name="Start_Date" ngbDatepicker
-                        #startDp="ngbDatepicker" [(ngModel)]="projectDetail.Start_Date">
+                <div class="input-group datepicker-input-group">
+                    <input type="text" class="form-control flatpickr-input" mwlFlatpickr
+                        #startDatePicker="mwlFlatpickr" [(ngModel)]="projectDetail.Start_Date" name="Start_Date"
+                        [altInput]="true" [convertModelValue]="true" dateFormat="Y-m-d" [altFormat]="'d/m/Y'"
+                        [formatDate]="thaiFormatDate" [options]="datePickerOptions" placeholder="วว/ดด/ปปปป"
+                        (flatpickrReady)="thaiDatepicker.attachThaiBuddhistCalendar($event)"
+                        (flatpickrOpen)="thaiDatepicker.updateThaiBuddhistYearDisplayLater($event)"
+                        (flatpickrMonthChange)="thaiDatepicker.updateThaiBuddhistYearDisplayLater($event)"
+                        (flatpickrYearChange)="thaiDatepicker.updateThaiBuddhistYearDisplayLater($event)">
 
-                    <button class="btn btn-outline-secondary" type="button" (click)="startDp.toggle()">
+                    <button class="btn btn-outline-secondary" type="button"
+                        (click)="thaiDatepicker.open(startDatePicker)">
 
-                        <i class="ri-calendar-line"></i>
+                        <i class="ri-calendar-2-line"></i>
 
                     </button>
                 </div>
@@ -220,13 +227,20 @@
 
             <div class="col-md-6">
                 <label>ถึงวันที่</label>
-                <div class="input-group">
-                    <input class="form-control" placeholder="วว/ดด/ปปปป" name="End_Date" ngbDatepicker
-                        #endDp="ngbDatepicker" [(ngModel)]="projectDetail.End_Date">
+                <div class="input-group datepicker-input-group">
+                    <input type="text" class="form-control flatpickr-input" mwlFlatpickr
+                        #endDatePicker="mwlFlatpickr" [(ngModel)]="projectDetail.End_Date" name="End_Date"
+                        [altInput]="true" [convertModelValue]="true" dateFormat="Y-m-d" [altFormat]="'d/m/Y'"
+                        [formatDate]="thaiFormatDate" [options]="datePickerOptions" placeholder="วว/ดด/ปปปป"
+                        (flatpickrReady)="thaiDatepicker.attachThaiBuddhistCalendar($event)"
+                        (flatpickrOpen)="thaiDatepicker.updateThaiBuddhistYearDisplayLater($event)"
+                        (flatpickrMonthChange)="thaiDatepicker.updateThaiBuddhistYearDisplayLater($event)"
+                        (flatpickrYearChange)="thaiDatepicker.updateThaiBuddhistYearDisplayLater($event)">
 
-                    <button class="btn btn-outline-secondary" type="button" (click)="endDp.toggle()">
+                    <button class="btn btn-outline-secondary" type="button"
+                        (click)="thaiDatepicker.open(endDatePicker)">
 
-                        <i class="ri-calendar-line"></i>
+                        <i class="ri-calendar-2-line"></i>
 
                     </button>
                 </div>

@@ -1,38 +1,22 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { EbudgetService } from 'src/app/core/services/ebudget.service';
-import {
-  NgbDateParserFormatter,
-  NgbDateStruct
-} from '@ng-bootstrap/ng-bootstrap';
-import { LOCALE_ID } from '@angular/core';
-import { ThaiDateFormatter } from '../../../../thai-date-formatter';
-import {
-  NgbDatepickerI18n
-} from '@ng-bootstrap/ng-bootstrap';
+import { ThaiDatepickerService } from 'src/app/core/services/thai-datepicker.service';
 
-import { ThaiDatepickerI18n }
-  from '../../../../thai-datepicker-i18n';
 @Component({
   selector: 'app-tab-detail',
   templateUrl: './tab-detail.component.html',
-  styleUrl: './tab-detail.component.scss',
-  providers: [
-    {
-      provide: NgbDateParserFormatter,
-      useClass: ThaiDateFormatter
-    },
-    {
-      provide: NgbDatepickerI18n,
-      useClass: ThaiDatepickerI18n
-    },
-    {
-      provide: LOCALE_ID,
-      useValue: 'th'
-    }
-  ]
+  styleUrl: './tab-detail.component.scss'
 })
 export class TabDetailComponent implements OnInit, OnChanges {
-  constructor(public serviceebud: EbudgetService) {
+  datePickerOptions: Record<string, any>;
+  thaiFormatDate: (date: Date) => string;
+
+  constructor(
+    public serviceebud: EbudgetService,
+    public thaiDatepicker: ThaiDatepickerService
+  ) {
+    this.datePickerOptions = this.thaiDatepicker.getFlatpickrOptions();
+    this.thaiFormatDate = this.thaiDatepicker.formatDate;
     this.get_data()
   }
   allData: any
@@ -159,53 +143,24 @@ export class TabDetailComponent implements OnInit, OnChanges {
 
   }
 
-  convertJsonDateToInput(
-    dateStr: any
-  ): NgbDateStruct | null {
-
-    if (!dateStr) return null;
-
+  convertJsonDateToInput(dateStr: any): Date | null {
     if (
       typeof dateStr === 'object' &&
-      dateStr.year &&
-      dateStr.month &&
-      dateStr.day
+      dateStr?.year &&
+      dateStr?.month &&
+      dateStr?.day
     ) {
-      return dateStr;
+      const date = new Date(dateStr.year, dateStr.month - 1, dateStr.day);
+      return Number.isNaN(date.getTime()) ? null : date;
     }
-
-    let date: Date | null = null;
 
     if (typeof dateStr === 'string' && /\/Date\(\d+\)\//.test(dateStr)) {
-      const timestamp =
-        Number(dateStr.replace(/[^0-9]/g, ''));
-
-      date = new Date(timestamp);
-    } else if (typeof dateStr === 'string') {
-      const value = dateStr.split('T')[0];
-
-      if (value.includes('-')) {
-        const [year, month, day] =
-          value.split('-').map(Number);
-
-        date = new Date(year, month - 1, day);
-      } else if (value.includes('/')) {
-        const [day, month, year] =
-          value.split('/').map(Number);
-
-        date = new Date(year, month - 1, day);
-      } else {
-        date = new Date(dateStr);
-      }
+      const timestamp = Number(dateStr.replace(/[^0-9]/g, ''));
+      const date = new Date(timestamp);
+      return Number.isNaN(date.getTime()) ? null : date;
     }
 
-    if (!date || isNaN(date.getTime())) return null;
-
-    return {
-      year: date.getFullYear(),
-      month: date.getMonth() + 1,
-      day: date.getDate()
-    };
+    return this.thaiDatepicker.toDate(dateStr);
   }
   addObjective() {
 
@@ -225,11 +180,15 @@ export class TabDetailComponent implements OnInit, OnChanges {
 
     if (!date) return '';
 
+    if (date instanceof Date) {
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    }
+
     if (
       typeof date === 'object' &&
-      date.year &&
-      date.month &&
-      date.day
+      date?.year &&
+      date?.month &&
+      date?.day
     ) {
       return `${date.year}-${String(date.month).padStart(2, '0')}-${String(date.day).padStart(2, '0')}`;
     }
@@ -237,6 +196,10 @@ export class TabDetailComponent implements OnInit, OnChanges {
     if (typeof date === 'string' && /\/Date\(\d+\)\//.test(date)) {
       const parsed = this.convertJsonDateToInput(date);
       return this.convertToApiDate(parsed);
+    }
+
+    if (typeof date === 'string' && date.includes('/')) {
+      return this.convertToApiDate(this.thaiDatepicker.parseDate(date));
     }
 
     return date;

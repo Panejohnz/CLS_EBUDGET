@@ -21,6 +21,7 @@ export class ExpenseTravelComponent {
   sections: any[] = [];
   Mas_Business_Level: any[] = [];
   Mas_Expense_Detial_List: any[] = [];
+  Mas_Expense_Detial_Rate_List: any[] = [];
   private currentExpenseTypeId: any = null;
   ngOnInit() {
 
@@ -88,6 +89,8 @@ export class ExpenseTravelComponent {
         ? response.List_Mas_Business_Level
         : [];
       this.Mas_Business_Level = [...this.allData];
+      this.normalizeDetailLevels();
+      this.refreshExpenseDetailOptions();
 
     })
     const rows =
@@ -157,6 +160,24 @@ export class ExpenseTravelComponent {
         times:
           row.Times || 0,
 
+        peopleCount:
+          this.firstNumber(row.People_Type_A, row.People_Type_B, row.People_Type_C, row.Quantity),
+
+        dayCount:
+          this.firstNumber(row.Day, row.Month, row.Hour, row.Month_Id),
+
+        rate:
+          this.firstNumber(row.Rate, row.Price, row.Per_Month, row.Total),
+
+        total:
+          this.firstNumber(row.Budget_Amount, row.Salary_Amount, row.Per_Year, row.Unit_Name, row.Rate_Amount),
+
+        isOtherRate:
+          false,
+
+        expenseDetails:
+          [],
+
         perdiemPerson:
           row.People_Type_A || 0,
 
@@ -221,6 +242,9 @@ export class ExpenseTravelComponent {
           (a: any, b: any) =>
             a.sectionId - b.sectionId
         );
+
+    this.refreshExpenseDetailOptions();
+    this.refreshDetailRateModes();
 
   }
 
@@ -299,6 +323,13 @@ export class ExpenseTravelComponent {
 
       times: 0,
 
+      peopleCount: 0,
+      dayCount: 0,
+      rate: 0,
+      total: 0,
+      isOtherRate: false,
+      expenseDetails: [],
+
       perdiemPerson: 0,
       perdiemDay: 0,
       perdiemRate: 0,
@@ -326,6 +357,14 @@ export class ExpenseTravelComponent {
   }
 
   calculate(d: any) {
+
+    d.total =
+
+      (Number(d.peopleCount) || 0) *
+
+      (Number(d.dayCount) || 0) *
+
+      (Number(d.rate) || 0);
 
     d.perdiemTotal =
 
@@ -359,7 +398,7 @@ export class ExpenseTravelComponent {
 
       (Number(d.taxiRate) || 0);
 
-    d.grandTotal =
+    d.grandTotal = Number(d.total) || (
 
       d.perdiemTotal +
 
@@ -367,10 +406,204 @@ export class ExpenseTravelComponent {
 
       d.planeTotal +
 
-      d.taxiTotal;
+      d.taxiTotal
+    );
 
     this.updateDetailItems();
 
+  }
+
+  normalizeSelectId(value: any): number | null {
+    if (value === null || value === undefined || value === '') {
+      return null;
+    }
+
+    const numberValue = Number(value);
+    return Number.isNaN(numberValue) ? null : numberValue;
+  }
+
+  firstNumber(...values: any[]): number {
+    const found = values.find(value => Number(value) > 0);
+    return Number(found) || 0;
+  }
+
+  getExpenseDetailsByLevel(detail: any): any[] {
+    const levelId = this.normalizeSelectId(detail?.level);
+
+    if (levelId == null) {
+      return [];
+    }
+
+    const filtered = this.Mas_Expense_Detial_List.filter((item: any) => {
+      const itemLevelId = this.getExpenseDetailLevelId(item);
+
+      if (itemLevelId == null) {
+        return false;
+      }
+
+      return itemLevelId === levelId;
+    });
+
+    return filtered.length ? filtered : this.Mas_Expense_Detial_List;
+  }
+
+  getSelectedExpenseDetail(detail: any): any {
+    const pairId = this.normalizeSelectId(detail?.pairId);
+
+    return this.Mas_Expense_Detial_List.find((item: any) =>
+      this.normalizeSelectId(item?.Expense_Detial_Id) === pairId
+    );
+  }
+
+  isOtherExpenseDetail(detail: any): boolean {
+    const pairId = this.normalizeSelectId(detail?.pairId);
+
+    if ([67, 68, 69].includes(Number(pairId))) {
+      return true;
+    }
+
+    const selected = this.getSelectedExpenseDetail(detail);
+    const name = (selected?.Expense_Detial_Name || '').trim();
+
+    return name === 'อื่นๆ' || name === 'อื่น ๆ';
+  }
+
+  getExpenseDetailRate(detail: any): number {
+    const selected = this.getSelectedExpenseDetail(detail);
+
+    return Number(
+      selected?.Request_Rate ??
+      selected?.Expense_Rate ??
+      selected?.Rate ??
+      selected?.Price ??
+      selected?.Total ??
+      0
+    ) || 0;
+  }
+
+  getExpenseRateFromRateList(): number {
+    const rateRow = this.Mas_Expense_Detial_Rate_List.find((item: any) =>
+      item?.Expense_Rate !== null &&
+      item?.Expense_Rate !== undefined &&
+      item?.Expense_Rate !== ''
+    );
+
+    return Number(rateRow?.Expense_Rate) || 0;
+  }
+
+  getExpenseDetailLevelId(item: any): number | null {
+    return this.normalizeSelectId(
+      item?.Buslness_Level ??
+      item?.Business_Level ??
+      item?.Fk_Business_Level ??
+      item?.Fk_Business_Level_Id ??
+      item?.Level_Id
+    );
+  }
+
+  resolveBusinessLevelId(value: any): number | null {
+    const normalizedValue = this.normalizeSelectId(value);
+
+    if (normalizedValue != null) {
+      const hasLevel = this.Mas_Business_Level.some((item: any) =>
+        this.normalizeSelectId(item?.Level_Id) === normalizedValue
+      );
+
+      if (hasLevel) {
+        return normalizedValue;
+      }
+    }
+
+    const textValue = (value ?? '').toString().trim();
+
+    if (!textValue) {
+      return null;
+    }
+
+    const level = this.Mas_Business_Level.find((item: any) =>
+      (item?.Level_Name ?? '').toString().trim() === textValue ||
+      (item?.Level_Short_Name ?? '').toString().trim() === textValue ||
+      (item?.Level_Code ?? '').toString().trim() === textValue
+    );
+
+    return this.normalizeSelectId(level?.Level_Id);
+  }
+
+  normalizeDetailLevels() {
+    this.sections.forEach((section: any) => {
+      section.details.forEach((detail: any) => {
+        detail.level = this.resolveBusinessLevelId(detail.level);
+      });
+    });
+  }
+
+  onLevelChange(detail: any) {
+    detail.expenseDetails = this.getExpenseDetailsByLevel(detail);
+
+    const hasSelectedInLevel = detail.expenseDetails.some((item: any) =>
+      this.normalizeSelectId(item?.Expense_Detial_Id) === this.normalizeSelectId(detail?.pairId)
+    );
+
+    if (!hasSelectedInLevel) {
+      detail.pairId = null;
+      detail.rate = 0;
+      detail.isOtherRate = false;
+    }
+
+    this.calculate(detail);
+  }
+
+  onExpenseDetailChange(detail: any) {
+    detail.isOtherRate = this.isOtherExpenseDetail(detail);
+    this.Mas_Expense_Detial_Rate_List = [];
+
+    if (detail.isOtherRate) {
+      detail.rate = '';
+      this.calculate(detail);
+      return;
+    }
+
+    detail.rate = this.getExpenseDetailRate(detail);
+
+    let model = {
+      FUNC_CODE: "FUNC-Get_Mas_Expense_Rate",
+      Fk_Expense_Id: detail.pairId
+    };
+
+    this.serviceebud.GatewayGetData(model)
+      .subscribe((response: any) => {
+
+        const expenseDetailList =
+          response.List_Mas_Expense_Rate
+
+        this.Mas_Expense_Detial_Rate_List =
+          Array.isArray(expenseDetailList)
+            ? expenseDetailList
+            : [];
+
+        const rateFromApi = this.getExpenseRateFromRateList();
+        detail.rate = rateFromApi || detail.rate || this.getExpenseDetailRate(detail);
+        this.calculate(detail);
+
+      });
+
+    this.calculate(detail);
+  }
+
+  refreshDetailRateModes() {
+    this.sections.forEach((section: any) => {
+      section.details.forEach((detail: any) => {
+        detail.isOtherRate = this.isOtherExpenseDetail(detail);
+      });
+    });
+  }
+
+  refreshExpenseDetailOptions() {
+    this.sections.forEach((section: any) => {
+      section.details.forEach((detail: any) => {
+        detail.expenseDetails = this.getExpenseDetailsByLevel(detail);
+      });
+    });
   }
 
   updateDetailItems() {
@@ -413,55 +646,55 @@ export class ExpenseTravelComponent {
             d.times,
 
           People_Type_A:
-            d.perdiemPerson,
+            d.peopleCount,
 
           Day:
-            d.perdiemDay,
+            d.dayCount,
 
           Rate:
-            d.perdiemRate,
+            d.rate,
 
           Budget_Amount:
-            d.perdiemTotal,
+            d.total,
 
           People_Type_B:
-            d.hotelPerson,
+            0,
 
           Month:
-            d.hotelNight,
+            0,
 
           Price:
-            d.hotelRate,
+            0,
 
           Salary_Amount:
-            d.hotelTotal,
+            0,
 
           People_Type_C:
-            d.planePerson,
+            0,
 
           Hour:
-            d.planeTrip,
+            0,
 
           Per_Month:
-            d.planeRate,
+            0,
 
           Per_Year:
-            d.planeTotal,
+            0,
 
           Quantity:
-            d.taxiPerson,
+            0,
 
           Month_Id:
-            d.taxiTrip,
+            0,
 
           Total:
-            d.taxiRate,
+            0,
 
           Unit_Name:
-            d.taxiTotal,
+            0,
 
           Rate_Amount:
-            d.grandTotal
+            d.total
 
         });
 

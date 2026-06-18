@@ -1,7 +1,7 @@
 // Variables
 
-//Google Font
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+// Google Font
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
 
 //
 // custom-variables
@@ -13,8 +13,8 @@ $variable-prefix: vz-; // Deprecated in v5.2.0 for the shorter `$prefix`
 $prefix: $variable-prefix;
 
 // Font Family
-$font-family-primary: 'IBM Plex Sans', sans-serif;
-$font-family-secondary: 'IBM Plex Sans', sans-serif;
+$font-family-primary: 'Sarabun', 'TH Sarabun New', sans-serif;
+$font-family-secondary: 'Sarabun', 'TH Sarabun New', sans-serif;
 
 //custom variables managed by
 //light mode

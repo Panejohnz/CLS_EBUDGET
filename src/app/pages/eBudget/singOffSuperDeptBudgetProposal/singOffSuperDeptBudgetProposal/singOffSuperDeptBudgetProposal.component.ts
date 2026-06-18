@@ -204,16 +204,31 @@ export class SignoffSuperDeptBudgetProposalComponent {
 
         if (!userConfirmed) return;
 
+        const cancelRemark = (await cancelTracking() || '').trim();
+
+        if (!cancelRemark) {
+            // basicAlert('warning', 'กรุณาระบุหมายเหตุ', '');
+            return;
+        }
+
         const payload = [
             {
                 Request_Id: Request_Id,
                 Status_Number: 8
             }
         ];
+        const SignOff_Remark = {
+            Remark_Id: 0,
+            Remark: cancelRemark,
+            Status_Id: 8,
+            Fk_Request_Id: Request_Id,
+            Fk_Plan_Id: Request_Id
+        };
 
         let model = {
             FUNC_CODE: "FUNC-Cancel_SingOff_SuperDeptBudgetProposal_Budget_Request",
-            List_Budget_Request: payload
+            List_Budget_Request: payload,
+            SignOff_Remark: SignOff_Remark
         };
 
         this.serviceebud.GatewayGetData(model).subscribe((res: any) => {

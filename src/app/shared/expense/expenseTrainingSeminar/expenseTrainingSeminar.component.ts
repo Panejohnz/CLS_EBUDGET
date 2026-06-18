@@ -25,6 +25,7 @@ export class ExpenseTrainingSeminarComponent {
   file: any;
 
   expenseList: any[] = [];
+  Mas_Expense_Detial_Rate_List: any[] = [];
 
   ngOnInit() {
 
@@ -36,7 +37,7 @@ export class ExpenseTrainingSeminarComponent {
 
     }
 
-    this.bindData();
+    this.loadExpenseRates();
 
   }
 
@@ -44,6 +45,86 @@ export class ExpenseTrainingSeminarComponent {
 
     this.model.dismiss();
 
+  }
+
+  loadExpenseRates() {
+    let model = {
+      FUNC_CODE: "FUNC-Get_Mas_Expense_Rate",
+      Fk_Expense_Id: this.model.selectedExpenseTypeId
+    };
+
+    this.serviceebud.GatewayGetData(model)
+      .subscribe((response: any) => {
+        const expenseRateList =
+          response.List_Mas_Expense_Rate;
+
+        this.Mas_Expense_Detial_Rate_List =
+          Array.isArray(expenseRateList)
+            ? expenseRateList
+            : [];
+
+        this.bindData();
+        this.applyRatesToExistingRows();
+      }, () => {
+        this.bindData();
+      });
+  }
+
+  private normalizeText(value: any): string {
+    return (value ?? '').toString().trim().toLowerCase().replace(/\s+/g, '');
+  }
+
+  private getRateRowText(row: any): string {
+    return this.normalizeText([
+      row?.Expense_Detail,
+      row?.Expense_Name,
+      row?.Expense_Short_Name,
+      row?.Expense_Detial_Name,
+      row?.Expense_Detial_Short_Name,
+      row?.Rate_Name,
+      row?.Type_Name,
+      row?.Code
+    ].filter(Boolean).join(' '));
+  }
+
+  private getRowRate(row: any): number {
+    return Number(
+      row?.Expense_Rate ??
+      row?.Rate ??
+      row?.Price ??
+      row?.Total ??
+      0
+    ) || 0;
+  }
+
+  private getRateForExpenseType(expenseType: any): number {
+    const selectedText = this.normalizeText(expenseType);
+    const byName = this.Mas_Expense_Detial_Rate_List.find((row: any) => {
+      const rateText = this.getRateRowText(row);
+
+      return rateText &&
+        (
+          selectedText.includes(rateText) ||
+          rateText.includes(selectedText)
+        );
+    });
+
+    return this.getRowRate(byName);
+  }
+
+  private applyRatesToExistingRows() {
+    this.expenseList.forEach((item: any) => {
+      if (Number(item.rate) > 0) {
+        return;
+      }
+
+      const rate = this.getRateForExpenseType(item.expenseType);
+
+      if (rate > 0) {
+        item.rate = rate;
+        this.calculate(item);
+      }
+    });
   }
 
   bindData() {
@@ -166,6 +247,16 @@ export class ExpenseTrainingSeminarComponent {
       this.newRow()
     );
 
+  }
+
+  onExpenseTypeChange(item: any) {
+    const rate = this.getRateForExpenseType(item.expenseType);
+
+    if (rate > 0) {
+      item.rate = rate;
+    }
+
+    this.calculate(item);
   }
   async removeRow(i: number) {
 

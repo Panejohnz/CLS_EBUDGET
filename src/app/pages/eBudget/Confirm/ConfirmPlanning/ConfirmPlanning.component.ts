@@ -167,7 +167,7 @@ export class ConfirmPlanningComponent {
     const cancelRemark = (await cancelTracking() || '').trim();
 
     if (!cancelRemark) {
-      basicAlert('warning', 'กรุณาระบุหมายเหตุ', '');
+      // basicAlert('warning', 'กรุณาระบุหมายเหตุ', '');
       return;
     }
 
