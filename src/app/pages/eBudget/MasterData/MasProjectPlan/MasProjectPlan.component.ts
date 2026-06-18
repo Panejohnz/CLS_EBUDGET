@@ -32,13 +32,13 @@ export class MasProjectPlanComponent {
     },
     {
       no: 4,
-      title: 'ความสอดคล้องกับแผนปฏิบัติการราชการ ปปท (แผน 5 ปี)',
+      title: 'ความสอดคล้องกับแผนปฏิบัติการราชการ ป.ป.ท. (แผน 5 ปี)',
       path: '/MasterData/MasProjectPlan/NationalEconomicDevelopmentPlan',
       icon: 'ri-line-chart-line'
     },
     {
       no: 5,
-      title: 'ความสอดคล้องกับแผนปฏิบัติการราชการ ปปท (แผน 1 ปี)',
+      title: 'ความสอดคล้องกับแผนปฏิบัติการราชการ ป.ป.ท. (แผน 1 ปี)',
       path: '/MasterData/MasProjectPlan/MinistryActionPlan',
       icon: 'ri-calendar-check-line'
     },

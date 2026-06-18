@@ -273,7 +273,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         },
         {
           "id": 40,
-          "label": "Sign off โครงการ (ปปท)",
+          "label": "Sign off โครงการ (ป.ป.ท.)",
           "icon": "bx bx-check-circle",
           "link": "/singOffMinistry",
           "subItems": [],
@@ -351,7 +351,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         },
         {
           "id": 44,
-          "label": "Sign off คำของบประมาณ (ปปท)",
+          "label": "Sign off คำของบประมาณ (ป.ป.ท.)",
           "icon": "bx bx-check-circle",
           "link": "/singOffMinistryBudgetProposal",
           "subItems": [],
@@ -461,7 +461,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         },
         {
           "id": 48,
-          "label": "Sign off แผนปฎิบัติการ (ปปท)",
+          "label": "Sign off แผนปฎิบัติการ (ป.ป.ท.)",
           "icon": "bx bx-check-double",
           "link": "/singOffMinistryAction",
           "subItems": [],
