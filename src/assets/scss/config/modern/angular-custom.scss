@@ -998,15 +998,45 @@ File: Custom Css File
       background-color: $input-bg;
       border-color: $input-border-color;
       color: $input-color;
+      height: auto;
+      min-height: 38px;
 
       .ng-value-container .ng-input>input{
           color: $input-color;
+      }
+
+      .ng-value-container {
+        align-items: center;
+
+        .ng-placeholder,
+        .ng-value {
+          white-space: normal;
+          overflow: visible;
+          text-overflow: clip;
+          line-height: 1.35;
+        }
       }
   }
 
   &.ng-select-opened>.ng-select-container{
       background-color: $input-bg;
       border-color: $input-border-color;
+  }
+
+  &.ng-select-single {
+    .ng-select-container {
+      height: auto;
+
+      .ng-value-container {
+        .ng-value,
+        .ng-value-label {
+          white-space: normal;
+          overflow: visible;
+          text-overflow: clip;
+          line-height: 1.35;
+        }
+      }
+    }
   }
 }
 
@@ -1019,6 +1049,16 @@ File: Custom Css File
 .ng-dropdown-panel .ng-dropdown-panel-items .ng-option{
   background-color: var(--#{$prefix}card-bg-custom);
   color: var(--#{$prefix}body-color);
+  height: auto;
+  min-height: 36px;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  line-height: 1.35;
+
+  .ng-option-label {
+    white-space: normal;
+  }
 }
 
 .ng-dropdown-panel.ng-select-bottom{

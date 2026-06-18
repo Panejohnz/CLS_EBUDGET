@@ -20,6 +20,13 @@
     }
 }
 
+.table-responsive,
+.expense-table-responsive {
+    height: auto !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+}
+
 // card table
 
 .table-card{
