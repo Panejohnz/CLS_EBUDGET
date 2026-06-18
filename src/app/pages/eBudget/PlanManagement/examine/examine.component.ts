@@ -196,7 +196,7 @@ export class ExamineComponent {
     // FILTER REQUEST
     // =====================================
 
-    const rows = this.allData.filter(
+    const rows = structuredClone(this.allData.filter(
 
       (x: any) =>
 
@@ -204,7 +204,7 @@ export class ExamineComponent {
 
         this.selectedDepartmentId
 
-    );
+    ));
 
     // =====================================
     // GET BUDGET PLAN
@@ -234,6 +234,8 @@ export class ExamineComponent {
         // =====================================
         // MERGE PLAN
         // =====================================
+
+        const usedPlanIds = new Set<number>();
 
         rows.forEach((row: any) => {
 
@@ -267,6 +269,10 @@ export class ExamineComponent {
 
           // ถ้ามีข้อมูลเก่า
           if (oldPlan) {
+            usedPlanIds.add(Number(oldPlan.Plan_Id || 0));
+
+            row.Plan_Id =
+              oldPlan.Plan_Id || 0;
 
             row.Adjust1 =
               oldPlan.Adjust1 || 0;
@@ -282,6 +288,14 @@ export class ExamineComponent {
 
           }
 
+        });
+
+        plans.forEach((plan: any) => {
+          const planId = Number(plan.Plan_Id || 0);
+
+          if (planId && !usedPlanIds.has(planId)) {
+            rows.push(structuredClone(plan));
+          }
         });
 
         // =====================================
@@ -399,7 +413,7 @@ export class ExamineComponent {
 
               x.Budget_Type ==
 
-              row.Budget_Type_Name
+              (row.Budget_Type_Name || row.Budget_Type)
 
           );
 
@@ -408,7 +422,7 @@ export class ExamineComponent {
             budget = {
 
               Budget_Type:
-                row.Budget_Type_Name || '-',
+                row.Budget_Type_Name || row.Budget_Type || '-',
 
               expanded: true,
 
