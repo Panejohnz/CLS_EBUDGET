@@ -20,7 +20,7 @@
                     แผนงาน<span class="text-danger">*</span>
                 </label>
 
-                <ng-select [items]="Mas_Plan_Lists" bindLabel="Plan_Name" bindValue="Plan_Id" 
+                <ng-select [items]="Mas_Plan_Lists" bindLabel="Plan_Name" bindValue="Plan_Id"
                     [(ngModel)]="model.selectedPlanPropos" name="selectedPlan" (ngModelChange)="Onchange_type_Plan()"
                     placeholder="-- เลือก --">
 
@@ -34,7 +34,7 @@
                     ผลผลิต<span class="text-danger">*</span>
                 </label>
 
-                <ng-select [items]="Mas_Product" bindLabel="Product_Name" bindValue="Product_Id" 
+                <ng-select [items]="Mas_Product" bindLabel="Product_Name" bindValue="Product_Id"
                     [(ngModel)]="model.selectedProductPropos" name="selectedProduct"
                     (ngModelChange)="Onchange_type_Product()" placeholder="-- เลือก --">
 
@@ -48,7 +48,7 @@
                     กิจกรรม<span class="text-danger">*</span>
                 </label>
 
-                <ng-select [items]="Mas_Activity" bindLabel="Activity_Name" bindValue="Activity_Id" 
+                <ng-select [items]="Mas_Activity" bindLabel="Activity_Name" bindValue="Activity_Id"
                     [(ngModel)]="model.selectedActivityPropos" name="selectedActivity" placeholder="-- เลือก --">
 
                 </ng-select>
@@ -67,7 +67,8 @@
                     หมวดงบ<span class="text-danger">*</span>
                 </label>
 
-                <input class="form-control" [value]="model.selectedBudgetName || ''" readonly style="background-color: #ebeff3;">
+                <input class="form-control" [value]="model.selectedBudgetName || ''" readonly
+                    style="background-color: #ebeff3;">
 
             </div>
 
@@ -78,7 +79,8 @@
                     หมวดค่าใช้จ่าย<span class="text-danger">*</span>
                 </label>
 
-                <input class="form-control" [value]="model.selectedGroupName || ''" readonly   style="background-color: #ebeff3;">
+                <input class="form-control" [value]="model.selectedGroupName || ''" readonly
+                    style="background-color: #ebeff3;">
 
             </div>
 
@@ -94,14 +96,11 @@
                     placeholder="-- กรุณาเลือกรายการค่าใช้จ่าย --">
                 
                 </ng-select> -->
-                <!-- <ng-select appendTo="body" [disabled]="model.Budget_Request.Request_Id" [items]="expenseOptions"
-                    bindLabel="Expense_Name" bindValue="Expense_Id" [(ngModel)]="model.selectedExpenseTypeId"
-                    (ngModelChange)="onExpenseChange($event)" placeholder="-- กรุณาเลือกรายการค่าใช้จ่าย --">
-                
-                </ng-select> -->
-                <ng-select appendTo="body" [disabled]="model.Budget_Request.Request_Id" [items]="expenseOptions" class="expense-select" 
-                    bindLabel="Expense_Name" bindValue="Expense_Id" [(ngModel)]="model.selectedExpenseTypeId"
-                    (ngModelChange)="onExpenseChange($event)" placeholder="-- กรุณาเลือกรายการค่าใช้จ่าย --">
+
+                <ng-select appendTo="body" [disabled]="model.Budget_Request.Request_Id" [items]="expenseOptions"
+                    class="expense-select" bindLabel="Expense_Name" bindValue="Expense_Id"
+                    [(ngModel)]="model.selectedExpenseTypeId" (ngModelChange)="onExpenseChange($event)"
+                    placeholder="-- กรุณาเลือกรายการค่าใช้จ่าย --">
                 </ng-select>
 
             </div>
@@ -126,8 +125,6 @@
 
         </div>
 
-        <!-- target modal -->
-        <!-- target modal -->
         <!-- TARGET MODAL -->
         <ng-template #targetModal let-modal>
 
@@ -137,12 +134,8 @@
                 <div>
 
                     <h5 class="modal-title fw-bold mb-1">
-                        กำหนดเป้าหมาย
+                        กำหนดเป้าหมายรายเดือน
                     </h5>
-
-                    <small class="text-muted">
-                        กรอกจำนวนเป้าหมายรายเดือน
-                    </small>
 
                 </div>
 
@@ -185,185 +178,155 @@
 
                             <!-- HEADER -->
                             <thead class="text-center text-white sticky-header" style="background-color: #556398;">
-
                                 <tr>
+                                    <th style="width:250px">รายการ</th>
 
-                                    <th class="ps-4" style="min-width:260px">
-
-                                        รายการ
-
+                                    <th colspan="6">
+                                        เป้าหมายรายเดือน
                                     </th>
 
-                                    <th class="text-center" *ngFor="let m of [
-                                    'ต.ค.',
-                                    'พ.ย.',
-                                    'ธ.ค.',
-                                    'ม.ค.',
-                                    'ก.พ.',
-                                    'มี.ค.',
-                                    'เม.ย.',
-                                    'พ.ค.',
-                                    'มิ.ย.',
-                                    'ก.ค.',
-                                    'ส.ค.',
-                                    'ก.ย.'
-                                ]">
-
-                                        {{ m }}
-
-                                    </th>
-
-                                    <th class="text-center" style="width:120px">
-
+                                    <th style="width:120px">
                                         รวม
-
                                     </th>
 
-                                    <th class="text-center" style="width:90px">
-
+                                    <th style="width:90px">
+                                        ลบ
                                     </th>
-
                                 </tr>
-
                             </thead>
 
                             <!-- BODY -->
                             <tbody>
 
-                                <tr *ngFor="let t of targetList; let i = index">
+                                <ng-container *ngFor="let t of targetList; let i = index">
 
-                                    <!-- name -->
-                                    <td class="ps-4">
+                                    <!-- เส้นคั่นรายการ -->
+                                    <tr *ngIf="i > 0" class="separator-row">
+                                        <td colspan="9"></td>
+                                    </tr>
+                                    <!-- เดือน ต.ค.-มี.ค. -->
+                                    <tr class="month-header">
+                                        <td rowspan="4" class="align-middle">
+                                            <input type="textarea" class="form-control" [(ngModel)]="t.unit"
+                                                placeholder="ระบุหน่วยนับ">
+                                        </td>
 
-                                        <div class="fw-semibold mb-2">
+                                        <td>ต.ค.</td>
+                                        <td>พ.ย.</td>
+                                        <td>ธ.ค.</td>
+                                        <td>ม.ค.</td>
+                                        <td>ก.พ.</td>
+                                        <td>มี.ค.</td>
 
-                                            รายการ {{ i + 1 }}
+                                        <td rowspan="4" class="align-middle text-end fw-bold">
+                                            {{ getTargetSum(t) | number:'1.2-2' }}
+                                        </td>
 
-                                        </div>
+                                        <td rowspan="4" class="align-middle">
+                                            <button class="btn btn-danger btn-sm" *ngIf="targetList.length > 1"
+                                                (click)="removeTargetRow(i,t)">
+                                                <i class="ri-delete-bin-line"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
 
-                                        <input class="form-control form-control-sm" placeholder="หน่วยนับ"
-                                            [(ngModel)]="t.unit">
+                                    <!-- ช่องกรอก ต.ค.-มี.ค. -->
+                                    <tr>
+                                        <td>
+                                            <input type="number" class="form-control text-end" [(ngModel)]="t.oct"
+                                                placeholder="ระบุเป้าหมาย">
+                                        </td>
 
-                                    </td>
+                                        <td>
+                                            <input type="number" class="form-control text-end" [(ngModel)]="t.nov"
+                                                placeholder="ระบุเป้าหมาย">
+                                        </td>
 
-                                    <!-- oct -->
-                                    <td>
-                                        <input type="number" class="form-control form-control-sm text-center"
-                                            [(ngModel)]="t.oct">
-                                    </td>
+                                        <td>
+                                            <input type="number" class="form-control text-end" [(ngModel)]="t.dec"
+                                                placeholder="ระบุเป้าหมาย">
+                                        </td>
 
-                                    <!-- nov -->
-                                    <td>
-                                        <input type="number" class="form-control form-control-sm text-center"
-                                            [(ngModel)]="t.nov">
-                                    </td>
+                                        <td>
+                                            <input type="number" class="form-control text-end" [(ngModel)]="t.jan"
+                                                placeholder="ระบุเป้าหมาย">
+                                        </td>
 
-                                    <!-- dec -->
-                                    <td>
-                                        <input type="number" class="form-control form-control-sm text-center"
-                                            [(ngModel)]="t.dec">
-                                    </td>
+                                        <td>
+                                            <input type="number" class="form-control text-end" [(ngModel)]="t.feb"
+                                                placeholder="ระบุเป้าหมาย">
+                                        </td>
 
-                                    <!-- jan -->
-                                    <td>
-                                        <input type="number" class="form-control form-control-sm text-center"
-                                            [(ngModel)]="t.jan">
-                                    </td>
+                                        <td>
+                                            <input type="number" class="form-control text-end" [(ngModel)]="t.mar"
+                                                placeholder="ระบุเป้าหมาย">
+                                        </td>
+                                    </tr>
 
-                                    <!-- feb -->
-                                    <td>
-                                        <input type="number" class="form-control form-control-sm text-center"
-                                            [(ngModel)]="t.feb">
-                                    </td>
+                                    <!-- เดือน เม.ย.-ก.ย. -->
+                                    <tr class="month-header">
+                                        <td>เม.ย.</td>
+                                        <td>พ.ค.</td>
+                                        <td>มิ.ย.</td>
+                                        <td>ก.ค.</td>
+                                        <td>ส.ค.</td>
+                                        <td>ก.ย.</td>
+                                    </tr>
 
-                                    <!-- mar -->
-                                    <td>
-                                        <input type="number" class="form-control form-control-sm text-center"
-                                            [(ngModel)]="t.mar">
-                                    </td>
+                                    <!-- ช่องกรอก เม.ย.-ก.ย. -->
+                                    <tr>
+                                        <td>
+                                            <input type="number" class="form-control text-end" [(ngModel)]="t.apr"
+                                                placeholder="ระบุเป้าหมาย">
+                                        </td>
 
-                                    <!-- apr -->
-                                    <td>
-                                        <input type="number" class="form-control form-control-sm text-center"
-                                            [(ngModel)]="t.apr">
-                                    </td>
+                                        <td>
+                                            <input type="number" class="form-control text-end" [(ngModel)]="t.may"
+                                                placeholder="ระบุเป้าหมาย">
+                                        </td>
 
-                                    <!-- may -->
-                                    <td>
-                                        <input type="number" class="form-control form-control-sm text-center"
-                                            [(ngModel)]="t.may">
-                                    </td>
+                                        <td>
+                                            <input type="number" class="form-control text-end" [(ngModel)]="t.jun"
+                                                placeholder="ระบุเป้าหมาย">
+                                        </td>
 
-                                    <!-- jun -->
-                                    <td>
-                                        <input type="number" class="form-control form-control-sm text-center"
-                                            [(ngModel)]="t.jun">
-                                    </td>
+                                        <td>
+                                            <input type="number" class="form-control text-end" [(ngModel)]="t.jul"
+                                                placeholder="ระบุเป้าหมาย">
+                                        </td>
 
-                                    <!-- jul -->
-                                    <td>
-                                        <input type="number" class="form-control form-control-sm text-center"
-                                            [(ngModel)]="t.jul">
-                                    </td>
+                                        <td>
+                                            <input type="number" class="form-control text-end" [(ngModel)]="t.aug"
+                                                placeholder="ระบุเป้าหมาย">
+                                        </td>
 
-                                    <!-- aug -->
-                                    <td>
-                                        <input type="number" class="form-control form-control-sm text-center"
-                                            [(ngModel)]="t.aug">
-                                    </td>
+                                        <td>
+                                            <input type="number" class="form-control text-end" [(ngModel)]="t.sep"
+                                                placeholder="ระบุเป้าหมาย">
+                                        </td>
+                                    </tr>
 
-                                    <!-- sep -->
-                                    <td>
-                                        <input type="number" class="form-control form-control-sm text-center"
-                                            [(ngModel)]="t.sep">
-                                    </td>
-
-                                    <!-- total -->
-                                    <td>
-
-                                        <input class="form-control form-control-sm fw-bold text-center bg-light"
-                                            [value]="getTargetSum(t)" readonly>
-
-                                    </td>
-
-                                    <!-- remove -->
-                                    <td class="text-center">
-
-                                        <button class="btn btn-outline-danger btn-sm rounded-circle"
-                                            *ngIf="targetList.length > 1" (click)="removeTargetRow(i,t)">
-
-                                            ✕
-
-                                        </button>
-
-                                    </td>
-
-                                </tr>
+                                </ng-container>
 
                             </tbody>
 
                             <!-- FOOTER -->
-                            <tfoot class="table-primary">
-
+                            <tfoot style="background-color:#556398;color:white;">
                                 <tr>
 
-                                    <td colspan="13" class="text-end fw-bold pe-4">
+                                    <td colspan="7" class="text-end fw-bold pe-4 align-middle">
 
                                         รวมทั้งหมด
 
                                     </td>
 
-                                    <td>
-
-                                        <input class="form-control form-control-sm fw-bold text-center bg-white"
-                                            [value]="getGrandTotal()" readonly>
-
+                                    <td class="text-end fw-bold align-middle">
+                                        {{ getGrandTotal() | number:'1.2-2' }}
                                     </td>
 
                                     <td></td>
 
                                 </tr>
-
                             </tfoot>
 
                         </table>
@@ -402,7 +365,7 @@
             <div class="modal-header">
 
                 <h5 class="card-title">
-                    {{ formTitle }}
+                    รายการ{{ formTitle }}
                 </h5>
 
                 <button type="button" class="btn-close" (click)="closeModal()">
@@ -416,9 +379,13 @@
                 <!-- component อื่นๆ -->
                 @if([1,2,3,4,5,6,7,8,10,11,12,14,15,16].includes(model.selectedExpenseTypeId)){
 
-                <app-expense-list-salary [model]="model" [expenseItem]="expenseItem">
+                <div class="px-custom">
 
-                </app-expense-list-salary>
+                    <app-expense-list-salary [model]="model" [expenseItem]="expenseItem">
+
+                    </app-expense-list-salary>
+
+                </div>
 
                 }
 
@@ -687,9 +654,7 @@
 
                 }
 
-                <app-expense-attachment
-                    *ngIf="![64,70,73,74,75].includes(model.selectedExpenseTypeId)"
-                    [model]="model">
+                <app-expense-attachment *ngIf="![64,70,73,74,75].includes(model.selectedExpenseTypeId)" [model]="model">
 
                 </app-expense-attachment>
 
