@@ -72,21 +72,12 @@
                         <!-- dropdown -->
                         <td>
 
-                            <select class="form-select" [(ngModel)]="item.type" (ngModelChange)="updateDetailItems()">
-
-                                <option value="">
-
-                                    --- ประเภทยานพาหนะ ---
-
-                                </option>
-
-                                <option *ngFor="let v of vehicleTypes" [value]="v">
-
-                                    {{ v }}
-
-                                </option>
-
-                            </select>
+                            <ng-select appendTo="body" dropdownPosition="auto" [items]="Mas_Expense_Detial_List"
+                                bindLabel="Expense_Detial_Name" bindValue="Expense_Detial_Id"
+                                [(ngModel)]="item.pairId" name="fuel_lubricant_detail_{{i}}"
+                                placeholder="-- เลือกรายการ --" [clearable]="false"
+                                (change)="onTypeChange(item)">
+                            </ng-select>
 
                         </td>
 

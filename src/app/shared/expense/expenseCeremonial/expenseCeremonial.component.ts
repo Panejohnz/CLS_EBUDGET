@@ -100,6 +100,8 @@ export class ExpenseCeremonialComponent {
             total: 0
           },
 
+          otherItems: [],
+
           totalMeal: 0,
 
           totalPerson: 0,
@@ -158,6 +160,35 @@ export class ExpenseCeremonialComponent {
 
       }
 
+      if (
+        row.Expense_Detail != 'ค่าอาหารกลางวัน' &&
+        row.Expense_Detail != 'ค่าอาหารว่างและเครื่องดื่ม'
+      ) {
+
+        groupedMap[key].otherItems.push({
+
+          requestItemId:
+            row.Request_Item_Id || 0,
+
+          name:
+            row.Expense_Detail || '',
+
+          meal:
+            row.Times || 0,
+
+          person:
+            row.People || 0,
+
+          price:
+            row.Price || 0,
+
+          total:
+            row.Total || 0
+
+        });
+
+      }
+
     });
     this.model.Total = this.grandTotal;
     this.groups =
@@ -209,6 +240,8 @@ export class ExpenseCeremonialComponent {
 
       },
 
+      otherItems: [],
+
       totalMeal: 0,
 
       totalPerson: 0,
@@ -224,6 +257,56 @@ export class ExpenseCeremonialComponent {
     this.groups.push(
       this.newGroup()
     );
+
+  }
+
+  newOtherItem() {
+
+    return {
+
+      requestItemId: 0,
+
+      name: '',
+
+      meal: 0,
+
+      person: 0,
+
+      price: 0,
+
+      total: 0
+
+    };
+
+  }
+
+  addOtherItem(group: any) {
+
+    if (!group.otherItems) {
+
+      group.otherItems = [];
+
+    }
+
+    group.otherItems.push(
+      this.newOtherItem()
+    );
+
+    this.calculate(group);
+
+  }
+
+  async removeOtherItem(group: any, index: number) {
+
+    const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
+
+    if (!userConfirmed) {
+      return;
+    }
+
+    group.otherItems.splice(index, 1);
+
+    this.calculate(group);
 
   }
   async removeGroup(index: number) {
@@ -263,23 +346,77 @@ export class ExpenseCeremonialComponent {
       (Number(group.snack.price) || 0);
 
     // รวม
+    (group.otherItems || []).forEach((item: any) => {
+
+      item.total =
+
+        (Number(item.meal) || 0) *
+
+        (Number(item.person) || 0) *
+
+        (Number(item.price) || 0);
+
+    });
+
+    const otherTotalMeal =
+
+      (group.otherItems || []).reduce(
+
+        (sum: number, item: any) =>
+
+          sum + (Number(item.meal) || 0),
+
+        0
+
+      );
+
+    const otherTotalPerson =
+
+      (group.otherItems || []).reduce(
+
+        (sum: number, item: any) =>
+
+          sum + (Number(item.person) || 0),
+
+        0
+
+      );
+
+    const otherGrandTotal =
+
+      (group.otherItems || []).reduce(
+
+        (sum: number, item: any) =>
+
+          sum + (Number(item.total) || 0),
+
+        0
+
+      );
+
     group.totalMeal =
 
       (Number(group.lunch.meal) || 0) +
 
-      (Number(group.snack.meal) || 0);
+      (Number(group.snack.meal) || 0) +
+
+      otherTotalMeal;
 
     group.totalPerson =
 
       (Number(group.lunch.person) || 0) +
 
-      (Number(group.snack.person) || 0);
+      (Number(group.snack.person) || 0) +
+
+      otherTotalPerson;
 
     group.grandTotal =
 
       (Number(group.lunch.total) || 0) +
 
-      (Number(group.snack.total) || 0);
+      (Number(group.snack.total) || 0) +
+
+      otherGrandTotal;
 
     this.calculateGrand();
 
@@ -379,6 +516,38 @@ export class ExpenseCeremonialComponent {
 
         Total:
           group.snack.total
+
+      });
+
+      (group.otherItems || []).forEach((item: any) => {
+
+        this.model.Budget_Request_Detail_Item.push({
+
+          Request_Item_Id:
+            item.requestItemId || 0,
+
+          Fk_Expense_Id:
+            this.model.selectedExpenseTypeId,
+
+          Purpose:
+            group.title,
+
+          Expense_Detail:
+            item.name,
+
+          Times:
+            item.meal,
+
+          People:
+            item.person,
+
+          Price:
+            item.price,
+
+          Total:
+            item.total
+
+        });
 
       });
 

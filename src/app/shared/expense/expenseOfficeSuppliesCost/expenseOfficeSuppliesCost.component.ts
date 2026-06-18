@@ -33,6 +33,7 @@ export class ExpenseOfficeSuppliesCostComponent {
 
   grandTotal = 0;
   Mas_Expense_Detial_List: any[] = []
+  Mas_Unit_Lists: any[] = [];
   private currentExpenseTypeId: any = null;
 
   ngOnInit() {
@@ -43,6 +44,25 @@ export class ExpenseOfficeSuppliesCostComponent {
     }
 
     this.loadExpenseType();
+    this.loadUnits();
+  }
+
+  loadUnits() {
+    let model = {
+      FUNC_CODE: "FUNC-Get_List_Mas_Unit",
+    };
+
+    this.serviceebud.GatewayGetData(model)
+      .subscribe((response: any) => {
+        this.Mas_Unit_Lists =
+          Array.isArray(response.List_Mas_Unit)
+            ? response.List_Mas_Unit
+            : [];
+
+        this.resolveUnitIds();
+      }, () => {
+        this.Mas_Unit_Lists = [];
+      });
   }
 
   ngDoCheck() {
@@ -91,6 +111,7 @@ export class ExpenseOfficeSuppliesCostComponent {
       materialName: '',
       qty: 0,
       unit: '',
+      unitId: null,
       price: 0,
       total: 0,
       remark: ''
@@ -139,6 +160,9 @@ export class ExpenseOfficeSuppliesCostComponent {
         unit:
           row.Unit_Name || '',
 
+        unitId:
+          row.Fk_Unit_Id || null,
+
         price:
           row.Price || 0,
 
@@ -154,6 +178,37 @@ export class ExpenseOfficeSuppliesCostComponent {
 
     this.calculateAll();
 
+  }
+
+  private normalizeText(value: any): string {
+    return (value ?? '').toString().trim().toLowerCase().replace(/\s+/g, '');
+  }
+
+  resolveUnitIds() {
+    if (!this.Mas_Unit_Lists.length) {
+      return;
+    }
+
+    this.items.forEach((item: any) => {
+      if (item.unitId) {
+        return;
+      }
+
+      const unit = this.Mas_Unit_Lists.find((x: any) =>
+        this.normalizeText(x?.Unit_Name) === this.normalizeText(item.unit)
+      );
+
+      item.unitId = unit?.Unit_Id || null;
+    });
+  }
+
+  onUnitChange(item: any) {
+    const unit = this.Mas_Unit_Lists.find((x: any) =>
+      Number(x.Unit_Id) === Number(item.unitId)
+    );
+
+    item.unit = unit?.Unit_Name || '';
+    this.updateDetailItems();
   }
   onMaterialChange(item: any, selected: any, index: number) {
 
@@ -280,7 +335,7 @@ export class ExpenseOfficeSuppliesCostComponent {
           Number(item.price?.toString().replace(/,/g, '') || 0),
 
         Fk_Unit_Id:
-          0,
+          item.unitId || 0,
 
         Unit_Name:
           item.unit || '',

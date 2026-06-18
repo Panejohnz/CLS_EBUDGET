@@ -99,40 +99,11 @@
                         <!-- unit -->
                         <td>
 
-                            <select class="form-select form-select-sm" [(ngModel)]="item.unit"
-                                (ngModelChange)="updateDetailItems()">
-
-                                <option value="">
-
-                                    --- หน่วย ---
-
-                                </option>
-
-                                <option>
-
-                                    ชิ้น
-
-                                </option>
-
-                                <option>
-
-                                    กล่อง
-
-                                </option>
-
-                                <option>
-
-                                    แพ็ค
-
-                                </option>
-
-                                <option>
-
-                                    อัน
-
-                                </option>
-
-                            </select>
+                            <ng-select appendTo="body" dropdownPosition="auto" [items]="Mas_Unit_Lists"
+                                bindLabel="Unit_Name" bindValue="Unit_Id" [(ngModel)]="item.unitId"
+                                name="office_supplies_unit_{{i}}" placeholder="-- เลือกหน่วยนับ --"
+                                [clearable]="false" (change)="onUnitChange(item)">
+                            </ng-select>
 
                         </td>
 

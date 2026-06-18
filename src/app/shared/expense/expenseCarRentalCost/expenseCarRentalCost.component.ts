@@ -23,28 +23,8 @@ export class ExpenseCarRentalCostComponent {
   itemsOld: any[] = [];
 
   itemsNew: any[] = [];
-
-  carOptions = [
-
-    {
-      id: 1,
-      name: 'รถโดยสาร 12 ที่นั่ง',
-      price: 30000
-    },
-
-    {
-      id: 2,
-      name: 'รถบรรทุก',
-      price: 40000
-    },
-
-    {
-      id: 99,
-      name: 'ค่าคนขับรถยนต์',
-      price: 12000
-    }
-
-  ];
+  Mas_Expense_Detial_List: any[] = [];
+  private currentExpenseTypeId: any = null;
 
   totalMonth = 0;
 
@@ -60,8 +40,42 @@ export class ExpenseCarRentalCostComponent {
 
     }
 
-    this.bindData();
+    this.loadExpenseDetails();
 
+  }
+
+  ngDoCheck() {
+    if (!this.model) return;
+
+    if (this.currentExpenseTypeId != this.model.selectedExpenseTypeId) {
+      this.loadExpenseDetails();
+    }
+  }
+
+  loadExpenseDetails() {
+    this.currentExpenseTypeId = this.model.selectedExpenseTypeId;
+
+    let model = {
+      FUNC_CODE: "FUNC-Get_Mas_Expense_Detial",
+      Fk_Expense_Id: this.model.selectedExpenseTypeId
+    };
+
+    this.serviceebud.GatewayGetData(model)
+      .subscribe((response: any) => {
+        const expenseDetailList =
+          response.List_Mas_Expense_Detial ??
+          response.List_Mas_Expense_Detail;
+
+        this.Mas_Expense_Detial_List =
+          Array.isArray(expenseDetailList)
+            ? expenseDetailList
+            : [];
+
+        this.bindData();
+      }, () => {
+        this.Mas_Expense_Detial_List = [];
+        this.bindData();
+      });
   }
 
   createItem() {
@@ -71,6 +85,8 @@ export class ExpenseCarRentalCostComponent {
       requestItemId: 0,
 
       car: null,
+
+      carName: '',
 
       qty: 1,
 
@@ -182,24 +198,16 @@ export class ExpenseCarRentalCostComponent {
 
   mapRow(row: any) {
 
-    const carObj =
-
-      this.carOptions.find(
-
-        (x: any) =>
-
-          x.name ==
-          row.Expense_Detail
-
-      );
-
     return {
 
       requestItemId:
         row.Request_Item_Id || 0,
 
       car:
-        carObj || null,
+        this.resolveExpenseDetailId(row),
+
+      carName:
+        row.Expense_Detail || '',
 
       qty:
         row.Quantity || 0,
@@ -220,6 +228,59 @@ export class ExpenseCarRentalCostComponent {
 
     };
 
+  }
+
+  normalizeSelectId(value: any): number | null {
+    if (value === null || value === undefined || value === '') {
+      return null;
+    }
+
+    const numberValue = Number(value);
+    return Number.isNaN(numberValue) ? null : numberValue;
+  }
+
+  private normalizeText(value: any): string {
+    return (value ?? '').toString().trim().toLowerCase().replace(/\s+/g, '');
+  }
+
+  private resolveExpenseDetailId(row: any): number | null {
+    const detailId =
+      row?.Fk_Expense_Detail_Id ??
+      row?.Fk_Expense_Detial_Id ??
+      row?.Expense_Detail_Id ??
+      row?.Expense_Detial_Id;
+
+    const normalizedId = this.normalizeSelectId(detailId);
+
+    if (normalizedId != null) {
+      return normalizedId;
+    }
+
+    const rowText = this.normalizeText(row?.Expense_Detail);
+    const detail = this.Mas_Expense_Detial_List.find((item: any) =>
+      this.normalizeText(item?.Expense_Detial_Name) === rowText
+    );
+
+    return this.normalizeSelectId(detail?.Expense_Detial_Id);
+  }
+
+  getSelectedExpenseDetail(item: any): any {
+    const carId = this.normalizeSelectId(item?.car);
+
+    return this.Mas_Expense_Detial_List.find((detail: any) =>
+      this.normalizeSelectId(detail?.Expense_Detial_Id) === carId
+    );
+  }
+
+  getExpenseDetailRate(detail: any): number {
+    return Number(
+      detail?.Request_Rate ??
+      detail?.Expense_Rate ??
+      detail?.Rate ??
+      detail?.Price ??
+      detail?.Total ??
+      0
+    ) || 0;
   }
 
   getCurrentItems() {
@@ -258,11 +319,13 @@ export class ExpenseCarRentalCostComponent {
   }
 
   onSelectCar(item: any, i: number) {
+    const selected = this.getSelectedExpenseDetail(item);
+    item.carName = selected?.Expense_Detial_Name || '';
 
-    if (item.car) {
+    if (selected) {
 
       item.price =
-        item.car.price || 0;
+        this.getExpenseDetailRate(selected) || item.price || 0;
 
     }
 
@@ -368,7 +431,10 @@ export class ExpenseCarRentalCostComponent {
           'old',
 
         Expense_Detail:
-          item.car?.name || '',
+          item.carName || '',
+
+        Fk_Expense_Detail_Id:
+          item.car || 0,
 
         Quantity:
           item.qty,
@@ -404,7 +470,10 @@ export class ExpenseCarRentalCostComponent {
           'new',
 
         Expense_Detail:
-          item.car?.name || '',
+          item.carName || '',
+
+        Fk_Expense_Detail_Id:
+          item.car || 0,
 
         Quantity:
           item.qty,

@@ -94,8 +94,11 @@
                         <!-- car -->
                         <td>
 
-                            <ng-select [items]="carOptions" bindLabel="name" [(ngModel)]="item.car" appendTo="body"
-                                placeholder="--- ประเภทรถ ---" (ngModelChange)="onSelectCar(item, i)">
+                            <ng-select [items]="Mas_Expense_Detial_List" bindLabel="Expense_Detial_Name"
+                                bindValue="Expense_Detial_Id" [(ngModel)]="item.car" appendTo="body"
+                                dropdownPosition="auto" name="car_rental_detail_{{tab}}_{{i}}"
+                                placeholder="-- เลือกประเภทรถ --" [clearable]="false"
+                                (change)="onSelectCar(item, i)">
 
                             </ng-select>
 
