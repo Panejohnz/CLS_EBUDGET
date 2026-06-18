@@ -233,36 +233,40 @@ export class ProjectAllocationComponent implements OnInit {
         // =========================
         console.log(',', plans);
 
+        const usedPlanIds = new Set<number>();
+
         rows.forEach((row: any) => {
 
-          const oldPlan = plans
-            .filter((p: any) =>
+          const rowRequestId = Number(
+            row.Request_Id ??
+            row.FK_Request_Id ??
+            0
+          );
+          const rowExpenseListId = Number(row.Fk_Expense_List || 0);
+          const matchedPlans = plans.filter((p: any) =>
 
-              Number(
-                p.FK_Request_Id ??
-                p.Fk_Request_Id ??
-                p.Request_Id ??
-                0
-              )
-
-              ===
-
-              Number(
-                row.Request_Id ??
-                row.FK_Request_Id ??
-                0
-              )
-
+            Number(
+              p.FK_Request_Id ??
+              p.Fk_Request_Id ??
+              p.Request_Id ??
+              0
             )
-            .sort((a: any, b: any) =>
 
-              Number(b.Plan_Id || 0)
-              -
-              Number(a.Plan_Id || 0)
+            ===
 
-            )[0];
+            rowRequestId
+
+          );
+          const oldPlan = (
+            matchedPlans.find((p: any) =>
+              Number(p.Fk_Expense_List || 0) === rowExpenseListId
+            ) ||
+            matchedPlans[0]
+          );
+
 
           if (oldPlan) {
+            usedPlanIds.add(Number(oldPlan.Plan_Id || 0));
 
             const adjust1 = Number(
 
@@ -321,6 +325,14 @@ export class ProjectAllocationComponent implements OnInit {
 
           }
 
+        });
+
+        plans.forEach((plan: any) => {
+          const planId = Number(plan.Plan_Id || 0);
+
+          if (planId && !usedPlanIds.has(planId)) {
+            rows.push(structuredClone(plan));
+          }
         });
 
         // =========================
@@ -425,7 +437,7 @@ export class ProjectAllocationComponent implements OnInit {
           }
 
           const budgetKey =
-            this.buildGroupKey(row.Fk_Budget_Type, row.Budget_Type_Name);
+            this.buildGroupKey(row.Fk_Budget_Type, row.Budget_Type_Name || row.Budget_Type);
 
           let budget = activity.budgets.find(
 
@@ -445,7 +457,7 @@ export class ProjectAllocationComponent implements OnInit {
                 row.Fk_Budget_Type || 0,
 
               Budget_Type:
-                row.Budget_Type_Name || '-',
+                row.Budget_Type_Name || row.Budget_Type || '-',
 
               expanded: true,
 
@@ -544,6 +556,11 @@ export class ProjectAllocationComponent implements OnInit {
   addBudget(budget: any) {
 
     const template = budget.items?.[0] || {};
+    const requestId =
+      template.Request_Id ||
+      template.FK_Request_Id ||
+      template.Fk_Request_Id ||
+      0;
 
     const fkExpenseTypeId =
       template.Fk_Expense_Type ||
@@ -551,9 +568,9 @@ export class ProjectAllocationComponent implements OnInit {
       0;
 
     let model = {
-      FUNC_CODE: 'FUNC-GET_Mas_Expense_List',
+      FUNC_CODE: 'FUNC-GET_Mas_Expense_List_by_fk',
       Mas_Expense_List: {
-        Fk_Expense_Type_Id: fkExpenseTypeId
+        Fk_Expense_Type_Id: budget.Fk_Budget_Type
       }
     };
 
@@ -561,7 +578,7 @@ export class ProjectAllocationComponent implements OnInit {
       .GatewayGetData(model)
       .subscribe((response: any) => {
 
-        this.Mas_Expense_Lists =
+        const expenseOptions =
           Array.isArray(response.Mas_Expense_Lists)
             ? response.Mas_Expense_Lists
             : [];
@@ -570,22 +587,30 @@ export class ProjectAllocationComponent implements OnInit {
 
         const newItem = {
           Plan_Id: 0,
-          FK_Request_Id: 0,
-          Is_New_Request: true,
+          Request_Id: requestId,
+          FK_Request_Id: requestId,
 
           Department_Id: template.Department_Id || this.selectedDepartmentId,
           Department_Name: template.Department_Name || '',
 
           Fk_Plan_Id: template.Fk_Plan_Id || 0,
+          Plan_Name: template.Plan_Name || '',
           Fk_Product_Id: template.Fk_Product_Id || 0,
+          Product_Name: template.Product_Name || '',
           Fk_Activity_Id: template.Fk_Activity_Id || 0,
+          Activity_Name: template.Activity_Name || '',
 
           Fk_Budget_Type: budget.Fk_Budget_Type || template.Fk_Budget_Type || 0,
           Budget_Type: budget.Budget_Type || template.Budget_Type || '',
+          Budget_Type_Name: budget.Budget_Type || template.Budget_Type_Name || '',
+          Fk_Expense_Type: fkExpenseTypeId,
+          Fk_Expense_Type_Id: fkExpenseTypeId,
+          Expense_Type: template.Expense_Type || '',
 
           Fk_Expense_List: 0,
           Expense_List: '',
           Expense_Name: '',
+          Expense_List_Options: expenseOptions,
           Project_Name: '',
 
           Total: 0,
@@ -593,6 +618,7 @@ export class ProjectAllocationComponent implements OnInit {
           Adjust2Temp: 0,
           Adjust3Temp: 0,
 
+          isDirty: true,
           isNewBudget: true
         };
 
@@ -611,13 +637,15 @@ export class ProjectAllocationComponent implements OnInit {
   }
 
   onExpenseListChange(item: any, selected: any) {
+    const expenseOptions = item.Expense_List_Options || this.Mas_Expense_Lists;
     const selectedExpense = typeof selected === 'object'
       ? selected
-      : this.Mas_Expense_Lists.find((expense: any) => expense.Expense_Id == selected);
+      : expenseOptions.find((expense: any) => expense.Expense_Id == selected);
 
     item.Fk_Expense_List = selectedExpense?.Expense_Id || 0;
     item.Expense_List = selectedExpense?.Expense_Name || '';
     item.Expense_Name = selectedExpense?.Expense_Name || '';
+    item.isDirty = true;
   }
 
   private buildExpenseListOptions(rows: any[]): any[] {
@@ -738,6 +766,14 @@ export class ProjectAllocationComponent implements OnInit {
 
   }
 
+  private isBudgetItemChanged(item: any): boolean {
+    return item.isNewBudget === true ||
+      item.isDirty === true ||
+      Number(item.Adjust1Temp || 0) !== Number(item.Adjust1 || 0) ||
+      Number(item.Adjust2Temp || 0) !== Number(item.Adjust2 || 0) ||
+      Number(item.Adjust3Temp || 0) !== Number(item.Adjust3 || 0);
+  }
+
   // =====================================
   // SUMMARY
   // =====================================
@@ -758,7 +794,7 @@ export class ProjectAllocationComponent implements OnInit {
 
   }
 
-    get totalAdjust1(): number {
+  get totalAdjust1(): number {
 
     return this.getAllItems().reduce(
 
@@ -774,7 +810,7 @@ export class ProjectAllocationComponent implements OnInit {
 
   }
 
-    get totalAdjust2(): number {
+  get totalAdjust2(): number {
 
     return this.getAllItems().reduce(
 
@@ -790,7 +826,7 @@ export class ProjectAllocationComponent implements OnInit {
 
   }
 
-    get totalAdjust3(): number {
+  get totalAdjust3(): number {
 
     return this.getAllItems().reduce(
 
@@ -861,6 +897,7 @@ export class ProjectAllocationComponent implements OnInit {
       item.Adjust1Temp = avg;
       item.Adjust2Temp = avg;
       item.Adjust3Temp = avg;
+      item.isDirty = true;
       this.syncAdjustDisplays(item);
 
     });
@@ -874,6 +911,7 @@ export class ProjectAllocationComponent implements OnInit {
       item.Adjust1Temp = 0;
       item.Adjust2Temp = 0;
       item.Adjust3Temp = 0;
+      item.isDirty = true;
       this.syncAdjustDisplays(item);
     });
 
@@ -882,7 +920,23 @@ export class ProjectAllocationComponent implements OnInit {
 
   saveAdjust() {
 
-    const items = this.getAllItems();
+    const allItems = this.getAllItems();
+    const items = allItems.filter((item: any) => this.isBudgetItemChanged(item));
+
+    if (items.length === 0) {
+      basicAlert('warning', 'ไม่มีรายการที่เปลี่ยนแปลง', '');
+      return;
+    }
+
+    const invalidNewItems = items.filter((item: any) =>
+      item.isNewBudget === true &&
+      (!Number(item.Fk_Expense_List || 0) || this.getRowTotal(item) <= 0)
+    );
+
+    if (invalidNewItems.length > 0) {
+      basicAlert('warning', 'กรุณาเลือกรายการและระบุยอดจัดสรรก่อนบันทึก', '');
+      return;
+    }
 
     // const invalid = items.some((item: any) => {
 
@@ -907,11 +961,20 @@ export class ProjectAllocationComponent implements OnInit {
     // }
 
     const payload = items.map((item: any) => {
+      const requestId =
+        item.Request_Id ||
+        item.FK_Request_Id ||
+        item.Fk_Request_Id ||
+        0;
+      const userIdentify = this.userSession?.permissionData?.IDENTIFY || '';
 
       return {
 
         FK_Request_Id:
-          item.FK_Request_Id,
+          requestId,
+
+        Request_Id:
+          requestId,
 
         Plan_Id:
           item.Plan_Id,
@@ -938,6 +1001,9 @@ export class ProjectAllocationComponent implements OnInit {
         Fk_Activity_Id:
           item.Fk_Activity_Id,
 
+        Activity_Name:
+          item.Activity_Name,
+
         Fk_Budget_Type:
           item.Fk_Budget_Type,
 
@@ -947,13 +1013,26 @@ export class ProjectAllocationComponent implements OnInit {
         Fk_Plan_Id:
           item.Fk_Plan_Id,
 
+        Plan_Name:
+          item.Plan_Name,
+
         Fk_Product_Id:
           item.Fk_Product_Id,
+
+        Product_Name:
+          item.Product_Name,
 
         BgYear:
           this.currentYear,
         Budget_Type: item.Budget_Type,
-        Is_New_Request: item.Is_New_Request === true,
+        Budget_Type_Name: item.Budget_Type_Name || item.Budget_Type,
+        Expense_List: item.Expense_List || item.Expense_Name,
+        Expense_Name: item.Expense_Name || item.Expense_List,
+        Fk_Expense_Type: item.Fk_Expense_Type || item.Fk_Expense_Type_Id || 0,
+        Fk_Expense_Type_Id: item.Fk_Expense_Type_Id || item.Fk_Expense_Type || 0,
+        Expense_Type: item.Expense_Type,
+        Create_User: userIdentify,
+        Update_User: userIdentify
 
       };
 
@@ -980,6 +1059,8 @@ export class ProjectAllocationComponent implements OnInit {
             item.Adjust1 = Number(item.Adjust1Temp || 0);
             item.Adjust2 = Number(item.Adjust2Temp || 0);
             item.Adjust3 = Number(item.Adjust3Temp || 0);
+            item.isDirty = false;
+            item.isNewBudget = false;
 
           });
 
@@ -1005,6 +1086,8 @@ export class ProjectAllocationComponent implements OnInit {
 
             item.Update_Amount =
               this.getRowTotal(item);
+            item.isDirty = false;
+            item.isNewBudget = false;
 
           });
         },
@@ -1300,6 +1383,7 @@ export class ProjectAllocationComponent implements OnInit {
       const displayField = field.replace('Temp', 'Display');
       item[displayField] = result.formatted;
       item[field] = result.numeric;
+      item.isDirty = true;
     });
 
   }
