@@ -38,12 +38,12 @@ export class ProjectBudgetProposalAddPersonnelComponent {
   plan: any = {
     projectName: '',
     unit: '',
-    totalTarget: 0,
+    totalTarget: '',
     month: {
-      oct: 0, nov: 0, dec: 0,
-      jan: 0, feb: 0, mar: 0,
-      apr: 0, may: 0, jun: 0,
-      jul: 0, aug: 0, sep: 0
+      oct: '', nov: '', dec: '',
+      jan: '', feb: '', mar: '',
+      apr: '', may: '', jun: '',
+      jul: '', aug: '', sep: ''
     }
   }
 
@@ -52,21 +52,21 @@ export class ProjectBudgetProposalAddPersonnelComponent {
       Request_Detail_Id: 0,
       unit: '',
 
-      oct: 0,
-      nov: 0,
-      dec: 0,
+      oct: '',
+      nov: '',
+      dec: '',
 
-      jan: 0,
-      feb: 0,
-      mar: 0,
+      jan: '',
+      feb: '',
+      mar: '',
 
-      apr: 0,
-      may: 0,
-      jun: 0,
+      apr: '',
+      may: '',
+      jun: '',
 
-      jul: 0,
-      aug: 0,
-      sep: 0
+      jul: '',
+      aug: '',
+      sep: ''
     }
   ];
 
@@ -426,21 +426,21 @@ export class ProjectBudgetProposalAddPersonnelComponent {
       Request_Detail_Id: 0,
       unit: '',
 
-      oct: 0,
-      nov: 0,
-      dec: 0,
+      oct: '',
+      nov: '',
+      dec: '',
 
-      jan: 0,
-      feb: 0,
-      mar: 0,
+      jan: '',
+      feb: '',
+      mar: '',
 
-      apr: 0,
-      may: 0,
-      jun: 0,
+      apr: '',
+      may: '',
+      jun: '',
 
-      jul: 0,
-      aug: 0,
-      sep: 0
+      jul: '',
+      aug: '',
+      sep: ''
 
     });
   }
