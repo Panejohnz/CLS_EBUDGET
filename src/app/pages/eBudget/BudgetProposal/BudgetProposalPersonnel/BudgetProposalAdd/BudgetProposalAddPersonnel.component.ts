@@ -21,11 +21,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
   ) { }
 
   get isSaveLocked(): boolean {
-    return Number(
-      this.model?.Status_Id ||
-      this.model?.Budget_Request?.Status_Id ||
-      0
-    ) > 1;
+    return Number(this.userSession?.permissionData?.VIEW_DATA || 0) === 3;
   }
 
   closeModal() {

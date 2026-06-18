@@ -288,10 +288,10 @@ export class SingOffPlaningComponent {
 
     const cancelRemark = (await cancelTracking() || '').trim();
 
-    if (!cancelRemark) {
-      // basicAlert('warning', 'กรุณาระบุหมายเหตุ', '');
-      return;
-    }
+    // if (!cancelRemark) {
+    //   // basicAlert('warning', 'กรุณาระบุหมายเหตุ', '');
+    //   return;
+    // }
 
     const payload = [
       {

@@ -67,6 +67,12 @@ export class ProjectBudgetProposalComponent {
     Active: 1
   };
   selectedDepartmentId: any = null;
+  selectedPlanName: string | null = null;
+  selectedProductName: string | null = null;
+  selectedActivityName: string | null = null;
+  planFilterOptions: any[] = [];
+  productFilterOptions: any[] = [];
+  activityFilterOptions: any[] = [];
 
   griddataTemp: any[] = [];
   get pagedGriddata(): any[] {
@@ -156,9 +162,6 @@ export class ProjectBudgetProposalComponent {
 
       this.griddataTemp = [...this.allData];
 
-      this.griddata = [...this.allData];
-      this.sortService.page = 1;
-
       this.department = Array.isArray(response.Mas_Department_Lists)
         ? response.Mas_Department_Lists
         : [];
@@ -173,22 +176,113 @@ export class ProjectBudgetProposalComponent {
         }
       }
 
+      this.buildFilterOptions();
       this.applyFilter();
 
     });
 
   }
+
+  private getUniqueFilterOptions(data: any[], key: string): any[] {
+    const seen = new Set<string>();
+
+    return data
+      .map((item: any) => (item?.[key] || '').toString().trim())
+      .filter((name: string) => {
+        if (!name || seen.has(name)) {
+          return false;
+        }
+
+        seen.add(name);
+        return true;
+      })
+      .map((name: string) => ({ name }));
+  }
+
+  private buildFilterOptions() {
+    this.updateCascadingFilterOptions();
+  }
+
+  private hasFilterOption(options: any[], value: string | null): boolean {
+    return !value || options.some(option => option.name === value);
+  }
+
+  private filterByDepartment(data: any[]): any[] {
+    if (!this.selectedDepartmentId) {
+      return data;
+    }
+
+    return data.filter(
+      x => String(x.Department_Id) === String(this.selectedDepartmentId)
+    );
+  }
+
+  private updateCascadingFilterOptions() {
+    const departmentData = this.filterByDepartment([...this.griddataTemp]);
+
+    this.planFilterOptions = this.getUniqueFilterOptions(departmentData, 'Plan_Name');
+    if (!this.hasFilterOption(this.planFilterOptions, this.selectedPlanName)) {
+      this.selectedPlanName = null;
+      this.selectedProductName = null;
+      this.selectedActivityName = null;
+    }
+
+    const planData = this.selectedPlanName
+      ? departmentData.filter(x => x.Plan_Name == this.selectedPlanName)
+      : departmentData;
+
+    this.productFilterOptions = this.getUniqueFilterOptions(planData, 'Product_Name');
+    if (!this.hasFilterOption(this.productFilterOptions, this.selectedProductName)) {
+      this.selectedProductName = null;
+      this.selectedActivityName = null;
+    }
+
+    const productData = this.selectedProductName
+      ? planData.filter(x => x.Product_Name == this.selectedProductName)
+      : planData;
+
+    this.activityFilterOptions = this.getUniqueFilterOptions(productData, 'Activity_Name');
+    if (!this.hasFilterOption(this.activityFilterOptions, this.selectedActivityName)) {
+      this.selectedActivityName = null;
+    }
+  }
+
+  onDepartmentFilterChange() {
+    this.selectedPlanName = null;
+    this.selectedProductName = null;
+    this.selectedActivityName = null;
+    this.applyFilter();
+  }
+
+  onPlanFilterChange() {
+    this.selectedProductName = null;
+    this.selectedActivityName = null;
+    this.applyFilter();
+  }
+
+  onProductFilterChange() {
+    this.selectedActivityName = null;
+    this.applyFilter();
+  }
+
   applyFilter() {
     this.sortService.page = 1;
 
     let data = [...this.griddataTemp];
+    this.updateCascadingFilterOptions();
 
-    if (this.selectedDepartmentId) {
+    data = this.filterByDepartment(data);
 
-      data = data.filter(
-        x => x.Department_Id == this.selectedDepartmentId
-      );
+    if (this.selectedPlanName) {
+      data = data.filter(x => x.Plan_Name == this.selectedPlanName);
+    }
 
+    if (this.selectedProductName) {
+      data = data.filter(x => x.Product_Name == this.selectedProductName);
+    }
+
+    if (this.selectedActivityName) {
+      data = data.filter(x => x.Activity_Name == this.selectedActivityName);
     }
 
     if (this.service.searchTerm) {
@@ -214,18 +308,7 @@ export class ProjectBudgetProposalComponent {
 
   }
   filterDepartment() {
-
-    if (!this.selectedDepartmentId) {
-
-      this.griddata = [...this.griddataTemp];
-      return;
-
-    }
-
-    this.griddata = this.griddataTemp.filter(
-      x => x.Department_Id == this.selectedDepartmentId
-    );
-
+    this.onDepartmentFilterChange();
   }
 
   fullModal(modal: any, data: any) {

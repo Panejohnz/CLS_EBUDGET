@@ -726,11 +726,7 @@ export class ProjectPlanningComponent {
   firstLoad = true;
 
   get isSaveLocked(): boolean {
-    const data =
-      this.project_planing?.Project_Plan ||
-      this.project_planing;
-
-    return Number(data?.Status_Id || 0) > 1;
+    return Number(this.userSession?.permissionData?.VIEW_DATA || 0) === 3;
   }
 
   goTab(tab: number) {

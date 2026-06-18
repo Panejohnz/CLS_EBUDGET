@@ -7,30 +7,45 @@
 
     <div class="card-body">
         <br />
-        <div class="row align-items-end">
+        <div class="row g-3 align-items-end">
 
             <!-- หน่วยงาน -->
-            <div class="col-lg-4">
+            <div class="col-lg-3">
                 <label class="form-label">หน่วยงาน</label>
-                <select class="form-select" [class.readonly-select]="isDepartmentLocked"
-                    [attr.aria-disabled]="isDepartmentLocked" [attr.tabindex]="isDepartmentLocked ? -1 : null"
-                    [(ngModel)]="selectedDepartmentId" (change)="applyFilter()">
+                <ng-select [class.readonly-select]="isDepartmentLocked" [items]="department"
+                    bindLabel="Department_Name" bindValue="Department_Id" [(ngModel)]="selectedDepartmentId"
+                    [clearable]="!isDepartmentLocked" [disabled]="isDepartmentLocked"
+                    [searchable]="!isDepartmentLocked" appendTo="body" placeholder="-- เลือกหน่วยงาน --"
+                    (change)="onDepartmentFilterChange()">
+                </ng-select>
+            </div>
 
-                    <option [ngValue]="null">
-                        -- เลือกหน่วยงาน --
-                    </option>
+            <div class="col-lg-3">
+                <label class="form-label">แผนงาน</label>
+                <ng-select [items]="planFilterOptions" bindLabel="name" bindValue="name"
+                    [(ngModel)]="selectedPlanName" appendTo="body" placeholder="-- เลือกแผนงาน --"
+                    (change)="onPlanFilterChange()">
+                </ng-select>
+            </div>
 
-                    <option *ngFor="let item of department" [ngValue]="item.Department_Id">
+            <div class="col-lg-3">
+                <label class="form-label">ผลผลิต</label>
+                <ng-select [items]="productFilterOptions" bindLabel="name" bindValue="name"
+                    [(ngModel)]="selectedProductName" appendTo="body" placeholder="-- เลือกผลผลิต --"
+                    (change)="onProductFilterChange()">
+                </ng-select>
+            </div>
 
-                        {{ item.Department_Name }}
-
-                    </option>
-
-                </select>
+            <div class="col-lg-3">
+                <label class="form-label">กิจกรรม</label>
+                <ng-select [items]="activityFilterOptions" bindLabel="name" bindValue="name"
+                    [(ngModel)]="selectedActivityName" appendTo="body" placeholder="-- เลือกกิจกรรม --"
+                    (change)="applyFilter()">
+                </ng-select>
             </div>
 
             <!-- ค้นหา + ปุ่ม -->
-            <div class="col-lg-8">
+            <div class="col-lg-12">
                 <div class="d-flex justify-content-end align-items-end gap-2">
 
                 <div style="width:250px;">

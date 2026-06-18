@@ -36,7 +36,7 @@ export class AuthGuard implements CanActivate {
         }
 
         // รับ token จาก query param
-        const token = route.queryParams['token'] || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbjIiLCJqdGkiOiIwMjAyNDQxNS1hMmMzLTRiMGItOWEzMi0zNDYwZGZlYzhiM2YiLCJleHAiOjE3ODEwNjk0NTgsImlzcyI6ImFwcC5jZWxlc3Rzb2Z0LmNvbSIsImF1ZCI6ImFwcC5jZWxlc3Rzb2Z0LmNvbSJ9.mfyvpf75ZdCsNe8WdOgUMtNSrGuCVHPvHqkKKwnWDTY';
+        const token = route.queryParams['token'] || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbjIiLCJqdGkiOiI0YWYzOWQ1OC03ODg4LTRjZTMtYWNhYi1lNGFkYTYxNGJmMjIiLCJleHAiOjE3ODE3ODA1ODYsImlzcyI6ImFwcC5jZWxlc3Rzb2Z0LmNvbSIsImF1ZCI6ImFwcC5jZWxlc3Rzb2Z0LmNvbSJ9.v4zIhf0LeHiH-b5Px3qqbYRgNhPh3PRMPBzb0M8Fvlc';
 
         // ถ้าไม่มี token
         if (!token) {
