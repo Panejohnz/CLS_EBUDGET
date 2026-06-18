@@ -251,7 +251,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
         {
           "id": 38,
-          "label": "ยืนยันข้อมูลโครงการ (กยผ)",
+          "label": "ยืนยันข้อมูลโครงการ (กยผ.)",
           "icon": "bx bx-check-circle",
           "link": "/ConfirmSuperDept",
           "subItems": [],
@@ -262,7 +262,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         },
         {
           "id": 39,
-          "label": "Sign off โครงการ (กยผ)",
+          "label": "Sign off โครงการ (กยผ.)",
           "icon": "bx bx-check-circle",
           "link": "/singOffSuperDept",
           "subItems": [],
@@ -329,7 +329,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
         {
           "id": 42,
-          "label": "ยืนยันข้อมูลคำของบประมาณ (กยผ)",
+          "label": "ยืนยันข้อมูลคำของบประมาณ (กยผ.)",
           "icon": "bx bx-check-circle",
           "link": "/ConfirmSuperDeptBudgetProposal",
           "subItems": [],
@@ -340,7 +340,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         },
         {
           "id": 43,
-          "label": "Sign off คำของบประมาณ (กยผ)",
+          "label": "Sign off คำของบประมาณ (กยผ.)",
           "icon": "bx bx-check-circle",
           "link": "/singOffSuperDeptBudgetProposal",
           "subItems": [],
@@ -439,7 +439,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         },
         {
           "id": 46,
-          "label": "ยืนยันข้อมูลแผนปฎิบัติการ (กยผ)",
+          "label": "ยืนยันข้อมูลแผนปฎิบัติการ (กยผ.)",
           "icon": "bx bx-check-double",
           "link": "/ConfirmSuperDeptAction",
           "subItems": [],
@@ -450,7 +450,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         },
         {
           "id": 47,
-          "label": "Sign off แผนปฎิบัติการ (กยผ)",
+          "label": "Sign off แผนปฎิบัติการ (กยผ.)",
           "icon": "bx bx-check-double",
           "link": "/singOffSuperDeptAction",
           "subItems": [],
