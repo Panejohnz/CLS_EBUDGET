@@ -23,10 +23,13 @@ export class ExpenseTrainingSeminarComponent {
   ) { }
 
   file: any;
-
+  Mas_Unit_Lists: any
   expenseList: any[] = [];
+  Mas_Business_Level: any[] = [];
+  Mas_Expense_Detial_List: any[] = [];
   Mas_Expense_Detial_Rate_List: any[] = [];
-
+  private currentExpenseTypeId: any = null;
+  allData: any
   ngOnInit() {
 
     if (!this.model) return;
@@ -37,20 +40,99 @@ export class ExpenseTrainingSeminarComponent {
 
     }
 
-    this.loadExpenseRates();
-
+    this.loadExpenseType();
+    this.get_data()
   }
+  get_data() {
+    let model = {
+      FUNC_CODE: "FUNC-Get_List_Mas_Unit",
+    }
+    var getData = this.serviceebud.GatewayGetData(model);
+    getData.subscribe((response: any) => {
 
+      this.allData = Array.isArray(response.List_Mas_Unit)
+        ? response.List_Mas_Unit
+        : [];
+      this.Mas_Unit_Lists = [...this.allData];
+
+    })
+  }
   closeModal() {
 
     this.model.dismiss();
 
   }
 
-  loadExpenseRates() {
+  loadExpenseType() {
+    this.currentExpenseTypeId = this.model.selectedExpenseTypeId;
+    this.Mas_Expense_Detial_List = [];
+
+    let model = {
+      FUNC_CODE: "FUNC-Get_Mas_Expense_Detial",
+      Fk_Expense_Id: this.model.selectedExpenseTypeId
+    };
+
+    this.serviceebud.GatewayGetData(model)
+      .subscribe((response: any) => {
+        const expenseDetailList =
+          response.List_Mas_Expense_Detial ??
+          response.List_Mas_Expense_Detail;
+
+        this.Mas_Expense_Detial_List =
+          Array.isArray(expenseDetailList)
+            ? expenseDetailList
+            : [];
+
+        this.loadBusinessLevels();
+      }, () => {
+        this.Mas_Expense_Detial_List = [];
+        this.loadBusinessLevels();
+      });
+  }
+
+  ngDoCheck() {
+    if (!this.model) return;
+
+    if (this.currentExpenseTypeId != this.model.selectedExpenseTypeId) {
+      this.loadExpenseType();
+    }
+  }
+
+  loadBusinessLevels() {
+    let model = {
+      FUNC_CODE: "FUNC-Get_Mas_BusinessLevel",
+    };
+
+    this.serviceebud.GatewayGetData(model)
+      .subscribe((response: any) => {
+        this.Mas_Business_Level =
+          Array.isArray(response.List_Mas_Business_Level)
+            ? response.List_Mas_Business_Level
+            : [];
+
+        this.bindData();
+        this.normalizeItemLevels();
+        this.refreshExpenseDetailOptions();
+        this.applyRatesToExistingRows();
+      }, () => {
+        this.Mas_Business_Level = [];
+        this.bindData();
+        this.refreshExpenseDetailOptions();
+        this.applyRatesToExistingRows();
+      });
+  }
+
+  loadExpenseRates(item: any) {
+    if (!item?.pairId || this.isOtherExpenseDetail(item)) {
+      item.rate = '';
+      item.isOtherRate = true;
+      this.calculate(item);
+      return;
+    }
+
     let model = {
       FUNC_CODE: "FUNC-Get_Mas_Expense_Rate",
-      Fk_Expense_Id: this.model.selectedExpenseTypeId
+      Fk_Expense_Id: item.pairId
     };
 
     this.serviceebud.GatewayGetData(model)
@@ -63,10 +145,12 @@ export class ExpenseTrainingSeminarComponent {
             ? expenseRateList
             : [];
 
-        this.bindData();
-        this.applyRatesToExistingRows();
+        const rate = this.getExpenseRateFromRateList();
+        item.rate = rate || item.rate || this.getExpenseDetailRate(item);
+        this.calculate(item);
       }, () => {
-        this.bindData();
+        item.rate = item.rate || this.getExpenseDetailRate(item);
+        this.calculate(item);
       });
   }
 
@@ -97,19 +181,165 @@ export class ExpenseTrainingSeminarComponent {
     ) || 0;
   }
 
-  private getRateForExpenseType(expenseType: any): number {
-    const selectedText = this.normalizeText(expenseType);
-    const byName = this.Mas_Expense_Detial_Rate_List.find((row: any) => {
-      const rateText = this.getRateRowText(row);
+  normalizeSelectId(value: any): number | null {
+    if (value === null || value === undefined || value === '') {
+      return null;
+    }
 
-      return rateText &&
-        (
-          selectedText.includes(rateText) ||
-          rateText.includes(selectedText)
-        );
+    const numberValue = Number(value);
+    return Number.isNaN(numberValue) ? null : numberValue;
+  }
+
+  getExpenseDetailLevelId(item: any): number | null {
+    return this.normalizeSelectId(
+      item?.Buslness_Level ??
+      item?.Business_Level ??
+      item?.Fk_Business_Level ??
+      item?.Fk_Business_Level_Id ??
+      item?.Level_Id
+    );
+  }
+
+  resolveBusinessLevelId(value: any): number | null {
+    const normalizedValue = this.normalizeSelectId(value);
+
+    if (normalizedValue != null) {
+      const hasLevel = this.Mas_Business_Level.some((item: any) =>
+        this.normalizeSelectId(item?.Level_Id) === normalizedValue
+      );
+
+      if (hasLevel) {
+        return normalizedValue;
+      }
+    }
+
+    const textValue = (value ?? '').toString().trim();
+
+    if (!textValue) {
+      return null;
+    }
+
+    const level = this.Mas_Business_Level.find((item: any) =>
+      (item?.Level_Name ?? '').toString().trim() === textValue ||
+      (item?.Level_Short_Name ?? '').toString().trim() === textValue ||
+      (item?.Level_Code ?? '').toString().trim() === textValue
+    );
+
+    return this.normalizeSelectId(level?.Level_Id);
+  }
+
+  private normalizeItemLevels() {
+    this.expenseList.forEach((item: any) => {
+      item.level = this.resolveBusinessLevelId(item.level);
+
+      if (item.level == null) {
+        const selected = this.getSelectedExpenseDetail(item);
+        item.level = this.getExpenseDetailLevelId(selected);
+      }
+    });
+  }
+
+  getExpenseDetailsByLevel(item: any): any[] {
+    const levelId = this.normalizeSelectId(item?.level);
+
+    if (levelId == null) {
+      return [];
+    }
+
+    const filtered = this.Mas_Expense_Detial_List.filter((detail: any) => {
+      const itemLevelId = this.getExpenseDetailLevelId(detail);
+
+      if (itemLevelId == null) {
+        return false;
+      }
+
+      return itemLevelId === levelId;
     });
 
-    return this.getRowRate(byName);
+    return filtered.length ? filtered : this.Mas_Expense_Detial_List;
+  }
+
+  getSelectedExpenseDetail(item: any): any {
+    const pairId = this.normalizeSelectId(item?.pairId);
+
+    return this.Mas_Expense_Detial_List.find((detail: any) =>
+      this.normalizeSelectId(detail?.Expense_Detial_Id) === pairId
+    );
+  }
+
+  private resolveExpenseDetailId(row: any): number | null {
+    const detailId =
+      row?.Fk_Expense_Detail_Id ??
+      row?.Fk_Expense_Detial_Id ??
+      row?.Expense_Detail_Id ??
+      row?.Expense_Detial_Id;
+
+    const normalizedId = this.normalizeSelectId(detailId);
+
+    if (normalizedId != null) {
+      return normalizedId;
+    }
+
+    const rowText = this.normalizeText(row?.Expense_Detail);
+    const detail = this.Mas_Expense_Detial_List.find((item: any) =>
+      this.normalizeText(item?.Expense_Detial_Name) === rowText
+    );
+
+    return this.normalizeSelectId(detail?.Expense_Detial_Id);
+  }
+
+  isOtherExpenseDetail(item: any): boolean {
+    const selected = this.getSelectedExpenseDetail(item);
+    const name = this.normalizeText(selected?.Expense_Detial_Name ?? item?.expenseType);
+
+    return name.includes('อื่น') || name.includes('other');
+  }
+
+  getExpenseDetailRate(item: any): number {
+    const selected = this.getSelectedExpenseDetail(item);
+
+    return Number(
+      selected?.Request_Rate ??
+      selected?.Expense_Rate ??
+      selected?.Rate ??
+      selected?.Price ??
+      selected?.Total ??
+      0
+    ) || 0;
+  }
+
+  getExpenseRateFromRateList(): number {
+    const rateRow = this.Mas_Expense_Detial_Rate_List.find((item: any) =>
+      item?.Expense_Rate !== null &&
+      item?.Expense_Rate !== undefined &&
+      item?.Expense_Rate !== ''
+    );
+
+    return this.getRowRate(rateRow);
+  }
+
+  refreshExpenseDetailOptions() {
+    this.expenseList.forEach((item: any) => {
+      item.expenseDetails = this.getExpenseDetailsByLevel(item);
+      item.isOtherRate = this.isOtherExpenseDetail(item);
+    });
+  }
+
+  onLevelChange(item: any) {
+    item.expenseDetails = this.getExpenseDetailsByLevel(item);
+
+    const hasSelectedInLevel = item.expenseDetails.some((detail: any) =>
+      this.normalizeSelectId(detail?.Expense_Detial_Id) === this.normalizeSelectId(item?.pairId)
+    );
+
+    if (!hasSelectedInLevel) {
+      item.pairId = null;
+      item.expenseType = '';
+      item.rate = 0;
+      item.isOtherRate = false;
+    }
+
+    this.calculate(item);
   }
 
   private applyRatesToExistingRows() {
@@ -118,11 +348,16 @@ export class ExpenseTrainingSeminarComponent {
         return;
       }
 
-      const rate = this.getRateForExpenseType(item.expenseType);
+      const rate = this.getExpenseDetailRate(item);
 
       if (rate > 0) {
         item.rate = rate;
         this.calculate(item);
+        return;
+      }
+
+      if (item.pairId) {
+        this.loadExpenseRates(item);
       }
     });
   }
@@ -170,6 +405,18 @@ export class ExpenseTrainingSeminarComponent {
         requestItemId:
           row.Request_Item_Id || 0,
 
+        pairId:
+          this.resolveExpenseDetailId(row),
+
+        level:
+          row.Level_Name || null,
+
+        expenseDetails:
+          [],
+
+        isOtherRate:
+          false,
+
         expenseType:
           row.Expense_Detail || '',
 
@@ -215,6 +462,14 @@ export class ExpenseTrainingSeminarComponent {
 
       requestItemId: 0,
 
+      pairId: null,
+
+      level: null,
+
+      expenseDetails: [],
+
+      isOtherRate: false,
+
       expenseType: '',
 
       times: 0,
@@ -250,13 +505,18 @@ export class ExpenseTrainingSeminarComponent {
   }
 
   onExpenseTypeChange(item: any) {
-    const rate = this.getRateForExpenseType(item.expenseType);
+    const selected = this.getSelectedExpenseDetail(item);
+    item.expenseType = selected?.Expense_Detial_Name || '';
+    item.isOtherRate = this.isOtherExpenseDetail(item);
 
-    if (rate > 0) {
-      item.rate = rate;
+    if (item.isOtherRate) {
+      item.rate = '';
+      this.calculate(item);
+      return;
     }
 
-    this.calculate(item);
+    item.rate = this.getExpenseDetailRate(item);
+    this.loadExpenseRates(item);
   }
   async removeRow(i: number) {
 
@@ -313,6 +573,12 @@ export class ExpenseTrainingSeminarComponent {
 
         Expense_Detail:
           item.expenseType,
+
+        Fk_Expense_Detail_Id:
+          item.pairId || 0,
+
+        Level_Name:
+          item.level,
 
         Purpose:
           this.projectName,

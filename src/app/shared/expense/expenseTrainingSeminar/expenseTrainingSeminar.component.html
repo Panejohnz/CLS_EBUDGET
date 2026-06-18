@@ -7,8 +7,8 @@
         <div class="row g-3">
             <div class="col-md-5">
                 <label class="form-label fw-semibold">โครงการ/หลักสูตร</label>
-                <textarea class="form-control" rows="3" placeholder="ระบุโครงการ/หลักสูตร"
-                    [(ngModel)]="projectName" (ngModelChange)="updateDetailItems()">
+                <textarea class="form-control" rows="3" placeholder="ระบุโครงการ/หลักสูตร" [(ngModel)]="projectName"
+                    (ngModelChange)="updateDetailItems()">
                 </textarea>
             </div>
 
@@ -28,8 +28,8 @@
 
             <div class="col-md-3">
                 <label class="form-label fw-semibold">คำชี้แจง</label>
-                <textarea class="form-control" rows="3" [(ngModel)]="description"
-                    (ngModelChange)="updateDetailItems()" placeholder="ระบุคำชี้แจง">
+                <textarea class="form-control" rows="3" [(ngModel)]="description" (ngModelChange)="updateDetailItems()"
+                    placeholder="ระบุคำชี้แจง">
                 </textarea>
             </div>
         </div>
@@ -47,6 +47,7 @@
                 style="table-layout: fixed;">
                 <thead class="text-center text-white expense-table-header">
                     <tr>
+                        <th style="width:220px">ระดับ</th>
                         <th style="width:250px">รายการค่าใช้จ่าย</th>
                         <th style="width:100px">ครั้ง/รุ่น</th>
                         <th colspan="4">จำนวนคน</th>
@@ -56,6 +57,7 @@
                         <th style="width:50px"></th>
                     </tr>
                     <tr>
+                        <th></th>
                         <th></th>
                         <th></th>
                         <th>ประเภท ก</th>
@@ -74,14 +76,19 @@
                 <tbody>
                     <tr *ngFor="let item of expenseList; let i=index">
                         <td class="text-start">
-                            <select class="form-select" [(ngModel)]="item.expenseType"
-                                (ngModelChange)="onExpenseTypeChange(item)">
-                                <option value="">--- ค่าใช้จ่าย ---</option>
-                                <option value="ค่าตอบแทนวิทยากร">ค่าตอบแทนวิทยากร</option>
-                                <option value="ค่าอาหารและเครื่องดื่ม">ค่าอาหารและเครื่องดื่ม</option>
-                                <option value="ค่าเช่าที่พัก">ค่าเช่าที่พัก</option>
-                                <option value="ค่าพาหนะ">ค่าพาหนะ</option>
-                            </select>
+                            <ng-select appendTo="body" dropdownPosition="auto" [items]="Mas_Business_Level"
+                                bindLabel="Level_Name" bindValue="Level_Id" [(ngModel)]="item.level"
+                                name="training_level_{{i}}" placeholder="-- เลือกระดับ --" [clearable]="false"
+                                (change)="onLevelChange(item)">
+                            </ng-select>
+                        </td>
+
+                        <td class="text-start">
+                            <ng-select appendTo="body" dropdownPosition="auto" [items]="item.expenseDetails || []"
+                                bindLabel="Expense_Detial_Name" bindValue="Expense_Detial_Id" [(ngModel)]="item.pairId"
+                                name="training_expense_detail_{{i}}" placeholder="-- เลือกรายการ --" [clearable]="false"
+                                [disabled]="!item.level" (change)="onExpenseTypeChange(item)">
+                            </ng-select>
                         </td>
 
                         <td>
@@ -117,29 +124,38 @@
                         </td>
 
                         <td>
-                            <select class="form-select" [(ngModel)]="item.unit"
-                                (ngModelChange)="updateDetailItems()">
+                            <!-- <select class="form-select" [(ngModel)]="item.unit" (ngModelChange)="updateDetailItems()">
                                 <option>บาท</option>
                                 <option>คน</option>
                                 <option>วัน</option>
                                 <option>มื้อ</option>
-                            </select>
+                            </select> -->
+                            <ng-select appendTo="body" dropdownPosition="auto" [items]="Mas_Unit_Lists"
+                                bindLabel="Unit_Name" bindValue="Unit_Name" [(ngModel)]="item.unit"
+                                name="training_unit_{{i}}" placeholder="-- เลือกหน่วยนับ --"
+                                [clearable]="false" (ngModelChange)="updateDetailItems()">
+                            </ng-select>
                         </td>
 
                         <td>
                             <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
                                 inputmode="decimal" class="form-control" [(ngModel)]="item.rate"
+                                [readonly]="!item.isOtherRate" [class.bg-light]="!item.isOtherRate"
                                 (ngModelChange)="calculate(item)">
                         </td>
 
                         <td>
-                            <select class="form-select" [(ngModel)]="item.unit2"
-                                (ngModelChange)="updateDetailItems()">
+                            <!-- <select class="form-select" [(ngModel)]="item.unit2" >
                                 <option>บาท</option>
                                 <option>คน</option>
                                 <option>วัน</option>
                                 <option>มื้อ</option>
-                            </select>
+                            </select> -->
+                            <ng-select appendTo="body" dropdownPosition="auto" [items]="Mas_Unit_Lists"
+                                bindLabel="Unit_Name" bindValue="Unit_Name" [(ngModel)]="item.unit2"
+                                name="training_rate_unit_{{i}}" placeholder="-- เลือกหน่วยนับ --"
+                                [clearable]="false" (ngModelChange)="updateDetailItems()">
+                            </ng-select>
                         </td>
 
                         <td class="fw-semibold text-end text-primary">
@@ -156,7 +172,7 @@
 
                 <tfoot>
                     <tr>
-                        <td colspan="10" class="text-end">รวมทั้งสิ้น</td>
+                        <td colspan="11" class="text-end">รวมทั้งสิ้น</td>
                         <td class="text-end">{{ grandTotal | number:'1.2-2' }}</td>
                         <td></td>
                     </tr>

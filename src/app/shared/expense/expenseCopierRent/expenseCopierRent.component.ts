@@ -22,7 +22,7 @@ export class ExpenseCopierRentComponent {
   Mas_Expense_Detial_Rate_List: any[] = [];
 
   grandTotal: number = 0;
-
+  Mas_Expense_Detial_List: any[] = [];
   ngOnInit() {
 
     if (!this.model) return;
@@ -33,7 +33,26 @@ export class ExpenseCopierRentComponent {
 
     }
 
-    this.loadExpenseRates();
+    let model = {
+      FUNC_CODE: "FUNC-Get_Mas_Expense_Detial",
+      Fk_Expense_Id: this.model.selectedExpenseTypeId
+    };
+
+    this.serviceebud.GatewayGetData(model)
+      .subscribe((response: any) => {
+
+        this.Mas_Expense_Detial_List =
+          Array.isArray(response.List_Mas_Expense_Detial)
+            ? response.List_Mas_Expense_Detial
+            : [];
+
+
+        this.loadExpenseRates();
+      }, () => {
+        this.Mas_Expense_Detial_List = [];
+        this.loadExpenseRates();
+      });
+
 
   }
 
@@ -93,10 +112,95 @@ export class ExpenseCopierRentComponent {
     ) || 0;
   }
 
+  private isSameId(a: any, b: any): boolean {
+    return a !== null && a !== undefined && b !== null && b !== undefined && Number(a) === Number(b);
+  }
+
+  private getExpenseDetailId(row: any): any {
+    return row?.Expense_Detial_Id ?? row?.Expense_Detail_Id ?? row?.Fk_Expense_Detial_Id ?? row?.Fk_Expense_Detail_Id;
+  }
+
+  private getSelectedExpenseDetail(type: any): any {
+    if (type === null || type === undefined || type === '') {
+      return null;
+    }
+
+    const typeText = this.normalizeText(type);
+
+    return this.Mas_Expense_Detial_List.find((detail: any) => {
+      const detailId = this.getExpenseDetailId(detail);
+      const detailText = this.normalizeText([
+        detail?.Expense_Detial_Name,
+        detail?.Expense_Detail,
+        detail?.Expense_Name,
+        detail?.Expense_Detial_Short_Name
+      ].filter(Boolean).join(' '));
+
+      return this.isSameId(type, detailId) || detailText === typeText || detailText.includes(typeText);
+    });
+  }
+
+  private isOtherTypeValue(type: any): boolean {
+    if (type === null || type === undefined || type === '') {
+      return false;
+    }
+
+    const selected = this.getSelectedExpenseDetail(type);
+    const text = this.normalizeText([
+      type,
+      selected?.Expense_Detial_Name,
+      selected?.Expense_Detial_Short_Name
+    ].filter(Boolean).join(' '));
+
+    return type === 'other' || text.includes('อื่น') || text.includes('other');
+  }
+
+  isOtherType(item: any): boolean {
+    return this.isOtherTypeValue(item?.type);
+  }
+
+  private resolveExpenseDetailName(value: any): any {
+    if (!value) {
+      return '';
+    }
+
+    const selected = this.getSelectedExpenseDetail(value);
+    if (selected?.Expense_Detial_Name) {
+      return selected.Expense_Detial_Name;
+    }
+
+    const oldOptionMap: any = {
+      '5000': '5,000',
+      '10000': '10,000',
+      other: 'อื่น'
+    };
+
+    const oldText = oldOptionMap[value];
+    if (oldText) {
+      const migrated = this.Mas_Expense_Detial_List.find((detail: any) =>
+        this.normalizeText(detail?.Expense_Detial_Name).includes(this.normalizeText(oldText))
+      );
+
+      return migrated?.Expense_Detial_Name ?? value;
+    }
+
+    return value;
+  }
+
   private getRateForType(type: any): number {
-    if (!type || type === 'other') {
+    if (!type || this.isOtherTypeValue(type)) {
       return 0;
     }
+
+    const selectedDetail = this.getSelectedExpenseDetail(type);
+    const selectedDetailId = this.getExpenseDetailId(selectedDetail);
+
+    const byId = this.Mas_Expense_Detial_Rate_List.find((row: any) =>
+      this.isSameId(
+        this.getExpenseDetailId(row) ?? row?.Expense_Detail_Id ?? row?.Fk_Expense_Detail_Id,
+        selectedDetailId
+      )
+    );
 
     const typeText = this.normalizeText(type);
     const byName = this.Mas_Expense_Detial_Rate_List.find((row: any) => {
@@ -105,13 +209,20 @@ export class ExpenseCopierRentComponent {
       return rateText.includes(typeText);
     });
 
-    const fallbackIndex = type === '5000' ? 0 : 1;
-    return this.getRowRate(byName ?? this.Mas_Expense_Detial_Rate_List[fallbackIndex]);
+    const fallbackIndex = Math.max(
+      this.Mas_Expense_Detial_List.findIndex((detail: any) =>
+        this.getExpenseDetailId(detail) === selectedDetailId ||
+        detail?.Expense_Detial_Name === type
+      ),
+      0
+    );
+
+    return this.getRowRate(byId ?? byName ?? this.Mas_Expense_Detial_Rate_List[fallbackIndex]);
   }
 
   private applyRatesToExistingRows() {
     this.items.forEach((item: any, index: number) => {
-      if (item.type === 'other' || Number(item.price) > 0) {
+      if (this.isOtherType(item) || Number(item.price) > 0) {
         return;
       }
 
@@ -158,7 +269,7 @@ export class ExpenseCopierRentComponent {
           row.Request_Item_Id || 0,
 
         type:
-          row.Expense_Detail || '',
+          this.resolveExpenseDetailName(row.Expense_Detail || ''),
 
         otherDetail:
           row.Other_Name || '',
@@ -219,7 +330,7 @@ export class ExpenseCopierRentComponent {
   }
 
   onTypeChange(item: any, index: number) {
-    if (item.type === 'other') {
+    if (this.isOtherType(item)) {
       item.price = 0;
       this.calculate(index);
       return;

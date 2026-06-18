@@ -7,6 +7,8 @@ interface RepairItem {
 
   requestItemId?: number;
 
+  pairId: number | null;
+
   name: string;
 
   customName: string;
@@ -34,6 +36,8 @@ export class ExpenseVehicleRepairComponent {
   ) { }
 
   items: RepairItem[] = [];
+  Mas_Expense_Detial_List: any[] = [];
+  private currentExpenseTypeId: any = null;
 
   ngOnInit() {
 
@@ -45,14 +49,97 @@ export class ExpenseVehicleRepairComponent {
 
     }
 
-    this.bindData();
+    this.loadExpenseDetails();
 
+  }
+
+  ngDoCheck() {
+    if (!this.model) return;
+
+    if (this.currentExpenseTypeId != this.model.selectedExpenseTypeId) {
+      this.loadExpenseDetails();
+    }
   }
 
   closeModal() {
 
     this.model.dismiss();
 
+  }
+
+  loadExpenseDetails() {
+    this.currentExpenseTypeId = this.model.selectedExpenseTypeId;
+
+    let model = {
+      FUNC_CODE: "FUNC-Get_Mas_Expense_Detial",
+      Fk_Expense_Id: this.model.selectedExpenseTypeId
+    };
+
+    this.serviceebud.GatewayGetData(model)
+      .subscribe((response: any) => {
+        const expenseDetailList =
+          response.List_Mas_Expense_Detial ??
+          response.List_Mas_Expense_Detail;
+
+        this.Mas_Expense_Detial_List =
+          Array.isArray(expenseDetailList)
+            ? expenseDetailList
+            : [];
+
+        this.bindData();
+      }, () => {
+        this.Mas_Expense_Detial_List = [];
+        this.bindData();
+      });
+  }
+
+  normalizeSelectId(value: any): number | null {
+    if (value === null || value === undefined || value === '') {
+      return null;
+    }
+
+    const numberValue = Number(value);
+    return Number.isNaN(numberValue) ? null : numberValue;
+  }
+
+  private normalizeText(value: any): string {
+    return (value ?? '').toString().trim().toLowerCase().replace(/\s+/g, '');
+  }
+
+  getSelectedExpenseDetail(item: RepairItem): any {
+    const pairId = this.normalizeSelectId(item?.pairId);
+
+    return this.Mas_Expense_Detial_List.find((detail: any) =>
+      this.normalizeSelectId(detail?.Expense_Detial_Id) === pairId
+    );
+  }
+
+  private resolveExpenseDetailId(row: any): number | null {
+    const detailId =
+      row?.Fk_Expense_Detail_Id ??
+      row?.Fk_Expense_Detial_Id ??
+      row?.Expense_Detail_Id ??
+      row?.Expense_Detial_Id;
+
+    const normalizedId = this.normalizeSelectId(detailId);
+
+    if (normalizedId != null) {
+      return normalizedId;
+    }
+
+    const rowText = this.normalizeText(row?.Expense_Detail);
+    const detail = this.Mas_Expense_Detial_List.find((item: any) =>
+      this.normalizeText(item?.Expense_Detial_Name) === rowText
+    );
+
+    return this.normalizeSelectId(detail?.Expense_Detial_Id);
+  }
+
+  isOtherItem(item: RepairItem): boolean {
+    const selected = this.getSelectedExpenseDetail(item);
+    const name = this.normalizeText(selected?.Expense_Detial_Name ?? item?.name);
+
+    return name.includes('อื่น') || name.includes('other');
   }
 
   bindData() {
@@ -87,6 +174,9 @@ export class ExpenseVehicleRepairComponent {
         requestItemId:
           row.Request_Item_Id || 0,
 
+        pairId:
+          this.resolveExpenseDetailId(row),
+
         name:
           row.Expense_Detail || '',
 
@@ -111,6 +201,8 @@ export class ExpenseVehicleRepairComponent {
 
       requestItemId: 0,
 
+      pairId: null,
+
       name: '',
 
       customName: '',
@@ -124,9 +216,11 @@ export class ExpenseVehicleRepairComponent {
   }
 
   onSelectChange(item: any) {
+    const selected = this.getSelectedExpenseDetail(item);
+    item.name = selected?.Expense_Detial_Name || '';
 
     // ไม่ใช่อื่นๆ → ล้าง
-    if (item.name !== 'อื่นๆ') {
+    if (!this.isOtherItem(item)) {
 
       item.customName = '';
 
@@ -212,6 +306,9 @@ export class ExpenseVehicleRepairComponent {
 
         Expense_Detail:
           item.name,
+
+        Fk_Expense_Detail_Id:
+          item.pairId || 0,
 
         Other_Name:
           item.customName,

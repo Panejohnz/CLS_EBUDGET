@@ -42,7 +42,7 @@
 
                         <td>
                             <input type="text" class="form-control text-end" [ngModel]="row.rate | number:'1.0-2'"
-                                (ngModelChange)="onRateChange($event, row)">
+                                readonly>
                         </td>
 
                         <td class="fw-bold text-end">{{ row.meetingTotal | number:'1.2-2' }}</td>
