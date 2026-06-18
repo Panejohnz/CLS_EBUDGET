@@ -31,6 +31,14 @@ export class SingOffPlaningComponent {
     , private authService: AuthenticationService, private budgetYearService: BudgetYearService) {
   }
   allData: any[] = [];
+  selectedDepartmentName: string | null = null;
+  selectedPlanName: string | null = null;
+  selectedProductName: string | null = null;
+  selectedActivityName: string | null = null;
+  departmentFilterOptions: any[] = [];
+  planFilterOptions: any[] = [];
+  productFilterOptions: any[] = [];
+  activityFilterOptions: any[] = [];
   griddata: any[] = [
     {
       selected: false,
@@ -124,25 +132,134 @@ export class SingOffPlaningComponent {
       this.allData = Array.isArray(response.List_Project_Plan_Main.Data)
         ? response.List_Project_Plan_Main.Data
         : [];
-      this.griddata = [...this.allData];
+      this.buildFilterOptions();
+      this.applyFilter();
 
     })
   }
-  filterSearch() {
+
+  private getUniqueFilterOptions(data: any[], key: string): any[] {
+    const seen = new Set<string>();
+
+    return data
+      .map((item: any) => (item?.[key] || '').toString().trim())
+      .filter((name: string) => {
+        if (!name || seen.has(name)) {
+          return false;
+        }
+
+        seen.add(name);
+        return true;
+      })
+      .map((name: string) => ({ name }));
+  }
+
+  private buildFilterOptions() {
+    this.updateCascadingFilterOptions();
+  }
+
+  private hasFilterOption(options: any[], value: string | null): boolean {
+    return !value || options.some(option => option.name === value);
+  }
+
+  private filterByDepartment(data: any[]): any[] {
+    return this.selectedDepartmentName
+      ? data.filter(x => x.Department_Name == this.selectedDepartmentName)
+      : data;
+  }
+
+  private updateCascadingFilterOptions() {
+    this.departmentFilterOptions = this.getUniqueFilterOptions(this.allData, 'Department_Name');
+    if (!this.hasFilterOption(this.departmentFilterOptions, this.selectedDepartmentName)) {
+      this.selectedDepartmentName = null;
+      this.selectedPlanName = null;
+      this.selectedProductName = null;
+      this.selectedActivityName = null;
+    }
+
+    const departmentData = this.filterByDepartment([...this.allData]);
+
+    this.planFilterOptions = this.getUniqueFilterOptions(departmentData, 'Plan_Name');
+    if (!this.hasFilterOption(this.planFilterOptions, this.selectedPlanName)) {
+      this.selectedPlanName = null;
+      this.selectedProductName = null;
+      this.selectedActivityName = null;
+    }
+
+    const planData = this.selectedPlanName
+      ? departmentData.filter(x => x.Plan_Name == this.selectedPlanName)
+      : departmentData;
+
+    this.productFilterOptions = this.getUniqueFilterOptions(planData, 'Product_Name');
+    if (!this.hasFilterOption(this.productFilterOptions, this.selectedProductName)) {
+      this.selectedProductName = null;
+      this.selectedActivityName = null;
+    }
+
+    const productData = this.selectedProductName
+      ? planData.filter(x => x.Product_Name == this.selectedProductName)
+      : planData;
+
+    this.activityFilterOptions = this.getUniqueFilterOptions(productData, 'Activity_Name');
+    if (!this.hasFilterOption(this.activityFilterOptions, this.selectedActivityName)) {
+      this.selectedActivityName = null;
+    }
+  }
+
+  onDepartmentFilterChange() {
+    this.selectedPlanName = null;
+    this.selectedProductName = null;
+    this.selectedActivityName = null;
+    this.applyFilter();
+  }
+
+  onPlanFilterChange() {
+    this.selectedProductName = null;
+    this.selectedActivityName = null;
+    this.applyFilter();
+  }
+
+  onProductFilterChange() {
+    this.selectedActivityName = null;
+    this.applyFilter();
+  }
+
+  applyFilter() {
+    this.sortService.page = 1;
+
+    let data = [...this.allData];
+    this.updateCascadingFilterOptions();
+
+    data = this.filterByDepartment(data);
+
+    if (this.selectedPlanName) {
+      data = data.filter(x => x.Plan_Name == this.selectedPlanName);
+    }
+
+    if (this.selectedProductName) {
+      data = data.filter(x => x.Product_Name == this.selectedProductName);
+    }
+
+    if (this.selectedActivityName) {
+      data = data.filter(x => x.Activity_Name == this.selectedActivityName);
+    }
 
     const keyword = (this.service.searchTerm || '').toLowerCase().trim();
 
-    if (!keyword) {
-      this.griddata = [...this.allData];
-      return;
+    if (keyword) {
+      data = data.filter((row: any) =>
+        Object.values(row)
+          .join(' ')
+          .toLowerCase()
+          .includes(keyword)
+      );
     }
 
-    this.griddata = this.allData.filter((row: any) =>
-      Object.values(row)
-        .join(' ')
-        .toLowerCase()
-        .includes(keyword)
-    );
+    this.griddata = data;
+  }
+
+  filterSearch() {
+    this.applyFilter();
   }
   toggleAll(event: any) {
 
