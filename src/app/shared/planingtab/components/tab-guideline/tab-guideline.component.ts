@@ -128,15 +128,31 @@ export class TabGuidelineComponent {
       otherExpenses: []
     });
   }
-  async removeActivity(i: number) {
-
+  async removeActivity(i: number, act: any) {
+    console.log('act', act);
     const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
 
     if (!userConfirmed) {
       return;
     }
-    this.model.activities.splice(i, 1);
-    this.reIndexSort();
+
+
+
+
+    if (act.id) {
+      let model = {
+        FUNC_CODE: "FUNC-Delete_Project_Plan_Detail",
+        Project_Detail_Id: act.id
+      }
+      var getData = this.serviceebud.GatewayGetData(model);
+      getData.subscribe((response: any) => {
+        this.model.activities.splice(i, 1);
+        this.reIndexSort();
+      })
+    } else {
+      this.model.activities.splice(i, 1);
+      this.reIndexSort();
+    }
   }
   addSubActivity(activity: any) {
     activity.SubActivities?.push({
@@ -200,6 +216,7 @@ export class TabGuidelineComponent {
     const sub = act.SubActivities[i];
     if (!sub.Project_Detail_Id) {
       act.SubActivities.splice(i, 1);
+      this.reIndexSort();
       return
     }
     let model = {
@@ -209,6 +226,7 @@ export class TabGuidelineComponent {
     var getData = this.serviceebud.GatewayGetData(model);
     getData.subscribe((response: any) => {
       act.SubActivities.splice(i, 1);
+      this.reIndexSort();
     })
 
   }

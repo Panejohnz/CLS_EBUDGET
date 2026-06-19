@@ -120,7 +120,7 @@
                         <td *ngIf="rowIndex === 0" rowspan="3">
 
 
-                            <button class="btn btn-sm btn-danger" (click)="removeActivity(i)">
+                            <button class="btn btn-sm btn-danger" (click)="removeActivity(i,act)">
                                 🗑
                             </button>
                         </td>
@@ -141,8 +141,7 @@
                                     ผู้รับผิดชอบ
                                 </label>
 
-                                <input type="text" class="form-control" style="width:220px"
-                                    [(ngModel)]="act.owner">
+                                <input type="text" class="form-control" style="width:220px" [(ngModel)]="act.owner">
 
                                 <button class="btn btn-sm btn-primary" (click)="addSub(act)">
                                     เพิ่มกิจกรรมย่อย
@@ -236,8 +235,8 @@
                                 </td>
 
                                 <td>
-                                    <input type="text" class="form-control text-end"
-                                        style="min-width: 90px;" [ngModel]="displayValue(q.months[rowIndex].budget)"
+                                    <input type="text" class="form-control text-end" style="min-width: 90px;"
+                                        [ngModel]="displayValue(q.months[rowIndex].budget)"
                                         (input)="onSubBudgetChange($event, sub, qIndex, rowIndex)"
                                         [disabled]="sub.noBudget">
                                 </td>
