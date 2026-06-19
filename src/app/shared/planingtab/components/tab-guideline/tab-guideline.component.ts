@@ -128,8 +128,7 @@ export class TabGuidelineComponent {
       otherExpenses: []
     });
   }
-  async removeActivity(i: number, act: any) {
-    console.log('act', act);
+  async removeActivity(i: number, act?: any) {
     const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
 
     if (!userConfirmed) {
@@ -139,10 +138,18 @@ export class TabGuidelineComponent {
 
 
 
-    if (act.id) {
+    act = act || this.model.activities[i];
+
+    if (!act) {
+      return;
+    }
+
+    const projectDetailId = act.Project_Detail_Id || act.id;
+
+    if (projectDetailId) {
       let model = {
         FUNC_CODE: "FUNC-Delete_Project_Plan_Detail",
-        Project_Detail_Id: act.id
+        Project_Detail_Id: projectDetailId
       }
       var getData = this.serviceebud.GatewayGetData(model);
       getData.subscribe((response: any) => {

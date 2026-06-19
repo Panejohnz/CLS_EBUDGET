@@ -616,15 +616,16 @@ export class ProjectPlanningComponent {
 
     let total = 0;
 
+    if (act.SubActivities?.length) {
+      return this.getSubActivitiesTotal(act);
+    }
+
     // รวมกิจกรรมหลัก
     act.quarters.forEach((q: any) => {
       q.months.forEach((m: any) => {
-        total += Number(m.budget) || 0;
+        total += this.toSaveNumber(m.budget);
       });
     });
-
-    // รวมกิจกรรมย่อย
-    total += this.getSubActivitiesTotal(act);
 
     return total;
   }
@@ -636,7 +637,7 @@ export class ProjectPlanningComponent {
 
       sub.quarters?.forEach((q: any) => {
         q.months?.forEach((m: any) => {
-          total += Number(m.budget) || 0;
+          total += this.toSaveNumber(m.budget);
         });
       });
 
@@ -654,10 +655,25 @@ export class ProjectPlanningComponent {
     }
 
     // 🔥 คำนวณจาก otherExpenses ตรงๆ
-    return (act.otherExpenses || []).reduce((sum: number, item: any) => {
-      return sum + (item.total || item.Total || 0);
-    }, 0);
+    if (act.otherExpenses?.length) {
+      return act.otherExpenses.reduce((sum: number, item: any) => {
+        return sum + this.toSaveNumber(item.total || item.Total || 0);
+      }, 0);
+    }
+
+    return this.toSaveNumber(act.multiplierTotal);
   }
+
+  private toSaveNumber(value: any): number {
+    if (value === null || value === undefined || value === '') {
+      return 0;
+    }
+
+    const numberValue = Number(String(value).replace(/,/g, '').trim());
+
+    return isNaN(numberValue) ? 0 : numberValue;
+  }
+
   prepareBeforeSave(activities: any[]) {
 
     activities.forEach(act => {
@@ -677,9 +693,6 @@ export class ProjectPlanningComponent {
   }
   validateBeforeSave(activities: any[]): boolean {
 
-    if (this.project_planing.Project_Id) {
-      return true;
-    }
     for (let i = 0; i < activities.length; i++) {
 
       const act = activities[i];

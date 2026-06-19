@@ -1606,8 +1606,8 @@ export class ProjectPlanningComponent {
   getActivityTotal(act: any): number {
 
     // 🔥 ตอน GET ใช้ DB
-    if (!act._edited && act.sumAmount != null) {
-      return Number(act.sumAmount);
+    if (act.SubActivities?.length) {
+      return this.getSubActivitiesTotal(act);
     }
 
     let total = 0;
@@ -1650,9 +1650,13 @@ export class ProjectPlanningComponent {
     }
 
     // 🔥 คำนวณจาก otherExpenses ตรงๆ
-    return (act.otherExpenses || []).reduce((sum: number, item: any) => {
-      return sum + this.toSaveNumber(item.total || item.Total || 0);
-    }, 0);
+    if (act.otherExpenses?.length) {
+      return act.otherExpenses.reduce((sum: number, item: any) => {
+        return sum + this.toSaveNumber(item.total || item.Total || 0);
+      }, 0);
+    }
+
+    return this.toSaveNumber(act.multiplierTotal);
   }
   prepareBeforeSave(activities: any[]) {
 
@@ -1672,10 +1676,6 @@ export class ProjectPlanningComponent {
 
   }
   validateBeforeSave(activities: any[]): boolean {
-
-    if (this.project_planing.Project_Id) {
-      return true;
-    }
 
     for (let i = 0; i < activities.length; i++) {
 
