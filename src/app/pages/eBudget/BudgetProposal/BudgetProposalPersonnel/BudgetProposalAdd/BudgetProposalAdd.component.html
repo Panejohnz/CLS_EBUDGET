@@ -1,8 +1,8 @@
 <div *ngIf="model">
 
-    <div class="modal-header">
-        <h5 class="modal-title">
-            กำหนดแผนงาน
+    <div class="modal-header shared-page-header p-3">
+        <h5 class="modal-title text-white">
+       จัดทำคำของบประมาณ
         </h5>
 
         <button type="button" class="btn-close" (click)="closeModal()">
@@ -17,8 +17,8 @@
             <div class="col-md-4">
 
                 <label class="form-label">
-                    แผนงาน<span class="text-danger">*</span>
-                </label>
+                    แผนงาน
+                </label><span class="text-danger">*</span>
 
                 <ng-select [items]="Mas_Plan_Lists" bindLabel="Plan_Name" bindValue="Plan_Id"
                     [(ngModel)]="model.selectedPlanPropos" name="selectedPlan" (ngModelChange)="Onchange_type_Plan()"
@@ -31,8 +31,8 @@
             <div class="col-md-4">
 
                 <label class="form-label">
-                    ผลผลิต<span class="text-danger">*</span>
-                </label>
+                    ผลผลิต
+                </label><span class="text-danger">*</span>
 
                 <ng-select [items]="Mas_Product" bindLabel="Product_Name" bindValue="Product_Id"
                     [(ngModel)]="model.selectedProductPropos" name="selectedProduct"
@@ -45,8 +45,8 @@
             <div class="col-md-4">
 
                 <label class="form-label">
-                    กิจกรรม<span class="text-danger">*</span>
-                </label>
+                    กิจกรรม
+                </label><span class="text-danger">*</span>
 
                 <ng-select [items]="Mas_Activity" bindLabel="Activity_Name" bindValue="Activity_Id"
                     [(ngModel)]="model.selectedActivityPropos" name="selectedActivity" placeholder="-- เลือก --">
@@ -64,8 +64,8 @@
             <div class="col-md-4">
 
                 <label class="form-label">
-                    หมวดงบ<span class="text-danger">*</span>
-                </label>
+                    หมวดงบ
+                </label><span class="text-danger">*</span>
 
                 <input class="form-control" [value]="model.selectedBudgetName || ''" readonly
                     style="background-color: #ebeff3;">
@@ -76,8 +76,8 @@
             <div class="col-md-4">
 
                 <label class="form-label">
-                    หมวดค่าใช้จ่าย<span class="text-danger">*</span>
-                </label>
+                    หมวดค่าใช้จ่าย
+                </label><span class="text-danger">*</span>
 
                 <input class="form-control" [value]="model.selectedGroupName || ''" readonly
                     style="background-color: #ebeff3;">
@@ -88,8 +88,8 @@
             <div class="col-md-4">
 
                 <label class="form-label">
-                    รายการค่าใช้จ่าย<span class="text-danger">*</span>
-                </label>
+                    รายการค่าใช้จ่าย
+                </label><span class="text-danger">*</span>
 
                 <!-- <ng-select [disabled]="model.Budget_Request.Request_Id" [items]="expenseOptions" bindLabel="Expense_Name"
                     bindValue="Expense_Id" [(ngModel)]="model.selectedExpenseTypeId" (ngModelChange)="onExpenseChange($event)"
@@ -129,11 +129,11 @@
         <ng-template #targetModal let-modal>
 
             <!-- HEADER -->
-            <div class="modal-header border-0 bg-light">
+            <div class="modal-header shared-page-header p-3">
 
                 <div>
 
-                    <h5 class="modal-title fw-bold mb-1">
+                    <h5 class="modal-title text-white">
                         กำหนดเป้าหมายรายเดือน
                     </h5>
 
@@ -144,6 +144,7 @@
                 </button>
 
             </div>
+
 
             <!-- BODY -->
             <div class="modal-body bg-light-subtle">
@@ -362,7 +363,7 @@
 
         <div class="card shadow-sm bg-light">
 
-            <div class="modal-header">
+            <div class="modal-header ">
 
                 <h5 class="card-title">
                     รายการ{{ formTitle }}

@@ -333,8 +333,8 @@
     }
 </style>
 <div class="card">
-    <div class="card-header">
-        <h4 class="card-title mb-0 flex-grow-1">รายงานผล</h4>
+    <div class="card-header shared-page-header">
+        <h4 class="card-title mb-0 flex-grow-1 text-white">รายงานผลการดำเนินงาน</h4>
     </div>
 
     <div class="card-body">
@@ -420,7 +420,6 @@
                 <tbody>
 
                     <tr *ngFor="let data of griddata; let i = index">
-
                         <td class="text-center">
 
                             {{i + 1}}
@@ -526,6 +525,8 @@
                 </tfoot>
             </table>
         </div>
+
+
     </div>
 </div>
 
@@ -534,33 +535,21 @@
 <!-- ================================================= -->
 
 <ng-template #detailModal let-modal>
+    <div class="modal-header shared-page-header p-3">
+        <h5 class="modal-title text-white">
+            รายงานผลการผลการดำเนินงานของรายการ/โครงการ
+        </h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss()">
+
+        </button>
+    </div>
 
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
 
         <div class="modal-content border-0">
+            <div style="font-size: 16px;">
 
-            <!-- HEADER -->
-            <div class="modal-header border-0 pb-2">
-
-                <div>
-
-                    <h5 class="modal-title fw-bold mb-1">
-
-                        รายงานผล
-
-                    </h5>
-
-                    <div class="text-muted small">
-
-                        {{ selectedItem?.Expense_List }}
-
-                    </div>
-
-                </div>
-
-                <button type="button" class="btn-close" (click)="modal.dismiss()">
-
-                </button>
+                รายการ{{ selectedItem?.Expense_List }}
 
             </div>
 
@@ -574,7 +563,7 @@
 
 
                         <button class="btn btn-primary" (click)="fullModalreport(reportModal, null)">
-                            รายงานผลลงทุน
+                            รายงานสถานะงบลงทุน
                         </button>
 
                     </div>
@@ -687,7 +676,8 @@
                                                         ดำเนินการเอง
                                                     </span>
 
-                                                    <span class="activity-pill muted" *ngIf="act.consultHire || act.consult">
+                                                    <span class="activity-pill muted"
+                                                        *ngIf="act.consultHire || act.consult">
                                                         จ้างที่ปรึกษา
                                                     </span>
 
@@ -805,7 +795,8 @@
                                                             ดำเนินการเอง
                                                         </span>
 
-                                                        <span class="activity-pill muted" *ngIf="sub.consultHire || sub.consult">
+                                                        <span class="activity-pill muted"
+                                                            *ngIf="sub.consultHire || sub.consult">
                                                             จ้างที่ปรึกษา
                                                         </span>
 
@@ -895,69 +886,67 @@
 
                     <div class="card border-0 shadow-sm p-4 bg-light">
 
-                        <h5 class="fw-bold mb-4">รายงานผลกรณีโครงการ</h5>
+                        <!-- <h5 class="fw-bold mb-4">รายงานผลกรณีโครงการ</h5> -->
+                        <div class="card p-3 mb-3 border-0 shadow-sm">
+                             <label class="fw-semibold">ไตรมาส</label>
 
-                        <div class="col-md-3">
+                            <div class="col-md-3">
 
-                            <label class="fw-semibold mb-2 mb-md-0">
+                                <ng-select [items]="Tri_lists" bindLabel="name" bindValue="Trimas_Id"
+                                    [(ngModel)]="selectedTri" appendTo="body" (change)="onQuarterChange()"
+                                    [clearable]="true" [searchable]="false" placeholder="-- เลือกไตรมาส --">
 
-                                ไตรมาส
+                                </ng-select>
 
-                            </label>
-
+                            </div>
+                            <div class="col-md-6"></div>
                         </div>
 
-                        <div class="col-md-9">
 
-                            <ng-select [items]="Tri_lists" bindLabel="name" bindValue="Trimas_Id"
-                                [(ngModel)]="selectedTri" appendTo="body" (change)="onQuarterChange()"
-                                [clearable]="true" [searchable]="false" placeholder="-- เลือกไตรมาส --">
-
-                            </ng-select>
-
-                        </div>
-                        <div class="mb-3">
+                        <div class="card p-3 mb-3 border-0 shadow-sm">
                             <label class="fw-semibold">เป้าหมายผลผลิต (Output)</label>
                             <div *ngFor="let item of Output_Result; let i = index" class="row g-2 mb-2">
 
                                 <!-- ชื่อเป้าหมาย -->
-                                <div class="col-md-6">
-                                    <input type="text" class="form-control" [(ngModel)]="item.Name" readonly>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" [(ngModel)]="item.Name" readonly
+                                        style="background-color: #ebeff3;">
                                 </div>
 
                                 <!-- แผน -->
                                 <div class="col-md-1">
                                     <input type="text" class="form-control text-center" readonly
-                                        [(ngModel)]="item.Target">
+                                        [(ngModel)]="item.Target" style="background-color: #ebeff3;">
                                 </div>
 
                                 <!-- รายงาน -->
-                                <div class="col-md-2">
-                                    <input type="text" class="form-control" [(ngModel)]="item.Name_Report">
+                                <div class="col-md-1">
+                                    <input type="text" class="form-control" [(ngModel)]="item.Name_Report"
+                                        placeholder="ระบุผลงาน">
                                 </div>
 
                                 <!-- หน่วยนับ -->
                                 <div class="col-md-1">
                                     <ng-select [items]="Mas_Unit_Lists" bindLabel="Unit_Name" bindValue="Unit_Id"
-                                        [(ngModel)]="item.Unit" name="tg_unit_{{i}}" placeholder="-- เลือกหน่วยนับ --"
-                                        [clearable]="false">
+                                        style="background-color: #ebeff3;" [(ngModel)]="item.Unit" name="tg_unit_{{i}}"
+                                        placeholder="-- เลือกหน่วยนับ --" [disabled]="true" [clearable]="false">
                                     </ng-select>
                                 </div>
 
                             </div>
                         </div>
 
-                        <div class="mb-4">
+                        <div class="card p-3 mb-3 border-0 shadow-sm">
                             <label class="fw-semibold">เป้าหมายผลลัพธ์ (Outcome)</label>
 
                             <div *ngFor="let item of Outcome_Result; let i = index" class="row g-2 mb-2">
 
                                 <div class="col-md-6">
-                                    <input class="form-control" [(ngModel)]="item.Name">
+                                    <textarea rows="2" class="form-control" [(ngModel)]="item.Name" style="background-color: #ebeff3;"></textarea>
                                 </div>
 
                                 <div class="col-md-6">
-                                    <input class="form-control" [(ngModel)]="item.Name_Report">
+                                    <textarea rows="2" class="form-control" [(ngModel)]="item.Name_Report" placeholder="ระบุผลงาน"></textarea>   
                                 </div>
 
                             </div>
@@ -969,7 +958,7 @@
                                 ร้อยละความก้าวหน้าในการดำเนินการเมื่อเทียบกับแผน
                             </label>
 
-                            <input type="number" class="form-control mb-2" [(ngModel)]="Progress_Percent">
+                            <input type="number" class="form-control mb-2" [(ngModel)]="Progress_Percent" placeholder="ระบุร้อยละความก้าวหน้า">
 
                             <small class="text-muted">
                                 (เป็นตัวเลข)
@@ -979,22 +968,22 @@
 
                         <div class="card p-3 mb-3 border-0 shadow-sm">
                             <label class="fw-semibold">ปัญหาและอุปสรรคในการดำเนินงาน</label>
-                            <textarea class="form-control" [(ngModel)]="Problems"></textarea>
+                            <textarea class="form-control" [(ngModel)]="Problems" placeholder="ระบุปัญหาและอุปสรรคในการดำเนินงาน(ถ้ามี)"></textarea>
                         </div>
 
                         <div class="card p-3 mb-3 border-0 shadow-sm">
                             <label class="fw-semibold">แนวทางแก้ไขที่ดำเนินการไปแล้ว</label>
-                            <textarea class="form-control" [(ngModel)]="Solutions"></textarea>
+                            <textarea class="form-control" [(ngModel)]="Solutions" placeholder="แนวทางแก้ไขที่ดำเนินการไปแล้ว(ถ้ามี)"></textarea>
                         </div>
 
                         <div class="card p-3 mb-3 border-0 shadow-sm">
                             <label class="fw-semibold">สรุปผลการดำเนินงาน</label>
-                            <textarea class="form-control" [(ngModel)]="Summary_Result"></textarea>
+                            <textarea class="form-control" [(ngModel)]="Summary_Result" placeholder="ระบุผลการดำเนินงาน(ถ้ามี)"></textarea>
                         </div>
 
                         <div class="card p-3 mb-3 border-0 shadow-sm">
                             <label class="fw-semibold">ข้อเสนอแนะเพื่อการพัฒนา</label>
-                            <textarea class="form-control" [(ngModel)]="Suggestions"></textarea>
+                            <textarea class="form-control" [(ngModel)]="Suggestions" placeholder="ระบุข้อเสนอแนะเพื่อการพัฒนา(ถ้ามี)"></textarea>
                         </div>
 
                         <div class="card p-3 border-0 shadow-sm">
@@ -1248,9 +1237,9 @@
 
 <ng-template #monthModal let-modal>
 
-    <div class="modal-header">
+    <div class="modal-header shared-page-header p-3">
 
-        <h5 class="modal-title">
+        <h5 class="modal-title text-white">
 
             รายละเอียดเดือน
 
@@ -1317,8 +1306,8 @@
 
 <ng-template #reportModal let-modal>
 
-    <div class="modal-header">
-        <h5 class="modal-title">รายงานผลลงทุน</h5>
+    <div class="modal-header shared-page-header p-3">
+        <h5 class="modal-title text-white">รายงานผลสถานะงบลงทุน</h5>
         <button type="button" class="btn-close" (click)="modal.dismiss()">
         </button>
     </div>

@@ -1,435 +1,454 @@
-<div class="container-fluid px-4">
-
-    <div class="bg-white p-3 rounded shadow-sm border">
-
-        <div class="d-flex justify-content-between align-items-center mb-3">
-
-            <div>
-
-                <h5 class="fw-bold">
-                    โอนเปลี่ยนแปลงงบประมาณ
-                </h5>
-
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header shared-page-header">
+                <h4 class="card-title mb-0 flex-grow-1 text-white">โอนเปลี่ยนแปลงงบประมาณ</h4>
             </div>
+            <div class="card-body">
+                <div class="d-flex mb-3">
 
-            <div class="d-flex align-items-center gap-2">
+                    <!-- ค้นหา + ปุ่ม -->
+                    <div class="col-lg-12">
+                        <div class="d-flex justify-content-end align-items-end gap-2">
 
-                <label>
-                    ค้นหา
-                </label>
+                            <div style="width:250px;">
+                                <label class="form-label">ค้นหา</label>
+                                <div class="search-box">
+                                    <input type="text" class="form-control" placeholder="ค้นหา..." [(ngModel)]="keyword"
+                                        (ngModelChange)="onFilterChange()">
+                                    <i class="ri-search-line search-icon"></i>
+                                </div>
+                            </div>
 
-                <input class="form-control" style="width:200px" [(ngModel)]="keyword"
-                    (ngModelChange)="onFilterChange()">
-
-                <button class="btn btn-success" (click)="openAdd(formModal)">
-
-                    เพิ่มรายการ
-
-                </button>
-
-            </div>
-
-        </div>
-
-        <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
-
-            <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
-                <!-- sticky header -->
-                <thead class="text-center text-white sticky-header" style="background-color: #556398;">
-                    <tr class="text-center">
-
-                        <th style="width:5%">ลำดับ</th>
-                        <th style="width:10%">วันที่ทำรายการ</th>
-                        <th style="width:10%">ครั้งที่โอน</th>
-                        <th style="width:15%">โอนจากหน่วยงาน</th>
-                        <th style="width:15%">โอนจากรายการ</th>
-                        <th style="width:15%">โอนไปหน่วยงาน</th>
-                        <th style="width:15%">โอนไปรายการ</th>
-                        <th style="width:10%">จำนวนเงิน</th>
-                        <th style="width:5%">แก้ไข</th>
-                        <th style="width:5%">ลบ</th>
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    <tr *ngFor="let row of pagedRows; let i = index">
-                        <td>
-                            {{ pageStartIndex + i }}
-                        </td>
-
-                        <td>
-                            {{ row.Transfer_Date_Display }} </td>
-
-                        <td>
-                            {{ row.Transfer_Count }}
-                        </td>
-
-                        <td>
-                            {{ row.From_Department_Name }}
-                        </td>
-
-                        <td>
-                            {{ row.From_Plan_Name }}
-                        </td>
-
-                        <td>
-                            {{ row.To_Department_Name }}
-                        </td>
-
-                        <td>
-                            {{ row.To_Plan_Name }}
-                        </td>
-
-                        <td class="text-end">
-
-                            {{
-                            row.Transfer_Amount
-                            | number:'1.2-2'
-                            }}
-
-                        </td>
-
-                        <td>
-
-                            <button class="btn btn-warning btn-sm" (click)="openEdit(formModal, row, i)">
-
-                                <i class="ri-pencil-line"></i>
-
+                            <button class="btn btn-success text-black" (click)="openAdd(formModal)">
+                                <i class="ri-add-line me-1"></i>
+                                เพิ่มรายการ
                             </button>
-
-                        </td>
-
-                        <td>
-
-                            <button class="btn btn-danger btn-sm" (click)="remove(row)">
-
-                                <i class="ri-delete-bin-line"></i>
-
-                            </button>
-
-                        </td>
-
-                    </tr>
-
-                </tbody>
-                <tfoot>
-                    <tr style="font-weight: bold; background-color: #556398;">
-                        <td colspan="7" class="text-end text-white">รวมทั้งหมด</td>
-                        <td class="text-end text-white">
-                            {{ Total | number:'1.2-2' }}
-                        </td>
-                        <td colspan="2"></td>
-                    </tr>
-                </tfoot>
-
-            </table>
-        </div>
-        <div class="row justify-content-md-between align-items-md-center mt-2">
-            <div class="col col-sm-6">
-                <div class="dataTables_info mb-2 text-start">
-                    แสดง {{ filteredRows.length ? pageStartIndex : 0 }} ถึง {{ filteredRows.length ? pageEndIndex : 0 }}
-                    จากทั้งหมด {{ filteredRows.length }} รายการ
-                </div>
-            </div>
-            <div class="col col-sm-6">
-                <div class="d-flex justify-content-sm-end">
-                    <ngb-pagination [collectionSize]="filteredRows.length" [(page)]="pagination.page"
-                        [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
-                        (pageChange)="onPageChange($event)">
-                    </ngb-pagination>
-                </div>
-            </div>
-        </div>
-        <ng-template #formModal let-modal>
-
-            <div class="modal-header bg-light">
-
-                <h5 class="modal-title">
-
-                    {{
-                    isEdit
-                    ? 'แก้ไขข้อมูลการโอนงบประมาณ'
-                    : 'เพิ่มข้อมูลการโอนงบประมาณ'
-                    }}
-
-                </h5>
-
-                <button class="btn-close" (click)="modal.dismiss()">
-
-                </button>
-
-            </div>
-
-            <div class="modal-body">
-
-                <div class="container-fluid">
-
-                    <div class="mb-3">
-
-                        <span class="badge bg-warning text-dark">
-                            ข้อมูลต้นทาง
-                        </span>
-
-                        <div class="row mt-2">
-
-                            <div class="col-md-6">
-
-                                <label>
-                                    โอนจากหน่วยงาน :
-                                </label>
-
-                                <ng-select [items]="departments" bindLabel="Department_Name" bindValue="Department_Id"
-                                    [(ngModel)]="form.From_Department_Id" (change)="onChangeFromDepartment()"
-                                    appendTo="body" placeholder="-- เลือกหน่วยงาน --">
-
-                                </ng-select>
-
-                            </div>
-
-                            <div class="col-md-6">
-
-                                <label>
-                                    โอนจากรายการ/โครงการ :
-                                </label>
-
-                                <ng-select [items]="fromPlans" bindValue="Plan_Id" [(ngModel)]="form.From_Plan_Id"
-                                    (change)="onChangeFromPlan()" appendTo="body" placeholder="-- เลือกโครงการ --">
-
-                                    <!-- ตอนเลือกแล้ว -->
-                                    <ng-template ng-label-tmp let-item="item">
-                                        {{ item.Project_Name || item.Expense_List }}
-                                    </ng-template>
-
-                                    <!-- ตอนแสดงใน dropdown -->
-                                    <ng-template ng-option-tmp let-item="item">
-                                        {{ item.Project_Name || item.Expense_List }}
-                                    </ng-template>
-
-                                </ng-select>
-
-                            </div>
-
-                            <div class="col-md-6 mt-2">
-
-                                <label>
-                                    จำนวนเงินโครงการ :
-                                </label>
-
-                                <ng-container *ngIf="!isEdit; else viewBudget">
-
-                                    <input type="text" class="form-control text-end" [value]="displayProjectBudget"
-                                        (keypress)="masterService.allowNumericOnly($event)"
-                                        (input)="formatCurrency($event, 'projectBudget')" inputmode="decimal">
-
-                                </ng-container>
-
-                                <ng-template #viewBudget>
-
-                                    <span class="ms-2">
-
-                                        {{
-                                        form.projectBudget || 0
-                                        | number:'1.2-2'
-                                        }}
-
-                                        บาท
-
-                                    </span>
-
-                                </ng-template>
-
-                            </div>
-
-                            <div class="col-md-6 mt-2">
-
-                                <label>
-                                    จำนวนเงินคงเหลือ :
-                                </label>
-
-                                <ng-container *ngIf="!isEdit; else viewBalance">
-
-                                    <input type="text" class="form-control text-end" [value]="displayBalance"
-                                        (keypress)="masterService.allowNumericOnly($event)"
-                                        (input)="formatCurrency($event, 'balance')" inputmode="decimal">
-
-                                </ng-container>
-
-                                <ng-template #viewBalance>
-
-                                    <span class="ms-2">
-
-                                        {{
-                                        form.balance || 0
-                                        | number:'1.2-2'
-                                        }}
-
-                                        บาท
-
-                                    </span>
-
-                                </ng-template>
-
-                            </div>
 
                         </div>
+                    </div>
+
+                </div>
+
+                <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+
+                    <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+                        <!-- sticky header -->
+                        <thead class="text-center text-white sticky-header" style="background-color: #556398;">
+                            <tr class="text-center">
+
+                                <th style="width:5%">ลำดับ</th>
+                                <th style="width:10%">วันที่ทำรายการ</th>
+                                <th style="width:10%">ครั้งที่โอน</th>
+                                <th style="width:15%">โอนจากหน่วยงาน</th>
+                                <th style="width:15%">โอนจากรายการ</th>
+                                <th style="width:15%">โอนไปหน่วยงาน</th>
+                                <th style="width:15%">โอนไปรายการ</th>
+                                <th style="width:10%">จำนวนเงิน</th>
+                                <th style="width:5%">แก้ไข</th>
+                                <th style="width:5%">ลบ</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr *ngFor="let row of pagedRows; let i = index">
+                                <td>
+                                    {{ pageStartIndex + i }}
+                                </td>
+
+                                <td>
+                                    {{ row.Transfer_Date_Display }} </td>
+
+                                <td>
+                                    {{ row.Transfer_Count }}
+                                </td>
+
+                                <td>
+                                    {{ row.From_Department_Name }}
+                                </td>
+
+                                <td>
+                                    {{ row.From_Plan_Name }}
+                                </td>
+
+                                <td>
+                                    {{ row.To_Department_Name }}
+                                </td>
+
+                                <td>
+                                    {{ row.To_Plan_Name }}
+                                </td>
+
+                                <td class="text-end">
+
+                                    {{
+                                    row.Transfer_Amount
+                                    | number:'1.2-2'
+                                    }}
+
+                                </td>
+
+                                <td>
+
+                                    <button class="btn btn-warning btn-sm" (click)="openEdit(formModal, row, i)">
+
+                                        <i class="ri-pencil-line"></i>
+
+                                    </button>
+
+                                </td>
+
+                                <td>
+
+                                    <button class="btn btn-danger btn-sm" (click)="remove(row)">
+
+                                        <i class="ri-delete-bin-line"></i>
+
+                                    </button>
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+                        <tfoot>
+                            <tr style="font-weight: bold; background-color: #556398;">
+                                <td colspan="7" class="text-end text-white">รวมทั้งหมด</td>
+                                <td class="text-end text-white">
+                                    {{ Total | number:'1.2-2' }}
+                                </td>
+                                <td colspan="2"></td>
+                            </tr>
+                        </tfoot>
+
+                    </table>
+                </div>
+                <div class="row justify-content-md-between align-items-md-center mt-2">
+                    <div class="col col-sm-6">
+                        <div class="dataTables_info mb-2 text-start">
+                            แสดง {{ filteredRows.length ? pageStartIndex : 0 }} ถึง {{ filteredRows.length ?
+                            pageEndIndex : 0 }}
+                            จากทั้งหมด {{ filteredRows.length }} รายการ
+                        </div>
+                    </div>
+                    <div class="col col-sm-6">
+                        <div class="d-flex justify-content-sm-end">
+                            <ngb-pagination [collectionSize]="filteredRows.length" [(page)]="pagination.page"
+                                [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
+                                (pageChange)="onPageChange($event)">
+                            </ngb-pagination>
+                        </div>
+                    </div>
+                </div>
+
+                <ng-template #formModal let-modal>
+
+                    <div class="modal-header shared-page-header p-3">
+
+                        <h5 class="modal-title text-white">
+
+                            {{
+                            isEdit
+                            ? 'แก้ไขข้อมูลการโอนงบประมาณ'
+                            : 'เพิ่มข้อมูลการโอนงบประมาณ'
+                            }}
+
+                        </h5>
+
+                        <button class="btn-close" (click)="modal.dismiss()">
+
+                        </button>
 
                     </div>
 
-                    <hr>
+                    <div class="modal-body">
 
-                    <div>
-
-                        <span class="badge bg-warning text-dark">
-                            ข้อมูลการโอนงบประมาณ
-                        </span>
-
-                        <div class="row mt-3">
-
-                            <div class="col-md-6">
-
-                                <label>
-                                    วันที่ทำรายการ :
-                                </label>
-
-                                <div class="input-group">
-                                    <input class="form-control" placeholder="วว/ดด/ปปปป" name="End_Date" ngbDatepicker
-                                        #endDp="ngbDatepicker" [(ngModel)]="form.Transfer_Date">
-
-                                    <button class="btn btn-outline-secondary" type="button" (click)="endDp.toggle()">
-
-                                        <i class="ri-calendar-line"></i>
-
-                                    </button>
+                        <div class="container-fluid">
+                            <div height="20px"></div>
+                            <div class="row">
+                                <div class="col-md-6">
+          <span class=" badge bg-warning text-dark mt-3" style="font-size: 16px;">
+                                    ข้อมูลการโอนงบประมาณ
+                                    </span>
                                 </div>
-                            </div>
 
-                            <div class="col-md-6">
+                                <div height="20px"></div>
+                                <div class="row mt-6">
 
-                                <label>
-                                    ครั้งที่โอน :
-                                </label>
+                                    <div class="col-md-6 mt-2">
 
-                                <input class="form-control" [(ngModel)]="form.Transfer_Count">
+                                        <label>
+                                            วันที่ทำรายการ :
+                                        </label>
 
-                            </div>
+                                        <div class="input-group">
+                                            <input class="form-control" placeholder="วว/ดด/ปปปป" name="End_Date"
+                                                ngbDatepicker #endDp="ngbDatepicker" [(ngModel)]="form.Transfer_Date">
 
-                            <div class="col-md-6 mt-2">
+                                            <button class="btn btn-outline-secondary" type="button"
+                                                (click)="endDp.toggle()">
 
-                                <label>
-                                    วันที่เอกสาร :
-                                </label>
+                                                <i class="ri-calendar-line"></i>
 
-                                <div class="input-group">
+                                            </button>
+                                        </div>
+                                    </div>
 
-                                    <input class="form-control" placeholder="วว/ดด/ปปปป" name="TransferDocDate"
-                                        ngbDatepicker #docDp="ngbDatepicker" [(ngModel)]="form.Transfer_Doc_Date">
+                                    <div class="col-md-6 mt-2">
 
-                                    <button class="btn btn-outline-secondary" type="button" (click)="docDp.toggle()">
+                                        <label>
+                                            ครั้งที่โอน :
+                                        </label>
 
-                                        <i class="ri-calendar-line"></i>
+                                        <input class="form-control" [(ngModel)]="form.Transfer_Count">
 
-                                    </button>
+                                    </div>
 
-                                </div>
-                            </div>
+                                    <div class="col-md-6 mt-2">
 
-                            <div class="col-md-6 mt-2">
+                                        <label>
+                                            วันที่เอกสาร :
+                                        </label>
 
-                                <label>
-                                    เลขที่เอกสาร :
-                                </label>
+                                        <div class="input-group">
 
-                                <input class="form-control" [(ngModel)]="form.Transfer_Doc_Number">
+                                            <input class="form-control" placeholder="วว/ดด/ปปปป" name="TransferDocDate"
+                                                ngbDatepicker #docDp="ngbDatepicker"
+                                                [(ngModel)]="form.Transfer_Doc_Date">
 
-                            </div>
+                                            <button class="btn btn-outline-secondary" type="button"
+                                                (click)="docDp.toggle()">
 
-                            <div class="col-md-12 mt-2">
+                                                <i class="ri-calendar-line"></i>
 
-                                <label>
-                                    รายละเอียดการโอน :
-                                </label>
+                                            </button>
 
-                                <textarea rows="3" class="form-control" [(ngModel)]="form.Transfer_Description">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mt-2">
+
+                                        <label>
+                                            เลขที่เอกสาร :
+                                        </label>
+
+                                        <input class="form-control" [(ngModel)]="form.Transfer_Doc_Number">
+
+                                    </div>
+
+                                    <div class="col-md-12 mt-2">
+
+                                        <label>
+                                            รายละเอียดการโอน :
+                                        </label>
+
+                                        <textarea rows="3" class="form-control" [(ngModel)]="form.Transfer_Description">
 
                                 </textarea>
 
-                            </div>
+                                    </div>
 
-                            <div class="col-md-6 mt-3">
-
-                                <label>
-                                    โอนไปหน่วยงาน :
-                                </label>
-
-                                <ng-select [items]="departments" bindLabel="Department_Name" bindValue="Department_Id"
-                                    [(ngModel)]="form.To_Department_Id" (change)="onChangeToDepartment()"
-                                    appendTo="body" placeholder="-- เลือกหน่วยงาน --">
-
-                                </ng-select>
+                                </div>
+                                <div height="20px"></div>
 
                             </div>
+                            <div class="row">
+                                <div class="col-md-6">
+         <span class="badge bg-warning text-dark mt-3" style="font-size: 16px;">
+                                    ข้อมูลรายการค่าใช้จ่าย/โครงการที่โอน
+                                </span>
+                                </div>
+                       
+                                <div height="20px"></div>
 
-                            <div class="col-md-6 mt-3">
+                                <div class="row mt-6">
 
-                                <label>
-                                    โอนไปรายการ/โครงการ :
-                                </label>
-                                <ng-select [items]="toPlans" bindValue="Plan_Id" [(ngModel)]="form.To_Plan_Id"
-                                    (change)="onChangeToPlan()" appendTo="body" placeholder="-- เลือกโครงการ --">
+                                    <div class="col-md-6 mt-2">
 
-                                    <!-- ตอนเลือกแล้ว -->
-                                    <ng-template ng-label-tmp let-item="item">
-                                        {{ item.Project_Name || item.Expense_List }}
+                                        <label>
+                                            โอนจากหน่วยงาน :
+                                        </label>
+
+                                        <ng-select [items]="departments" bindLabel="Department_Name"
+                                            bindValue="Department_Id" [(ngModel)]="form.From_Department_Id"
+                                            (change)="onChangeFromDepartment()" appendTo="body"
+                                            placeholder="-- เลือกหน่วยงาน --">
+
+                                        </ng-select>
+
+                                    </div>
+                                    <div class="col-md-6 mt-2">
+
+                                        <label>
+                                            โอนไปหน่วยงาน :
+                                        </label>
+
+                                        <ng-select [items]="departments" bindLabel="Department_Name"
+                                            bindValue="Department_Id" [(ngModel)]="form.To_Department_Id"
+                                            (change)="onChangeToDepartment()" appendTo="body"
+                                            placeholder="-- เลือกหน่วยงาน --">
+
+                                        </ng-select>
+
+                                    </div>
+
+                                    <div class="col-md-6 mt-2">
+
+                                        <label>
+                                            โอนจากรายการ/โครงการ :
+                                        </label>
+
+                                        <ng-select [items]="fromPlans" bindValue="Plan_Id"
+                                            [(ngModel)]="form.From_Plan_Id" (change)="onChangeFromPlan()"
+                                            appendTo="body" placeholder="-- เลือกโครงการ --">
+
+                                            <!-- ตอนเลือกแล้ว -->
+                                            <ng-template ng-label-tmp let-item="item">
+                                                {{ item.Project_Name || item.Expense_List }}
+                                            </ng-template>
+
+                                            <!-- ตอนแสดงใน dropdown -->
+                                            <ng-template ng-option-tmp let-item="item">
+                                                {{ item.Project_Name || item.Expense_List }}
+                                            </ng-template>
+
+                                        </ng-select>
+
+                                    </div>
+                                    <div class="col-md-6   mt-2">
+
+                                        <label>
+                                            โอนไปรายการ/โครงการ :
+                                        </label>
+                                        <ng-select [items]="toPlans" bindValue="Plan_Id" [(ngModel)]="form.To_Plan_Id"
+                                            (change)="onChangeToPlan()" appendTo="body"
+                                            placeholder="-- เลือกโครงการ --">
+
+                                            <!-- ตอนเลือกแล้ว -->
+                                            <ng-template ng-label-tmp let-item="item">
+                                                {{ item.Project_Name || item.Expense_List }}
+                                            </ng-template>
+
+                                            <!-- ตอนแสดงใน dropdown -->
+                                            <ng-template ng-option-tmp let-item="item">
+                                                {{ item.Project_Name || item.Expense_List }}
+                                            </ng-template>
+
+                                        </ng-select>
+
+                                    </div>
+                                    <!-- <div class="col-md-6 mt-2">
+
+                                    <label>
+                                        จำนวนเงินโครงการ :
+                                    </label>
+
+                                    <ng-container *ngIf="!isEdit; else viewBudget">
+
+                                        <input type="text" class="form-control text-end" [value]="displayProjectBudget"
+                                            (keypress)="masterService.allowNumericOnly($event)"
+                                            (input)="formatCurrency($event, 'projectBudget')" inputmode="decimal">
+
+                                    </ng-container>
+
+                                    <ng-template #viewBudget>
+
+                                        <span class="ms-2">
+
+                                            {{
+                                            form.projectBudget || 0
+                                            | number:'1.2-2'
+                                            }}
+
+                                            บาท
+
+                                        </span>
+
                                     </ng-template>
 
-                                    <!-- ตอนแสดงใน dropdown -->
-                                    <ng-template ng-option-tmp let-item="item">
-                                        {{ item.Project_Name || item.Expense_List }}
-                                    </ng-template>
+                                </div> -->
 
-                                </ng-select>
+                                    <div class="col-md-3 mt-2">
+
+                                        <label>
+                                            จำนวนเงินคงเหลือ :
+                                        </label>
+                                        <input type="text" class="form-control text-end" [value]="displayBalance"
+                                            (keypress)="masterService.allowNumericOnly($event)"
+                                            (input)="formatCurrency($event, 'balance')" inputmode="decimal" readonly
+                                            style="background-color: #ebeff3;">
+
+
+                                        <!-- <ng-container *ngIf="!isEdit; else viewBalance">
+
+                                        <input type="text" class="form-control text-end" [value]="displayBalance"
+                                            (keypress)="masterService.allowNumericOnly($event)"
+                                            (input)="formatCurrency($event, 'balance')" inputmode="decimal">
+
+                                    </ng-container>
+
+                                    <ng-template #viewBalance>
+
+                                        <span class="ms-2">
+
+                                            {{
+                                            form.balance || 0
+                                            | number:'1.2-2'
+                                            }}
+
+                                            บาท
+
+                                        </span>
+
+                                    </ng-template> -->
+
+                                    </div>
+                                    <div class="col-md-3 mt-2"> </div>
+
+
+                                    <div class="col-md-3 mt-2">
+
+                                        <label>
+                                            จำนวนเงินที่โอน :
+                                        </label>
+
+                                        <input type="text" class="form-control text-end" [value]="displayAmount"
+                                            (keypress)="masterService.allowNumericOnly($event)"
+                                            (input)="formatCurrency($event)" inputmode="decimal">
+
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mt-2"></div>
 
                             </div>
-                            <div class="col-md-3 mt-3">
 
-                                <label>
-                                    จำนวนเงินที่โอน :
-                                </label>
 
-                                <input type="text" class="form-control text-end" [value]="displayAmount"
-                                    (keypress)="masterService.allowNumericOnly($event)"
-                                    (input)="formatCurrency($event)" inputmode="decimal">
-
-                            </div>
 
                         </div>
 
                     </div>
 
-                </div>
+                    <div class="modal-footer">
 
+                        <button class="btn btn-success text-black" (click)="save(); modal.close()">
+
+                            บันทึก
+
+                        </button>
+
+                        <button class="btn btn-danger text-black" (click)="modal.dismiss()">
+
+                            ยกเลิก
+
+                        </button>
+
+                    </div>
+
+                </ng-template>
             </div>
-
-            <div class="modal-footer">
-
-                <button class="btn btn-success text-black" (click)="save(); modal.close()">
-
-                    บันทึก
-
-                </button>
-
-                <button class="btn btn-danger text-black" (click)="modal.dismiss()">
-
-                    ยกเลิก
-
-                </button>
-
-            </div>
-
-        </ng-template>
+        </div>
 
     </div>
-
 </div>

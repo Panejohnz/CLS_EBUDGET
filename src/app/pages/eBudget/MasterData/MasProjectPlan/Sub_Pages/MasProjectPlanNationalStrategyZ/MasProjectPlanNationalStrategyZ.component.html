@@ -1,7 +1,9 @@
 <div class="card">
-  <div class="card-header d-flex justify-content-between align-items-center">
-    <h4 class="card-title mb-0 flex-grow-1">ยุทธศาสตร์ชาติที่เกี่ยวข้องโดยตรง (Z)</h4>
-    <button type="button" class="btn btn-outline-secondary btn-sm" (click)="goBackToPlan()">กลับหน้าแผนงาน</button>
+  <div class="card-header d-flex justify-content-between align-items-center shared-page-header">
+    <h4 class="card-title mb-0 flex-grow-1 text-white">ยุทธศาสตร์ชาติที่เกี่ยวข้องโดยตรง (Z)</h4>
+    <button type="button" class="btn btn-outline-secondary btn-sm" (click)="goBackToPlan()" style="background-color: rgb(125, 248, 125); color: #212529;">
+      กลับหน้าแผนงาน
+  </button>
   </div>
   <div class="card-body">
     <ul class="nav nav-tabs mb-3">
@@ -48,8 +50,8 @@
                 <th style="width:20%">ชื่อ</th>
                 <th style="width:10%">ชื่อย่อ</th>
                 <th style="width:5%">เรียงลำดับ</th>
-                <th style="width:8%">จัดการ</th>
-                <th style="width:8%">ลบข้อมูล</th>
+                <th style="width:8%">แก้ไข</th>
+                <th style="width:8%">ลบ</th>
               </tr>
             </thead>
 
@@ -59,7 +61,9 @@
                 <td>{{ strategicPagination.startIndex + $index }}</td>
                 <td class="text-center">{{data.BgYear_Start}}</td>
                 <td class="text-center">{{data.BgYear_End}}</td>
-                <td class="text-center">{{data.Strategic_Name}}</td>
+                <td style="text-align: left;">
+                  {{data.Strategic_Name}}
+                </td>
                 <td class="text-center">{{data.Strategic_Short_Name}}</td>
                 <td class="text-center">{{data.Order_Seq}}</td>
                 <td>
@@ -121,8 +125,8 @@
                 <th style="width:20%">ชื่อ</th>
                 <th style="width:10%">ชื่อย่อ</th>
                 <th style="width:5%">เรียงลำดับ</th>
-                <th style="width:8%">จัดการ</th>
-                <th style="width:8%">ลบข้อมูล</th>
+                <th style="width:8%">แก้ไข</th>
+                <th style="width:8%">ลบ</th>
               </tr>
             </thead>
             <tbody>
@@ -131,7 +135,9 @@
                 <td>{{ issuePagination.startIndex + $index }}</td>
                 <td class="text-center">{{ data.BgYear_Start }}</td>
                 <td class="text-center">{{ data.BgYear_End }}</td>
-                <td class="text-center">{{ data.Strategic_Issues_Name }}</td>
+                <td style="text-align: left;">
+                  {{ data.Strategic_Issues_Name }}
+                </td>
                 <td class="text-center">{{ data.Strategic_Issues_Short_Name }}</td>
                 <td class="text-center">{{ data.Order_Seq }}</td>
                 <td>
@@ -193,8 +199,8 @@
                 <th style="width:20%">ชื่อ</th>
                 <th style="width:10%">ชื่อย่อ</th>
                 <th style="width:5%">เรียงลำดับ</th>
-                <th style="width:8%">จัดการ</th>
-                <th style="width:8%">ลบข้อมูล</th>
+                <th style="width:8%">แก้ไข</th>
+                <th style="width:8%">ลบ</th>
               </tr>
             </thead>
             <tbody>
@@ -203,7 +209,9 @@
                 <td>{{ subIssuePagination.startIndex + $index }}</td>
                 <td class="text-center">{{ data.BgYear_Start }}</td>
                 <td class="text-center">{{ data.BgYear_End }}</td>
-                <td class="text-center">{{ data.Strategic_Sub_Issues_Name }}</td>
+                <td style="text-align: left;">
+                  {{ data.Strategic_Sub_Issues_Name }}
+                </td>
                 <td class="text-center">{{ data.Strategic_Sub_Issues_Short_Name }}</td>
                 <td class="text-center">{{ data.Order_Seq }}</td>
                 <td>
@@ -244,8 +252,8 @@
 </div>
 
 <ng-template #addStrategicModal let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title">{{ isEditMode ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลยุทธศาสตร์ชาติด้าน</h5>
+  <div class="modal-header shared-page-header p-3">
+    <h5 class="modal-title text-white">{{ isEditMode ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลยุทธศาสตร์ชาติด้าน</h5>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
   </div>
 
@@ -283,8 +291,8 @@
 </ng-template>
 
 <ng-template #addIssueModal let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title">{{ isEditModeIssue ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลประเด็นยุทธศาสตร์</h5>
+  <div class="modal-header shared-page-header p-3">
+    <h5 class="modal-title text-white">{{ isEditModeIssue ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลประเด็นยุทธศาสตร์</h5>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
   </div>
 
@@ -329,8 +337,8 @@
 </ng-template>
 
 <ng-template #addSubIssueModal let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title">{{ isEditModeSubIssue ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลประเด็นย่อย</h5>
+  <div class="modal-header  shared-page-header p-3">
+    <h5 class="modal-title text-white">{{ isEditModeSubIssue ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลประเด็นย่อย</h5>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
   </div>
 

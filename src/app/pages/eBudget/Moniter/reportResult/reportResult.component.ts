@@ -110,11 +110,16 @@ export class ReportResultComponent
   currentStepIndex = -1;
   userSession: any;
 
+
+
   get isDepartmentLocked(): boolean {
     return this.userSession?.permissionData?.VIEW_DATA == 3;
   }
 
   ngOnInit(): void {
+    this.sortService.page = 1;
+    this.sortService.pageSize = 20;
+
     const sessionStr = localStorage.getItem('userSession');
 
     if (sessionStr) {
@@ -207,6 +212,7 @@ export class ReportResultComponent
     }
 
     this.griddata = data;
+    this.sortService.page = 1;
 
   }
   createQuarter() {

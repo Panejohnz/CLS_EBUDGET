@@ -1,133 +1,133 @@
 <div class="row">
     <div class="col-lg-12">
         <div class="card">
-    <div class="card-header">
-        <h4 class="card-title mb-0 flex-grow-1">จัดทำคำของบประมาณ</h4>
-    </div>
-
-    <div class="card-body">
-        <br />
-        <div class="row g-3 align-items-end">
-
-            <!-- หน่วยงาน -->
-            <div class="col-lg-3">
-                <label class="form-label">หน่วยงาน</label>
-                <ng-select [class.readonly-select]="isDepartmentLocked" [items]="department"
-                    bindLabel="Department_Name" bindValue="Department_Id" [(ngModel)]="selectedDepartmentId"
-                    [clearable]="!isDepartmentLocked" [disabled]="isDepartmentLocked"
-                    [searchable]="!isDepartmentLocked" appendTo="body" placeholder="-- เลือกหน่วยงาน --"
-                    (change)="onDepartmentFilterChange()">
-                </ng-select>
+            <div class="card-header shared-page-header">
+                <h4 class="card-title mb-0 flex-grow-1 text-white">จัดทำคำของบประมาณ</h4>
             </div>
 
-            <div class="col-lg-3">
-                <label class="form-label">แผนงาน</label>
-                <ng-select [items]="planFilterOptions" bindLabel="name" bindValue="name"
-                    [(ngModel)]="selectedPlanName" appendTo="body" placeholder="-- เลือกแผนงาน --"
-                    (change)="onPlanFilterChange()">
-                </ng-select>
-            </div>
+            <div class="card-body">
+                <br />
+                <div class="row g-3 align-items-end">
 
-            <div class="col-lg-3">
-                <label class="form-label">ผลผลิต</label>
-                <ng-select [items]="productFilterOptions" bindLabel="name" bindValue="name"
-                    [(ngModel)]="selectedProductName" appendTo="body" placeholder="-- เลือกผลผลิต --"
-                    (change)="onProductFilterChange()">
-                </ng-select>
-            </div>
+                    <!-- หน่วยงาน -->
+                    <div class="col-lg-3">
+                        <label class="form-label">หน่วยงาน</label><span class="text-danger">*</span>
+                        <ng-select [class.readonly-select]="isDepartmentLocked" [items]="department"
+                            bindLabel="Department_Name" bindValue="Department_Id" [(ngModel)]="selectedDepartmentId"
+                            [clearable]="!isDepartmentLocked" [disabled]="isDepartmentLocked"
+                            [searchable]="!isDepartmentLocked" appendTo="body" placeholder="-- เลือกหน่วยงาน --"
+                            (change)="onDepartmentFilterChange()">
+                        </ng-select>
+                    </div>
 
-            <div class="col-lg-3">
-                <label class="form-label">กิจกรรม</label>
-                <ng-select [items]="activityFilterOptions" bindLabel="name" bindValue="name"
-                    [(ngModel)]="selectedActivityName" appendTo="body" placeholder="-- เลือกกิจกรรม --"
-                    (change)="applyFilter()">
-                </ng-select>
-            </div>
+                    <div class="col-lg-3">
+                        <label class="form-label">แผนงาน</label>
+                        <ng-select [items]="planFilterOptions" bindLabel="name" bindValue="name"
+                            [(ngModel)]="selectedPlanName" appendTo="body" placeholder="-- เลือกแผนงาน --"
+                            (change)="onPlanFilterChange()">
+                        </ng-select>
+                    </div>
 
-            <!-- ค้นหา + ปุ่ม -->
-            <div class="col-lg-12">
-                <div class="d-flex justify-content-end align-items-end gap-2">
+                    <div class="col-lg-3">
+                        <label class="form-label">ผลผลิต</label>
+                        <ng-select [items]="productFilterOptions" bindLabel="name" bindValue="name"
+                            [(ngModel)]="selectedProductName" appendTo="body" placeholder="-- เลือกผลผลิต --"
+                            (change)="onProductFilterChange()">
+                        </ng-select>
+                    </div>
 
-                <div style="width:250px;">
-                    <label class="form-label">ค้นหา</label>
-                    <div class="search-box">
-                    <input type="text" class="form-control" placeholder="ค้นหาโครงการ..."
-                        [(ngModel)]="service.searchTerm" (input)="applyFilter()">
-                        <i class="ri-search-line search-icon"></i>
+                    <div class="col-lg-3">
+                        <label class="form-label">กิจกรรม</label>
+                        <ng-select [items]="activityFilterOptions" bindLabel="name" bindValue="name"
+                            [(ngModel)]="selectedActivityName" appendTo="body" placeholder="-- เลือกกิจกรรม --"
+                            (change)="applyFilter()">
+                        </ng-select>
+                    </div>
+
+                    <!-- ค้นหา + ปุ่ม -->
+                    <div class="col-lg-12">
+                        <div class="d-flex justify-content-end align-items-end gap-2">
+
+                            <div style="width:250px;">
+                                <label class="form-label">ค้นหา</label>
+                                <div class="search-box">
+                                    <input type="text" class="form-control" placeholder="ค้นหาโครงการ..."
+                                        [(ngModel)]="service.searchTerm" (input)="applyFilter()">
+                                    <i class="ri-search-line search-icon"></i>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-success text-black" (click)="fullModal(fullDataModal,emptyplan)">
+                                <i class="ri-add-line me-1"></i>
+                                เพิ่มคำขอ
+                            </button>
+
+                            <button class="btn" style="background-color:#d1c300; color:black; border:none;"
+                                (click)="copyModal(copyRequestModal)">
+                                <i class="ri-file-copy-line me-1"></i>
+                                คัดลอกโครงการ
+                            </button>
+
+                        </div>
                     </div>
                 </div>
+                <br>
+                <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+                    <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
 
-                <button class="btn btn-success text-black" (click)="fullModal(fullDataModal,emptyplan)">
-                    <i class="ri-add-line me-1"></i>
-                    เพิ่มคำขอ
-                </button>
+                        <thead class="text-center text-white sticky-header" style="background-color: #556398;">
+                            <tr>
 
-                <button class="btn" style="background-color:#d1c300; color:black; border:none;"
-                    (click)="copyModal(copyRequestModal)">
-                    <i class="ri-file-copy-line me-1"></i>
-                    คัดลอกโครงการ
-                </button>
+                                <th style="width:5%">ลำดับ</th>
+                                <th style="width:10%">หน่วยงาน</th>
+                                <th style="width:10%">แผนงาน</th>
+                                <th style="width:10%">ผลผลิต</th>
+                                <th style="width:10%">กิจกรรม</th>
+                                <th style="width:10%">หมวดงบ</th>
+                                <th style="width:15%">โครงการ / รายการ</th>
+                                <th style="width:10%">งบประมาณ</th>
+                                <th style="width:10%">สถานะ</th>
+                                <th style="width:5%">แก้ไข</th>
+                                <th style="width:5%">ลบ</th>
+                            </tr>
+                        </thead>
 
-                </div>
-            </div>
-        </div>
-        <br>
-        <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
-            <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+                        <tbody>
+                            @for(data of pagedGriddata; track $index){
+                            <tr>
 
-                <thead class="text-center text-white sticky-header" style="background-color: #556398;">
-                    <tr>
-
-                        <th style="width:5%">ลำดับ</th>
-                        <th style="width:10%">หน่วยงาน</th>
-                        <th style="width:10%">แผนงาน</th>
-                        <th style="width:10%">ผลผลิต</th>
-                        <th style="width:10%">กิจกรรม</th>
-                        <th style="width:10%">หมวดงบ</th>
-                        <th style="width:15%">โครงการ / รายการ</th>
-                        <th style="width:10%">งบประมาณ</th>
-                        <th style="width:10%">สถานะ</th>
-                        <th style="width:5%">แก้ไข</th>
-                        <th style="width:5%">ลบ</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @for(data of pagedGriddata; track $index){
-                    <tr>
-
-                        <!-- checkbox -->
+                                <!-- checkbox -->
 
 
-                        <td class="text-center">{{pageStartIndex + $index}}</td>
-                        <td class="text-center">{{data.Department_Name}}</td>
+                                <td class="text-center">{{pageStartIndex + $index}}</td>
+                                <td class="text-center">{{data.Department_Name}}</td>
 
-                        <td>
-                            {{data.Plan_Name }}
-                        </td>
+                                <td>
+                                    {{data.Plan_Name }}
+                                </td>
 
-                        <td>
-                            {{data.Product_Name}}
-                        </td>
+                                <td>
+                                    {{data.Product_Name}}
+                                </td>
 
-                        <td>
-                            {{data.Activity_Name}}
-                        </td>
+                                <td>
+                                    {{data.Activity_Name}}
+                                </td>
 
-                        <td>{{data.Budget_Type_Name}}</td>
-                        @if(data.Project_Name){
-                        <td>{{data.Project_Name}}</td>
-                        }@else {
-                        <td>{{data.Expense_Name}}</td>
-                        }
+                                <td>{{data.Budget_Type_Name}}</td>
+                                @if(data.Project_Name){
+                                <td>{{data.Project_Name}}</td>
+                                }@else {
+                                <td>{{data.Expense_Name}}</td>
+                                }
 
 
-                        <td class=" text-end">
-                            {{data.Total | number:'1.2-2'}}
-                        </td>
+                                <td class=" text-end">
+                                    {{data.Total | number:'1.2-2'}}
+                                </td>
 
-                        <td>
-                            <span style="
+                                <td>
+                                    <span style="
             display:inline-block;
             padding:4px 8px;
             border-radius:6px;
@@ -136,57 +136,57 @@
             color:rgb(8, 8, 8);
             line-height:1.3;
         ">
-                                {{ data.Status_Name }}
-                            </span>
-                        </td>
+                                        {{ data.Status_Name }}
+                                    </span>
+                                </td>
 
-                        <td class="text-center">
-                            <button class="btn btn-warning btn-sm" (click)="fullModal(fullDataModal,data)">
-                                <i class="ri-pencil-line"></i>
-                            </button>
-                        </td>
+                                <td class="text-center">
+                                    <button class="btn btn-warning btn-sm" (click)="fullModal(fullDataModal,data)">
+                                        <i class="ri-pencil-line"></i>
+                                    </button>
+                                </td>
 
-                        <td class="text-center">
-                            <button class="btn btn-danger btn-sm" (click)="deletePlan(data)">
-                                <i class="ri-delete-bin-line"></i>
-                            </button>
-                        </td>
+                                <td class="text-center">
+                                    <button class="btn btn-danger btn-sm" (click)="deletePlan(data)">
+                                        <i class="ri-delete-bin-line"></i>
+                                    </button>
+                                </td>
 
-                    </tr>
-                    }
-                </tbody>
-                <!-- ✅ Footer -->
-                <tfoot>
-                    <tr style="font-weight: bold; background-color: #556398;">
-                        <td colspan="7" class="text-end text-white">รวมทั้งหมด</td>
+                            </tr>
+                            }
+                        </tbody>
+                        <!-- ✅ Footer -->
+                        <tfoot>
+                            <tr style="font-weight: bold; background-color: #556398;">
+                                <td colspan="7" class="text-end text-white">รวมทั้งหมด</td>
 
-                        <!-- รวมงบประมาณ -->
-                        <td class="text-end text-white">
-                            {{ Total | number:'1.2-2' }}
-                        </td>
+                                <!-- รวมงบประมาณ -->
+                                <td class="text-end text-white">
+                                    {{ Total | number:'1.2-2' }}
+                                </td>
 
-                        <td colspan="3"></td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-        <div class="row justify-content-md-between align-items-md-center mt-2">
-            <div class="col col-sm-6">
-                <div class="dataTables_info mb-2 text-start">
-                    แสดง {{ griddata.length ? pageStartIndex : 0 }} ถึง {{ griddata.length ? pageEndIndex : 0 }}
-                    จากทั้งหมด {{ griddata.length }} รายการ
+                                <td colspan="3"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="row justify-content-md-between align-items-md-center mt-2">
+                    <div class="col col-sm-6">
+                        <div class="dataTables_info mb-2 text-start">
+                            แสดง {{ griddata.length ? pageStartIndex : 0 }} ถึง {{ griddata.length ? pageEndIndex : 0 }}
+                            จากทั้งหมด {{ griddata.length }} รายการ
+                        </div>
+                    </div>
+                    <div class="col col-sm-6">
+                        <div class="d-flex justify-content-sm-end">
+                            <ngb-pagination [collectionSize]="griddata.length" [(page)]="sortService.page"
+                                [pageSize]="sortService.pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true">
+                            </ngb-pagination>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col col-sm-6">
-                <div class="d-flex justify-content-sm-end">
-                    <ngb-pagination [collectionSize]="griddata.length" [(page)]="sortService.page"
-                        [pageSize]="sortService.pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true">
-                    </ngb-pagination>
-                </div>
-            </div>
         </div>
-    </div>
-</div>
     </div>
 </div>
 
@@ -197,8 +197,8 @@
 
 <ng-template #copyRequestModal let-modal>
 
-    <div class="modal-header">
-        <h5 class="modal-title">
+    <div class="modal-header shared-page-header p-3">
+        <h5 class="modal-title text-white">
             คัดลอกข้อมูลจากโครงการ
         </h5>
 

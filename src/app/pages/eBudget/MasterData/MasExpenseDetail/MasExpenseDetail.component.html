@@ -1,6 +1,6 @@
 <div class="card">
-  <div class="card-header">
-    <h4 class="card-title mb-0 flex-grow-1">กำหนดอัตราค่าใช้จ่าย</h4>
+  <div class="card-header shared-page-header">
+    <h4 class="card-title mb-0 flex-grow-1 text-white">กำหนดอัตราค่าใช้จ่าย</h4>
   </div>
 
   <div class="card-body">
@@ -19,6 +19,7 @@
             [(ngModel)]="service.searchTerm" (input)="filterSearch()">
         </div>
         <button type="button" class="btn btn-success text-black" (click)="openAddDetailModal(editDetailModal)">
+                 <i class="ri-add-line me-1"></i>
           เพิ่มข้อมูล
         </button>
       </div>
@@ -34,8 +35,8 @@
               <th style="width:12%">รหัสค่าใช้จ่าย</th>
               <th style="width:8%">เรียงลำดับ</th>
               <th style="width:8%">กำหนดอัตรา</th>
-              <th style="width:8%">จัดการ</th>
-              <th style="width:8%">ลบข้อมูล</th>
+              <th style="width:8%">แก้ไข</th>
+              <th style="width:8%">ลบ</th>
             </tr>
           </thead>
           <tbody>
@@ -91,8 +92,8 @@
 </div>
 
 <ng-template #addRateModal let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title">กำหนดอัตราค่าใช้จ่าย</h5>
+  <div class="modal-header shared-page-header p-3">
+    <h5 class="modal-title text-white">กำหนดอัตราค่าใช้จ่าย</h5>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
   </div>
 
@@ -169,8 +170,8 @@
 </ng-template>
 
 <ng-template #editDetailModal let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title">{{ isEditModeDetail ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลค่าใช้จ่าย</h5>
+  <div class="modal-header shared-page-header p-3">
+    <h5 class="modal-title text-white">{{ isEditModeDetail ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลค่าใช้จ่าย</h5>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
   </div>
 

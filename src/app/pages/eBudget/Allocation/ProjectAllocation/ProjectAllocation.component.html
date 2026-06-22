@@ -1,476 +1,493 @@
-<div class="container-fluid px-4">
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header shared-page-header">
+                <h4 class="card-title mb-0 flex-grow-1 text-white">รายการจัดสรรงบประมาณ</h4>
+            </div>
 
-    <div class="bg-white p-3 rounded shadow-sm border">
+            <div class="card-body">
+                <!-- HEADER -->
+                <div class="mb-3">
+                    <!-- SELECT DEPARTMENT -->
+                    <div class="row mt-2">
 
-        <!-- HEADER -->
-        <div class="mb-3">
+                        <div class="col-md-4">
 
-            <h5 class="fw-bold">
-                รายการจัดสรรงบประมาณ
-            </h5>
+                            <label class="form-label">
+                                หน่วยงาน
+                            </label>
 
-            <!-- SELECT DEPARTMENT -->
-            <div class="row mt-2">
+                            <select class="form-select" [class.readonly-select]="isDepartmentLocked"
+                                [attr.aria-disabled]="isDepartmentLocked"
+                                [attr.tabindex]="isDepartmentLocked ? -1 : null" [(ngModel)]="selectedDepartmentId"
+                                (change)="applyFilter()">
 
-                <div class="col-md-4">
+                                <option [ngValue]="null">
+                                    -- เลือกหน่วยงาน --
+                                </option>
 
-                    <label class="form-label">
-                        หน่วยงาน
-                    </label>
+                                <option *ngFor="let item of department" [ngValue]="item.Department_Id">
 
-                    <select class="form-select" [class.readonly-select]="isDepartmentLocked"
-                        [attr.aria-disabled]="isDepartmentLocked" [attr.tabindex]="isDepartmentLocked ? -1 : null"
-                        [(ngModel)]="selectedDepartmentId" (change)="applyFilter()">
+                                    {{ item.Department_Name }}
 
-                        <option [ngValue]="null">
-                            -- เลือกหน่วยงาน --
-                        </option>
+                                </option>
 
-                        <option *ngFor="let item of department" [ngValue]="item.Department_Id">
+                            </select>
 
-                            {{ item.Department_Name }}
+                        </div>
 
-                        </option>
-
-                    </select>
+                    </div>
 
                 </div>
 
-            </div>
+                <!-- DETAIL -->
 
-        </div>
+                <div *ngIf="table_display">
 
-        <!-- DETAIL -->
+                    <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+                        <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+                            <thead class="text-center text-white sticky-header" style="background-color: #556398;">
 
-        <div *ngIf="table_display">
+                                <tr class="text-center align-middle">
 
-        <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
-            <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
-                <thead class="text-center text-white sticky-header" style="background-color: #556398;">
+                                    <th style="width:35%">
+                                        รายการค่าใช้จ่าย
+                                    </th>
 
-                    <tr class="text-center align-middle">
+                                    <th style="width:12%">
+                                        คำของบประมาณ
+                                    </th>
 
-                        <th style="width:35%">
-                            รายการค่าใช้จ่าย
-                        </th>
+                                    <th style="width:12%">
+                                        จัดสรร(พรบ.)
+                                    </th>
 
-                        <th style="width:12%">
-                            คำของบประมาณ
-                        </th>
+                                    <th style="width:12%">
+                                        จัดสรรงบกลาง(ครั้งที่ 1)
+                                    </th>
 
-                        <th style="width:12%">
-                            จัดสรร(พรบ.)
-                        </th>
+                                    <th style="width:12%">
+                                        จัดสรรงบกลาง(ครั้งที่ 2)
+                                    </th>
 
-                        <th style="width:12%">
-                            จัดสรรงบกลาง(ครั้งที่ 1)
-                        </th>
-
-                        <th style="width:12%">
-                            จัดสรรงบกลาง(ครั้งที่ 2)
-                        </th>
-
-                        <th style="width:10%">
-                            รวมจัดสรร
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    <!-- PLAN -->
-                    <ng-container *ngFor="let plan of groupData">
-
-                        <tr class="table fw-bold" style="cursor:pointer; background-color: #dff5e4; color: #243524;"
-                            (click)="plan.expanded = !plan.expanded">
-
-                            <td class="text-start" style="padding-left: 12px;">
-
-                                <i class="ri-arrow-right-s-line me-1" *ngIf="!plan.expanded"></i>
-
-                                <i class="ri-arrow-down-s-line me-1" *ngIf="plan.expanded"></i>
-
-                                {{ plan.Plan_Name }}
-
-                            </td>
-
-                            <td class="text-end">
-
-                                {{
-                                sumTotal(plan)
-                                | number:'1.2-2'
-                                }}
-
-                            </td>
-
-                            <td class="text-end">
-
-                                {{
-                                sumAdjust1(plan)
-                                | number:'1.2-2'
-                                }}
-
-                            </td>
-
-                            <td class="text-end">
-
-                                {{
-                                sumAdjust2(plan)
-                                | number:'1.2-2'
-                                }}
-
-                            </td>
-
-                            <td class="text-end">
-
-                                {{
-                                sumAdjust3(plan)
-                                | number:'1.2-2'
-                                }}
-
-                            </td>
-
-                            <td class="text-end fw-bold">
-
-                                {{
-                                sumAllocate(plan)
-                                | number:'1.2-2'
-                                }}
-
-                            </td>
-
-                        </tr>
-
-                        <ng-container *ngIf="plan.expanded">
-
-                            <!-- PRODUCT -->
-                            <ng-container *ngFor="let product of plan.products">
-
-                                <tr class="table fw-bold" style="cursor:pointer; background-color: #f4e3f7; color: #3b2a3f;"
-                                    (click)="product.expanded = !product.expanded">
-
-                                    <td class="text-start" style="padding-left: 36px;">
-
-                                        <i class="ri-arrow-right-s-line me-1" *ngIf="!product.expanded"></i>
-
-                                        <i class="ri-arrow-down-s-line me-1" *ngIf="product.expanded"></i>
-
-                                        {{ product.Product_Name }}
-
-                                    </td>
-
-                                    <td class="text-end">
-
-                                        {{
-                                        sumTotal(product)
-                                        | number:'1.2-2'
-                                        }}
-
-                                    </td>
-
-                                    <td class="text-end">
-
-                                        {{
-                                        sumAdjust1(product)
-                                        | number:'1.2-2'
-                                        }}
-
-                                    </td>
-
-                                    <td class="text-end">
-
-                                        {{
-                                        sumAdjust2(product)
-                                        | number:'1.2-2'
-                                        }}
-
-                                    </td>
-
-                                    <td class="text-end">
-
-                                        {{
-                                        sumAdjust3(product)
-                                        | number:'1.2-2'
-                                        }}
-
-                                    </td>
-
-                                    <td class="text-end fw-bold">
-
-                                        {{
-                                        sumAllocate(product)
-                                        | number:'1.2-2'
-                                        }}
-
-                                    </td>
+                                    <th style="width:10%">
+                                        รวมจัดสรร
+                                    </th>
 
                                 </tr>
 
-                                <ng-container *ngIf="product.expanded">
+                            </thead>
 
-                                    <!-- ACTIVITY -->
-                                    <ng-container *ngFor="let activity of product.activities">
+                            <tbody>
 
-                                        <tr class="table fw-bold" style="cursor:pointer; background-color: #fff4c7; color: #3b3418;"
-                                            (click)="activity.expanded = !activity.expanded">
+                                <!-- PLAN -->
+                                <ng-container *ngFor="let plan of groupData">
 
-                                            <td class="text-start" style="padding-left: 60px;">
-                                                <i class="ri-arrow-right-s-line me-1" *ngIf="!activity.expanded"></i>
+                                    <tr class="table fw-bold"
+                                        style="cursor:pointer; background-color: #dff5e4; color: #243524;"
+                                        (click)="plan.expanded = !plan.expanded">
 
-                                                <i class="ri-arrow-down-s-line me-1" *ngIf="activity.expanded"></i>
+                                        <td class="text-start" style="padding-left: 12px;">
 
-                                                {{ activity.Activity_Name }}
-                                            </td>
+                                            <i class="ri-arrow-right-s-line me-1" *ngIf="!plan.expanded"></i>
 
-                                            <td class="text-end">
+                                            <i class="ri-arrow-down-s-line me-1" *ngIf="plan.expanded"></i>
 
-                                                {{
-                                                sumTotal(activity)
-                                                | number:'1.2-2'
-                                                }}
+                                            {{ plan.Plan_Name }}
 
-                                            </td>
+                                        </td>
 
-                                            <td class="text-end">
+                                        <td class="text-end">
 
-                                                {{
-                                                sumAdjust1(activity)
-                                                | number:'1.2-2'
-                                                }}
+                                            {{
+                                            sumTotal(plan)
+                                            | number:'1.2-2'
+                                            }}
 
-                                            </td>
+                                        </td>
 
-                                            <td class="text-end">
+                                        <td class="text-end">
 
-                                                {{
-                                                sumAdjust2(activity)
-                                                | number:'1.2-2'
-                                                }}
+                                            {{
+                                            sumAdjust1(plan)
+                                            | number:'1.2-2'
+                                            }}
 
-                                            </td>
+                                        </td>
 
-                                            <td class="text-end">
+                                        <td class="text-end">
 
-                                                {{
-                                                sumAdjust3(activity)
-                                                | number:'1.2-2'
-                                                }}
+                                            {{
+                                            sumAdjust2(plan)
+                                            | number:'1.2-2'
+                                            }}
 
-                                            </td>
+                                        </td>
 
-                                            <td class="text-end fw-bold">
+                                        <td class="text-end">
 
-                                                {{
-                                                sumAllocate(activity)
-                                                | number:'1.2-2'
-                                                }}
+                                            {{
+                                            sumAdjust3(plan)
+                                            | number:'1.2-2'
+                                            }}
 
-                                            </td>
+                                        </td>
 
-                                        </tr>
+                                        <td class="text-end fw-bold">
 
-                                        <ng-container *ngIf="activity.expanded">
+                                            {{
+                                            sumAllocate(plan)
+                                            | number:'1.2-2'
+                                            }}
 
-                                            <!-- BUDGET -->
-                                            <ng-container *ngFor="let budget of activity.budgets">
+                                        </td>
 
-                                                <tr class="table fw-bold"
-                                                    style="cursor:pointer; background-color: #dff3fb; color: #213844;"
-                                                    (click)="budget.expanded = !budget.expanded">
+                                    </tr>
 
-                                                    <!-- NAME -->
-                                                    <td class="text-start" style="padding-left: 80px;">
+                                    <ng-container *ngIf="plan.expanded">
 
-                                                        <div class="d-flex align-items-center gap-2">
-                                                            <div class="d-flex align-items-center">
-                                                                <i class="ri-arrow-right-s-line me-1"
-                                                                    *ngIf="!budget.expanded"></i>
+                                        <!-- PRODUCT -->
+                                        <ng-container *ngFor="let product of plan.products">
 
-                                                                <i class="ri-arrow-down-s-line me-1"
-                                                                    *ngIf="budget.expanded"></i>
+                                            <tr class="table fw-bold"
+                                                style="cursor:pointer; background-color: #f4e3f7; color: #3b2a3f;"
+                                                (click)="product.expanded = !product.expanded">
 
-                                                                <ng-container *ngIf="budget.isNew; else showBudgetName">
+                                                <td class="text-start" style="padding-left: 36px;">
 
-                                                                    <ng-select [items]="Mas_Budget_Types"
-                                                                        bindLabel="Budget_Type_Name"
-                                                                        bindValue="Budget_Type_Id"
-                                                                        [(ngModel)]="budget.Fk_Budget_Type"
-                                                                        (change)="onBudgetTypeChange(budget, $event)"
-                                                                        (click)="$event.stopPropagation()"
-                                                                        placeholder="-- เลือกหมวดงบ --" appendTo="body"
-                                                                        style="display:inline-block; width:260px;">
-                                                                    </ng-select>
+                                                    <i class="ri-arrow-right-s-line me-1" *ngIf="!product.expanded"></i>
 
-                                                                </ng-container>
+                                                    <i class="ri-arrow-down-s-line me-1" *ngIf="product.expanded"></i>
 
-                                                                <ng-template #showBudgetName>
-                                                                    {{ budget.Budget_Type || '-' }}
-                                                                </ng-template>
-                                                            </div>
+                                                    {{ product.Product_Name }}
 
-                                                            <button type="button"
-                                                                class="btn btn-sm btn-primary py-0 px-2"
-                                                                title="เพิ่มรายการ"
-                                                                (click)="addBudget(budget); $event.stopPropagation()">
-                                                                <i class="ri-add-line"></i>
-                                                            </button>
-                                                        </div>
+                                                </td>
 
-                                                    </td>
+                                                <td class="text-end">
 
+                                                    {{
+                                                    sumTotal(product)
+                                                    | number:'1.2-2'
+                                                    }}
 
-                                                    <!-- TOTAL -->
-                                                    <td class="text-end">
+                                                </td>
 
-                                                        {{
-                                                        sumBudgetTotal(budget.items)
-                                                        | number:'1.2-2'
-                                                        }}
+                                                <td class="text-end">
 
-                                                    </td>
+                                                    {{
+                                                    sumAdjust1(product)
+                                                    | number:'1.2-2'
+                                                    }}
 
-                                                    <!-- ADJUST1 -->
-                                                    <td class="text-end">
+                                                </td>
 
-                                                        {{
-                                                        sumBudgetAdjust1(budget.items)
-                                                        | number:'1.2-2'
-                                                        }}
+                                                <td class="text-end">
 
-                                                    </td>
+                                                    {{
+                                                    sumAdjust2(product)
+                                                    | number:'1.2-2'
+                                                    }}
 
-                                                    <!-- ADJUST2 -->
-                                                    <td class="text-end">
+                                                </td>
 
-                                                        {{
-                                                        sumBudgetAdjust2(budget.items)
-                                                        | number:'1.2-2'
-                                                        }}
+                                                <td class="text-end">
 
-                                                    </td>
+                                                    {{
+                                                    sumAdjust3(product)
+                                                    | number:'1.2-2'
+                                                    }}
 
-                                                    <!-- ADJUST3 -->
-                                                    <td class="text-end">
+                                                </td>
 
-                                                        {{
-                                                        sumBudgetAdjust3(budget.items)
-                                                        | number:'1.2-2'
-                                                        }}
+                                                <td class="text-end fw-bold">
 
-                                                    </td>
+                                                    {{
+                                                    sumAllocate(product)
+                                                    | number:'1.2-2'
+                                                    }}
 
-                                                    <!-- TOTAL ALLOCATE -->
-                                                    <td class="text-end fw-bold">
+                                                </td>
 
-                                                        {{
-                                                        sumBudgetAllocate(budget.items)
-                                                        | number:'1.2-2'
-                                                        }}
+                                            </tr>
 
-                                                    </td>
+                                            <ng-container *ngIf="product.expanded">
 
-                                                </tr>
+                                                <!-- ACTIVITY -->
+                                                <ng-container *ngFor="let activity of product.activities">
 
-                                                <ng-container *ngIf="budget.expanded">
+                                                    <tr class="table fw-bold"
+                                                        style="cursor:pointer; background-color: #fff4c7; color: #3b3418;"
+                                                        (click)="activity.expanded = !activity.expanded">
 
-                                                    <!-- ITEM -->
-                                                    <tr *ngFor="let item of budget.items">
+                                                        <td class="text-start" style="padding-left: 60px;">
+                                                            <i class="ri-arrow-right-s-line me-1"
+                                                                *ngIf="!activity.expanded"></i>
 
-                                                        <!-- EXPENSE -->
-                                                        <td class="text-start">
-                                                            <div class="d-flex align-items-center gap-2"
-                                                                style="padding-left: 108px;">
-                                                                <span>-</span>
-                                                                <div class="flex-grow-1">
-                                                                <ng-container
-                                                                    *ngIf="item.isNewBudget; else showExpenseName">
-                                                                    <ng-select [items]="item.Expense_List_Options || Mas_Expense_Lists"
-                                                                        bindLabel="Expense_Name" bindValue="Expense_Id"
-                                                                        [(ngModel)]="item.Fk_Expense_List"
-                                                                        (change)="onExpenseListChange(item, $event)"
-                                                                        placeholder="-- เลือกรายการ --" appendTo="body"
-                                                                        style="display:inline-block; width:320px;">
-                                                                    </ng-select>
-                                                                </ng-container>
+                                                            <i class="ri-arrow-down-s-line me-1"
+                                                                *ngIf="activity.expanded"></i>
 
-                                                                <ng-template #showExpenseName>
-                                                                    @if( item.Project_Name){
-                                                                    {{item.Project_Name}}
-                                                                    }@else { {{
-                                                                    item.Expense_Name ||
-                                                                    item.Expense_List ||
-                                                                    '-'
-                                                                    }}}
-                                                                </ng-template>
-                                                                </div>
+                                                            {{ activity.Activity_Name }}
+                                                        </td>
 
-                                                                <button *ngIf="item.isNewBudget" type="button"
-                                                                    class="btn btn-sm btn-danger py-0 px-2"
-                                                                    title="เธฅเธเธฃเธฒเธขเธเธฒเธฃ"
-                                                                    (click)="removeBudgetItem(budget, item)">
-                                                                    <i class="ri-delete-bin-line"></i>
-                                                                </button>
-                                                            </div>
+                                                        <td class="text-end">
 
+                                                            {{
+                                                            sumTotal(activity)
+                                                            | number:'1.2-2'
+                                                            }}
 
                                                         </td>
 
-                                                        <!-- TOTAL -->
-                                                        <td class="text-end fw-bold">
+                                                        <td class="text-end">
 
-                                                            {{ item.Total | number:'1.2-2' }}
-
-                                                        </td>
-
-                                                        <!-- ADJUST1 -->
-                                                        <td>
-
-                                                            <input type="text"
-                                                                class="form-control form-control-sm text-end border-danger"
-                                                                [value]="item.Adjust1Display"
-                                                                (keypress)="allowNumericOnly($event)"
-                                                                (input)="formatAdjustCurrency($event, item, 'Adjust1Temp')"
-                                                                inputmode="decimal">
+                                                            {{
+                                                            sumAdjust1(activity)
+                                                            | number:'1.2-2'
+                                                            }}
 
                                                         </td>
 
-                                                        <!-- ADJUST2 -->
-                                                        <td>
+                                                        <td class="text-end">
 
-                                                            <input type="text"
-                                                                class="form-control form-control-sm text-end border-danger"
-                                                                [value]="item.Adjust2Display"
-                                                                (keypress)="allowNumericOnly($event)"
-                                                                (input)="formatAdjustCurrency($event, item, 'Adjust2Temp')"
-                                                                inputmode="decimal">
+                                                            {{
+                                                            sumAdjust2(activity)
+                                                            | number:'1.2-2'
+                                                            }}
 
                                                         </td>
 
-                                                        <!-- ADJUST3 -->
-                                                        <td>
+                                                        <td class="text-end">
 
-                                                            <input type="text"
-                                                                class="form-control form-control-sm text-end border-danger"
-                                                                [value]="item.Adjust3Display"
-                                                                (keypress)="allowNumericOnly($event)"
-                                                                (input)="formatAdjustCurrency($event, item, 'Adjust3Temp')"
-                                                                inputmode="decimal">
+                                                            {{
+                                                            sumAdjust3(activity)
+                                                            | number:'1.2-2'
+                                                            }}
 
                                                         </td>
 
-                                                        <!-- TOTAL ALLOCATED -->
                                                         <td class="text-end fw-bold">
 
                                                             {{
-                                                            getItemAllocateTotal(item)
+                                                            sumAllocate(activity)
                                                             | number:'1.2-2'
                                                             }}
 
                                                         </td>
 
                                                     </tr>
+
+                                                    <ng-container *ngIf="activity.expanded">
+
+                                                        <!-- BUDGET -->
+                                                        <ng-container *ngFor="let budget of activity.budgets">
+
+                                                            <tr class="table fw-bold"
+                                                                style="cursor:pointer; background-color: #dff3fb; color: #213844;"
+                                                                (click)="budget.expanded = !budget.expanded">
+
+                                                                <!-- NAME -->
+                                                                <td class="text-start" style="padding-left: 80px;">
+
+                                                                    <div class="d-flex align-items-center gap-2">
+                                                                        <div class="d-flex align-items-center">
+                                                                            <i class="ri-arrow-right-s-line me-1"
+                                                                                *ngIf="!budget.expanded"></i>
+
+                                                                            <i class="ri-arrow-down-s-line me-1"
+                                                                                *ngIf="budget.expanded"></i>
+
+                                                                            <ng-container
+                                                                                *ngIf="budget.isNew; else showBudgetName">
+
+                                                                                <ng-select [items]="Mas_Budget_Types"
+                                                                                    bindLabel="Budget_Type_Name"
+                                                                                    bindValue="Budget_Type_Id"
+                                                                                    [(ngModel)]="budget.Fk_Budget_Type"
+                                                                                    (change)="onBudgetTypeChange(budget, $event)"
+                                                                                    (click)="$event.stopPropagation()"
+                                                                                    placeholder="-- เลือกหมวดงบ --"
+                                                                                    appendTo="body"
+                                                                                    style="display:inline-block; width:260px;">
+                                                                                </ng-select>
+
+                                                                            </ng-container>
+
+                                                                            <ng-template #showBudgetName>
+                                                                                {{ budget.Budget_Type || '-' }}
+                                                                            </ng-template>
+                                                                        </div>
+
+                                                                        <button type="button"
+                                                                            class="btn btn-sm btn-primary py-0 px-2"
+                                                                            title="เพิ่มรายการ"
+                                                                            (click)="addBudget(budget); $event.stopPropagation()">
+                                                                            <i class="ri-add-line"></i>
+                                                                        </button>
+                                                                    </div>
+
+                                                                </td>
+
+
+                                                                <!-- TOTAL -->
+                                                                <td class="text-end">
+
+                                                                    {{
+                                                                    sumBudgetTotal(budget.items)
+                                                                    | number:'1.2-2'
+                                                                    }}
+
+                                                                </td>
+
+                                                                <!-- ADJUST1 -->
+                                                                <td class="text-end">
+
+                                                                    {{
+                                                                    sumBudgetAdjust1(budget.items)
+                                                                    | number:'1.2-2'
+                                                                    }}
+
+                                                                </td>
+
+                                                                <!-- ADJUST2 -->
+                                                                <td class="text-end">
+
+                                                                    {{
+                                                                    sumBudgetAdjust2(budget.items)
+                                                                    | number:'1.2-2'
+                                                                    }}
+
+                                                                </td>
+
+                                                                <!-- ADJUST3 -->
+                                                                <td class="text-end">
+
+                                                                    {{
+                                                                    sumBudgetAdjust3(budget.items)
+                                                                    | number:'1.2-2'
+                                                                    }}
+
+                                                                </td>
+
+                                                                <!-- TOTAL ALLOCATE -->
+                                                                <td class="text-end fw-bold">
+
+                                                                    {{
+                                                                    sumBudgetAllocate(budget.items)
+                                                                    | number:'1.2-2'
+                                                                    }}
+
+                                                                </td>
+
+                                                            </tr>
+
+                                                            <ng-container *ngIf="budget.expanded">
+
+                                                                <!-- ITEM -->
+                                                                <tr *ngFor="let item of budget.items">
+
+                                                                    <!-- EXPENSE -->
+                                                                    <td class="text-start">
+                                                                        <div class="d-flex align-items-center gap-2"
+                                                                            style="padding-left: 108px;">
+                                                                            <span>-</span>
+                                                                            <div class="flex-grow-1">
+                                                                                <ng-container
+                                                                                    *ngIf="item.isNewBudget; else showExpenseName">
+                                                                                    <ng-select
+                                                                                        [items]="item.Expense_List_Options || Mas_Expense_Lists"
+                                                                                        bindLabel="Expense_Name"
+                                                                                        bindValue="Expense_Id"
+                                                                                        [(ngModel)]="item.Fk_Expense_List"
+                                                                                        (change)="onExpenseListChange(item, $event)"
+                                                                                        placeholder="-- เลือกรายการ --"
+                                                                                        appendTo="body"
+                                                                                        style="display:inline-block; width:320px;">
+                                                                                    </ng-select>
+                                                                                </ng-container>
+
+                                                                                <ng-template #showExpenseName>
+                                                                                    @if( item.Project_Name){
+                                                                                    {{item.Project_Name}}
+                                                                                    }@else { {{
+                                                                                    item.Expense_Name ||
+                                                                                    item.Expense_List ||
+                                                                                    '-'
+                                                                                    }}}
+                                                                                </ng-template>
+                                                                            </div>
+
+                                                                            <button *ngIf="item.isNewBudget"
+                                                                                type="button"
+                                                                                class="btn btn-sm btn-danger py-0 px-2"
+                                                                                title="เธฅเธเธฃเธฒเธขเธเธฒเธฃ"
+                                                                                (click)="removeBudgetItem(budget, item)">
+                                                                                <i class="ri-delete-bin-line"></i>
+                                                                            </button>
+                                                                        </div>
+
+
+                                                                    </td>
+
+                                                                    <!-- TOTAL -->
+                                                                    <td class="text-end fw-bold">
+
+                                                                        {{ item.Total | number:'1.2-2' }}
+
+                                                                    </td>
+
+                                                                    <!-- ADJUST1 -->
+                                                                    <td>
+
+                                                                        <input type="text"
+                                                                            class="form-control form-control-sm text-end border-danger"
+                                                                            [value]="item.Adjust1Display"
+                                                                            (keypress)="allowNumericOnly($event)"
+                                                                            (input)="formatAdjustCurrency($event, item, 'Adjust1Temp')"
+                                                                            inputmode="decimal">
+
+                                                                    </td>
+
+                                                                    <!-- ADJUST2 -->
+                                                                    <td>
+
+                                                                        <input type="text"
+                                                                            class="form-control form-control-sm text-end border-danger"
+                                                                            [value]="item.Adjust2Display"
+                                                                            (keypress)="allowNumericOnly($event)"
+                                                                            (input)="formatAdjustCurrency($event, item, 'Adjust2Temp')"
+                                                                            inputmode="decimal">
+
+                                                                    </td>
+
+                                                                    <!-- ADJUST3 -->
+                                                                    <td>
+
+                                                                        <input type="text"
+                                                                            class="form-control form-control-sm text-end border-danger"
+                                                                            [value]="item.Adjust3Display"
+                                                                            (keypress)="allowNumericOnly($event)"
+                                                                            (input)="formatAdjustCurrency($event, item, 'Adjust3Temp')"
+                                                                            inputmode="decimal">
+
+                                                                    </td>
+
+                                                                    <!-- TOTAL ALLOCATED -->
+                                                                    <td class="text-end fw-bold">
+
+                                                                        {{
+                                                                        getItemAllocateTotal(item)
+                                                                        | number:'1.2-2'
+                                                                        }}
+
+                                                                    </td>
+
+                                                                </tr>
+
+                                                            </ng-container>
+
+                                                        </ng-container>
+
+                                                    </ng-container>
 
                                                 </ng-container>
 
@@ -482,77 +499,72 @@
 
                                 </ng-container>
 
-                            </ng-container>
+                            </tbody>
 
-                        </ng-container>
+                            <tfoot class="table fw-bold" style="background-color: #556398; color: white;">
 
-                    </ng-container>
+                                <tr>
 
-                </tbody>
+                                    <td class="text-end">
+                                        รวมทั้งหมด
+                                    </td>
 
-                <tfoot class="table fw-bold" style="background-color: #556398; color: white;">
+                                    <!-- TOTAL REQUEST -->
+                                    <td class="text-end">
 
-                    <tr>
+                                        {{ totalRequest | number:'1.2-2' }}
 
-                        <td class="text-end">
-                            รวมทั้งหมด
-                        </td>
+                                    </td>
 
-                        <!-- TOTAL REQUEST -->
-                        <td class="text-end">
+                                    <!-- TOTAL Adjust1 -->
+                                    <td class="text-end fw-bold">{{ totalAdjust1 | number:'1.2-2' }}</td>
+                                    <!-- TOTAL Adjust2 -->
+                                    <td class="text-end fw-bold">{{ totalAdjust2 | number:'1.2-2' }}</td>
+                                    <!-- TOTAL Adjust3 -->
+                                    <td class="text-end fw-bold">{{ totalAdjust3 | number:'1.2-2' }}</td>
 
-                            {{ totalRequest | number:'1.2-2' }}
+                                    <td class="text-end fw-bold">
 
-                        </td>
+                                        {{ totalAllocated | number:'1.2-2' }}
 
-                      <!-- TOTAL Adjust1 -->
-                <td class="text-end fw-bold">{{ totalAdjust1 | number:'1.2-2' }}</td>
-                <!-- TOTAL Adjust2 -->
-                <td class="text-end fw-bold">{{ totalAdjust2 | number:'1.2-2' }}</td>
-                <!-- TOTAL Adjust3 -->
-                <td class="text-end fw-bold">{{ totalAdjust3 | number:'1.2-2' }}</td>
+                                    </td>
 
-                        <td class="text-end fw-bold">
+                                </tr>
 
-                            {{ totalAllocated | number:'1.2-2' }}
+                            </tfoot>
 
-                        </td>
+                        </table>
 
-                    </tr>
+                    </div>
 
-                </tfoot>
+                    <div class="d-flex justify-content-end gap-2 mt-3 pt-3 border-top bg-white">
 
-            </table>
+                        <button class="btn btn-danger" (click)="backToTable()">
 
-        </div>
+                            <i class="ri-skip-back-fill"></i>
+                            กลับ
 
-            <div class="d-flex justify-content-end gap-2 mt-3 pt-3 border-top bg-white">
+                        </button>
 
-                <button class="btn btn-danger" (click)="backToTable()">
+                        <button class="btn btn-secondary" (click)="resetAllocate()">
 
-                    <i class="ri-skip-back-fill"></i>
-                    กลับ
+                            <i class="ri-refresh-line"></i>
+                            รีเซ็ต
 
-                </button>
+                        </button>
 
-                <button class="btn btn-secondary" (click)="resetAllocate()">
+                        <button class="btn btn-success text-black" (click)="saveAdjust()">
 
-                    <i class="ri-refresh-line"></i>
-                    รีเซ็ต
+                            <i class="ri-save-line"></i>
+                            บันทึก
 
-                </button>
+                        </button>
 
-                <button class="btn btn-success text-black" (click)="saveAdjust()">
+                    </div>
 
-                    <i class="ri-save-line"></i>
-                    บันทึก
-
-                </button>
-
+                </div>
             </div>
-
         </div>
 
     </div>
-
 </div>

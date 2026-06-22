@@ -1,7 +1,7 @@
 <div class="card">
-  <div class="card-header d-flex justify-content-between align-items-center">
-    <h4 class="card-title mb-0 flex-grow-1">ความสอดคล้องกับแผนแม่บทภายใต้ยุทธศาสตร์ชาติ (Y)</h4>
-    <button type="button" class="btn btn-outline-secondary btn-sm" (click)="goBackToPlan()">กลับหน้าแผนงาน</button>
+  <div class="card-header d-flex justify-content-between align-items-center shared-page-header">
+    <h4 class="card-title mb-0 flex-grow-1 text-white">ความสอดคล้องกับแผนแม่บทภายใต้ยุทธศาสตร์ชาติ (Y)</h4>
+    <button type="button" class="btn btn-outline-secondary btn-sm" (click)="goBackToPlan()" style="background-color: rgb(125, 248, 125); color: #212529;">กลับหน้าแผนงาน</button>
   </div>
   <div class="card-body">
     <ul class="nav nav-tabs mb-3 flex-wrap">
@@ -72,8 +72,8 @@
                 <th style="width:25%">ชื่อ</th>
                 <th style="width:10%">ชื่อย่อ</th>
                 <th style="width:5%">เรียงลำดับ</th>
-                <th style="width:8%">จัดการ</th>
-                <th style="width:8%">ลบข้อมูล</th>
+                <th style="width:8%">แก้ไข</th>
+                <th style="width:8%">ลบ</th>
               </tr>
             </thead>
             <tbody>
@@ -82,7 +82,9 @@
                 <td>{{ planPagination.startIndex + $index }}</td>
                 <td>{{ data.BgYear_Start }}</td>
                 <td>{{ data.BgYear_End }}</td>
-                <td>{{ data.Master_Plan_Name }}</td>
+                <td style="text-align: left;">
+                  {{ data.Master_Plan_Name }}
+                </td>
                 <td>{{ data.Master_Plan_Short_Name }}</td>
                 <td>{{ data.Order_Seq }}</td>
                 <td>
@@ -145,8 +147,8 @@
                 <th style="width:20%">ชื่อ</th>
                 <th style="width:10%">ชื่อย่อ</th>
                 <th style="width:5%">เรียงลำดับ</th>
-                <th style="width:8%">จัดการ</th>
-                <th style="width:8%">ลบข้อมูล</th>
+                <th style="width:8%">แก้ไข</th>
+                <th style="width:8%">ลบ</th>
               </tr>
             </thead>
             <tbody>
@@ -156,7 +158,9 @@
                 <!-- <td>{{ getMasterPlanNameForGoalRow(data) }}</td> -->
                 <td>{{ data.BgYear_Start }}</td>
                 <td>{{ data.BgYear_End }}</td>
-                <td>{{ data.Plan_Goals_Name }}</td>
+                <td style="text-align: left;">
+                  {{ data.Plan_Goals_Name }}
+                </td>
                 <td>{{ data.Plan_Goals_Short_Name }}</td>
                 <td>{{ data.Order_Seq }}</td>
                 <td>
@@ -220,8 +224,8 @@
                 <th style="width:18%">ชื่อ</th>
                 <th style="width:8%">ชื่อย่อ</th>
                 <th style="width:5%">เรียงลำดับ</th>
-                <th style="width:8%">จัดการ</th>
-                <th style="width:8%">ลบข้อมูล</th>
+                <th style="width:8%">แก้ไข</th>
+                <th style="width:8%">ลบ</th>
               </tr>
             </thead>
             <tbody>
@@ -232,7 +236,9 @@
                 <td>{{ getGoalNameForTacticRow(data) }}</td> -->
                 <td>{{ data.BgYear_Start }}</td>
                 <td>{{ data.BgYear_End }}</td>
-                <td>{{ data.Plan_Tactics_Name }}</td>
+                <td style="text-align: left;">
+                  {{ data.Plan_Tactics_Name }}
+                </td>
                 <td>{{ data.Plan_Tactics_Short_Name }}</td>
                 <td>{{ data.Order_Seq }}</td>
                 <td>
@@ -297,8 +303,8 @@
                 <th style="width:20%">ชื่อ</th>
                 <th style="width:10%">ชื่อย่อ</th>
                 <th style="width:5%">เรียงลำดับ</th>
-                <th style="width:8%">จัดการ</th>
-                <th style="width:8%">ลบข้อมูล</th>
+                <th style="width:8%">แก้ไข</th>
+                <th style="width:8%">ลบ</th>
               </tr>
             </thead>
             <tbody>
@@ -308,7 +314,9 @@
                 <!-- <td>{{ getMasterPlanNameForSubPlanRow(data) }}</td> -->
                 <td>{{ data.BgYear_Start }}</td>
                 <td>{{ data.BgYear_End }}</td>
-                <td>{{ data.Sub_Master_Plan_Name }}</td>
+                <td style="text-align: left;">
+                  {{ data.Sub_Master_Plan_Name }}
+                </td>
                 <td>{{ data.Sub_Master_Plan_Short_Name }}</td>
                 <td>{{ data.Order_Seq }}</td>
                 <td>
@@ -373,8 +381,8 @@
                 <th style="width:18%">ชื่อ</th>
                 <th style="width:8%">ชื่อย่อ</th>
                 <th style="width:5%">เรียงลำดับ</th>
-                <th style="width:8%">จัดการ</th>
-                <th style="width:8%">ลบข้อมูล</th>
+                <th style="width:8%">แก้ไข</th>
+                <th style="width:8%">ลบ</th>
               </tr>
             </thead>
             <tbody>
@@ -385,7 +393,9 @@
                 <td>{{ getSubPlanNameForSubGoalRow(data) }}</td> -->
                 <td>{{ data.BgYear_Start }}</td>
                 <td>{{ data.BgYear_End }}</td>
-                <td>{{ data.Sub_Plan_Goals_Name }}</td>
+                <td style="text-align: left;">
+                  {{ data.Sub_Plan_Goals_Name }}
+                </td>
                 <td>{{ data.Sub_Plan_Goals_Short_Name }}</td>
                 <td>{{ data.Order_Seq }}</td>
                 <td>
@@ -450,8 +460,8 @@
                 <th style="width:18%">ชื่อ</th>
                 <th style="width:8%">ชื่อย่อ</th>
                 <th style="width:5%">เรียงลำดับ</th>
-                <th style="width:8%">จัดการ</th>
-                <th style="width:8%">ลบข้อมูล</th>
+                <th style="width:8%">แก้ไข</th>
+                <th style="width:8%">ลบ</th>
               </tr>
             </thead>
             <tbody>
@@ -462,7 +472,9 @@
                 <td>{{ getSubPlanNameForGuidelineRow(data) }}</td> -->
                 <td>{{ data.BgYear_Start }}</td>
                 <td>{{ data.BgYear_End }}</td>
-                <td>{{ data.Guidelines_Name }}</td>
+                <td style="text-align: left;">
+                  {{ data.Guidelines_Name }}
+                </td>
                 <td>{{ data.Guidelines_Short_Name }}</td>
                 <td>{{ data.Order_Seq }}</td>
                 <td>
@@ -522,7 +534,7 @@
                 <th style="width:15%">ชื่อ</th>
                 <th style="width:8%">ชื่อย่อ</th>
                 <th style="width:5%">เรียง</th>
-                <th style="width:7%">จัดการ</th>
+                <th style="width:7%">แก้ไข</th>
                 <th style="width:7%">ลบ</th>
               </tr>
             </thead>
@@ -534,7 +546,9 @@
                 <!-- <td>{{ getGoalNameForValueChainRow(data) }}</td> -->
                 <td>{{ data.BgYear_Start }}</td>
                 <td>{{ data.BgYear_End }}</td>
-                <td>{{ data.Value_Chain_Name }}</td>
+                <td style="text-align: left;">
+                  {{ data.Value_Chain_Name }}
+                </td>
                 <td>{{ data.Value_Chain_Short_Name }}</td>
                 <td>{{ data.Order_Seq }}</td>
                 <td>
@@ -594,7 +608,7 @@
                 <th style="width:18%">ชื่อปัจจัย</th>
                 <th style="width:8%">ชื่อย่อ</th>
                 <th style="width:5%">เรียง</th>
-                <th style="width:7%">จัดการ</th>
+                <th style="width:7%">แก้ไข</th>
                 <th style="width:7%">ลบ</th>
               </tr>
             </thead>
@@ -606,7 +620,9 @@
                 <!-- <td>{{ getGoalNameForFactorRow(data) }}</td> -->
                 <td>{{ data.BgYear_Start }}</td>
                 <td>{{ data.BgYear_End }}</td>
-                <td>{{ data.Factor_Name }}</td>
+                <td style="text-align: left;">
+                  {{ data.Factor_Name }}
+                </td>
                 <td>{{ data.Factor_Short_Name }}</td>
                 <td>{{ data.Order_Seq }}</td>
                 <td>
@@ -650,8 +666,8 @@
 
 <!-- Modal: ประเด็น -->
 <ng-template #addPlanModal let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title">{{ isEditModePlan ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลประเด็น</h5>
+  <div class="modal-header shared-page-header p-3">
+    <h5 class="modal-title text-white">{{ isEditModePlan ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลประเด็น</h5>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
   </div>
   <div class="modal-body">
@@ -688,8 +704,8 @@
 
 <!-- Modal: เป้าหมายระดับประเด็น (Y2) -->
 <ng-template #addGoalModal let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title">{{ isEditModeGoal ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลเป้าหมายระดับประเด็น (Y2)</h5>
+  <div class="modal-header shared-page-header p-3">
+    <h5 class="modal-title text-white">{{ isEditModeGoal ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลเป้าหมายระดับประเด็น (Y2)</h5>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
   </div>
   <div class="modal-body">
@@ -733,8 +749,8 @@
 
 <!-- Modal: ตัวชี้วัดเป้าหมายระดับประเด็น -->
 <ng-template #addTacticModal let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title">{{ isEditModeTactic ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลตัวชี้วัดเป้าหมายระดับประเด็น</h5>
+  <div class="modal-header shared-page-header p-3">
+    <h5 class="modal-title text-white">{{ isEditModeTactic ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลตัวชี้วัดเป้าหมายระดับประเด็น</h5>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
   </div>
   <div class="modal-body">
@@ -789,8 +805,8 @@
 
 <!-- Modal: แผนย่อยของแผนแม่บทฯ -->
 <ng-template #addSubPlanModal let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title">{{ isEditModeSubPlan ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลแผนย่อยของแผนแม่บทฯ</h5>
+  <div class="modal-header shared-page-header p-3">
+    <h5 class="modal-title text-white">{{ isEditModeSubPlan ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลแผนย่อยของแผนแม่บทฯ</h5>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
   </div>
   <div class="modal-body">
@@ -834,8 +850,8 @@
 
 <!-- Modal: เป้าหมายแผนแม่บทย่อย (Y1) -->
 <ng-template #addSubGoalModal let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title">{{ isEditModeSubGoal ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลเป้าหมายแผนแม่บทย่อย (Y1)</h5>
+  <div class="modal-header shared-page-header p-3">
+    <h5 class="modal-title text-white">{{ isEditModeSubGoal ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลเป้าหมายแผนแม่บทย่อย (Y1)</h5>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
   </div>
   <div class="modal-body">
@@ -890,8 +906,8 @@
 
 <!-- Modal: แนวทางการพัฒนาภายใต้แผนย่อย -->
 <ng-template #addGuidelineModal let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title">{{ isEditModeGuideline ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลแนวทางการพัฒนาภายใต้แผนย่อย</h5>
+  <div class="modal-header shared-page-header p-3">
+    <h5 class="modal-title text-white">{{ isEditModeGuideline ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลแนวทางการพัฒนาภายใต้แผนย่อย</h5>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
   </div>
   <div class="modal-body">
@@ -937,8 +953,8 @@
 
 <!-- Modal: หลัก (Value Chain) -->
 <ng-template #addValueChainModal let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title">
+  <div class="modal-header shared-page-header p-3">
+    <h5 class="modal-title text-white">
       {{ isEditModeChainMain ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลหลัก
     </h5>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
@@ -986,8 +1002,8 @@
 
 <!-- Modal: ปัจจัยหลัก -->
 <ng-template #addValueChainFactorModal let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title">
+  <div class="modal-header shared-page-header p-3">
+    <h5 class="modal-title text-white">
       {{ isEditModeFactorMain ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลปัจจัยหลัก
     </h5>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>

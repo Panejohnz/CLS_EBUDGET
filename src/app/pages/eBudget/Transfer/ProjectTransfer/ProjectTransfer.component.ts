@@ -66,7 +66,7 @@ import {
     }
   ],
   templateUrl: './ProjectTransfer.component.html',
-  styles: ``
+  styleUrls: ['./ProjectTransfer.component.scss']
 })
 export class ProjectTransferComponent
   implements OnInit {
@@ -195,8 +195,9 @@ export class ProjectTransferComponent
     this.modalService.open(
       modal,
       {
-        size: 'xl',
-        backdrop: 'static'
+       size:'xl',
+      centered:true,
+      windowClass:'modal-xl-custom'
       }
     );
 
@@ -250,8 +251,10 @@ export class ProjectTransferComponent
     this.modalService.open(
       modal,
       {
-        size: 'xl',
-        backdrop: 'static'
+         size:'xl',
+      centered:true,
+      windowClass:'modal-xl-custom'
+        
       }
     );
 
