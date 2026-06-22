@@ -122,7 +122,7 @@
                         <td>
 
                             <input class="form-control form-control-sm" [(ngModel)]="item.name"
-                                (ngModelChange)="updateDetailItems()">
+                                (ngModelChange)="onNameChange(item, i)">
 
                         </td>
 
@@ -154,7 +154,7 @@
                         <td>
 
                             <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.rate"
-                                (ngModelChange)="calculate(i)">
+                                readonly>
 
                         </td>
 
@@ -168,26 +168,10 @@
                         <!-- meeting type -->
                         <td>
 
-                            <select class="form-select form-select-sm" [(ngModel)]="item.meetingType"
-                                (ngModelChange)="updateDetailItems()">
-
-                                <option value="">
-                                    -- โปรดเลือก --
-                                </option>
-
-                                <option value="ประชุม">
-                                    ประชุม
-                                </option>
-
-                                <option value="ฝึกอบรม">
-                                    ฝึกอบรม
-                                </option>
-
-                                <option value="เจรจา">
-                                    เจรจาระหว่างประเทศ
-                                </option>
-
-                            </select>
+                            <ng-select [items]="meetingTypeOptions" bindLabel="label" bindValue="value"
+                                [(ngModel)]="item.meetingType" appendTo="body"
+                                placeholder="-- โปรดเลือก --" (ngModelChange)="updateDetailItems()">
+                            </ng-select>
 
                         </td>
 
@@ -212,26 +196,10 @@
                         <!-- ระดับ -->
                         <td>
 
-                            <select class="form-select form-select-sm" [(ngModel)]="item.level"
-                                (ngModelChange)="updateDetailItems()">
-
-                                <option value="">
-                                    -- เลือก --
-                                </option>
-
-                                <option value="ระดับ 10 ขึ้นไป">
-                                    ระดับ 10 ขึ้นไป
-                                </option>
-
-                                <option value="ระดับ 9 ขึ้นไป">
-                                    ระดับ 9 ขึ้นไป
-                                </option>
-
-                                <option value="ระดับ 8 ลงมา">
-                                    ระดับ 8 ลงมา
-                                </option>
-
-                            </select>
+                            <ng-select [items]="levelOptions" bindLabel="label" bindValue="value"
+                                [(ngModel)]="item.level" appendTo="body"
+                                placeholder="-- เลือก --" (ngModelChange)="updateDetailItems()">
+                            </ng-select>
 
                         </td>
 
