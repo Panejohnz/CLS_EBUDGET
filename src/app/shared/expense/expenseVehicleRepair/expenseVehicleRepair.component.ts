@@ -114,6 +114,17 @@ export class ExpenseVehicleRepairComponent {
     );
   }
 
+  getExpenseDetailRate(detail: any): number {
+    return Number(
+      detail?.Request_Rate ??
+      detail?.Expense_Rate ??
+      detail?.Rate ??
+      detail?.Price ??
+      detail?.Total ??
+      0
+    ) || 0;
+  }
+
   private resolveExpenseDetailId(row: any): number | null {
     const detailId =
       row?.Fk_Expense_Detail_Id ??
@@ -169,13 +180,16 @@ export class ExpenseVehicleRepairComponent {
     // map
     this.items = rows.map((row: any) => {
 
+      const pairId = this.resolveExpenseDetailId(row);
+      const selected = this.getSelectedExpenseDetail({ pairId } as RepairItem);
+
       return {
 
         requestItemId:
           row.Request_Item_Id || 0,
 
         pairId:
-          this.resolveExpenseDetailId(row),
+          pairId,
 
         name:
           row.Expense_Detail || '',
@@ -187,7 +201,10 @@ export class ExpenseVehicleRepairComponent {
           row.Quantity || 0,
 
         price:
-          row.Price || 0
+          row.Price ||
+          row.Expense_Rate ||
+          this.getExpenseDetailRate(selected) ||
+          0
 
       };
 
@@ -219,6 +236,10 @@ export class ExpenseVehicleRepairComponent {
     const selected = this.getSelectedExpenseDetail(item);
     item.name = selected?.Expense_Detial_Name || '';
 
+    if (selected) {
+      item.price = this.getExpenseDetailRate(selected);
+    }
+
     // ไม่ใช่อื่นๆ → ล้าง
     if (!this.isOtherItem(item)) {
 
@@ -244,6 +265,11 @@ export class ExpenseVehicleRepairComponent {
     if (!userConfirmed) {
       return;
     }
+
+    const item =
+      this.items[index];
+
+    this.serviceebud.DeleteBudgetRequestDetailItem(item?.requestItemId).subscribe();
 
     this.items.splice(index, 1);
 

@@ -88,6 +88,20 @@ export class EbudgetService {
         );
     }
 
+    DeleteBudgetRequestDetailItem(requestItemId: any) {
+        const id =
+            Number(requestItemId || 0);
+
+        if (id <= 0) {
+            return of(null);
+        }
+
+        return this.GatewayGetData({
+            FUNC_CODE: 'FUNC-Delete_Budget_Request_Detail_Item',
+            Request_Id: id
+        });
+    }
+
     UploadData(model: FormData) {
         this.loadingService.show('กำลังอัปโหลดข้อมูล...');
 

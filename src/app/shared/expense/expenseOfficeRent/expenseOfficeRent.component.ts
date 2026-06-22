@@ -152,6 +152,11 @@ yearlyRent:
       return;
     }
 
+    const item =
+      this.rentList[i];
+
+    this.serviceebud.DeleteBudgetRequestDetailItem(item?.requestItemId).subscribe();
+
     this.rentList.splice(i, 1);
 
     this.calculateGrand();

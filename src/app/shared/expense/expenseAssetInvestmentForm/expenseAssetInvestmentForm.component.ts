@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { catchError, forkJoin, of } from 'rxjs';
 import { EbudgetService } from 'src/app/core/services/ebudget.service'
 
 @Component({
@@ -67,6 +68,7 @@ export class ExpenseAssetInvestmentFormComponent {
 
   grandTotal = 0;
   Mas_Expense_Detial_List: any[] = []
+  Mas_Expense_Detial_Rate_List: any[] = []
   private currentExpenseTypeId: any = null;
   isTextMode = false;
 
@@ -138,14 +140,183 @@ export class ExpenseAssetInvestmentFormComponent {
       .subscribe((response: any) => {
 
         this.Mas_Expense_Detial_List =
-          Array.isArray(response.List_Mas_Expense_Detial)
-            ? response.List_Mas_Expense_Detial
+          Array.isArray(response.List_Mas_Expense_Detial ?? response.List_Mas_Expense_Detail)
+            ? (response.List_Mas_Expense_Detial ?? response.List_Mas_Expense_Detail)
             : [];
 
-        this.bindData();
+        this.loadExpenseRates();
 
+      }, () => {
+        this.Mas_Expense_Detial_List = [];
+        this.loadExpenseRates();
       });
 
+  }
+
+  loadExpenseRates() {
+    const expenseIds = [
+      this.currentExpenseTypeId,
+      ...this.Mas_Expense_Detial_List.map((detail: any) =>
+        this.getExpenseDetailId(detail)
+      )
+    ].filter((id: any, index: number, list: any[]) =>
+      id !== null &&
+      id !== undefined &&
+      id !== '' &&
+      list.findIndex((item: any) => this.isSameId(item, id)) === index
+    );
+
+    if (expenseIds.length == 0) {
+      this.Mas_Expense_Detial_Rate_List = [];
+      this.bindData();
+      this.applyRatesToExistingRows();
+      return;
+    }
+
+    const requests = expenseIds.map((expenseId: any) =>
+      this.serviceebud.GatewayGetData({
+        FUNC_CODE: "FUNC-Get_Mas_Expense_Rate",
+        Fk_Expense_Id: expenseId
+      }).pipe(
+        catchError(() => of({ List_Mas_Expense_Rate: [] }))
+      )
+    );
+
+    forkJoin(requests)
+      .subscribe((responses: any[]) => {
+        this.Mas_Expense_Detial_Rate_List =
+          responses.reduce((list: any[], response: any) => {
+            const expenseRateList =
+              response?.List_Mas_Expense_Rate;
+
+            return Array.isArray(expenseRateList)
+              ? list.concat(expenseRateList)
+              : list;
+          }, []);
+
+        this.bindData();
+        this.applyRatesToExistingRows();
+      }, () => {
+        this.Mas_Expense_Detial_Rate_List = [];
+        this.bindData();
+        this.applyRatesToExistingRows();
+      });
+  }
+
+  private toNumber(value: any): number {
+    return Number(value?.toString().replace(/,/g, '')) || 0;
+  }
+
+  private normalizeText(value: any): string {
+    return (value ?? '').toString().trim().toLowerCase().replace(/\s+/g, '');
+  }
+
+  private isSameId(a: any, b: any): boolean {
+    return a !== null &&
+      a !== undefined &&
+      b !== null &&
+      b !== undefined &&
+      Number(a) === Number(b);
+  }
+
+  private getExpenseDetailId(row: any): any {
+    return row?.Expense_Detial_Id ??
+      row?.Expense_Detail_Id ??
+      row?.Fk_Expense_Detial_Id ??
+      row?.Fk_Expense_Detail_Id;
+  }
+
+  private getRowRate(row: any): number {
+    return this.toNumber(
+      row?.Request_Rate ??
+      row?.request_rate ??
+      row?.REQUEST_RATE ??
+      row?.Expense_Rate ??
+      row?.Rate ??
+      row?.Price ??
+      row?.Total
+    );
+  }
+
+  private getRateRowText(row: any): string {
+    return this.normalizeText([
+      row?.Expense_Detail,
+      row?.Expense_Name,
+      row?.Expense_Short_Name,
+      row?.Expense_Detial_Name,
+      row?.Expense_Detial_Short_Name,
+      row?.Rate_Name,
+      row?.Type_Name,
+      row?.Code
+    ].filter(Boolean).join(' '));
+  }
+
+  private getSelectedExpenseDetail(item: any): any {
+    return this.Mas_Expense_Detial_List.find((detail: any) =>
+      this.isSameId(this.getExpenseDetailId(detail), item?.material)
+    );
+  }
+
+  private getExpenseDetailRate(detail: any): number {
+    const detailId = this.getExpenseDetailId(detail);
+    const detailRate = this.getRowRate(detail);
+
+    if (detailRate > 0) {
+      return detailRate;
+    }
+
+    const byId = this.Mas_Expense_Detial_Rate_List.find((row: any) =>
+      this.isSameId(this.getExpenseDetailId(row), detailId)
+    );
+
+    if (byId) {
+      return this.getRowRate(byId);
+    }
+
+    const detailText = this.normalizeText([
+      detail?.Expense_Detial_Name,
+      detail?.Expense_Detail,
+      detail?.Expense_Name,
+      detail?.Expense_Detial_Short_Name
+    ].filter(Boolean).join(' '));
+
+    const byName = this.Mas_Expense_Detial_Rate_List.find((row: any) => {
+      const rateText = this.getRateRowText(row);
+
+      return rateText &&
+        detailText &&
+        (
+          rateText.includes(detailText) ||
+          detailText.includes(rateText)
+        );
+    });
+
+    if (byName) {
+      return this.getRowRate(byName);
+    }
+
+    const detailIndex = this.Mas_Expense_Detial_List.findIndex((item: any) =>
+      this.isSameId(this.getExpenseDetailId(item), detailId)
+    );
+
+    return this.getRowRate(this.Mas_Expense_Detial_Rate_List[detailIndex]);
+  }
+
+  private applyRatesToExistingRows() {
+    if (this.isTextMode) {
+      return;
+    }
+
+    this.items.forEach((item: any, index: number) => {
+      if (!item?.material || this.isOtherDetail(item)) return;
+
+      const rate = this.getExpenseDetailRate(this.getSelectedExpenseDetail(item));
+
+      if (rate > 0) {
+        item.price = rate;
+        this.calculate(index);
+      }
+    });
   }
   onMaterialChange(item: any, selected: any, index: number) {
 
@@ -167,13 +338,7 @@ export class ExpenseAssetInvestmentFormComponent {
       item.standardOut = this.shouldDefaultStandardOut;
     }
 
-    const requestRate =
-      obj?.Request_Rate ??
-      obj?.request_rate ??
-      obj?.REQUEST_RATE ??
-      0;
-
-    item.price = Number(requestRate) || 0;
+    item.price = this.getExpenseDetailRate(obj);
 
     if (!this.isOtherDetail(item)) {
       item.customMaterialName = '';
@@ -398,7 +563,12 @@ export class ExpenseAssetInvestmentFormComponent {
               ? (this.shouldDefaultStandardOut || row.People_Type_B == 1 || isOtherRow)
               : (this.shouldDefaultStandardOut || isOtherRow),
           price:
-            row.Price || 0,
+            this.toNumber(row.Price) ||
+            this.toNumber(row.Expense_Rate) ||
+            this.getExpenseDetailRate(this.Mas_Expense_Detial_List.find((detail: any) =>
+              this.isSameId(this.getExpenseDetailId(detail), row.Fk_Expense_Detail_Id)
+            )) ||
+            0,
 
           qty:
             row.Quantity || 0,
@@ -460,6 +630,11 @@ export class ExpenseAssetInvestmentFormComponent {
     if (!userConfirmed) {
       return;
     }
+
+    const item =
+      this.items[i];
+
+    this.serviceebud.DeleteBudgetRequestDetailItem(item?.requestItemId).subscribe();
 
     this.items.splice(i, 1);
 

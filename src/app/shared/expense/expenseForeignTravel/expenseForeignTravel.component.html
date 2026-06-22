@@ -64,6 +64,10 @@
                         </th>
 
                         <th>
+                            ระดับ
+                        </th>
+
+                        <th>
                             รายการ
                         </th>
 
@@ -99,10 +103,6 @@
                             ประเทศ
                         </th>
 
-                        <th>
-                            ระดับ
-                        </th>
-
                         <th></th>
 
                     </tr>
@@ -118,11 +118,24 @@
                             {{i+1}}
                         </td>
 
+                        <!-- ระดับ -->
+                        <td>
+
+                            <ng-select [items]="levelOptions" bindLabel="label" bindValue="value"
+                                [(ngModel)]="item.level" appendTo="body"
+                                placeholder="-- เลือก --" (ngModelChange)="onLevelChange(item, i)">
+                            </ng-select>
+
+                        </td>
+
                         <!-- รายการ -->
                         <td>
 
-                            <input class="form-control form-control-sm" [(ngModel)]="item.name"
-                                (ngModelChange)="updateDetailItems()">
+                            <ng-select [items]="item.expenseDetails" bindLabel="Expense_Detial_Name"
+                                bindValue="Expense_Detial_Id" [(ngModel)]="item.detailId" appendTo="body"
+                                placeholder="-- เลือกรายการ --" [disabled]="!item.level"
+                                (ngModelChange)="onExpenseDetailChange(item, i)">
+                            </ng-select>
 
                         </td>
 
@@ -154,7 +167,7 @@
                         <td>
 
                             <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.rate"
-                                (ngModelChange)="calculate(i)">
+                                readonly>
 
                         </td>
 
@@ -168,26 +181,8 @@
                         <!-- meeting type -->
                         <td>
 
-                            <select class="form-select form-select-sm" [(ngModel)]="item.meetingType"
+                            <input class="form-control form-control-sm" [(ngModel)]="item.meetingType"
                                 (ngModelChange)="updateDetailItems()">
-
-                                <option value="">
-                                    -- โปรดเลือก --
-                                </option>
-
-                                <option value="ประชุม">
-                                    ประชุม
-                                </option>
-
-                                <option value="ฝึกอบรม">
-                                    ฝึกอบรม
-                                </option>
-
-                                <option value="เจรจา">
-                                    เจรจาระหว่างประเทศ
-                                </option>
-
-                            </select>
 
                         </td>
 
@@ -201,37 +196,10 @@
                         <!-- ประเทศ -->
                         <td>
 
-                            <ng-select [items]="countryOptions" bindLabel="name" bindValue="code"
-                                [(ngModel)]="item.country" appendTo="body" [searchable]="true"
+                            <ng-select [items]="Mas_Country_List" bindLabel="Country_Name" bindValue="Country_Id"
+                                [(ngModel)]="item.Other_Name" appendTo="body" [searchable]="true"
                                 placeholder="-- เลือกประเทศ --" (ngModelChange)="updateDetailItems()">
-
                             </ng-select>
-
-                        </td>
-
-                        <!-- ระดับ -->
-                        <td>
-
-                            <select class="form-select form-select-sm" [(ngModel)]="item.level"
-                                (ngModelChange)="updateDetailItems()">
-
-                                <option value="">
-                                    -- เลือก --
-                                </option>
-
-                                <option value="ระดับ 10 ขึ้นไป">
-                                    ระดับ 10 ขึ้นไป
-                                </option>
-
-                                <option value="ระดับ 9 ขึ้นไป">
-                                    ระดับ 9 ขึ้นไป
-                                </option>
-
-                                <option value="ระดับ 8 ลงมา">
-                                    ระดับ 8 ลงมา
-                                </option>
-
-                            </select>
 
                         </td>
 

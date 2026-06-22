@@ -103,6 +103,11 @@ if (!this.model.Budget_Request_Detail_Item) {
       return;
     }
 
+    const item =
+      this.model.Budget_Request_Detail_Item[i];
+
+    this.serviceebud.DeleteBudgetRequestDetailItem(item?.Request_Item_Id).subscribe();
+
     this.model.Budget_Request_Detail_Item.splice(i, 1);
 
     this.calculateTotal();

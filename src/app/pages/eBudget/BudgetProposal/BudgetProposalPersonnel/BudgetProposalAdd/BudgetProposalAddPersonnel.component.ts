@@ -705,7 +705,31 @@ export class ProjectBudgetProposalAddPersonnelComponent {
         this.model.Department_Id
       );
 
+    if (!this.model.selectedPlanPropos) {
+      basicAlert('warning', 'กรุณาเลือกแผนงาน', '');
+      return;
+    }
+
+    if (!this.model.selectedProductPropos) {
+      basicAlert('warning', 'กรุณาเลือกผลผลิต', '');
+      return;
+    }
+
+    if (!this.model.selectedActivityPropos) {
+      basicAlert('warning', 'กรุณาเลือกกิจกรรม', '');
+      return;
+    }
+
     this.syncBudgetRequestTotal();
+
+    const selectedExpenseTypeId =
+      Number(this.model.selectedExpenseTypeId || 0);
+
+    const budgetRequestDetailItems =
+      (this.model.Budget_Request_Detail_Item || [])
+        .filter((item: any) =>
+          Number(item?.Fk_Expense_Id || 0) === selectedExpenseTypeId
+        );
 
     const payload = {
 
@@ -938,7 +962,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
           : [],
 
         Budget_Request_Detail_Item:
-          this.model.Budget_Request_Detail_Item,
+          budgetRequestDetailItems,
 
         Project_Detail: {
           ...this.model.Project_Detail,

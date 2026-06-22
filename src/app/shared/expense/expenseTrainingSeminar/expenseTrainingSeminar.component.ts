@@ -526,6 +526,11 @@ export class ExpenseTrainingSeminarComponent {
       return;
     }
 
+    const item =
+      this.expenseList[i];
+
+    this.serviceebud.DeleteBudgetRequestDetailItem(item?.requestItemId).subscribe();
+
     this.expenseList.splice(i, 1);
 
     this.updateDetailItems();

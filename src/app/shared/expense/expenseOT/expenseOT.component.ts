@@ -304,6 +304,12 @@ export class ExpenseOTComponent {
       return;
     }
 
+    const row =
+      this.foodList[i];
+
+    this.serviceebud.DeleteBudgetRequestDetailItem(row?.workRequestItemId).subscribe();
+    this.serviceebud.DeleteBudgetRequestDetailItem(row?.holidayRequestItemId).subscribe();
+
     this.foodList.splice(i, 1);
 
     this.updateDetailItems();
