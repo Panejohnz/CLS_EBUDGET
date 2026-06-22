@@ -99,7 +99,7 @@
                         <td>
 
                             <input *ngIf="!row.children" type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end"
-                                [(ngModel)]="row.rate" (ngModelChange)="calculate()">
+                                [(ngModel)]="row.rate" readonly>
 
                         </td>
 

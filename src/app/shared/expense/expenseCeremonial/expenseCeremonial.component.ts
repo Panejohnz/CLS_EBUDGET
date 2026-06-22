@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { catchError, forkJoin, of } from 'rxjs';
 import { EbudgetService } from 'src/app/core/services/ebudget.service'
 
 @Component({
@@ -20,6 +21,10 @@ export class ExpenseCeremonialComponent {
 
   groups: any[] = [];
 
+  Mas_Expense_Detial_List: any[] = [];
+  Mas_Expense_Detial_Rate_List: any[] = [];
+  private currentExpenseTypeId: any = null;
+
   grandTotal = 0;
 
   ngOnInit() {
@@ -32,14 +37,238 @@ export class ExpenseCeremonialComponent {
 
     }
 
-    this.bindData();
+    this.loadExpenseDetails();
 
+  }
+
+  ngDoCheck() {
+    if (!this.model) return;
+
+    if (this.currentExpenseTypeId != this.model.selectedExpenseTypeId) {
+      this.loadExpenseDetails();
+    }
   }
 
   closeModal() {
 
     this.model.dismiss();
 
+  }
+
+  loadExpenseDetails() {
+    this.currentExpenseTypeId = this.model.selectedExpenseTypeId;
+
+    let model = {
+      FUNC_CODE: "FUNC-Get_Mas_Expense_Detial",
+      Fk_Expense_Id: this.model.selectedExpenseTypeId
+    };
+
+    this.serviceebud.GatewayGetData(model)
+      .subscribe((response: any) => {
+        const expenseDetailList =
+          response.List_Mas_Expense_Detial ??
+          response.List_Mas_Expense_Detail;
+
+        this.Mas_Expense_Detial_List =
+          Array.isArray(expenseDetailList)
+            ? expenseDetailList
+            : [];
+
+        this.loadExpenseRates();
+      }, () => {
+        this.Mas_Expense_Detial_List = [];
+        this.loadExpenseRates();
+      });
+  }
+
+  loadExpenseRates() {
+    const expenseIds = [
+      this.model.selectedExpenseTypeId,
+      ...this.Mas_Expense_Detial_List.map((detail: any) =>
+        this.getExpenseDetailId(detail)
+      )
+    ].filter((id: any, index: number, list: any[]) =>
+      id !== null &&
+      id !== undefined &&
+      id !== '' &&
+      list.findIndex((item: any) => this.isSameId(item, id)) === index
+    );
+
+    if (expenseIds.length == 0) {
+      this.Mas_Expense_Detial_Rate_List = [];
+      this.bindData();
+      this.applyMasterRates();
+      return;
+    }
+
+    const requests = expenseIds.map((expenseId: any) =>
+      this.serviceebud.GatewayGetData({
+        FUNC_CODE: "FUNC-Get_Mas_Expense_Rate",
+        Fk_Expense_Id: expenseId
+      }).pipe(
+        catchError(() => of({ List_Mas_Expense_Rate: [] }))
+      )
+    );
+
+    forkJoin(requests)
+      .subscribe((responses: any[]) => {
+        this.Mas_Expense_Detial_Rate_List =
+          responses.reduce((list: any[], response: any) => {
+            const expenseRateList =
+              response?.List_Mas_Expense_Rate;
+
+            return Array.isArray(expenseRateList)
+              ? list.concat(expenseRateList)
+              : list;
+          }, []);
+
+        this.bindData();
+        this.applyMasterRates();
+      }, () => {
+        this.Mas_Expense_Detial_Rate_List = [];
+        this.bindData();
+        this.applyMasterRates();
+      });
+  }
+
+  private toNumber(value: any): number {
+    return Number(value?.toString().replace(/,/g, '')) || 0;
+  }
+
+  private normalizeText(value: any): string {
+    return (value ?? '').toString().trim().toLowerCase().replace(/\s+/g, '');
+  }
+
+  private isSameId(a: any, b: any): boolean {
+    return a !== null &&
+      a !== undefined &&
+      b !== null &&
+      b !== undefined &&
+      Number(a) === Number(b);
+  }
+
+  private getExpenseDetailId(row: any): any {
+    return row?.Expense_Detial_Id ??
+      row?.Expense_Detail_Id ??
+      row?.Fk_Expense_Detial_Id ??
+      row?.Fk_Expense_Detail_Id;
+  }
+
+  private getRowRate(row: any): number {
+    return this.toNumber(
+      row?.Request_Rate ??
+      row?.Expense_Rate ??
+      row?.Rate ??
+      row?.Price ??
+      row?.Total
+    );
+  }
+
+  private getRateRowText(row: any): string {
+    return this.normalizeText([
+      row?.Expense_Detail,
+      row?.Expense_Name,
+      row?.Expense_Short_Name,
+      row?.Expense_Detial_Name,
+      row?.Expense_Detial_Short_Name,
+      row?.Rate_Name,
+      row?.Type_Name,
+      row?.Code
+    ].filter(Boolean).join(' '));
+  }
+
+  private getExpenseDetailByName(name: any): any {
+    const text = this.normalizeText(name);
+
+    if (!text) {
+      return null;
+    }
+
+    return this.Mas_Expense_Detial_List.find((detail: any) => {
+      const detailText = this.normalizeText([
+        detail?.Expense_Detial_Name,
+        detail?.Expense_Detail,
+        detail?.Expense_Name,
+        detail?.Expense_Detial_Short_Name
+      ].filter(Boolean).join(' '));
+
+      return detailText &&
+        (
+          detailText === text ||
+        detailText.includes(text) ||
+          text.includes(detailText)
+        );
+    });
+  }
+
+  private getRateForExpenseDetail(name: any): number {
+    const detail = this.getExpenseDetailByName(name);
+    const detailId = this.getExpenseDetailId(detail);
+    const detailRate = this.getRowRate(detail);
+
+    if (detailRate > 0) {
+      return detailRate;
+    }
+
+    const byId = this.Mas_Expense_Detial_Rate_List.find((row: any) =>
+      this.isSameId(this.getExpenseDetailId(row), detailId)
+    );
+
+    if (byId) {
+      return this.getRowRate(byId);
+    }
+
+    const text = this.normalizeText(name);
+    const byName = this.Mas_Expense_Detial_Rate_List.find((row: any) => {
+      const rateText = this.getRateRowText(row);
+
+      return rateText &&
+        (
+          rateText.includes(text) ||
+          text.includes(rateText)
+        );
+    });
+
+    if (byName) {
+      return this.getRowRate(byName);
+    }
+
+    const detailIndex = this.Mas_Expense_Detial_List.findIndex((item: any) =>
+      this.isSameId(this.getExpenseDetailId(item), detailId)
+    );
+
+    return this.getRowRate(this.Mas_Expense_Detial_Rate_List[detailIndex]);
+  }
+
+  private getRowPrice(row: any): number {
+    const price = this.toNumber(row?.Price);
+
+    return price > 0
+      ? price
+      : this.toNumber(row?.Expense_Rate) ||
+      this.getRateForExpenseDetail(row?.Expense_Detail);
+  }
+
+  private applyMasterRates() {
+    this.groups.forEach((group: any) => {
+      if (this.toNumber(group?.lunch?.price) <= 0) {
+        group.lunch.price = this.getRateForExpenseDetail('ค่าอาหารกลางวัน');
+      }
+
+      if (this.toNumber(group?.snack?.price) <= 0) {
+        group.snack.price = this.getRateForExpenseDetail('ค่าอาหารว่างและเครื่องดื่ม');
+      }
+
+      (group.otherItems || []).forEach((item: any) => {
+        if (this.toNumber(item?.price) <= 0) {
+          item.price = this.getRateForExpenseDetail(item?.name);
+        }
+      });
+
+      this.calculate(group, false);
+    });
+
+    this.calculateGrand();
   }
 
   bindData() {
@@ -127,7 +356,7 @@ export class ExpenseCeremonialComponent {
             row.People || 0,
 
           price:
-            row.Price || 0,
+            this.getRowPrice(row),
 
           total:
             row.Total || 0
@@ -151,7 +380,7 @@ export class ExpenseCeremonialComponent {
             row.People || 0,
 
           price:
-            row.Price || 0,
+            this.getRowPrice(row),
 
           total:
             row.Total || 0
@@ -180,7 +409,7 @@ export class ExpenseCeremonialComponent {
             row.People || 0,
 
           price:
-            row.Price || 0,
+            this.getRowPrice(row),
 
           total:
             row.Total || 0
@@ -476,6 +705,9 @@ export class ExpenseCeremonialComponent {
         Expense_Detail:
           'ค่าอาหารกลางวัน',
 
+        Fk_Expense_Detail_Id:
+          this.getExpenseDetailId(this.getExpenseDetailByName('ค่าอาหารกลางวัน')) || 0,
+
         Times:
           group.lunch.meal,
 
@@ -504,6 +736,9 @@ export class ExpenseCeremonialComponent {
 
         Expense_Detail:
           'ค่าอาหารว่างและเครื่องดื่ม',
+
+        Fk_Expense_Detail_Id:
+          this.getExpenseDetailId(this.getExpenseDetailByName('ค่าอาหารว่างและเครื่องดื่ม')) || 0,
 
         Times:
           group.snack.meal,
@@ -534,6 +769,9 @@ export class ExpenseCeremonialComponent {
 
           Expense_Detail:
             item.name,
+
+          Fk_Expense_Detail_Id:
+            this.getExpenseDetailId(this.getExpenseDetailByName(item.name)) || 0,
 
           Times:
             item.meal,
