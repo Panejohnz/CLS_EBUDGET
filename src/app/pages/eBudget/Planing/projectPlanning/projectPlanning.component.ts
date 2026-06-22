@@ -1277,7 +1277,8 @@ export class ProjectPlanningComponent {
   }
 
   private failRequired(tab: number, message: string): false {
-    this.goTab(tab);
+    this.currentTab = tab;
+    this.firstLoad = tab === 1;
     basicAlert('info', message, '');
     return false;
   }

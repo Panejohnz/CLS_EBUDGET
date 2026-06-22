@@ -7,7 +7,7 @@
 
             <div class="card-body">
                 <br />
-                                <div class="row g-3 align-items-end mb-3">
+                <div class="row g-3 align-items-end mb-3">
                     <div class="col-lg-3">
                         <label class="form-label">หน่วยงาน</label>
                         <ng-select [items]="departmentFilterOptions" bindLabel="name" bindValue="name"
@@ -48,28 +48,28 @@
                             </div>
 
                             <div>
-                        <!-- <button class="btn btn-light me-2" (click)="CancelConfirm()">
+                                <!-- <button class="btn btn-light me-2" (click)="CancelConfirm()">
                             ยกเลิกการยืนยันข้อมูล
                         </button> -->
 
-                        <button class="btn btn-success text-black" (click)="Confirm()">
-                            ยืนยันข้อมูล
-                        </button>
-                    </div>
-
+                                <button class="btn btn-success text-black" (click)="Confirm()">
+                                    ยืนยันข้อมูล
+                                </button>
                             </div>
+
+                        </div>
                     </div>
                 </div>
-<div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+                <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
 
-    <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
-        <!-- sticky header -->
-        <thead class="text-center text-white sticky-header" style="background-color: #556398;">
+                    <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+                        <!-- sticky header -->
+                        <thead class="text-center text-white sticky-header" style="background-color: #556398;">
                             <tr class="text-center">
                                 <th style="width:5%">
                                     <input type="checkbox" (change)="toggleAll($event)">
                                 </th>
-                                 <th style="width:5%">ลำดับ</th>
+                                <th style="width:5%">ลำดับ</th>
                                 <th style="width:10%">หน่วยงาน</th>
                                 <th style="width:10%">แผนงาน</th>
                                 <th style="width:10%">ผลผลิต</th>
@@ -78,21 +78,21 @@
                                 <th style="width:15%">โครงการ</th>
                                 <th style="width:10%">งบประมาณ</th>
                                 <th style="width:10%">สถานะ</th>
-                                        <th style="width:5%">ยกเลิกยืนยัน</th>
+                                <th style="width:5%">ยกเลิกยืนยัน</th>
                             </tr>
                         </thead>
 
                         <tbody>
                             @for(data of pagedGriddata; track $index){
                             <tr>
-                                   <td class="text-center">
+                                <td class="text-center">
                                     <input type="checkbox" [(ngModel)]="data.selected" [disabled]="data.Status_Id == 2"
                                         [style.accent-color]="data.Status_Id == 2 ? '#bfbfbf' : ''"
                                         [style.opacity]="data.Status_Id == 2 ? '0.5' : '1'"
                                         [style.cursor]="data.Status_Id ==2 ? 'not-allowed' : 'pointer'">
                                 </td>
-                                       <td>{{pageStartIndex + $index}}</td>
-                                <td class="text-center">{{data.Department_Name}}</td>
+                                <td>{{pageStartIndex + $index}}</td>
+                                <td class="text-center">{{data.Department_Short_Name}}</td>
                                 <td class="text-center">
                                     <ngb-highlight [result]="data.Plan_Name"
                                         [term]="service.searchTerm">{{data.Plan_Name}}</ngb-highlight>
@@ -113,7 +113,7 @@
                                 <td class="text-end">
                                     {{data.Total | number:'1.2-2'}}
                                 </td>
-                                 <td>
+                                <td>
                                     <span style="
             display:inline-block;
             padding:4px 8px;
@@ -126,19 +126,17 @@
                                         {{ data.Status_Name }}
                                     </span>
                                 </td>
-                               
- <td class="text-center">
-    <button
-        class="btn btn-sm btn-danger text-black"
-        (click)="CancelConfirm(data)"
-        [disabled]="data.Status_Id != 2"
-        [style.opacity]="data.Status_Id != 2 ? '0.5' : '1'">
 
-        ยกเลิกยืนยันข้อมูล
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-danger text-black" (click)="CancelConfirm(data)"
+                                        [disabled]="data.Status_Id != 2"
+                                        [style.opacity]="data.Status_Id != 2 ? '0.5' : '1'">
 
-    </button>
-</td>
-                               
+                                        ยกเลิกยืนยันข้อมูล
+
+                                    </button>
+                                </td>
+
                             </tr>
                             }
                         </tbody>

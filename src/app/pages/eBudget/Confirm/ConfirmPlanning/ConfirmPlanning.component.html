@@ -91,7 +91,7 @@
                                         [style.cursor]="data.Status_Id ==2 ? 'not-allowed' : 'pointer'">
                                 </td>
                                        <td>{{pageStartIndex + $index}}</td>
-                                <td class="text-center">{{data.Department_Name}}</td>
+                                <td class="text-center">{{data.Department_Short_Name}}</td>
                                 <td class="text-center">
                                     <ngb-highlight [result]="data.Plan_Name"
                                         [term]="service.searchTerm">{{data.Plan_Name}}</ngb-highlight>
