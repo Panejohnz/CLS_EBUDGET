@@ -131,6 +131,11 @@ export class ExpenseEquipmentRepairComponent {
       return;
     }
 
+    const item =
+      this.items[index];
+
+    this.serviceebud.DeleteBudgetRequestDetailItem(item?.requestItemId).subscribe();
+
     this.items.splice(index, 1);
 
     this.calculateAll();

@@ -462,6 +462,11 @@ export class ExpenseCarRentalCostComponent {
       return;
     }
 
+    const item =
+      this.getCurrentItems()[i];
+
+    this.serviceebud.DeleteBudgetRequestDetailItem(item?.requestItemId).subscribe();
+
     this.getCurrentItems().splice(i, 1);
 
     this.calculateAll();

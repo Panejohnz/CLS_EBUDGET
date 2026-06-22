@@ -631,6 +631,11 @@ export class ExpenseAssetInvestmentFormComponent {
       return;
     }
 
+    const item =
+      this.items[i];
+
+    this.serviceebud.DeleteBudgetRequestDetailItem(item?.requestItemId).subscribe();
+
     this.items.splice(i, 1);
 
     this.calculateAll();

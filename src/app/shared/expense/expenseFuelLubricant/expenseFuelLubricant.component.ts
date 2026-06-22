@@ -200,6 +200,11 @@ export class ExpenseFuelLubricantComponent {
       return;
     }
 
+    const item =
+      this.list[index];
+
+    this.serviceebud.DeleteBudgetRequestDetailItem(item?.requestItemId).subscribe();
+
     this.list.splice(index, 1);
 
     this.updateDetailItems();

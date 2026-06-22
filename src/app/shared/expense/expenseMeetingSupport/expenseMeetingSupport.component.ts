@@ -259,6 +259,13 @@ export class ExpenseMeetingSupportComponent {
       return;
     }
 
+    const item =
+      this.committeeList[i];
+
+    (item?.roles || []).forEach((role: any) => {
+      this.serviceebud.DeleteBudgetRequestDetailItem(role?.requestItemId).subscribe();
+    });
+
     this.committeeList.splice(i, 1);
 
     this.updateDetailItems();

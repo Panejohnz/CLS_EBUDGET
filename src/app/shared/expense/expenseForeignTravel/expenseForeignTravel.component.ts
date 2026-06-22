@@ -20,83 +20,11 @@ export class ExpenseForeignTravelComponent {
   items: any[] = [];
   Mas_Expense_Detial_List: any[] = [];
   Mas_Expense_Detial_Rate_List: any[] = [];
+  Mas_Country_List: any[] = [];
+  levelOptions: any[] = [];
   private currentExpenseTypeId: any = null;
 
   grandTotal = 0;
-
-  countryOptions = [
-
-    {
-      code: 'JP',
-      name: 'ญี่ปุ่น'
-    },
-
-    {
-      code: 'KR',
-      name: 'เกาหลีใต้'
-    },
-
-    {
-      code: 'CN',
-      name: 'จีน'
-    },
-
-    {
-      code: 'SG',
-      name: 'สิงคโปร์'
-    },
-
-    {
-      code: 'US',
-      name: 'สหรัฐอเมริกา'
-    },
-
-    {
-      code: 'UK',
-      name: 'สหราชอาณาจักร'
-    },
-
-    {
-      code: 'FR',
-      name: 'ฝรั่งเศส'
-    },
-
-    {
-      code: 'DE',
-      name: 'เยอรมนี'
-    }
-
-  ];
-
-  meetingTypeOptions = [
-    {
-      value: 'ประชุม',
-      label: 'ประชุม'
-    },
-    {
-      value: 'ฝึกอบรม',
-      label: 'ฝึกอบรม'
-    },
-    {
-      value: 'เจรจา',
-      label: 'เจรจาระหว่างประเทศ'
-    }
-  ];
-
-  levelOptions = [
-    {
-      value: 'ระดับ 10 ขึ้นไป',
-      label: 'ระดับ 10 ขึ้นไป'
-    },
-    {
-      value: 'ระดับ 9 ขึ้นไป',
-      label: 'ระดับ 9 ขึ้นไป'
-    },
-    {
-      value: 'ระดับ 8 ลงมา',
-      label: 'ระดับ 8 ลงมา'
-    }
-  ];
 
   main = {
 
@@ -154,12 +82,57 @@ export class ExpenseForeignTravelComponent {
           Array.isArray(expenseDetailList)
             ? expenseDetailList
             : [];
+        this.levelOptions = this.buildLevelOptions();
 
         this.loadExpenseRates();
       }, () => {
         this.Mas_Expense_Detial_List = [];
+        this.levelOptions = [];
         this.loadExpenseRates();
       });
+    let model2 = {
+      FUNC_CODE: "FUNC-Get_Mas_Country",
+    };
+
+    this.serviceebud.GatewayGetData(model2)
+      .subscribe((response: any) => {
+        const CountryList =
+          response.List_Mas_Country
+
+        this.Mas_Country_List =
+          Array.isArray(CountryList)
+            ? CountryList.map((country: any) => this.normalizeCountry(country))
+            : [];
+
+      }, () => {
+        this.Mas_Country_List = [];
+      });
+  }
+
+  private normalizeCountry(country: any): any {
+    const countryId =
+      country?.Country_Id ??
+      country?.Country_ID ??
+      country?.CountryId ??
+      country?.Id ??
+      country?.ID ??
+      '';
+
+    const countryName =
+      country?.Country_Name ??
+      country?.Country_Name_Th ??
+      country?.Country_TH ??
+      country?.Country_Thai ??
+      country?.Name_Th ??
+      country?.Name ??
+      country?.Country ??
+      '';
+
+    return {
+      ...country,
+      Country_Id: (countryId ?? '').toString(),
+      Country_Name: countryName
+    };
   }
 
   loadExpenseRates() {
@@ -258,6 +231,37 @@ export class ExpenseForeignTravelComponent {
     ].filter(Boolean).join(' '));
   }
 
+  private buildLevelOptions(): any[] {
+    const levels = this.Mas_Expense_Detial_List
+      .map((detail: any) => detail?.Child_Detial_Name)
+      .filter((level: any) => level !== null && level !== undefined && level !== '');
+
+    return Array.from(new Set(levels)).map((level: any) => ({
+      value: level,
+      label: level
+    }));
+  }
+
+  getExpenseDetailsByLevel(item: any): any[] {
+    if (!item?.level) {
+      return [];
+    }
+
+    return this.Mas_Expense_Detial_List.filter((detail: any) =>
+      detail?.Child_Detial_Name === item.level
+    );
+  }
+
+  private refreshExpenseDetails(item: any) {
+    item.expenseDetails = this.getExpenseDetailsByLevel(item);
+  }
+
+  private getExpenseDetailById(id: any): any {
+    return this.Mas_Expense_Detial_List.find((detail: any) =>
+      this.isSameId(this.getExpenseDetailId(detail), id)
+    );
+  }
+
   private getExpenseDetailByName(name: any): any {
     const text = this.normalizeText(name);
 
@@ -339,7 +343,13 @@ export class ExpenseForeignTravelComponent {
 
       requestItemId: 0,
 
+      requestDetailId: 0,
+
+      detailId: null,
+
       name: '',
+
+      expenseDetails: [],
 
       times: 0,
 
@@ -355,7 +365,7 @@ export class ExpenseForeignTravelComponent {
 
       hasInvite: false,
 
-      country: '',
+      Other_Name: '',
 
       level: ''
 
@@ -400,6 +410,8 @@ export class ExpenseForeignTravelComponent {
 
       rows.find((x: any) =>
         x.Other_Name == 'HEADER'
+      ) ?? rows.find((x: any) =>
+        x.Other_Name != 'HEADER'
       );
 
     if (headerRow) {
@@ -407,7 +419,7 @@ export class ExpenseForeignTravelComponent {
       this.main = {
 
         title:
-          headerRow.Expense_Name || '',
+          headerRow.Purpose || '',
 
         reason:
           headerRow.Reson || '',
@@ -433,11 +445,25 @@ export class ExpenseForeignTravelComponent {
       );
 
     this.items = detailRows.map((row: any) => {
+      const detailId =
+        row.Fk_Expense_Detail_Id ??
+        this.getExpenseDetailId(this.getExpenseDetailByName(row.Expense_Detail));
+      const detail = this.getExpenseDetailById(detailId);
+      const level =
+        row.Level_Name ||
+        detail?.Child_Detial_Name ||
+        '';
 
-      return {
+      const item = {
 
         requestItemId:
           row.Request_Item_Id || 0,
+
+        requestDetailId:
+          row.Fk_Request_Detail_Id || 0,
+
+        detailId:
+          detailId || null,
 
         name:
           row.Expense_Detail || '',
@@ -465,13 +491,19 @@ export class ExpenseForeignTravelComponent {
         hasInvite:
           row.People_Type_A == 1,
 
-        country:
-          row.Other_Name || '',
+        Other_Name:
+          (row.Other_Name ?? '').toString(),
 
         level:
-          row.Level_Name || ''
+          level,
+
+        expenseDetails: []
 
       };
+
+      this.refreshExpenseDetails(item);
+
+      return item;
 
     });
 
@@ -516,6 +548,26 @@ export class ExpenseForeignTravelComponent {
 
     this.updateDetailItems();
   }
+
+  onLevelChange(item: any, index: number) {
+    this.refreshExpenseDetails(item);
+
+    item.detailId = null;
+    item.name = '';
+    item.rate = 0;
+    item.total = 0;
+
+    this.calculate(index);
+  }
+
+  onExpenseDetailChange(item: any, index: number) {
+    const detail = this.getExpenseDetailById(item.detailId);
+
+    item.name = detail?.Expense_Detial_Name || '';
+    item.rate = detail ? this.getRateForExpenseDetail(item.name) : 0;
+
+    this.calculate(index);
+  }
   async removeItem(i: number) {
 
     const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
@@ -523,6 +575,11 @@ export class ExpenseForeignTravelComponent {
     if (!userConfirmed) {
       return;
     }
+
+    const item =
+      this.items[i];
+
+    this.serviceebud.DeleteBudgetRequestDetailItem(item?.requestItemId).subscribe();
 
     this.items.splice(i, 1);
 
@@ -573,6 +630,63 @@ export class ExpenseForeignTravelComponent {
 
   }
 
+  private getRequestBudgetId(): number {
+    return this.toInt(
+      this.model?.Budget_Request?.Request_Id ??
+      this.model?.Request_Id ??
+      this.model?.Fk_Request_Budget ??
+      0
+    );
+  }
+
+  private getRequestDetailId(item?: any): number {
+    return this.toInt(
+      item?.requestDetailId ??
+      this.expenseItem?.Request_Detail_Id ??
+      this.expenseItem?.Fk_Request_Detail_Id ??
+      0
+    );
+  }
+
+  private toInt(value: any): number {
+    return Math.trunc(this.toNumber(value));
+  }
+
+  private toDecimal(value: any): number {
+    return this.toNumber(value);
+  }
+
+  private toMoney(value: any): number {
+    return this.toNumber(value);
+  }
+
+  private toText(value: any): string {
+    return (value ?? '').toString();
+  }
+
+  private getDepartmentId(): number {
+    return this.toInt(
+      this.model?.Department_Id ??
+      this.model?.selectedDepartment?.Department_Id ??
+      this.model?.Project_Plan?.Department_Id ??
+      0
+    );
+  }
+
+  private getDepartmentName(): string {
+    return this.model?.Department_Name ??
+      this.model?.selectedDepartment?.Department_Name ??
+      this.model?.Project_Plan?.Department_Name ??
+      '';
+  }
+
+  private getExpenseName(): string {
+    return this.expenseItem?.Expense_Name ??
+      this.model?.selectedExpenseTypeName ??
+      this.model?.Expense_Name ??
+      '';
+  }
+
   // =========================================
   // UPDATE MODEL
   // =========================================
@@ -591,34 +705,6 @@ export class ExpenseForeignTravelComponent {
       );
 
     // ============================
-    // HEADER
-    // ============================
-
-    this.model.Budget_Request_Detail_Item.push({
-
-      Request_Item_Id: 0,
-
-      Fk_Expense_Id:
-        this.model.selectedExpenseTypeId,
-
-      Other_Name:
-        'HEADER',
-
-      Expense_Name:
-        this.main.title || '',
-
-      Reson:
-        this.main.reason || '',
-
-      Position_Name:
-        this.main.target || '',
-
-      Position_Type_Name:
-        this.main.benefit || ''
-
-    });
-
-    // ============================
     // DETAIL
     // ============================
 
@@ -627,43 +713,139 @@ export class ExpenseForeignTravelComponent {
       this.model.Budget_Request_Detail_Item.push({
 
         Request_Item_Id:
-          item.requestItemId || 0,
+          this.toInt(item.requestItemId),
+
+        Fk_Request_Budget:
+          this.getRequestBudgetId(),
 
         Fk_Expense_Id:
-          this.model.selectedExpenseTypeId,
+          this.toInt(this.model.selectedExpenseTypeId),
 
-        Expense_Detail:
-          item.name || '',
+        Expense_Name:
+          this.toText(this.getExpenseName()),
+
+        Fk_Request_Detail_Id:
+          this.getRequestDetailId(item),
 
         Fk_Expense_Detail_Id:
-          this.getExpenseDetailId(this.getExpenseDetailByName(item.name)) || 0,
+          this.toInt(
+            item.detailId ||
+            this.getExpenseDetailId(this.getExpenseDetailByName(item.name))
+          ),
 
-        Times:
-          Number(item.times) || 0,
+        Expense_Detail:
+          this.toText(item.name),
 
-        People:
-          Number(item.person) || 0,
+        Budget_Amount:
+          this.toMoney(item.total),
 
-        Day:
-          Number(item.days) || 0,
+        Department_Id:
+          this.getDepartmentId(),
 
-        Rate:
-          Number(item.rate) || 0,
+        Department_Name:
+          this.toText(this.getDepartmentName()),
 
-        Total:
-          Number(item.total) || 0,
+        Position_Id:
+          0,
+
+        Position_Name:
+          this.toText(this.main.target),
+
+        Position_Type_Id:
+          0,
+
+        Position_Type_Name:
+          this.toText(this.main.benefit),
+
+        Level_Id:
+          0,
+
+        Level_Name:
+          this.toText(item.level),
+
+        Purpose:
+          this.toText(this.main.title),
+
+        Reson:
+          this.toText(this.main.reason),
+
+        Month_Id:
+          0,
 
         Month_Name:
-          item.meetingType || '',
+          this.toText(item.meetingType),
+
+        Importance_Id:
+          0,
+
+        Importance_Name:
+          '',
+
+        Salary_Amount:
+          0,
+
+        Per_Month:
+          0,
+
+        Per_Year:
+          0,
+
+        Hour:
+          0,
+
+        Day:
+          this.toDecimal(item.days),
+
+        Month:
+          0,
+
+        Other_Name:
+          this.toText(item.Other_Name),
+
+        Times:
+          this.toDecimal(item.times),
+
+        People:
+          this.toDecimal(item.person),
 
         People_Type_A:
           item.hasInvite ? 1 : 0,
 
-        Other_Name:
-          item.country || '',
+        People_Type_B:
+          0,
 
-        Level_Name:
-          item.level || ''
+        People_Type_C:
+          0,
+
+        Sum_People:
+          0,
+
+        Quantity:
+          0,
+
+        Price:
+          0,
+
+        Fk_Unit_Id:
+          0,
+
+        Unit_Name:
+          '',
+
+        Rate:
+          this.toDecimal(item.rate),
+
+        Total:
+          this.toMoney(item.total),
+
+        Active:
+          true,
+
+        Create_User:
+          this.toText(this.model?.Create_User),
+
+        Update_User:
+          this.toText(this.model?.Update_User)
 
       });
 

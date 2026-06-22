@@ -156,6 +156,11 @@ export class ExpenseOtherComponent {
       return;
     }
 
+    const item =
+      this.rentItems[index];
+
+    this.serviceebud.DeleteBudgetRequestDetailItem(item?.requestItemId).subscribe();
+
     this.rentItems.splice(index, 1);
 
     this.calculateGrandTotal();

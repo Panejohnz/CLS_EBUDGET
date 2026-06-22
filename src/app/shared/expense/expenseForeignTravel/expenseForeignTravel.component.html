@@ -64,6 +64,10 @@
                         </th>
 
                         <th>
+                            ระดับ
+                        </th>
+
+                        <th>
                             รายการ
                         </th>
 
@@ -99,10 +103,6 @@
                             ประเทศ
                         </th>
 
-                        <th>
-                            ระดับ
-                        </th>
-
                         <th></th>
 
                     </tr>
@@ -118,11 +118,24 @@
                             {{i+1}}
                         </td>
 
+                        <!-- ระดับ -->
+                        <td>
+
+                            <ng-select [items]="levelOptions" bindLabel="label" bindValue="value"
+                                [(ngModel)]="item.level" appendTo="body"
+                                placeholder="-- เลือก --" (ngModelChange)="onLevelChange(item, i)">
+                            </ng-select>
+
+                        </td>
+
                         <!-- รายการ -->
                         <td>
 
-                            <input class="form-control form-control-sm" [(ngModel)]="item.name"
-                                (ngModelChange)="onNameChange(item, i)">
+                            <ng-select [items]="item.expenseDetails" bindLabel="Expense_Detial_Name"
+                                bindValue="Expense_Detial_Id" [(ngModel)]="item.detailId" appendTo="body"
+                                placeholder="-- เลือกรายการ --" [disabled]="!item.level"
+                                (ngModelChange)="onExpenseDetailChange(item, i)">
+                            </ng-select>
 
                         </td>
 
@@ -168,10 +181,8 @@
                         <!-- meeting type -->
                         <td>
 
-                            <ng-select [items]="meetingTypeOptions" bindLabel="label" bindValue="value"
-                                [(ngModel)]="item.meetingType" appendTo="body"
-                                placeholder="-- โปรดเลือก --" (ngModelChange)="updateDetailItems()">
-                            </ng-select>
+                            <input class="form-control form-control-sm" [(ngModel)]="item.meetingType"
+                                (ngModelChange)="updateDetailItems()">
 
                         </td>
 
@@ -185,20 +196,9 @@
                         <!-- ประเทศ -->
                         <td>
 
-                            <ng-select [items]="countryOptions" bindLabel="name" bindValue="code"
-                                [(ngModel)]="item.country" appendTo="body" [searchable]="true"
+                            <ng-select [items]="Mas_Country_List" bindLabel="Country_Name" bindValue="Country_Id"
+                                [(ngModel)]="item.Other_Name" appendTo="body" [searchable]="true"
                                 placeholder="-- เลือกประเทศ --" (ngModelChange)="updateDetailItems()">
-
-                            </ng-select>
-
-                        </td>
-
-                        <!-- ระดับ -->
-                        <td>
-
-                            <ng-select [items]="levelOptions" bindLabel="label" bindValue="value"
-                                [(ngModel)]="item.level" appendTo="body"
-                                placeholder="-- เลือก --" (ngModelChange)="updateDetailItems()">
                             </ng-select>
 
                         </td>

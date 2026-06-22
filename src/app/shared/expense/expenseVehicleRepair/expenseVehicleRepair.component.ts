@@ -266,6 +266,11 @@ export class ExpenseVehicleRepairComponent {
       return;
     }
 
+    const item =
+      this.items[index];
+
+    this.serviceebud.DeleteBudgetRequestDetailItem(item?.requestItemId).subscribe();
+
     this.items.splice(index, 1);
 
     this.updateDetailItems();

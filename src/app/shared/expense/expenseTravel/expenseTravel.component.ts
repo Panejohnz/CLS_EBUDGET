@@ -282,6 +282,13 @@ export class ExpenseTravelComponent {
       return;
     }
 
+    const section =
+      this.sections[i];
+
+    (section?.details || []).forEach((detail: any) => {
+      this.serviceebud.DeleteBudgetRequestDetailItem(detail?.requestItemId).subscribe();
+    });
+
     this.sections.splice(i, 1);
 
     this.updateDetailItems();
@@ -302,6 +309,11 @@ export class ExpenseTravelComponent {
     if (!userConfirmed) {
       return;
     }
+
+    const detail =
+      section.details[i];
+
+    this.serviceebud.DeleteBudgetRequestDetailItem(detail?.requestItemId).subscribe();
 
     section.details.splice(i, 1);
 
