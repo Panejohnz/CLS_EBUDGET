@@ -1,0 +1,22 @@
+.full-screen-modal .modal-dialog {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    height: 95vh;
+    margin: 1rem auto !important;
+}
+
+.full-screen-modal .modal-content {
+    height: 95vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.full-screen-modal .modal-header,
+.full-screen-modal .modal-footer {
+    flex-shrink: 0;
+}
+
+.full-screen-modal .modal-body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+}
