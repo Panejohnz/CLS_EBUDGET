@@ -395,8 +395,8 @@
                                                                                     *ngIf="item.isNewBudget; else showExpenseName">
                                                                                     <ng-select
                                                                                         [items]="item.Expense_List_Options || Mas_Expense_Lists"
-                                                                                        bindLabel="Expense_Type_Name"
-                                                                                        bindValue="Expense_Type_Id"
+                                                                                        bindLabel="Expense_Name"
+                                                                                        bindValue="Expense_Id"
                                                                                         [(ngModel)]="item.Fk_Expense_List"
                                                                                         (change)="onExpenseListChange(item, $event)"
                                                                                         placeholder="-- เลือกรายการ --"

@@ -579,8 +579,8 @@ export class ProjectAllocationComponent implements OnInit {
       .subscribe((response: any) => {
 
         const expenseOptions =
-          Array.isArray(response.Mas_Expense_Types)
-            ? response.Mas_Expense_Types
+          Array.isArray(response.Mas_Expense_Lists)
+            ? response.Mas_Expense_Lists
             : [];
 
         budget.expanded = true;
