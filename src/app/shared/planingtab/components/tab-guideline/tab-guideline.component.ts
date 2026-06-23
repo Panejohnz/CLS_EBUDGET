@@ -275,7 +275,8 @@ export class TabGuidelineComponent {
 
     this.modalRef = this.modalService.open(modal, {
       backdrop: 'static',
-      windowClass: 'modal-95'
+      //windowClass: 'modal-95'
+      windowClass: 'full-screen-modal' //'modal-95'
     });
   }
 
