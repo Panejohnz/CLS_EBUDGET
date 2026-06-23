@@ -484,7 +484,7 @@ export class ProjectBudgetProposalComponent {
 
     this.modalRef = this.modalService.open(modal, {
       backdrop: 'static',
-      windowClass: 'modal-95'
+      windowClass: 'full-screen-modal'
     });
 
     this.modalRef.result.then(

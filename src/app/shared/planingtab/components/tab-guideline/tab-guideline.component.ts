@@ -310,7 +310,7 @@ export class TabGuidelineComponent {
 
     this.modalService.open(content, {
       backdrop: 'static',
-      windowClass: 'modal-95'
+      windowClass: 'full-screen-modal'
     }).result.then(() => {
       item._useMultiplier = true;
       item.multiplierTotal = (item.otherExpenses || []).reduce((sum: number, i: any) => {

@@ -572,7 +572,8 @@ export class ProjectPlanningComponent {
 
     this.modalRef = this.modalService.open(modal, {
       backdrop: 'static',
-      windowClass: 'modal-95'
+      windowClass: 'full-screen-modal' //'modal-95'
+      
     });
   }
   copyProjectList: any[] = [];

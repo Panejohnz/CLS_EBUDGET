@@ -146,7 +146,7 @@ export class ProjectBudgetProposalAddOperatingComponent {
     this.formTitle = this.expenseItem.Expense_Name
     this.modalRef = this.modalService.open(modal, {
       backdrop: 'static',
-      windowClass: 'modal-95'
+      windowClass: 'full-screen-modal'
     })
   }
 }
