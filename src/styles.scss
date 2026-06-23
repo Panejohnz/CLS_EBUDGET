@@ -76,6 +76,32 @@
 
 }
 
+.full-screen-modal .modal-dialog {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    margin: 1rem auto !important;
+}
+
+.full-screen-modal .modal-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.full-screen-modal .modal-body {
+    overflow: visible;
+}
+
+.full-screen-modal .modal-footer {
+    flex-shrink: 0;
+    background: #fff;
+    border-top: 1px solid #dee2e6;
+
+    /* fix footer */
+    position: sticky;
+    bottom: 0;
+    z-index: 1055;
+}
+
 .shared-page-header {
     background-color: #556398 !important;
     color: #fff !important;

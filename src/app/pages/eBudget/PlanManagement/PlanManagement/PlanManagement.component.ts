@@ -628,13 +628,9 @@ export class PlanManagementComponent {
 
     }
 
-    this.modalRef =
-      this.modalService.open(modal, {
-
+    this.modalRef = this.modalService.open(modal, {
         backdrop: 'static',
-
-        windowClass: 'modal-95'
-
+        windowClass: 'full-screen-modal' //'modal-95'
       });
 
     this.modalRef.result.then(
