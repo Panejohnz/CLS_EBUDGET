@@ -488,7 +488,7 @@ export class TabGeneralComponent {
 
     if (type === 2) {
       this.data.Operation2 =
-        e.target.checked ? 2 : 0;
+        e.target.checked ? 1 : 0;
     }
   }
 

@@ -579,8 +579,8 @@ export class ProjectAllocationComponent implements OnInit {
       .subscribe((response: any) => {
 
         const expenseOptions =
-          Array.isArray(response.Mas_Expense_Lists)
-            ? response.Mas_Expense_Lists
+          Array.isArray(response.Mas_Expense_Types)
+            ? response.Mas_Expense_Types
             : [];
 
         budget.expanded = true;
@@ -802,7 +802,7 @@ export class ProjectAllocationComponent implements OnInit {
 
         sum +
 
-        (Number(item.Adjust1) || 0),
+        (Number(item.Adjust1Temp) || 0),
 
       0
 
@@ -818,7 +818,7 @@ export class ProjectAllocationComponent implements OnInit {
 
         sum +
 
-        (Number(item.Adjust2) || 0),
+        (Number(item.Adjust2Temp) || 0),
 
       0
 
@@ -834,7 +834,7 @@ export class ProjectAllocationComponent implements OnInit {
 
         sum +
 
-        (Number(item.Adjust3) || 0),
+        (Number(item.Adjust3Temp) || 0),
 
       0
 

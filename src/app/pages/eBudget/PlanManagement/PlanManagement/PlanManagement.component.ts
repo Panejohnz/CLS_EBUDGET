@@ -36,6 +36,9 @@ export class PlanManagementComponent {
   planFilterOptions: any[] = [];
   productFilterOptions: any[] = [];
   activityFilterOptions: any[] = [];
+  Mas_Plan_Lists: any[] = [];
+  Mas_Product_Lists: any[] = [];
+  Mas_Activity_Lists: any[] = [];
   modalRef: any;
   total$!: Observable<number>;
   project_budget = {
@@ -154,8 +157,30 @@ export class PlanManagementComponent {
 
       this.griddataTemp = [...this.allData];
 
+      this.loadMasSearchOptions();
+
+    });
+
+  }
+
+  private loadMasSearchOptions() {
+    const model = {
+      FUNC_CODE: "FUNC-GET_Mas_Search",
+      BgYear: this.currentYear
+    };
+
+    this.servicebud.GatewayGetData(model).subscribe((response: any) => {
       this.department = Array.isArray(response.Mas_Department_Lists)
         ? response.Mas_Department_Lists
+        : [];
+      this.Mas_Plan_Lists = Array.isArray(response.Mas_Plan_Lists)
+        ? response.Mas_Plan_Lists
+        : [];
+      this.Mas_Product_Lists = Array.isArray(response.Mas_Product_Lists)
+        ? response.Mas_Product_Lists
+        : [];
+      this.Mas_Activity_Lists = Array.isArray(response.Mas_Activity_Lists)
+        ? response.Mas_Activity_Lists
         : [];
 
       if (this.selectedDepartmentId != null) {
@@ -170,9 +195,7 @@ export class PlanManagementComponent {
 
       this.buildFilterOptions();
       this.applyFilter();
-
     });
-
   }
 
   private getUniqueFilterOptions(data: any[], key: string): any[] {
@@ -210,30 +233,20 @@ export class PlanManagementComponent {
   }
 
   private updateCascadingFilterOptions() {
-    const departmentData = this.filterByDepartment([...this.griddataTemp]);
-
-    this.planFilterOptions = this.getUniqueFilterOptions(departmentData, 'Plan_Name');
+    this.planFilterOptions = this.getUniqueFilterOptions(this.Mas_Plan_Lists, 'Plan_Name');
     if (!this.hasFilterOption(this.planFilterOptions, this.selectedPlanName)) {
       this.selectedPlanName = null;
       this.selectedProductName = null;
       this.selectedActivityName = null;
     }
 
-    const planData = this.selectedPlanName
-      ? departmentData.filter(x => x.Plan_Name == this.selectedPlanName)
-      : departmentData;
-
-    this.productFilterOptions = this.getUniqueFilterOptions(planData, 'Product_Name');
+    this.productFilterOptions = this.getUniqueFilterOptions(this.Mas_Product_Lists, 'Product_Name');
     if (!this.hasFilterOption(this.productFilterOptions, this.selectedProductName)) {
       this.selectedProductName = null;
       this.selectedActivityName = null;
     }
 
-    const productData = this.selectedProductName
-      ? planData.filter(x => x.Product_Name == this.selectedProductName)
-      : planData;
-
-    this.activityFilterOptions = this.getUniqueFilterOptions(productData, 'Activity_Name');
+    this.activityFilterOptions = this.getUniqueFilterOptions(this.Mas_Activity_Lists, 'Activity_Name');
     if (!this.hasFilterOption(this.activityFilterOptions, this.selectedActivityName)) {
       this.selectedActivityName = null;
     }
@@ -729,6 +742,8 @@ export class PlanManagementComponent {
 
       noBudget: x.Used_BG === 0,
       consult: x.Is_Consult === 1,
+      consultSelf: Number(x.Operation1 || 0) === 1,
+      consultHire: Number(x.Operation2 || 0) === 1,
 
       quarters: this.convertMonths(x.Months),
 
@@ -747,6 +762,8 @@ export class PlanManagementComponent {
 
         noBudget: s.Used_BG === 0,
         consult: s.Is_Consult === 1,
+        consultSelf: Number(s.Operation1 || 0) === 1,
+        consultHire: Number(s.Operation2 || 0) === 1,
 
         quarters: this.convertMonths(s.Months),
 

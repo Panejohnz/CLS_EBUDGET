@@ -45,6 +45,7 @@ export class TabGuidelineComponent {
   activities: any[] = [];
 
   ngOnChanges() {
+    console.log('activities',this.model.activities);
 
     if (this.model?.activities?.length) {
 
@@ -52,6 +53,8 @@ export class TabGuidelineComponent {
       this.reIndexSort();
       this.activities = this.model.activities;
       this.model.activities.forEach((act: any) => {
+
+        this.syncOperationFlags(act);
 
         if (act.noBudget == null) {
           act.noBudget = this.getDefaultNoBudget();
@@ -62,6 +65,8 @@ export class TabGuidelineComponent {
           let subSum = 0;
 
           act.SubActivities.forEach((sub: any) => {
+
+            this.syncOperationFlags(sub);
 
             if (sub.noBudget == null) {
               sub.noBudget = act.noBudget;
@@ -123,6 +128,8 @@ export class TabGuidelineComponent {
       name: '',
       owner: '',
       noBudget,
+      consultSelf: false,
+      consultHire: false,
       quarters: this.generateYear(),
       SubActivities: [],
       otherExpenses: []
@@ -166,6 +173,8 @@ export class TabGuidelineComponent {
       id: Date.now(),
       name: '',
       noBudget: activity.noBudget ?? this.getDefaultNoBudget(),
+      consultSelf: false,
+      consultHire: false,
       quarters: this.generateYear(),
       SubActivities: []
     });
@@ -734,6 +743,35 @@ export class TabGuidelineComponent {
     const data = this.model?.Project_Plan || this.model;
 
     return Number(data?.Used_BG) === 2;
+  }
+
+  private syncOperationFlags(item: any): void {
+    if (!item) {
+      return;
+    }
+
+    if (item.consultSelf == null) {
+      item.consultSelf =
+        this.getOperationValue(item, 'Operation1') === 1;
+    }
+
+    if (item.consultHire == null) {
+      item.consultHire =
+        this.getOperationValue(item, 'Operation2') === 1;
+    }
+  }
+
+  private getOperationValue(item: any, field: 'Operation1' | 'Operation2'): number {
+    const upperField = field.toUpperCase();
+    const lowerField =
+      field.charAt(0).toLowerCase() + field.slice(1);
+
+    return Number(
+      item[field] ??
+      item[upperField] ??
+      item[lowerField] ??
+      0
+    );
   }
 
   movingIndex: number | null = null;

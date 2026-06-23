@@ -352,6 +352,8 @@ export class ProjectPlanningComponent implements OnInit, OnChanges {
 
       noBudget: x.Used_BG === 0,
       consult: x.Is_Consult === 1,
+      consultSelf: Number(x.Operation1 || 0) === 1,
+      consultHire: Number(x.Operation2 || 0) === 1,
 
       quarters: this.convertMonths(x.Months),
 
@@ -370,6 +372,8 @@ export class ProjectPlanningComponent implements OnInit, OnChanges {
 
         noBudget: s.Used_BG === 0,
         consult: s.Is_Consult === 1,
+        consultSelf: Number(s.Operation1 || 0) === 1,
+        consultHire: Number(s.Operation2 || 0) === 1,
 
         quarters: this.convertMonths(s.Months),
 
@@ -605,6 +609,8 @@ export class ProjectPlanningComponent implements OnInit, OnChanges {
 
       Used_BG: act.noBudget ? 0 : 1,
       Is_Consult: act.consult ? 1 : 0,
+      Operation1: act.consultSelf ? 1 : 0,
+      Operation2: act.consultHire ? 1 : 0,
 
       Months: act.quarters.flatMap((q: any) => q.months),
 
@@ -620,6 +626,8 @@ export class ProjectPlanningComponent implements OnInit, OnChanges {
 
           Used_BG: sub.noBudget ? 0 : 1,
           Is_Consult: sub.consult ? 1 : 0,
+          Operation1: sub.consultSelf ? 1 : 0,
+          Operation2: sub.consultHire ? 1 : 0,
 
           Months: sub.quarters.flatMap((q: any) => q.months),
 

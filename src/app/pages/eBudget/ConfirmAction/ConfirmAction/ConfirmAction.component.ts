@@ -39,6 +39,10 @@ export class ConfirmActionComponent {
   planFilterOptions: any[] = [];
   productFilterOptions: any[] = [];
   activityFilterOptions: any[] = [];
+  Mas_Department_Lists: any[] = [];
+  Mas_Plan_Lists: any[] = [];
+  Mas_Product_Lists: any[] = [];
+  Mas_Activity_Lists: any[] = [];
 
     griddata: any[] = [
         {
@@ -133,11 +137,35 @@ export class ConfirmActionComponent {
             this.allData = Array.isArray(response.List_Budget_Plan_Main.Data)
                 ? response.List_Budget_Plan_Main.Data
                 : [];
-            this.buildFilterOptions();
-            this.applyFilter();
+            this.loadMasSearchOptions();
 
         })
     }
+  private loadMasSearchOptions() {
+    const model = {
+      FUNC_CODE: "FUNC-GET_Mas_Search",
+      BgYear: this.currentYear
+    };
+
+    this.serviceebud.GatewayGetData(model).subscribe((response: any) => {
+      this.Mas_Department_Lists = Array.isArray(response.Mas_Department_Lists)
+        ? response.Mas_Department_Lists
+        : [];
+      this.Mas_Plan_Lists = Array.isArray(response.Mas_Plan_Lists)
+        ? response.Mas_Plan_Lists
+        : [];
+      this.Mas_Product_Lists = Array.isArray(response.Mas_Product_Lists)
+        ? response.Mas_Product_Lists
+        : [];
+      this.Mas_Activity_Lists = Array.isArray(response.Mas_Activity_Lists)
+        ? response.Mas_Activity_Lists
+        : [];
+
+      this.buildFilterOptions();
+      this.applyFilter();
+    });
+  }
+
   private getUniqueFilterOptions(data: any[], key: string): any[] {
     const seen = new Set<string>();
 
@@ -169,7 +197,7 @@ export class ConfirmActionComponent {
   }
 
   private updateCascadingFilterOptions() {
-    this.departmentFilterOptions = this.getUniqueFilterOptions(this.allData, 'Department_Name');
+    this.departmentFilterOptions = this.getUniqueFilterOptions(this.Mas_Department_Lists, 'Department_Name');
     if (!this.hasFilterOption(this.departmentFilterOptions, this.selectedDepartmentName)) {
       this.selectedDepartmentName = null;
       this.selectedPlanName = null;
@@ -177,30 +205,20 @@ export class ConfirmActionComponent {
       this.selectedActivityName = null;
     }
 
-    const departmentData = this.filterByDepartment([...this.allData]);
-
-    this.planFilterOptions = this.getUniqueFilterOptions(departmentData, 'Plan_Name');
+    this.planFilterOptions = this.getUniqueFilterOptions(this.Mas_Plan_Lists, 'Plan_Name');
     if (!this.hasFilterOption(this.planFilterOptions, this.selectedPlanName)) {
       this.selectedPlanName = null;
       this.selectedProductName = null;
       this.selectedActivityName = null;
     }
 
-    const planData = this.selectedPlanName
-      ? departmentData.filter(x => x.Plan_Name == this.selectedPlanName)
-      : departmentData;
-
-    this.productFilterOptions = this.getUniqueFilterOptions(planData, 'Product_Name');
+    this.productFilterOptions = this.getUniqueFilterOptions(this.Mas_Product_Lists, 'Product_Name');
     if (!this.hasFilterOption(this.productFilterOptions, this.selectedProductName)) {
       this.selectedProductName = null;
       this.selectedActivityName = null;
     }
 
-    const productData = this.selectedProductName
-      ? planData.filter(x => x.Product_Name == this.selectedProductName)
-      : planData;
-
-    this.activityFilterOptions = this.getUniqueFilterOptions(productData, 'Activity_Name');
+    this.activityFilterOptions = this.getUniqueFilterOptions(this.Mas_Activity_Lists, 'Activity_Name');
     if (!this.hasFilterOption(this.activityFilterOptions, this.selectedActivityName)) {
       this.selectedActivityName = null;
     }

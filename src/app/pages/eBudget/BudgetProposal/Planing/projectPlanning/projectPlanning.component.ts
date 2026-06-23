@@ -252,6 +252,10 @@ export class ProjectPlanningComponent {
 
       noBudget: x.Used_BG === 0,
       consult: x.Is_Consult === 1,
+      Operation1: this.getOperationValue(x, 'Operation1'),
+      Operation2: this.getOperationValue(x, 'Operation2'),
+      consultSelf: this.getOperationValue(x, 'Operation1') === 1,
+      consultHire: this.getOperationValue(x, 'Operation2') === 1,
 
       quarters: this.convertMonths(x.Months),
 
@@ -271,6 +275,10 @@ export class ProjectPlanningComponent {
 
         noBudget: s.Used_BG === 0,
         consult: s.Is_Consult === 1,
+        Operation1: this.getOperationValue(s, 'Operation1'),
+        Operation2: this.getOperationValue(s, 'Operation2'),
+        consultSelf: this.getOperationValue(s, 'Operation1') === 1,
+        consultHire: this.getOperationValue(s, 'Operation2') === 1,
 
         quarters: this.convertMonths(s.Months),
 
@@ -309,6 +317,19 @@ export class ProjectPlanningComponent {
       { quarter: 4, months: months.slice(9, 12) }
     ];
   }
+  private getOperationValue(item: any, field: 'Operation1' | 'Operation2'): number {
+    const upperField = field.toUpperCase();
+    const lowerField =
+      field.charAt(0).toLowerCase() + field.slice(1);
+
+    return Number(
+      item?.[field] ??
+      item?.[upperField] ??
+      item?.[lowerField] ??
+      0
+    );
+  }
+
   convertMonths(months: any[]) {
 
     const MONTHS = [
@@ -531,6 +552,8 @@ export class ProjectPlanningComponent {
 
       Used_BG: act.noBudget ? 0 : 1,
       Is_Consult: act.consult ? 1 : 0,
+      Operation1: act.consultSelf ? 1 : 0,
+      Operation2: act.consultHire ? 1 : 0,
 
       Months: act.quarters.flatMap((q: any) => q.months),
 
@@ -547,6 +570,8 @@ export class ProjectPlanningComponent {
 
           Used_BG: sub.noBudget ? 0 : 1,
           Is_Consult: sub.consult ? 1 : 0,
+          Operation1: sub.consultSelf ? 1 : 0,
+          Operation2: sub.consultHire ? 1 : 0,
 
           Months: sub.quarters.flatMap((q: any) => q.months),
 

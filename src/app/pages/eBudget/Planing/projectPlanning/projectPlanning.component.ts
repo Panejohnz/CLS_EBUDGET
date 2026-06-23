@@ -99,6 +99,8 @@ export class ProjectPlanningComponent {
   Mas_Expense_Lists: any[] = []
   Mas_Product: any[] = []
   Mas_Activity: any[] = []
+  Mas_Product_Lists: any[] = []
+  Mas_Activity_Lists: any[] = []
   Mas_Budget_Types: any[] = []
 
 
@@ -216,8 +218,29 @@ export class ProjectPlanningComponent {
       this.allData = Array.isArray(response.List_Project_Plan_Data_Table.Data)
         ? response.List_Project_Plan_Data_Table.Data
         : [];
+      this.griddataTemp = [...this.allData];
+      this.loadMasSearchOptions();
+    })
+  }
+
+  private loadMasSearchOptions() {
+    const model = {
+      FUNC_CODE: "FUNC-GET_Mas_Search",
+      BgYear: this.currentYear
+    };
+
+    this.serviceebud.GatewayGetData(model).subscribe((response: any) => {
       this.department = Array.isArray(response.Mas_Department_Lists)
         ? response.Mas_Department_Lists
+        : [];
+      this.Mas_Plan_Lists = Array.isArray(response.Mas_Plan_Lists)
+        ? response.Mas_Plan_Lists
+        : [];
+      this.Mas_Product_Lists = Array.isArray(response.Mas_Product_Lists)
+        ? response.Mas_Product_Lists
+        : [];
+      this.Mas_Activity_Lists = Array.isArray(response.Mas_Activity_Lists)
+        ? response.Mas_Activity_Lists
         : [];
 
       if (this.selectedDepartmentId != null) {
@@ -232,14 +255,12 @@ export class ProjectPlanningComponent {
       }
 
       this.syncLockedDepartmentFilter();
-
-      this.griddataTemp = [...this.allData];
       this.buildFilterOptions();
       this.griddata = [...this.allData];
       this.applyFilter();
       this.currentTab = 1
       this.firstLoad = true;
-    })
+    });
   }
 
   get Total(): number {
@@ -314,30 +335,20 @@ export class ProjectPlanningComponent {
   }
 
   private updateCascadingFilterOptions() {
-    const departmentData = this.filterByDepartment([...this.griddataTemp]);
-
-    this.planFilterOptions = this.getUniqueFilterOptions(departmentData, 'Plan_Name');
+    this.planFilterOptions = this.getUniqueFilterOptions(this.Mas_Plan_Lists, 'Plan_Name');
     if (!this.hasFilterOption(this.planFilterOptions, this.selectedPlanName)) {
       this.selectedPlanName = null;
       this.selectedProductName = null;
       this.selectedActivityName = null;
     }
 
-    const planData = this.selectedPlanName
-      ? departmentData.filter(x => x.Plan_Name == this.selectedPlanName)
-      : departmentData;
-
-    this.productFilterOptions = this.getUniqueFilterOptions(planData, 'Product_Name');
+    this.productFilterOptions = this.getUniqueFilterOptions(this.Mas_Product_Lists, 'Product_Name');
     if (!this.hasFilterOption(this.productFilterOptions, this.selectedProductName)) {
       this.selectedProductName = null;
       this.selectedActivityName = null;
     }
 
-    const productData = this.selectedProductName
-      ? planData.filter(x => x.Product_Name == this.selectedProductName)
-      : planData;
-
-    this.activityFilterOptions = this.getUniqueFilterOptions(productData, 'Activity_Name');
+    this.activityFilterOptions = this.getUniqueFilterOptions(this.Mas_Activity_Lists, 'Activity_Name');
     if (!this.hasFilterOption(this.activityFilterOptions, this.selectedActivityName)) {
       this.selectedActivityName = null;
     }
@@ -619,6 +630,8 @@ export class ProjectPlanningComponent {
 
       noBudget: x.Used_BG === 0,
       consult: x.Is_Consult === 1,
+      consultSelf: Number(x.Operation1 || 0) === 1,
+      consultHire: Number(x.Operation2 || 0) === 1,
 
       quarters: this.convertMonths(x.Months),
 
@@ -638,6 +651,8 @@ export class ProjectPlanningComponent {
 
         noBudget: s.Used_BG === 0,
         consult: s.Is_Consult === 1,
+        consultSelf: Number(s.Operation1 || 0) === 1,
+        consultHire: Number(s.Operation2 || 0) === 1,
 
         quarters: this.convertMonths(s.Months),
 
@@ -1318,7 +1333,7 @@ export class ProjectPlanningComponent {
       }
     }
 
-    if (Number(data?.Operation1 || 0) !== 1 && Number(data?.Operation2 || 0) !== 2) {
+    if (Number(data?.Operation1 || 0) !== 1 && Number(data?.Operation2 || 0) !== 1) {
       return this.failRequired(1, 'กรุณาเลือกการดำเนินการ');
     }
 
@@ -1457,6 +1472,8 @@ export class ProjectPlanningComponent {
 
       Used_BG: act.noBudget ? 0 : 1,
       Is_Consult: act.consult ? 1 : 0,
+      Operation1: act.consultSelf ? 1 : 0,
+      Operation2: act.consultHire ? 1 : 0,
 
       Months: this.mapMonthsForSave(act.quarters),
 
@@ -1472,6 +1489,8 @@ export class ProjectPlanningComponent {
 
           Used_BG: sub.noBudget ? 0 : 1,
           Is_Consult: sub.consult ? 1 : 0,
+          Operation1: sub.consultSelf ? 1 : 0,
+          Operation2: sub.consultHire ? 1 : 0,
 
           Months: this.mapMonthsForSave(sub.quarters),
 

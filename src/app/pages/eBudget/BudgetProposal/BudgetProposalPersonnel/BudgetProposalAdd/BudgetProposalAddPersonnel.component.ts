@@ -1212,6 +1212,8 @@ export class ProjectBudgetProposalAddPersonnelComponent {
 
       Used_BG: act.noBudget ? 0 : 1,
       Is_Consult: act.consult ? 1 : 0,
+      Operation1: act.consultSelf ? 1 : 0,
+      Operation2: act.consultHire ? 1 : 0,
 
       Months:
         act.quarters.flatMap((q: any) => q.months),
@@ -1239,6 +1241,12 @@ export class ProjectBudgetProposalAddPersonnelComponent {
 
           Is_Consult:
             sub.consult ? 1 : 0,
+
+          Operation1:
+            sub.consultSelf ? 1 : 0,
+
+          Operation2:
+            sub.consultHire ? 1 : 0,
 
           Months:
             sub.quarters.flatMap((q: any) => q.months),

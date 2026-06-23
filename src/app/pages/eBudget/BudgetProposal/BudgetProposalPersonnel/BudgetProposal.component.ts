@@ -73,6 +73,9 @@ export class ProjectBudgetProposalComponent {
   planFilterOptions: any[] = [];
   productFilterOptions: any[] = [];
   activityFilterOptions: any[] = [];
+  Mas_Plan_Lists: any[] = [];
+  Mas_Product_Lists: any[] = [];
+  Mas_Activity_Lists: any[] = [];
 
   griddataTemp: any[] = [];
   get pagedGriddata(): any[] {
@@ -162,8 +165,30 @@ export class ProjectBudgetProposalComponent {
 
       this.griddataTemp = [...this.allData];
 
+      this.loadMasSearchOptions();
+
+    });
+
+  }
+
+  private loadMasSearchOptions() {
+    const model = {
+      FUNC_CODE: "FUNC-GET_Mas_Search",
+      BgYear: this.currentYear
+    };
+
+    this.servicebud.GatewayGetData(model).subscribe((response: any) => {
       this.department = Array.isArray(response.Mas_Department_Lists)
         ? response.Mas_Department_Lists
+        : [];
+      this.Mas_Plan_Lists = Array.isArray(response.Mas_Plan_Lists)
+        ? response.Mas_Plan_Lists
+        : [];
+      this.Mas_Product_Lists = Array.isArray(response.Mas_Product_Lists)
+        ? response.Mas_Product_Lists
+        : [];
+      this.Mas_Activity_Lists = Array.isArray(response.Mas_Activity_Lists)
+        ? response.Mas_Activity_Lists
         : [];
 
       if (this.selectedDepartmentId != null) {
@@ -178,9 +203,7 @@ export class ProjectBudgetProposalComponent {
 
       this.buildFilterOptions();
       this.applyFilter();
-
     });
-
   }
 
   private getUniqueFilterOptions(data: any[], key: string): any[] {
@@ -218,30 +241,20 @@ export class ProjectBudgetProposalComponent {
   }
 
   private updateCascadingFilterOptions() {
-    const departmentData = this.filterByDepartment([...this.griddataTemp]);
-
-    this.planFilterOptions = this.getUniqueFilterOptions(departmentData, 'Plan_Name');
+    this.planFilterOptions = this.getUniqueFilterOptions(this.Mas_Plan_Lists, 'Plan_Name');
     if (!this.hasFilterOption(this.planFilterOptions, this.selectedPlanName)) {
       this.selectedPlanName = null;
       this.selectedProductName = null;
       this.selectedActivityName = null;
     }
 
-    const planData = this.selectedPlanName
-      ? departmentData.filter(x => x.Plan_Name == this.selectedPlanName)
-      : departmentData;
-
-    this.productFilterOptions = this.getUniqueFilterOptions(planData, 'Product_Name');
+    this.productFilterOptions = this.getUniqueFilterOptions(this.Mas_Product_Lists, 'Product_Name');
     if (!this.hasFilterOption(this.productFilterOptions, this.selectedProductName)) {
       this.selectedProductName = null;
       this.selectedActivityName = null;
     }
 
-    const productData = this.selectedProductName
-      ? planData.filter(x => x.Product_Name == this.selectedProductName)
-      : planData;
-
-    this.activityFilterOptions = this.getUniqueFilterOptions(productData, 'Activity_Name');
+    this.activityFilterOptions = this.getUniqueFilterOptions(this.Mas_Activity_Lists, 'Activity_Name');
     if (!this.hasFilterOption(this.activityFilterOptions, this.selectedActivityName)) {
       this.selectedActivityName = null;
     }
@@ -666,6 +679,10 @@ export class ProjectBudgetProposalComponent {
 
       noBudget: x.Used_BG === 0,
       consult: x.Is_Consult === 1,
+      Operation1: this.getOperationValue(x, 'Operation1'),
+      Operation2: this.getOperationValue(x, 'Operation2'),
+      consultSelf: this.getOperationValue(x, 'Operation1') === 1,
+      consultHire: this.getOperationValue(x, 'Operation2') === 1,
 
       quarters: this.convertMonths(x.Months),
 
@@ -684,6 +701,10 @@ export class ProjectBudgetProposalComponent {
 
         noBudget: s.Used_BG === 0,
         consult: s.Is_Consult === 1,
+        Operation1: this.getOperationValue(s, 'Operation1'),
+        Operation2: this.getOperationValue(s, 'Operation2'),
+        consultSelf: this.getOperationValue(s, 'Operation1') === 1,
+        consultHire: this.getOperationValue(s, 'Operation2') === 1,
 
         quarters: this.convertMonths(s.Months),
 
@@ -698,6 +719,19 @@ export class ProjectBudgetProposalComponent {
 
     }));
   }
+  private getOperationValue(item: any, field: 'Operation1' | 'Operation2'): number {
+    const upperField = field.toUpperCase();
+    const lowerField =
+      field.charAt(0).toLowerCase() + field.slice(1);
+
+    return Number(
+      item?.[field] ??
+      item?.[upperField] ??
+      item?.[lowerField] ??
+      0
+    );
+  }
+
   convertMonths(months: any[]) {
 
     const MONTHS = [
