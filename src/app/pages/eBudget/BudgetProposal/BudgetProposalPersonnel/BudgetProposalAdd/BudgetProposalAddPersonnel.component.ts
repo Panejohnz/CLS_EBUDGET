@@ -927,8 +927,8 @@ export class ProjectBudgetProposalAddPersonnelComponent {
         Proposer_Position: data.Proposer_Position
       }),
 
-      Create_User: this.userSession.permissionData?.IDENTIFY,
-      Update_User: this.userSession.permissionData?.IDENTIFY
+      Create_User: this.userSession.authenData?.IDENTIFY,
+      Update_User: this.userSession.authenData?.IDENTIFY
     } : null;
 
     this.model.Project_Plan_Detail =
@@ -1378,7 +1378,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
 
   private get currentUserIdentify(): string {
     return (
-      this.userSession?.permissionData?.IDENTIFY ||
+      this.userSession?.authenData?.IDENTIFY ||
       this.userSession?.IDENTIFY ||
       ''
     );

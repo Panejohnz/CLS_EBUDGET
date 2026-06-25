@@ -966,7 +966,7 @@ export class ProjectAllocationComponent implements OnInit {
         item.FK_Request_Id ||
         item.Fk_Request_Id ||
         0;
-      const userIdentify = this.userSession?.permissionData?.IDENTIFY || '';
+      const userIdentify = this.userSession?.authenData?.IDENTIFY || '';
 
       return {
 
