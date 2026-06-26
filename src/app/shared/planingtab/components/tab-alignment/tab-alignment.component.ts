@@ -298,7 +298,7 @@ export class TabAlignmentComponent implements OnChanges {
 
 
     this.callAPI("FUNC-GET_List_Mas_Value_Chain_Factor_By_FK", {
-      FK_Value_Chain_Id: this.planLevel2.ValueChain_Main_Id
+      FK_Value_Chain_Id: this.planLevel2.ValueChain_Main_Id || 0
     }).subscribe(res => {
       this.listValueChainFactorMain = res.List_Mas_Value_Chain_Factor || [];
     });
@@ -537,7 +537,7 @@ export class TabAlignmentComponent implements OnChanges {
 
 
     this.callAPI("FUNC-GET_List_Mas_Value_Chain_Factor_5_By_FK", {
-      FK_Value_Chain_Id: p.ValueChain_Main_Id
+      FK_Value_Chain_Id: p.ValueChain_Main_Id || 0
     }).subscribe(res => {
       this.listValueChainFactorMain5 = res.List_Mas_Value_Chain_Factor_5 || [];
     });
@@ -552,7 +552,7 @@ export class TabAlignmentComponent implements OnChanges {
 
 
     this.callAPI("FUNC-GET_List_Mas_Value_Chain_Factor_5_By_FK", {
-      FK_Value_Chain_Id: p.ValueChain_Support_Id
+      FK_Value_Chain_Id: p.ValueChain_Support_Id || 0
     }).subscribe(res => {
       this.listValueChainFactorSupport5 = res.List_Mas_Value_Chain_Factor_5 || [];
     });
@@ -735,7 +735,7 @@ export class TabAlignmentComponent implements OnChanges {
 
 
     this.callAPI("FUNC-GET_List_Mas_Value_Chain_Factor_By_FK", {
-      FK_Value_Chain_Id: this.planLevel2.ValueChain_Support_Id
+      FK_Value_Chain_Id: this.planLevel2.ValueChain_Support_Id || 0
     }).subscribe(res => {
       this.listValueChainFactorSupport = res.List_Mas_Value_Chain_Factor || [];
     });
