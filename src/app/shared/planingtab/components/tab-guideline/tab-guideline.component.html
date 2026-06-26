@@ -65,13 +65,14 @@
                             <!-- แถวบน -->
                             <div class="d-flex gap-3 mb-2">
                                 <div class="form-check m-0">
-                                    <input type="radio" name="budget_{{i}}" [value]="false" [(ngModel)]="act.noBudget">
+                                    <input type="radio" name="budget_{{i}}" [value]="false" [(ngModel)]="act.noBudget"
+                                        (ngModelChange)="onNoBudgetChange(act, $event)">
                                     <label class="form-check-label">ใช้งบ</label>
                                 </div>
 
                                 <div class="form-check m-0">
                                     <input type="radio" name="budget_{{i}}" [value]="true" [(ngModel)]="act.noBudget"
-                                        (ngModelChange)="onBudgetChange(act)">
+                                        (ngModelChange)="onNoBudgetChange(act, $event)">
                                     <label class="form-check-label">ไม่ใช้งบ</label>
                                 </div>
                             </div>
@@ -187,14 +188,16 @@
                                 <div class="d-flex gap-3 mb-2">
 
                                     <div class="form-check m-0">
-                                        <input type="radio" [value]="false" [(ngModel)]="sub.noBudget">
+                                        <input type="radio" [value]="false" [(ngModel)]="sub.noBudget"
+                                            (ngModelChange)="onNoBudgetChange(sub, $event, act)">
                                         <label class="form-check-label">
                                             ใช้งบ
                                         </label>
                                     </div>
 
                                     <div class="form-check m-0">
-                                        <input type="radio" [value]="true" [(ngModel)]="sub.noBudget">
+                                        <input type="radio" [value]="true" [(ngModel)]="sub.noBudget"
+                                            (ngModelChange)="onNoBudgetChange(sub, $event, act)">
                                         <label class="form-check-label">
                                             ไม่ใช้งบ
                                         </label>

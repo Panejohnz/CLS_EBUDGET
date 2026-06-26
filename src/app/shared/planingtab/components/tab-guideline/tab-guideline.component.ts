@@ -119,6 +119,47 @@ export class TabGuidelineComponent {
       });
     }
   }
+
+  onNoBudgetChange(item: any, isNoBudget: boolean, parentAct?: any) {
+    item.noBudget = isNoBudget;
+    this.toggleNoBudgetMonths(item, isNoBudget);
+
+    if (parentAct) {
+      this.sumMainBudgetFromSub(parentAct);
+    }
+  }
+
+  private toggleNoBudgetMonths(item: any, isNoBudget: boolean) {
+    item.quarters?.forEach((q: any) => {
+      q.months?.forEach((m: any) => {
+        if (isNoBudget) {
+          Object.defineProperty(m, '_budgetBeforeNoBudget', {
+            value: m.budget,
+            configurable: true
+          });
+
+          Object.defineProperty(m, '_selectedBeforeNoBudget', {
+            value: m.selected,
+            configurable: true
+          });
+
+          m.budget = null;
+          m.selected = false;
+          return;
+        }
+
+        if (Object.prototype.hasOwnProperty.call(m, '_budgetBeforeNoBudget')) {
+          m.budget = m._budgetBeforeNoBudget;
+          delete m._budgetBeforeNoBudget;
+        }
+
+        if (Object.prototype.hasOwnProperty.call(m, '_selectedBeforeNoBudget')) {
+          m.selected = m._selectedBeforeNoBudget;
+          delete m._selectedBeforeNoBudget;
+        }
+      });
+    });
+  }
   selectedActivity: any;
 
   addActivity() {

@@ -433,32 +433,45 @@ export class TabGeneralComponent {
     this.model.activities?.forEach((act: any) => {
 
       act.noBudget = isNoBudget;
-
-      if (isNoBudget) {
-
-        act.quarters?.forEach((q: any) => {
-
-          q.months?.forEach((m: any) => {
-
-            m.budget = null;
-            m.selected = false;
-          });
-        });
-      }
+      this.toggleNoBudgetMonths(act, isNoBudget);
 
       act.SubActivities?.forEach((sub: any) => {
         sub.noBudget = isNoBudget;
+        this.toggleNoBudgetMonths(sub, isNoBudget);
+      });
+    });
+  }
+
+  private toggleNoBudgetMonths(item: any, isNoBudget: boolean) {
+
+    item.quarters?.forEach((q: any) => {
+
+      q.months?.forEach((m: any) => {
 
         if (isNoBudget) {
-
-          sub.quarters?.forEach((q: any) => {
-
-            q.months?.forEach((m: any) => {
-
-              m.budget = null;
-              m.selected = false;
-            });
+          Object.defineProperty(m, '_budgetBeforeNoBudget', {
+            value: m.budget,
+            configurable: true
           });
+
+          Object.defineProperty(m, '_selectedBeforeNoBudget', {
+            value: m.selected,
+            configurable: true
+          });
+
+          m.budget = null;
+          m.selected = false;
+          return;
+        }
+
+        if (Object.prototype.hasOwnProperty.call(m, '_budgetBeforeNoBudget')) {
+          m.budget = m._budgetBeforeNoBudget;
+          delete m._budgetBeforeNoBudget;
+        }
+
+        if (Object.prototype.hasOwnProperty.call(m, '_selectedBeforeNoBudget')) {
+          m.selected = m._selectedBeforeNoBudget;
+          delete m._selectedBeforeNoBudget;
         }
       });
     });
