@@ -554,7 +554,7 @@
 
             <div class="border-start border-4 border-primary ps-3">
                 <h6 class="fw-bold text-primary mb-0">
-                    3.1 ความสอดคล้องกับแผนปฏิบัติราชการ (แผน 5 ปี)
+                    3.1 ความสอดคล้องกับแผนปฏิบัติการด้าน
                     <span class="text-danger">*</span>
                 </h6>
             </div>
@@ -583,7 +583,7 @@
                 </div>
 
                 <div class="col-md-12">
-                    <label class="form-label">เป้าหมายระดับประเด็น (Y2)</label>
+                    <label class="form-label">เป้าหมายระดับประเด็น</label>
 
                     <ng-select [items]="listMasterPlanGoal5" bindLabel="Plan_Goals_Name" bindValue="Plan_Goals_Id"
                         [(ngModel)]="model.Project_Plan_Level3.Plan_Goals_Id"
@@ -602,7 +602,7 @@
 
                 <div class="col-md-12">
                     <label class="form-label">
-                        ความสอดคล้องของโครงการกับเป้าหมายของแผนแม่บท (โปรดอธิบาย)
+                        ความสอดคล้องของโครงการกับเป้าหมาย (โปรดอธิบาย)
                     </label>
 
                     <textarea class="form-control" rows="3" [(ngModel)]="model.Project_Plan_Level3.Description"
@@ -611,7 +611,7 @@
                 </div>
 
                 <div class="col-md-12">
-                    <label class="form-label">แผนย่อยของแผนแม่บทฯ</label>
+                    <label class="form-label">แผนย่อยของแผนปฏิบัติการด้าน</label>
 
                     <ng-select [items]="listSubMasterPlan5" bindLabel="Sub_Master_Plan_Name"
                         bindValue="Sub_Master_Plan_Id" [(ngModel)]="model.Project_Plan_Level3.Sub_Master_Plan_Id"
@@ -620,7 +620,7 @@
                 </div>
 
                 <div class="col-md-12">
-                    <label class="form-label">เป้าหมายแผนแม่บทย่อย (Y1)</label>
+                    <label class="form-label">เป้าหมายย่อยของแผนปฏิบัติการด้าน</label>
 
                     <ng-select [items]="listSubMasterPlanGoal5" bindLabel="Sub_Plan_Goals_Name"
                         bindValue="Sub_Plan_Goals_Id" [(ngModel)]="model.Project_Plan_Level3.Sub_Plan_Goals_Id"
