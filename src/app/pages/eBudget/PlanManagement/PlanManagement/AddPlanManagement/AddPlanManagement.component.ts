@@ -1156,6 +1156,53 @@ export class AddPlanManagementComponent
     return Number(this.userSession?.permissionData?.VIEW_DATA || 0) === 3;
   }
 
+  readonly projectPlanningExpenseTypeIds = [64, 70, 73, 74, 75];
+
+  get shouldShowPlanManagementBudgetSummary(): boolean {
+    return (
+      Number(this.model?.Budget_Plan?.Plan_Id || 0) > 0 &&
+      this.isProjectPlanningExpenseType(this.model?.selectedExpenseTypeId)
+    );
+  }
+
+  get planManagementAllocationTotal(): number {
+    const savedTotal =
+      this.toOptionalNumber(this.model?.Budget_Plan?.Total);
+
+    if (savedTotal !== null) {
+      return savedTotal;
+    }
+
+    const updateAmount =
+      this.toOptionalNumber(this.model?.Budget_Plan?.Update_Amount);
+
+    return updateAmount ?? this.resolveAllocationTotal();
+  }
+
+  get planManagementPlannedTotal(): number {
+    const savedTotal =
+      this.toOptionalNumber(this.model?.Budget_Plan?.Total_Plan);
+
+    return savedTotal ?? this.getAllBudget();
+  }
+
+  isProjectPlanningExpenseType(expenseTypeId: any): boolean {
+    return this.projectPlanningExpenseTypeIds.includes(
+      Number(expenseTypeId || 0)
+    );
+  }
+
+  private toOptionalNumber(value: any): number | null {
+    if (value === null || value === undefined || value === '') {
+      return null;
+    }
+
+    const numericValue =
+      Number(value);
+
+    return Number.isFinite(numericValue) ? numericValue : null;
+  }
+
   dropdown_select = false;
 
   multiplierModalRef: any;
@@ -1375,7 +1422,6 @@ export class AddPlanManagementComponent
     });
   }
   mapInitialData() {
-    debugger
     if (!this.model) return;
 
     if (!this.model.Budget_Plan) return;

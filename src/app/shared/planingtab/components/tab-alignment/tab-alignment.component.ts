@@ -202,14 +202,20 @@ export class TabAlignmentComponent implements OnChanges {
           this.listActionPlan = res.List_Mas_Action_Plan || [];
           this.listProjectPlan = res.List_Mas_Project_Plan || [];
           this.listMasTactic = res.List_Mas_Tactic || [];
+          if (Array.isArray(res.List_Mas_Unit)) {
+            this.Mas_Unit_Lists = this.normalizeUnitList(res.List_Mas_Unit);
+            this.refreshIndicatorDisplayNames();
+          }
           this.listMasterPlan5 = res.List_Mas_Master_Plan_5 || []; //new
           this.listProjectPlan5 = res.List_Mas_Project_Plan_5 || [];
+          this.getUnitData();
           this.afterLoad();
         })
       }
     });
   }
   listMasIndicator: any[] = []
+  Mas_Unit_Lists: any[] = []
   listMasProjectPlanGoal: any[] = []
   listMasTactic: any[] = []
   listProjectPlan: any[] = []
@@ -250,6 +256,82 @@ export class TabAlignmentComponent implements OnChanges {
   listProjectPlan5: any[] = [];
   listProjectPlanGoal5: any[] = [];
   listIndicator5: any[] = [];
+
+  getUnitData() {
+    const model = {
+      FUNC_CODE: "FUNC-Get_List_Mas_Unit"
+    };
+
+    this.serviceebud.GatewayGetData(model).subscribe((response: any) => {
+      this.Mas_Unit_Lists = this.normalizeUnitList(response?.List_Mas_Unit || []);
+      this.refreshIndicatorDisplayNames();
+    });
+  }
+
+  normalizeUnitList(list: any[]): any[] {
+    return Array.isArray(list)
+      ? list.map((item: any) => ({
+        ...item,
+        Unit_Id:
+          item?.Unit_Id != null && item.Unit_Id !== ''
+            ? Number(item.Unit_Id)
+            : null
+      }))
+      : [];
+  }
+
+  getIndicatorUnitName(indicator: any): string {
+    const unitValue =
+      indicator?.Unit ?? indicator?.Unit_Id ?? indicator?.Fk_Unit_Id ?? indicator?.FK_Unit_Id ?? null;
+
+    if (unitValue == null || unitValue === '') {
+      return indicator?.Unit_Name || '';
+    }
+
+    const unitId =
+      Number(unitValue);
+
+    if (Number.isNaN(unitId)) {
+      return indicator?.Unit_Name || String(unitValue);
+    }
+
+    return (
+      indicator?.Unit_Name ||
+      this.Mas_Unit_Lists.find((unit: any) =>
+        Number(unit.Unit_Id) === unitId
+      )?.Unit_Name ||
+      ''
+    );
+  }
+
+  getIndicatorDisplayName(indicator: any): string {
+    const indicatorName =
+      indicator?.Indicators_Name || '';
+    const Target =
+      indicator?.Target || '';
+
+    const unitName =
+      this.getIndicatorUnitName(indicator);
+
+    return unitName
+      ? `${indicatorName} ${Target} ${unitName}`
+      : indicatorName;
+  }
+
+  mapIndicatorDisplayNames(list: any[]): any[] {
+    return Array.isArray(list)
+      ? list.map((item: any) => ({
+        ...item,
+        Indicator_Display_Name: this.getIndicatorDisplayName(item)
+      }))
+      : [];
+  }
+
+  refreshIndicatorDisplayNames() {
+    this.listMasIndicator = this.mapIndicatorDisplayNames(this.listMasIndicator);
+    this.listIndicator5 = this.mapIndicatorDisplayNames(this.listIndicator5);
+  }
+
   loadStrategic() {
     const model = {
       FUNC_CODE: "FUNC-GET_List_Mas_Strategic"
@@ -809,7 +891,7 @@ export class TabAlignmentComponent implements OnChanges {
       Project_Id: this.model.Project_Plan_Level3.Project_Plan_Id
     }).subscribe(res => {
       this.listMasTactic = res.List_Mas_Tactic || [];
-      this.listMasIndicator = res.List_Mas_Indicator || [];
+      this.listMasIndicator = this.mapIndicatorDisplayNames(res.List_Mas_Indicator || []);
     });
   }
   listMasMeasure: any[] = []
@@ -822,7 +904,7 @@ export class TabAlignmentComponent implements OnChanges {
       Tactics_Id: this.model.Project_Plan_Level3.Project_Plan_Goals_Id
     }).subscribe(res => {
       this.listMasMeasure = res.List_Mas_Project_Plan_Goals_Guideline || [];
-      this.listMasIndicator = res.List_Mas_Indicator || [];
+      this.listMasIndicator = this.mapIndicatorDisplayNames(res.List_Mas_Indicator || []);
 
     });
   }
@@ -864,7 +946,7 @@ export class TabAlignmentComponent implements OnChanges {
     this.callAPI("FUNC-GET_List_Mas_Indicators_5_By_FK", {
       FK_Plan_Goals_Id: p.Project_Plan_Goals_Id_5
     }).subscribe(res => {
-      this.listIndicator5 = res.List_Mas_Indicators_5 || [];
+      this.listIndicator5 = this.mapIndicatorDisplayNames(res.List_Mas_Indicators_5 || []);
       this.listGuideline5 = res.List_Mas_Project_Plan_Goals_Guidelines_5 || [];
 
     });

@@ -1,7 +1,8 @@
 <div class="card">
   <div class="card-header d-flex justify-content-between align-items-center shared-page-header">
     <h4 class="card-title mb-0 flex-grow-1 text-white">ความสอดคล้องกับแผนปฏิบัติการราชการ ป.ป.ท. (แผน 1 ปี)</h4>
-    <button type="button" class="btn btn-outline-secondary btn-sm" (click)="goBackToPlan()" style="background-color: rgb(125, 248, 125); color: #212529;">กลับหน้าแผนงาน</button>
+    <button type="button" class="btn btn-outline-secondary btn-sm" (click)="goBackToPlan()"
+      style="background-color: rgb(125, 248, 125); color: #212529;">กลับหน้าแผนงาน</button>
   </div>
   <div class="card-body">
     <ul class="nav nav-tabs mb-3">
@@ -31,8 +32,8 @@
     <div class="border rounded p-3 bg-light" *ngIf="currentTab === 1">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <div style="width:300px;">
-          <input type="text" class="form-control" placeholder="ค้นหาแผนงานที่..."
-            [(ngModel)]="service.searchTerm" (input)="filterPlanSearch()">
+          <input type="text" class="form-control" placeholder="ค้นหาแผนงานที่..." [(ngModel)]="service.searchTerm"
+            (input)="filterPlanSearch()">
         </div>
         <button class="btn btn-success text-black" (click)="openAddPlanModal(addPlanModal)">เพิ่มข้อมูล</button>
       </div>
@@ -75,15 +76,15 @@
       <div class="row justify-content-md-between align-items-md-center mt-2">
         <div class="col col-sm-6">
           <div class="dataTables_info mb-2 text-start">
-            <ngb-pagination [collectionSize]="planPagination.total" [(page)]="planPagination.page"
-              [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
-              (pageChange)="onPlanPageChange($event)">
+            <ngb-pagination [collectionSize]="planPagination.total" [(page)]="planPagination.page" [pageSize]="pageSize"
+              [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="onPlanPageChange($event)">
             </ngb-pagination>
           </div>
         </div>
         <div class="col col-sm-6">
           <div class="d-flex justify-content-sm-end">
-            แสดง {{ planPagination.total ? planPagination.startIndex : 0 }} ถึง {{ planPagination.total ? planPagination.endIndex : 0 }}
+            แสดง {{ planPagination.total ? planPagination.startIndex : 0 }} ถึง {{ planPagination.total ?
+            planPagination.endIndex : 0 }}
             จากทั้งหมด {{ planPagination.total }} รายการ
           </div>
         </div>
@@ -94,8 +95,8 @@
     <div class="border rounded p-3 bg-light" *ngIf="currentTab === 2">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <div style="width:300px;">
-          <input type="text" class="form-control" placeholder="ค้นหาเป้าหมายที่..."
-            [(ngModel)]="searchGoalTerm" (input)="filterGoalSearch()">
+          <input type="text" class="form-control" placeholder="ค้นหาเป้าหมายที่..." [(ngModel)]="searchGoalTerm"
+            (input)="filterGoalSearch()">
         </div>
         <button class="btn btn-success text-black" (click)="openAddGoalModal(addGoalModal)">เพิ่มข้อมูล</button>
       </div>
@@ -106,8 +107,10 @@
               <th style="width:5%">ลำดับ</th>
               <th style="width:15%">แผนงานที่</th>
               <th style="width:10%">ปีงบประมาณ</th>
-              <th style="width:25%">ชื่อ</th>
+              <th style="width:22%">ชื่อ</th>
               <th style="width:10%">ชื่อย่อ</th>
+              <th style="width:8%">เป้าหมาย</th>
+              <th style="width:8%">หน่วยนับ</th>
               <th style="width:6%">เรียง</th>
               <th style="width:7%">แก้ไข</th>
               <th style="width:7%">ลบ</th>
@@ -121,6 +124,8 @@
               <td>{{ data.BgYear }}</td>
               <td style="text-align: left;">{{ data.Project_Plan_Name || data.Project_Plan_Goals_Name }}</td>
               <td>{{ data.Project_Plan_Short_Name || data.Project_Plan_Goals_Short_Name }}</td>
+              <td>{{ data.Target }}</td>
+              <td>{{ getGoalUnitName(data) }}</td>
               <td>{{ data.Order_Seq }}</td>
               <td>
                 <button type="button" class="btn btn-warning btn-sm" (click)="openEditGoalModal(addGoalModal, data)">
@@ -140,15 +145,15 @@
       <div class="row justify-content-md-between align-items-md-center mt-2">
         <div class="col col-sm-6">
           <div class="dataTables_info mb-2 text-start">
-            แสดง {{ goalPagination.total ? goalPagination.startIndex : 0 }} ถึง {{ goalPagination.total ? goalPagination.endIndex : 0 }}
+            แสดง {{ goalPagination.total ? goalPagination.startIndex : 0 }} ถึง {{ goalPagination.total ?
+            goalPagination.endIndex : 0 }}
             จากทั้งหมด {{ goalPagination.total }} รายการ
           </div>
         </div>
         <div class="col col-sm-6">
           <div class="d-flex justify-content-sm-end">
-            <ngb-pagination [collectionSize]="goalPagination.total" [(page)]="goalPagination.page"
-              [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
-              (pageChange)="onGoalPageChange($event)">
+            <ngb-pagination [collectionSize]="goalPagination.total" [(page)]="goalPagination.page" [pageSize]="pageSize"
+              [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="onGoalPageChange($event)">
             </ngb-pagination>
           </div>
         </div>
@@ -159,10 +164,11 @@
     <div class="border rounded p-3 bg-light" *ngIf="currentTab === 3">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <div style="width:300px;">
-          <input type="text" class="form-control" placeholder="ค้นหาตัวชี้วัดที่..."
-            [(ngModel)]="searchIndicatorTerm" (input)="filterIndicatorSearch()">
+          <input type="text" class="form-control" placeholder="ค้นหาตัวชี้วัดที่..." [(ngModel)]="searchIndicatorTerm"
+            (input)="filterIndicatorSearch()">
         </div>
-        <button class="btn btn-success text-black" (click)="openAddIndicatorModal(addIndicatorModal)">เพิ่มข้อมูล</button>
+        <button class="btn btn-success text-black"
+          (click)="openAddIndicatorModal(addIndicatorModal)">เพิ่มข้อมูล</button>
       </div>
       <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
         <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
@@ -206,7 +212,8 @@
       <div class="row justify-content-md-between align-items-md-center mt-2">
         <div class="col col-sm-6">
           <div class="dataTables_info mb-2 text-start">
-            แสดง {{ indicatorPagination.total ? indicatorPagination.startIndex : 0 }} ถึง {{ indicatorPagination.total ? indicatorPagination.endIndex : 0 }}
+            แสดง {{ indicatorPagination.total ? indicatorPagination.startIndex : 0 }} ถึง {{ indicatorPagination.total ?
+            indicatorPagination.endIndex : 0 }}
             จากทั้งหมด {{ indicatorPagination.total }} รายการ
           </div>
         </div>
@@ -228,7 +235,8 @@
           <input type="text" class="form-control" placeholder="ค้นหาแนวทางการพัฒนาที่..."
             [(ngModel)]="searchGuidelineTerm" (input)="filterGuidelineSearch()">
         </div>
-        <button class="btn btn-success text-black" (click)="openAddGuidelineModal(addGuidelineModal)">เพิ่มข้อมูล</button>
+        <button class="btn btn-success text-black"
+          (click)="openAddGuidelineModal(addGuidelineModal)">เพิ่มข้อมูล</button>
       </div>
       <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
         <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
@@ -273,7 +281,8 @@
       <div class="row justify-content-md-between align-items-md-center mt-2">
         <div class="col col-sm-6">
           <div class="dataTables_info mb-2 text-start">
-            แสดง {{ guidelinePagination.total ? guidelinePagination.startIndex : 0 }} ถึง {{ guidelinePagination.total ? guidelinePagination.endIndex : 0 }}
+            แสดง {{ guidelinePagination.total ? guidelinePagination.startIndex : 0 }} ถึง {{ guidelinePagination.total ?
+            guidelinePagination.endIndex : 0 }}
             จากทั้งหมด {{ guidelinePagination.total }} รายการ
           </div>
         </div>
@@ -353,6 +362,7 @@
         <label class="form-label">ชื่อย่อ</label>
         <input type="text" class="form-control" [(ngModel)]="Mas_Project_Plan_Goals.Project_Plan_Short_Name">
       </div>
+
       <div class="col-md-6">
         <label class="form-label">เรียงลำดับ</label>
         <input type="number" class="form-control" [(ngModel)]="Mas_Project_Plan_Goals.Order_Seq">
@@ -396,6 +406,17 @@
         <input type="text" class="form-control" [(ngModel)]="Mas_Indicators.Indicators_Short_Name">
       </div>
       <div class="col-md-6">
+        <label class="form-label">เป้าหมาย</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Indicators.Target">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">หน่วยนับ</label>
+        <ng-select [items]="Mas_Unit_Lists" bindLabel="Unit_Name" bindValue="Unit_Id"
+          [(ngModel)]="Mas_Indicators.Unit" (ngModelChange)="onGoalUnitChange($event)" [searchable]="true"
+          [clearable]="true" appendTo="body" placeholder="-- เลือกหน่วยนับ --">
+        </ng-select>
+      </div>
+      <div class="col-md-6">
         <label class="form-label">เรียงลำดับ</label>
         <input type="number" class="form-control" [(ngModel)]="Mas_Indicators.Order_Seq">
       </div>
@@ -420,8 +441,8 @@
         @for (key of [guidelineGoalSelectKey]; track key) {
         <ng-select [items]="listMasProjectPlanGoalsAll" bindLabel="Project_Plan_Name" bindValue="Project_Plan_Goals_Id"
           [ngModel]="Mas_Project_Plan_Goals_Guidelines.FK_Plan_Goals_Id"
-          (ngModelChange)="onGuidelineGoalIdChange($event)"
-          [searchable]="true" [clearable]="true" appendTo="body" placeholder="-- เลือก --">
+          (ngModelChange)="onGuidelineGoalIdChange($event)" [searchable]="true" [clearable]="true" appendTo="body"
+          placeholder="-- เลือก --">
         </ng-select>
         }
       </div>
@@ -436,8 +457,7 @@
       </div>
       <div class="col-md-6">
         <label class="form-label">ชื่อย่อ</label>
-        <input type="text" class="form-control"
-          [(ngModel)]="Mas_Project_Plan_Goals_Guidelines.Project_Plan_Short_Name">
+        <input type="text" class="form-control" [(ngModel)]="Mas_Project_Plan_Goals_Guidelines.Project_Plan_Short_Name">
       </div>
       <div class="col-md-6">
         <label class="form-label">เรียงลำดับ</label>

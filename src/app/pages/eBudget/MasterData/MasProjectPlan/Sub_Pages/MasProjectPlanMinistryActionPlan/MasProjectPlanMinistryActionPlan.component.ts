@@ -39,6 +39,7 @@ export class MasProjectPlanMinistryActionPlanComponent implements OnInit {
   List_Mas_Project_Plan_Goals: any[] = [];
   List_Mas_Indicator: any[] = [];
   List_Mas_Project_Plan_Goals_Guidelines: any[] = [];
+  Mas_Unit_Lists: any[] = [];
 
   listMasProjectPlanAll: any[] = [];
   listMasProjectPlanGoalsAll: any[] = [];
@@ -75,6 +76,7 @@ export class MasProjectPlanMinistryActionPlanComponent implements OnInit {
   ngOnInit(): void {
     this.currentYear = this.budgetYearService.getBgyear();
     this.get_data();
+    this.get_unit_data();
 
     this.budgetYearService.yearChanged$.subscribe((year) => {
       if (year) {
@@ -144,6 +146,19 @@ export class MasProjectPlanMinistryActionPlanComponent implements OnInit {
       this.filterGoalSearch();
       this.filterIndicatorSearch();
       this.filterGuidelineSearch();
+    });
+  }
+
+  get_unit_data(): void {
+    this.serviceebud.GatewayGetData({
+      FUNC_CODE: 'FUNC-Get_List_Mas_Unit'
+    }).subscribe((response: any) => {
+      this.Mas_Unit_Lists = Array.isArray(response?.List_Mas_Unit)
+        ? response.List_Mas_Unit.map((item: any) => ({
+          ...item,
+          Unit_Id: this.normalizeSelectId(item.Unit_Id)
+        }))
+        : [];
     });
   }
 
@@ -407,6 +422,27 @@ export class MasProjectPlanMinistryActionPlanComponent implements OnInit {
     return this.getGoalNameById(this.getIndicatorFkPlanGoalsId(row));
   }
 
+  getGoalUnitId(item: any): any {
+    if (!item) {
+      return null;
+    }
+    return this.normalizeSelectId(item.Unit ?? item.Unit_Id ?? item.Fk_Unit_Id ?? item.FK_Unit_Id ?? null);
+  }
+
+  getUnitNameById(id: any): string {
+    const normalized = this.normalizeSelectId(id);
+    if (!normalized) {
+      return '';
+    }
+    return this.Mas_Unit_Lists.find(
+      (unit) => String(unit.Unit_Id) === String(normalized)
+    )?.Unit_Name ?? '';
+  }
+
+  getGoalUnitName(row: any): string {
+    return row?.Unit_Name || this.getUnitNameById(this.getGoalUnitId(row));
+  }
+
   onGoalProjectPlanIdChange(projectPlanId: any): void {
     const normalized = this.normalizeSelectId(projectPlanId);
     if (!normalized) {
@@ -417,6 +453,18 @@ export class MasProjectPlanMinistryActionPlanComponent implements OnInit {
     }
     this.Mas_Project_Plan_Goals.Fk_Project_Plan_Id = normalized;
     this.Mas_Project_Plan_Goals.FK_Project_Plan_Id = normalized;
+    this.cdr.detectChanges();
+  }
+
+  onGoalUnitChange(unitId: any): void {
+    const normalized = this.normalizeSelectId(unitId);
+    const unitName = this.getUnitNameById(normalized);
+
+    this.Mas_Project_Plan_Goals.Unit = normalized;
+    this.Mas_Project_Plan_Goals.Unit_Id = normalized;
+    this.Mas_Project_Plan_Goals.Fk_Unit_Id = normalized;
+    this.Mas_Project_Plan_Goals.FK_Unit_Id = normalized;
+    this.Mas_Project_Plan_Goals.Unit_Name = unitName;
     this.cdr.detectChanges();
   }
 
@@ -534,6 +582,12 @@ export class MasProjectPlanMinistryActionPlanComponent implements OnInit {
       BgYear: this.currentYear,
       Project_Plan_Name: '',
       Project_Plan_Short_Name: '',
+      Target: '',
+      Unit: null,
+      Unit_Id: null,
+      Fk_Unit_Id: null,
+      FK_Unit_Id: null,
+      Unit_Name: '',
       Order_Seq: this.getNextOrderSeq(this.listMasProjectPlanGoalsAll)
     };
     if (this.listMasProjectPlanAll.length === 0) {
@@ -548,7 +602,13 @@ export class MasProjectPlanMinistryActionPlanComponent implements OnInit {
     this.Mas_Project_Plan_Goals = {
       ...item,
       Fk_Project_Plan_Id: projectPlanId,
-      FK_Project_Plan_Id: projectPlanId
+      FK_Project_Plan_Id: projectPlanId,
+      Target: item.Target ?? '',
+      Unit: this.getGoalUnitId(item),
+      Unit_Id: this.getGoalUnitId(item),
+      Fk_Unit_Id: this.getGoalUnitId(item),
+      FK_Unit_Id: this.getGoalUnitId(item),
+      Unit_Name: item.Unit_Name || this.getUnitNameById(this.getGoalUnitId(item))
     };
     this.goalProjectPlanSelectKey++;
     this.cdr.detectChanges();
@@ -660,6 +720,7 @@ export class MasProjectPlanMinistryActionPlanComponent implements OnInit {
     }
     this.Mas_Project_Plan_Goals.Fk_Project_Plan_Id = projectPlanId;
     this.Mas_Project_Plan_Goals.FK_Project_Plan_Id = projectPlanId;
+    this.onGoalUnitChange(this.getGoalUnitId(this.Mas_Project_Plan_Goals));
 
     this.serviceebud.GatewayGetData({
       FUNC_CODE: 'Func-Save_Mas_Project_Plan_Goals',

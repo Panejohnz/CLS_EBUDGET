@@ -631,6 +631,9 @@
                                 <th colspan="4">ไตรมาส 2</th>
                                 <th colspan="4">ไตรมาส 3</th>
                                 <th colspan="4">ไตรมาส 4</th>
+                                <th rowspan="2" style="width:6%">รวมแผนเงิน</th>
+                                <th rowspan="2" style="width:6%">ผลการใช้จ่าย</th>
+                                <th rowspan="2" style="width:6%">ผลการเบิกจ่าย</th>
                                 <!-- <th rowspan="2">ลบ</th> -->
                             </tr>
 
@@ -733,6 +736,18 @@
 
                                         </ng-container>
 
+                                        <td *ngIf="rowIndex === 0" rowspan="3" class="fw-semibold text-end">
+                                            {{ getProjectActivityPlanTotal(act) | number:'1.2-2' }}
+                                        </td>
+
+                                        <td *ngIf="rowIndex === 0" rowspan="3" class="fw-semibold text-end">
+                                            {{ getProjectActivityActualTotal(act) | number:'1.2-2' }}
+                                        </td>
+
+                                        <td *ngIf="rowIndex === 0" rowspan="3" class="fw-semibold text-end">
+                                            {{ getProjectActivityWithdrawTotal(act) | number:'1.2-2' }}
+                                        </td>
+
                                         <!-- <td *ngIf="rowIndex === 0" rowspan="3">
 
 
@@ -746,7 +761,7 @@
 
                                 <!-- ส่วนล่างกิจกรรมหลัก -->
                                 <tr>
-                                    <td colspan="18" style="background-color: #556398;">
+                                    <td colspan="21" style="background-color: #556398;">
 
                                         <div class="d-flex justify-content-end align-items-center gap-2 flex-wrap">
 
@@ -851,6 +866,18 @@
 
                                             </ng-container>
 
+                                            <td *ngIf="rowIndex === 0" rowspan="3" class="fw-semibold text-end">
+                                                {{ getProjectActivityPlanTotal(sub) | number:'1.2-2' }}
+                                            </td>
+
+                                            <td *ngIf="rowIndex === 0" rowspan="3" class="fw-semibold text-end">
+                                                {{ getProjectActivityActualTotal(sub) | number:'1.2-2' }}
+                                            </td>
+
+                                            <td *ngIf="rowIndex === 0" rowspan="3" class="fw-semibold text-end">
+                                                {{ getProjectActivityWithdrawTotal(sub) | number:'1.2-2' }}
+                                            </td>
+
                                             <!-- <td *ngIf="rowIndex === 0" rowspan="3">
                                                 <button class="btn btn-sm btn-danger"
                                                     (click)="removeSub(act, subIndex)">
@@ -863,7 +890,7 @@
 
                                     <!-- ส่วนล่าง SubActivities -->
                                     <tr style="background-color: #E0E8F0;">
-                                        <td colspan="18">
+                                        <td colspan="21">
 
                                             <div class="d-flex justify-content-end align-items-center gap-2">
                                                 <!-- กลุ่มผู้รับผิดชอบ -->
@@ -895,6 +922,24 @@
                                 </ng-container>
 
                             </ng-container>
+
+                            <tr class="table-light fw-bold">
+                                <td colspan="18" class="text-end">
+                                    รวมทั้งหมด
+                                </td>
+
+                                <td class="text-end">
+                                    {{ getProjectGrandPlanTotal() | number:'1.2-2' }}
+                                </td>
+
+                                <td class="text-end">
+                                    {{ getProjectGrandActualTotal() | number:'1.2-2' }}
+                                </td>
+
+                                <td class="text-end">
+                                    {{ getProjectGrandWithdrawTotal() | number:'1.2-2' }}
+                                </td>
+                            </tr>
 
                         </tbody>
                     </table>
@@ -1001,10 +1046,11 @@
                             <textarea class="form-control" [(ngModel)]="Suggestions" placeholder="ระบุข้อเสนอแนะเพื่อการพัฒนา(ถ้ามี)"></textarea>
                         </div>
 
-                        <div class="card p-3 border-0 shadow-sm">
-                            <label class="fw-semibold">ไฟล์แนบ (ถ้ามี)</label>
-                            <input type="file" class="form-control">
-                        </div>
+                        <app-expense-attachment [model]="reportAttachmentModel" listKey="Report_Attach_File"
+                            title="ไฟล์แนบ (ถ้ามี)" refModule="REPORT_BUDGET_PLAN" refLevel="PROGRESS"
+                            filterField="Fk_Expense_Id" [filterValue]="selectedItem?.Plan_Id"
+                            [requestId]="reportAttachmentRequestId" deleteFuncCode="">
+                        </app-expense-attachment>
 
                     </div>
                     }@else{

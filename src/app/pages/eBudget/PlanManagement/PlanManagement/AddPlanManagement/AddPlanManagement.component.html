@@ -114,11 +114,27 @@
 
         <div *ngIf="dropdown_select">
 
-            <div class="modal-header bg-light">
+            <div class="modal-header bg-light gap-3 flex-wrap">
 
-                <h5 class="card-title bg-light">
+                <h5 class="card-title bg-light mb-0">
                     {{ formTitle }}
                 </h5>
+
+                @if(shouldShowPlanManagementBudgetSummary){
+                <div class="ms-auto d-flex flex-wrap justify-content-end gap-3 small">
+
+                    <span>
+                        รวมเงินจัดสรร:
+                        <strong>{{ planManagementAllocationTotal | number:'1.2-2' }}</strong>
+                    </span>
+
+                    <span>
+                        รวมเงินวางแผน:
+                        <strong>{{ planManagementPlannedTotal | number:'1.2-2' }}</strong>
+                    </span>
+
+                </div>
+                }
 
             </div>
             @if([64,70,73,74,75].includes(model.selectedExpenseTypeId)){

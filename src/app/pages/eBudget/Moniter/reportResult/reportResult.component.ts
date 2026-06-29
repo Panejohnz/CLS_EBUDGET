@@ -47,6 +47,8 @@ export class ReportResultComponent
   selectedMonth: any = null;
   Output_Result: any[] = [];
   Outcome_Result: any[] = [];
+  Project_Output_Default: any[] = [];
+  Project_Outcome_Default: any[] = [];
   Progress_Percent: any
   Problems: any
   Solutions: any
@@ -54,6 +56,10 @@ export class ReportResultComponent
   Suggestions: any
   Progress_Id: any
   selectedTri = null;
+  Report_Attach_File: any[] = [];
+  reportAttachmentModel: any = {
+    Report_Attach_File: []
+  };
   Mas_Unit_Lists: any
   get totalPlanBudget(): number {
     return this.griddata.reduce(
@@ -73,6 +79,19 @@ export class ReportResultComponent
 
   get totalBalanceBudget(): number {
     return this.totalPlanBudget - this.totalUsedBudget;
+  }
+
+  get currentUserIdentify(): string {
+    return (
+      this.authService?.currentUserValue?.IDENTIFY ||
+      this.authService?.currentUserValue?.UserName ||
+      this.userSession?.permissionData?.IDENTIFY ||
+      ''
+    );
+  }
+
+  get reportAttachmentRequestId(): any {
+    return this.Progress_Id || this.selectedItem?.Plan_Id || 0;
   }
 
   get pagedGriddata(): any[] {
@@ -437,13 +456,24 @@ export class ReportResultComponent
             const Progress_list =
               res.Report_Budget_Plan_Progress || {};
 
+            this.Progress_Id = Progress_list.Progress_Id || 0
+            this.Report_Attach_File =
+              this.extractReportAttachFiles(res, data.Plan_Id, this.Progress_Id);
+            this.syncReportAttachmentModel(this.Report_Attach_File);
+
+            this.Project_Output_Default =
+              this.cloneReportList(res.Project_Output || []);
+
+            this.Project_Outcome_Default =
+              this.cloneReportList(res.Project_Outcome || []);
+
             this.Output_Result = Progress_list?.Output_Result
-              ? this.safeParseJson(Progress_list.Output_Result, res.Project_Output || [])
-              : (res.Project_Output || []);
+              ? this.safeParseJson(Progress_list.Output_Result, this.Project_Output_Default)
+              : this.cloneReportList(this.Project_Output_Default);
 
             this.Outcome_Result = Progress_list?.Outcome_Result
-              ? this.safeParseJson(Progress_list.Outcome_Result, res.Project_Outcome || [])
-              : (res.Project_Outcome || []);
+              ? this.safeParseJson(Progress_list.Outcome_Result, this.Project_Outcome_Default)
+              : this.cloneReportList(this.Project_Outcome_Default);
             this.normalizeUnitBindings();
 
             this.Progress_Percent = Progress_list.Progress_Percent || 0
@@ -451,7 +481,6 @@ export class ReportResultComponent
             this.Solutions = Progress_list.Solutions || ''
             this.Summary_Result = Progress_list.Summary_Result || ''
             this.Suggestions = Progress_list.Suggestions || ''
-            this.Progress_Id = Progress_list.Progress_Id || 0
             this.selectedTri = Progress_list.Trimas_Id || null
             this.reportData =
               this.buildReportDataFromDetails(
@@ -593,6 +622,152 @@ export class ReportResultComponent
     } catch (error) {
       return fallback;
     }
+  }
+
+  private cloneReportList(list: any[]): any[] {
+    return Array.isArray(list)
+      ? list.map((item: any) => ({
+        ...item,
+        Name_Report: item?.Name_Report || ''
+      }))
+      : [];
+  }
+
+  private getCurrentReportAttachFiles(): any[] {
+    return (
+      this.reportAttachmentModel?.Report_Attach_File ||
+      this.Report_Attach_File ||
+      []
+    );
+  }
+
+  private syncReportAttachmentModel(files: any[] = this.getCurrentReportAttachFiles()) {
+    this.Report_Attach_File = files;
+    this.reportAttachmentModel = {
+      ...this.reportAttachmentModel,
+      Project_Id: this.selectedItem?.Plan_Id || 0,
+      Report_Attach_File: files
+    };
+  }
+
+  private extractReportAttachFiles(response: any, planId: any, progressId: any): any[] {
+    const rawList =
+      response?.Report_Attach_File ||
+      response?.Report_Budget_Plan_Attach_File ||
+      response?.Report_Budget_Plan_Progress_Attach_File ||
+      response?.FILE_UPLOAD_List ||
+      response?.Attach_File?.Data ||
+      response?.Attach_File ||
+      [];
+
+    return this.mapReportFileUploadList(rawList, planId, progressId);
+  }
+
+  private mapReportFileUploadList(fileUploadList: any, planId: any, progressId: any): any[] {
+    const list =
+      Array.isArray(fileUploadList?.Data)
+        ? fileUploadList.Data
+        : (Array.isArray(fileUploadList) ? fileUploadList : []);
+
+    return list
+      .map((item: any) => {
+        const fileName =
+          item.File_Name ||
+          item.FILE_NAME ||
+          item.NAME_FAKE ||
+          item.Name_Fake ||
+          '';
+
+        const generatedFile =
+          item.GEN_FILE ||
+          item.Gen_File ||
+          item.NAME_REAL ||
+          item.Name_Real ||
+          '';
+
+        return {
+          IDA: item.IDA || item.Ida || 0,
+          TYPE_ID: item.TYPE_ID || item.Type_Id || 0,
+          FK_IDA: item.FK_IDA || item.Fk_Ida || progressId || planId,
+          Client_Attachment_Id:
+            item.CLIENT_ATTACHMENT_ID ||
+            item.Client_Attachment_Id ||
+            '',
+          Ref_Module:
+            item.REF_MODULE ||
+            item.Ref_Module ||
+            'REPORT_BUDGET_PLAN',
+          Ref_Level:
+            item.REF_LEVEL ||
+            item.Ref_Level ||
+            'PROGRESS',
+          Request_Id:
+            item.FK_REQUEST_ID ||
+            item.Fk_Request_Id ||
+            item.Request_Id ||
+            progressId ||
+            planId,
+          Fk_Expense_Id:
+            item.FK_EXPENSE_ID ||
+            item.Fk_Expense_Id ||
+            item.Expense_Id ||
+            planId ||
+            0,
+          Fk_Request_Detail_Item_Id:
+            item.FK_REQUEST_DETAIL_ITEM_ID ||
+            item.Fk_Request_Detail_Item_Id ||
+            0,
+          Row_Guid:
+            item.ROW_GUID ||
+            item.Row_Guid ||
+            null,
+          File_Name: fileName || generatedFile,
+          File_Size:
+            item.FILE_SIZE ||
+            item.File_Size ||
+            0,
+          File_Type:
+            item.FILE_TYPE ||
+            item.File_Type ||
+            '',
+          NAME_FAKE: fileName,
+          NAME_REAL:
+            item.NAME_REAL ||
+            item.Name_Real ||
+            generatedFile,
+          GEN_FILE: generatedFile,
+          PATH_FILE:
+            item.PATH_FILE ||
+            item.Path_File ||
+            '',
+          File_Url:
+            item.File_Url ||
+            item.FILE_URL ||
+            item.View_Url ||
+            item.VIEW_URL ||
+            item.URL ||
+            '',
+          Active:
+            item.Active ?? item.ACTIVE ?? 1,
+          Is_New: false,
+          Pending_Delete: false,
+          file: null
+        };
+      })
+      .filter((item: any) => {
+        const active =
+          item.Active ?? 1;
+
+        const refModule =
+          item.Ref_Module || '';
+
+        const refLevel =
+          item.Ref_Level || '';
+
+        return Number(active) !== 0 &&
+          (!refModule || refModule === 'REPORT_BUDGET_PLAN') &&
+          (!refLevel || refLevel === 'PROGRESS');
+      });
   }
 
   isInvestmentBudgetType(item: any): boolean {
@@ -825,6 +1000,59 @@ export class ReportResultComponent
       );
 
   }
+
+  getProjectActivityPlanTotal(activity: any): number {
+    return this.getProjectActivityMonthTotal(activity, 'budget');
+  }
+
+  getProjectActivityActualTotal(activity: any): number {
+    return this.getProjectActivityMonthTotal(activity, 'actual');
+  }
+
+  getProjectActivityWithdrawTotal(activity: any): number {
+    return this.getProjectActivityMonthTotal(activity, 'resbill');
+  }
+
+  getProjectGrandPlanTotal(): number {
+    return this.getProjectGrandMonthTotal('budget');
+  }
+
+  getProjectGrandActualTotal(): number {
+    return this.getProjectGrandMonthTotal('actual');
+  }
+
+  getProjectGrandWithdrawTotal(): number {
+    return this.getProjectGrandMonthTotal('resbill');
+  }
+
+  private getProjectActivityMonthTotal(activity: any, field: string): number {
+    if (activity?.SubActivities?.length) {
+      return activity.SubActivities.reduce(
+        (sum: number, sub: any) =>
+          sum + this.getProjectActivityMonthTotal(sub, field),
+        0
+      );
+    }
+
+    return (activity?.quarters || []).reduce(
+      (quarterSum: number, quarter: any) =>
+        quarterSum + (quarter?.months || []).reduce(
+          (monthSum: number, month: any) =>
+            monthSum + Number(month?.[field] || 0),
+          0
+        ),
+      0
+    );
+  }
+
+  private getProjectGrandMonthTotal(field: string): number {
+    return (this.model?.activities || []).reduce(
+      (sum: number, activity: any) =>
+        sum + this.getProjectActivityMonthTotal(activity, field),
+      0
+    );
+  }
+
   getGrandWithdraw() {
 
     return this.reportData
@@ -1179,6 +1407,25 @@ export class ReportResultComponent
   }
   onQuarterChange() {
 
+    if (!this.selectedTri) {
+      this.Output_Result =
+        this.cloneReportList(this.Project_Output_Default);
+
+      this.Outcome_Result =
+        this.cloneReportList(this.Project_Outcome_Default);
+
+      this.Progress_Percent = 0;
+      this.Problems = '';
+      this.Solutions = '';
+      this.Summary_Result = '';
+      this.Suggestions = '';
+      this.Progress_Id = 0;
+      this.Report_Attach_File = [];
+      this.syncReportAttachmentModel(this.Report_Attach_File);
+      this.normalizeUnitBindings();
+      return;
+    }
+
     const model = {
       FUNC_CODE: 'FUNC-Get_Report_Budget_Plan_Progress',
       Fk_Plan_Id: this.selectedItem.Plan_Id,
@@ -1193,12 +1440,12 @@ export class ReportResultComponent
           res.Report_Budget_Plan_Progress || {};
 
         this.Output_Result = progress?.Output_Result
-          ? this.safeParseJson(progress.Output_Result, [])
-          : [];
+          ? this.safeParseJson(progress.Output_Result, this.Project_Output_Default)
+          : this.cloneReportList(this.Project_Output_Default);
 
         this.Outcome_Result = progress?.Outcome_Result
-          ? this.safeParseJson(progress.Outcome_Result, [])
-          : [];
+          ? this.safeParseJson(progress.Outcome_Result, this.Project_Outcome_Default)
+          : this.cloneReportList(this.Project_Outcome_Default);
         this.normalizeUnitBindings();
         this.Progress_Percent = progress.Progress_Percent || 0;
         this.Problems = progress.Problems || '';
@@ -1206,6 +1453,9 @@ export class ReportResultComponent
         this.Summary_Result = progress.Summary_Result || '';
         this.Suggestions = progress.Suggestions || '';
         this.Progress_Id = progress.Progress_Id || 0;
+        this.Report_Attach_File =
+          this.extractReportAttachFiles(res, this.selectedItem?.Plan_Id, this.Progress_Id);
+        this.syncReportAttachmentModel(this.Report_Attach_File);
 
       });
 
@@ -1319,7 +1569,19 @@ export class ReportResultComponent
       .GatewayGetData(model)
       .subscribe({
 
-        next: (response: any) => {
+        next: async (response: any) => {
+          this.applySavedProgressId(response);
+
+          try {
+            await this.uploadReportAttachFiles();
+          } catch (error) {
+            await basicAlert(
+              'warning',
+              'บันทึกข้อมูลแล้ว แต่แนบไฟล์ไม่สำเร็จ',
+              ''
+            );
+            return;
+          }
 
           basicAlert(
             'success',
@@ -1347,6 +1609,120 @@ export class ReportResultComponent
 
       });
 
+  }
+
+  private applySavedProgressId(response: any) {
+    const progressId =
+      response?.Progress_Id ||
+      response?.Report_Budget_Plan_Progress?.Progress_Id ||
+      response?.Data?.Progress_Id ||
+      response?.data?.Progress_Id ||
+      response?.Result?.Progress_Id;
+
+    if (progressId) {
+      this.Progress_Id = progressId;
+      this.syncReportAttachmentModel(this.getCurrentReportAttachFiles());
+    }
+  }
+
+  private uploadReportAttachFiles(): Promise<void> {
+    const allAttachFiles = this.getCurrentReportAttachFiles();
+    this.syncReportAttachmentModel(allAttachFiles);
+
+    const attachFiles =
+      allAttachFiles.filter((x: any) =>
+        this.isPendingUploadFile(x) &&
+        !x?.Pending_Delete &&
+        Number(x?.Active ?? 1) !== 0
+      );
+
+    const deletedFiles =
+      allAttachFiles.filter((x: any) =>
+        x?.Pending_Delete &&
+        !!(x?.IDA || x?.GEN_FILE || x?.PATH_FILE)
+      );
+
+    if (attachFiles.length === 0 && deletedFiles.length === 0) {
+      return Promise.resolve();
+    }
+
+    const requestId =
+      this.reportAttachmentRequestId;
+
+    if (!requestId) {
+      return Promise.reject('Report attachment request id is required.');
+    }
+
+    const formData = new FormData();
+
+    attachFiles.forEach((item: any) => {
+      formData.append('FILES', item.file, item.file.name);
+    });
+
+    formData.append(
+      'MODEL',
+      JSON.stringify({
+        FUNC_CODE: 'FUNC-Upload_Report_Budget_Plan_File',
+        Request_Id: requestId,
+        Files: attachFiles.map((item: any) => ({
+          IDA: item.IDA || 0,
+          Client_Attachment_Id: item.Client_Attachment_Id || '',
+          Ref_Module: item.Ref_Module || 'REPORT_BUDGET_PLAN',
+          Ref_Level: item.Ref_Level || 'PROGRESS',
+          Fk_Expense_Id: item.Fk_Expense_Id || this.selectedItem?.Plan_Id || 0,
+          Fk_Request_Detail_Item_Id: item.Fk_Request_Detail_Item_Id || 0,
+          Row_Guid: item.Row_Guid || null,
+          File_Name: item.File_Name || item.file?.name,
+          File_Size: item.File_Size || item.file?.size,
+          File_Type: item.File_Type || item.file?.type,
+          NAME_FAKE: item.NAME_FAKE || item.File_Name || item.file?.name,
+          NAME_REAL: item.NAME_REAL || '',
+          Create_By: this.currentUserIdentify,
+          ATTACH: item.ATTACH || 1,
+          Active: 1
+        })),
+        Deleted_Files: deletedFiles.map((item: any) => ({
+          IDA: item.IDA || 0,
+          Client_Attachment_Id: item.Client_Attachment_Id || '',
+          Ref_Module: item.Ref_Module || 'REPORT_BUDGET_PLAN',
+          Ref_Level: item.Ref_Level || 'PROGRESS',
+          Fk_Expense_Id: item.Fk_Expense_Id || this.selectedItem?.Plan_Id || 0,
+          Fk_Request_Detail_Item_Id: item.Fk_Request_Detail_Item_Id || 0,
+          Row_Guid: item.Row_Guid || null,
+          File_Name: item.File_Name || item.NAME_FAKE || '',
+          NAME_FAKE: item.NAME_FAKE || item.File_Name || '',
+          NAME_REAL: item.NAME_REAL || item.GEN_FILE || '',
+          GEN_FILE: item.GEN_FILE || '',
+          PATH_FILE: item.PATH_FILE || '',
+          Update_By: this.currentUserIdentify,
+          ATTACH: item.ATTACH || 1,
+          Active: 0
+        }))
+      })
+    );
+
+    return new Promise((resolve, reject) => {
+      this.servicebud.UploadData(formData).subscribe({
+        next: () => resolve(),
+        error: error => reject(error)
+      });
+    });
+  }
+
+  private isPendingUploadFile(item: any): boolean {
+    const file =
+      item?.file;
+
+    return !!(
+      file &&
+      (
+        (typeof File !== 'undefined' && file instanceof File) ||
+        (
+          typeof file.name === 'string' &&
+          typeof file.size === 'number'
+        )
+      )
+    );
   }
   fullModalreport(modal: any, data: any) {
 

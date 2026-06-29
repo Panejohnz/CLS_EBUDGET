@@ -536,7 +536,7 @@
                             <option [ngValue]="null" disabled>-- เลือก --</option>
 
                             <option *ngFor="let item of listMasIndicator" [ngValue]="item.Indicators_Id">
-                                {{ item.Indicators_Name }}
+                                {{ item.Indicator_Display_Name || item.Indicators_Name }}
                             </option>
                         </select>
                     </div>
@@ -555,18 +555,18 @@
             <div class="border-start border-4 border-primary ps-3">
                 <h6 class="fw-bold text-primary mb-0">
                     3.1 ความสอดคล้องกับแผนปฏิบัติการด้าน
-                    <span class="text-danger">*</span>
+                 
                 </h6>
             </div>
 
-            <div class="form-check mb-0">
+            <!-- <div class="form-check mb-0">
                 <input class="form-check-input" type="checkbox" id="copyPlanLevel2" [(ngModel)]="isCopyFromLevel2"
                     (change)="onCopyFromLevel2()">
 
                 <label class="form-check-label ms-1" for="copyPlanLevel2">
                     เหมือนข้อ 2.1
                 </label>
-            </div>
+            </div> -->
 
         </div>
 
@@ -648,7 +648,7 @@
 
             </div>
         </div>
-        <div class="border-start border-4 border-primary ps-3 mb-4">
+        <!-- <div class="border-start border-4 border-primary ps-3 mb-4">
             <h6 class="fw-bold text-primary mb-3">สอดคล้องห่วงโซ่คุณค่า (Value Chains) ของเป้าหมายแผนย่อย</h6>
         </div>
 
@@ -691,7 +691,7 @@
                 </div>
 
             </div>
-        </div>
+        </div> -->
     </div>
     <div style="height:15px"></div>
 
@@ -730,7 +730,7 @@
                 <div class="col-md-12">
                     <label class="form-label">ตัวชี้วัดที่</label>
 
-                    <ng-select [items]="listIndicator5" bindLabel="Indicators_Name" bindValue="Indicators_Id"
+                    <ng-select [items]="listIndicator5" bindLabel="Indicator_Display_Name" bindValue="Indicators_Id"
                         [(ngModel)]="model.Project_Plan_Level3.Indicators_Id_5" placeholder="-- เลือก --">
                     </ng-select>
                 </div>
@@ -780,7 +780,7 @@
                 <div class="col-md-12">
                     <label class="form-label">ตัวชี้วัดที่</label>
 
-                    <ng-select [items]="listMasIndicator" bindLabel="Indicators_Name" bindValue="Indicators_Id"
+                    <ng-select [items]="listMasIndicator" bindLabel="Indicator_Display_Name" bindValue="Indicators_Id"
                         [(ngModel)]="model.Project_Plan_Level3.Indicators_Id" name="ppat_strategy"
                         placeholder="-- เลือก --">
                     </ng-select>

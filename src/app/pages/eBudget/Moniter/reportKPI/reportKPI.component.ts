@@ -42,6 +42,7 @@ export class ReportKPIComponent implements OnInit {
   // =====================================
 
   kpis: any[] = [];
+  Mas_Unit_Lists: any[] = [];
 
   get pagedKpis(): any[] {
     return this.sortService.changePage(this.kpis);
@@ -104,6 +105,7 @@ export class ReportKPIComponent implements OnInit {
 
     this.sortService.page = 1;
     this.sortService.pageSize = 20;
+    this.getUnitData();
 
     this.budgetYearService.yearChanged$
       .subscribe(async year => {
@@ -148,9 +150,103 @@ export class ReportKPIComponent implements OnInit {
           response
             ?.List_Mas_Indicator || [];
 
+        if (Array.isArray(response?.List_Mas_Unit)) {
+
+          this.Mas_Unit_Lists =
+
+            this.normalizeUnitList(
+
+              response.List_Mas_Unit
+
+            );
+
+        }
+
         this.sortService.page = 1;
 
       });
+
+  }
+
+  getUnitData() {
+
+    const model = {
+
+      FUNC_CODE:
+        'FUNC-Get_List_Mas_Unit'
+
+    };
+
+    this.servicebud
+      .GatewayGetData(model)
+      .subscribe((response: any) => {
+
+        this.Mas_Unit_Lists =
+
+          this.normalizeUnitList(
+
+            response?.List_Mas_Unit || []
+
+          );
+
+      });
+
+  }
+
+  normalizeUnitList(list: any[]): any[] {
+
+    return Array.isArray(list)
+      ? list.map((item: any) => ({
+
+        ...item,
+
+        Unit_Id:
+          item?.Unit_Id != null && item.Unit_Id !== ''
+            ? Number(item.Unit_Id)
+            : null
+
+      }))
+      : [];
+
+  }
+
+  getKpiUnitName(kpi: any): string {
+
+    const unitValue =
+
+      kpi?.Unit ?? kpi?.Unit_Id ?? kpi?.Fk_Unit_Id ?? kpi?.FK_Unit_Id ?? null;
+
+    if (unitValue == null || unitValue === '') {
+
+      return kpi?.Unit_Name || '';
+
+    }
+
+    const unitId =
+
+      Number(unitValue);
+
+    if (Number.isNaN(unitId)) {
+
+      return kpi?.Unit_Name || String(unitValue);
+
+    }
+
+    return (
+
+      kpi?.Unit_Name ||
+
+      this.Mas_Unit_Lists.find(
+
+        (unit: any) =>
+
+          Number(unit.Unit_Id) === unitId
+
+      )?.Unit_Name ||
+
+      ''
+
+    );
 
   }
 
@@ -333,6 +429,7 @@ export class ReportKPIComponent implements OnInit {
       Suggestions:
         this.form.Suggestions || '',
 
+      Performance: this.form.Performance || '',
       Active: true,
 
       Create_User:

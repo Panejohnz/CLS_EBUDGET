@@ -71,9 +71,15 @@
                     <div class="col-md-2">
 
                         <ng-select [items]="Mas_Unit_Lists" bindLabel="Unit_Name" bindValue="Unit_Id"
-                            [(ngModel)]="item.Unit" name="output_unit_{{i}}" placeholder="-- เลือกหน่วยนับ --"
-                            [clearable]="false">
+                            [(ngModel)]="item.Unit" name="output_unit_{{i}}" #outputUnit="ngModel" placeholder="-- เลือกหน่วยนับ --"
+                            [clearable]="false"
+                            [ngClass]="{ 'is-invalid': outputUnit.invalid && (outputUnit.dirty || outputUnit.touched) }"
+                            required>
                         </ng-select>
+                        <div class="invalid-feedback d-block"
+                            *ngIf="outputUnit.invalid && (outputUnit.dirty || outputUnit.touched)">
+                            กรุณาเลือกหน่วยนับ
+                        </div>
                     </div>
 
                     <div class="col-md-1 text-end">
