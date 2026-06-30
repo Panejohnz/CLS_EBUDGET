@@ -48,11 +48,11 @@ export class MasProjectPlanComponent {
       path: '/MasterData/MasProjectPlan/SDGsPlan',
       icon: 'ri-global-line'
     },
-    {
+      {
       no: 7,
       title: 'ความสอดคล้องกับแผนปฏิบัติการด้าน',
-      path: '/MasterData/MasProjectPlan/MasterPlanY5',
-      icon: 'ri-global-line'
+      path: '/MasterData/MasProjectPlan/MasterPlan5',
+      icon: 'ri-briefcase-2-line'
     }
   ];
 

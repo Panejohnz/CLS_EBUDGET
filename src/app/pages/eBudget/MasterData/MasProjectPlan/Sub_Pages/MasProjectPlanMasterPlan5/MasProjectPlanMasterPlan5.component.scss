@@ -1,0 +1,21 @@
+:host ::ng-deep .ng-dropdown-panel {
+    z-index: 1060 !important;
+  }
+  
+  .sticky-header th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #556398 !important;
+    color: white;
+  }
+  
+  .sticky-header tr:nth-child(2) th {
+    top: 48px;
+  }
+  
+  .table-responsive {
+    max-height: 600px;
+    overflow-y: auto;
+  }
+  

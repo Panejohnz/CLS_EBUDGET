@@ -402,10 +402,6 @@
         <input type="text" class="form-control" [(ngModel)]="Mas_Indicators.Indicators_Name">
       </div>
       <div class="col-md-6">
-        <label class="form-label">ชื่อย่อ</label>
-        <input type="text" class="form-control" [(ngModel)]="Mas_Indicators.Indicators_Short_Name">
-      </div>
-      <div class="col-md-6">
         <label class="form-label">เป้าหมาย</label>
         <input type="text" class="form-control" [(ngModel)]="Mas_Indicators.Target">
       </div>
@@ -416,6 +412,11 @@
           [clearable]="true" appendTo="body" placeholder="-- เลือกหน่วยนับ --">
         </ng-select>
       </div>
+      <div class="col-md-6">
+        <label class="form-label">ชื่อย่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Indicators.Indicators_Short_Name">
+      </div>
+      
       <div class="col-md-6">
         <label class="form-label">เรียงลำดับ</label>
         <input type="number" class="form-control" [(ngModel)]="Mas_Indicators.Order_Seq">
