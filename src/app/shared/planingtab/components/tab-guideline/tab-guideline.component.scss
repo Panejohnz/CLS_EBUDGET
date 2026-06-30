@@ -27,3 +27,26 @@
     background-color: #c5e8ff;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
+
+::ng-deep .guideline-multiplier-modal .modal-dialog {
+    height: calc(100vh - 2rem);
+}
+
+::ng-deep .guideline-multiplier-modal .modal-content {
+    height: 100%;
+    overflow: hidden;
+}
+
+::ng-deep .guideline-multiplier-modal .modal-body.guideline-multiplier-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    padding: 0 1rem 1rem;
+}
+
+::ng-deep .guideline-multiplier-modal app-other-expense-project {
+    display: flex;
+    height: 100%;
+    min-height: 0;
+    width: 100%;
+}

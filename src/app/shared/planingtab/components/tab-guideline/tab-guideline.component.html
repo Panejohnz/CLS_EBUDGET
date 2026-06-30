@@ -317,13 +317,15 @@
         </h6>
     </div>
 
-    <app-other-expense-project
-        [activityId]="selectedActivityId"
-        [type]="type"
-        [project_planing]="project_planing"
-        [activity]="selectedActivity"
-        [modal]="modal"
-        [model]="model">
-    </app-other-expense-project>
+    <div class="modal-body guideline-multiplier-body">
+        <app-other-expense-project
+            [activityId]="selectedActivityId"
+            [type]="type"
+            [project_planing]="project_planing"
+            [activity]="selectedActivity"
+            [modal]="modal"
+            [model]="model">
+        </app-other-expense-project>
+    </div>
 
 </ng-template>
