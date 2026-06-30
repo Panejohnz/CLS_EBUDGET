@@ -76,3 +76,9 @@
     padding-right: 1cm;
     padding-top: 10px;
 }
+
+:host ::ng-deep .budget-footer {
+    position: static !important;
+    bottom: auto !important;
+    z-index: auto !important;
+}

@@ -2,9 +2,7 @@
 
     <div class="card shadow-sm">
         <div class="card-body p-0">
-
-      <div class="table-responsive" style="max-height:1000px; overflow-y:auto;">
-
+      <div class="table-responsive" style="max-height:60vh; overflow-y:auto;">
     <table class="table table-bordered align-middle text-center">
 
         <thead class="text-white sticky-header"
@@ -212,31 +210,35 @@
     </table>
 
 </div>
-            <div class="p-2">
 
-                <button class="btn btn-success text-black btn-sm" (click)="addCost()">
-
-                    + เพิ่มค่าใช้จ่าย
-
-                </button>
-
-            </div>
 
         </div>
 
     </div>
 
 
-    <div class="d-flex justify-content-end mt-3 gap-2">
+<div class="d-flex justify-content-between align-items-center mt-3">
 
-        <button class="btn btn-success text-black" (click)="save()">
+    <!-- ปุ่มเพิ่มค่าใช้จ่าย (ชิดซ้าย) -->
+    <button class="btn btn-success text-black"
+            (click)="addCost()">
+        + เพิ่มค่าใช้จ่าย
+    </button>
+
+    <!-- ปุ่มฝั่งขวา -->
+    <div class="d-flex gap-2">
+        <button class="btn btn-success text-black"
+                (click)="save()">
             บันทึก
         </button>
-        <button class="btn btn-danger text-black" (click)="closeModal()">
+
+        <button class="btn btn-danger text-black"
+                (click)="closeModal()">
             ยกเลิก
         </button>
-
     </div>
+
+</div>
     <div style="height: 30px;"></div>
 
 </div>

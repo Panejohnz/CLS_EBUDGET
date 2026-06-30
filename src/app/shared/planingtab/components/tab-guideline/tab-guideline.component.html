@@ -298,14 +298,32 @@
 <!-- </div> -->
 
 <ng-template #fullDataModal let-modal>
-    <div class="modal-header flex-column align-items-start">
-        <h5 class="modal-title">แบบฟอร์มกำหนดตัวคูณของกิจกรรม eeeeeee</h5>
-        <h6 class="fw-bold p-2">{{ selectedActivity.name }}</h6>
 
-        <button type="button" class="btn-close ms-auto" (click)="modal.dismiss('Close click')"></button>
+    <div class="modal-header shared-page-header p-3">
+        <h5 class="modal-title text-white">
+            แบบฟอร์มกำหนดตัวคูณของกิจกรรม
+        </h5>
+
+        <button type="button"
+                class="btn-close ms-auto"
+                (click)="modal.dismiss('Close click')">
+        </button>
     </div>
 
-    <app-other-expense-project [activityId]="selectedActivityId" [type]="type" [project_planing]="project_planing"
-        [activity]="selectedActivity" [modal]="modal" [model]="model">
+    <!-- แสดงชื่อกิจกรรมใต้ Header -->
+    <div class="px-3 py-2 border-bottom">
+        <h6 class="fw-bold mb-0">
+            กิจกรรม : {{ selectedActivity.name }}
+        </h6>
+    </div>
+
+    <app-other-expense-project
+        [activityId]="selectedActivityId"
+        [type]="type"
+        [project_planing]="project_planing"
+        [activity]="selectedActivity"
+        [modal]="modal"
+        [model]="model">
     </app-other-expense-project>
+
 </ng-template>

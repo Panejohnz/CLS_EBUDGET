@@ -112,6 +112,270 @@
 
         </div>
 
+        <ng-template #targetModal let-modal>
+
+            <!-- HEADER -->
+            <div class="modal-header border-0 bg-light">
+
+                <div>
+
+                    <h5 class="modal-title fw-bold mb-1">
+                        กำหนดเป้าหมาย
+                    </h5>
+
+                    <small class="text-muted">
+                        กรอกจำนวนเป้าหมายรายเดือน
+                    </small>
+
+                </div>
+
+                <button type="button" class="btn-close" (click)="modal.dismiss()">
+
+                </button>
+
+            </div>
+
+            <!-- BODY -->
+            <div class="modal-body bg-light-subtle">
+
+                <!-- ACTION -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+
+                    <!-- Checkbox -->
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="budgetIndicator"
+                            [(ngModel)]="Is_Bureau_Indicator">
+
+                        <label class="form-check-label fw-medium" for="budgetIndicator">
+                            ตัวชี้วัดสำนักงบประมาณ
+                        </label>
+                    </div>
+
+                    <!-- ปุ่มเพิ่ม -->
+                    <button class="btn btn-success text-black rounded-pill px-4" (click)="addTargetRow()">
+                        + เพิ่มรายการ
+                    </button>
+
+
+                </div>
+
+                <!-- TABLE CARD -->
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+
+                    <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+
+                        <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+
+                            <!-- HEADER -->
+                            <thead class="text-center text-white sticky-header" style="background-color: #556398;">
+
+                                <tr>
+
+                                    <th class="ps-4" style="min-width:260px">
+
+                                        รายการ
+
+                                    </th>
+
+                                    <th class="text-center" *ngFor="let m of [
+                                    'ต.ค.',
+                                    'พ.ย.',
+                                    'ธ.ค.',
+                                    'ม.ค.',
+                                    'ก.พ.',
+                                    'มี.ค.',
+                                    'เม.ย.',
+                                    'พ.ค.',
+                                    'มิ.ย.',
+                                    'ก.ค.',
+                                    'ส.ค.',
+                                    'ก.ย.'
+                                ]">
+
+                                        {{ m }}
+
+                                    </th>
+
+                                    <th class="text-center" style="width:120px">
+
+                                        รวม
+
+                                    </th>
+
+                                    <th class="text-center" style="width:90px">
+
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+                            <!-- BODY -->
+                            <tbody>
+
+                                <tr *ngFor="let t of targetList; let i = index">
+
+                                    <!-- name -->
+                                    <td class="ps-4">
+
+                                        <div class="fw-semibold mb-2">
+
+                                            รายการ {{ i + 1 }}
+
+                                        </div>
+
+                                        <input class="form-control form-control-sm" placeholder="หน่วยนับ"
+                                            [(ngModel)]="t.unit">
+
+                                    </td>
+
+                                    <!-- oct -->
+                                    <td>
+                                        <input type="number" class="form-control form-control-sm text-center"
+                                            [(ngModel)]="t.oct">
+                                    </td>
+
+                                    <!-- nov -->
+                                    <td>
+                                        <input type="number" class="form-control form-control-sm text-center"
+                                            [(ngModel)]="t.nov">
+                                    </td>
+
+                                    <!-- dec -->
+                                    <td>
+                                        <input type="number" class="form-control form-control-sm text-center"
+                                            [(ngModel)]="t.dec">
+                                    </td>
+
+                                    <!-- jan -->
+                                    <td>
+                                        <input type="number" class="form-control form-control-sm text-center"
+                                            [(ngModel)]="t.jan">
+                                    </td>
+
+                                    <!-- feb -->
+                                    <td>
+                                        <input type="number" class="form-control form-control-sm text-center"
+                                            [(ngModel)]="t.feb">
+                                    </td>
+
+                                    <!-- mar -->
+                                    <td>
+                                        <input type="number" class="form-control form-control-sm text-center"
+                                            [(ngModel)]="t.mar">
+                                    </td>
+
+                                    <!-- apr -->
+                                    <td>
+                                        <input type="number" class="form-control form-control-sm text-center"
+                                            [(ngModel)]="t.apr">
+                                    </td>
+
+                                    <!-- may -->
+                                    <td>
+                                        <input type="number" class="form-control form-control-sm text-center"
+                                            [(ngModel)]="t.may">
+                                    </td>
+
+                                    <!-- jun -->
+                                    <td>
+                                        <input type="number" class="form-control form-control-sm text-center"
+                                            [(ngModel)]="t.jun">
+                                    </td>
+
+                                    <!-- jul -->
+                                    <td>
+                                        <input type="number" class="form-control form-control-sm text-center"
+                                            [(ngModel)]="t.jul">
+                                    </td>
+
+                                    <!-- aug -->
+                                    <td>
+                                        <input type="number" class="form-control form-control-sm text-center"
+                                            [(ngModel)]="t.aug">
+                                    </td>
+
+                                    <!-- sep -->
+                                    <td>
+                                        <input type="number" class="form-control form-control-sm text-center"
+                                            [(ngModel)]="t.sep">
+                                    </td>
+
+                                    <!-- total -->
+                                    <td>
+
+                                        <input class="form-control form-control-sm fw-bold text-center bg-light"
+                                            [value]="getTargetSum(t)" readonly>
+
+                                    </td>
+
+                                    <!-- remove -->
+                                    <td class="text-center">
+
+                                        <button class="btn btn-outline-danger btn-sm rounded-circle"
+                                            *ngIf="targetList.length > 1" (click)="removeTargetRow(i,t)">
+
+                                            ✕
+
+                                        </button>
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                            <!-- FOOTER -->
+                            <tfoot class="table" style="background-color: #556398;">
+
+                                <tr>
+
+                                    <td colspan="13" class="text-end fw-bold pe-4">
+
+                                        รวมทั้งหมด
+
+                                    </td>
+
+                                    <td>
+
+                                        <input class="form-control form-control-sm fw-bold text-center bg-white"
+                                            [value]="getGrandTotal()" readonly>
+
+                                    </td>
+
+                                    <td></td>
+
+                                </tr>
+
+                            </tfoot>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- FOOTER -->
+            <div class="modal-footer border-0 bg-light">
+
+                <button class="btn btn-danger text-black rounded-pill px-4" (click)="modal.dismiss()">
+
+                    ยกเลิก
+
+                </button>
+
+                <button class="btn btn-success text-black" [disabled]="isSaveLocked" (click)="saveTarget(modal)">
+
+                    บันทึก
+
+                </button>
+
+            </div>
+
+        </ng-template>
+
         <div *ngIf="dropdown_select">
 
             <div class="modal-header bg-light gap-3 flex-wrap">
@@ -374,267 +638,5 @@
 
     </ng-template>
 
-    <ng-template #targetModal let-modal>
 
-        <!-- HEADER -->
-        <div class="modal-header border-0 bg-light">
-
-            <div>
-
-                <h5 class="modal-title fw-bold mb-1">
-                    กำหนดเป้าหมาย
-                </h5>
-
-                <small class="text-muted">
-                    กรอกจำนวนเป้าหมายรายเดือน
-                </small>
-
-            </div>
-
-            <button type="button" class="btn-close" (click)="modal.dismiss()">
-
-            </button>
-
-        </div>
-
-        <!-- BODY -->
-        <div class="modal-body bg-light-subtle">
-
-            <!-- ACTION -->
-            <div class="d-flex justify-content-between align-items-center mb-3">
-
-                <!-- Checkbox -->
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="budgetIndicator"
-                        [(ngModel)]="Is_Bureau_Indicator">
-
-                    <label class="form-check-label fw-medium" for="budgetIndicator">
-                        ตัวชี้วัดสำนักงบประมาณ
-                    </label>
-                </div>
-
-                <!-- ปุ่มเพิ่ม -->
-                <button class="btn btn-success text-black rounded-pill px-4" (click)="addTargetRow()">
-                    + เพิ่มรายการ
-                </button>
-
-
-            </div>
-
-            <!-- TABLE CARD -->
-            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-
-                <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
-
-                    <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
-
-                        <!-- HEADER -->
-                        <thead class="text-center text-white sticky-header" style="background-color: #556398;">
-
-                            <tr>
-
-                                <th class="ps-4" style="min-width:260px">
-
-                                    รายการ
-
-                                </th>
-
-                                <th class="text-center" *ngFor="let m of [
-                                    'ต.ค.',
-                                    'พ.ย.',
-                                    'ธ.ค.',
-                                    'ม.ค.',
-                                    'ก.พ.',
-                                    'มี.ค.',
-                                    'เม.ย.',
-                                    'พ.ค.',
-                                    'มิ.ย.',
-                                    'ก.ค.',
-                                    'ส.ค.',
-                                    'ก.ย.'
-                                ]">
-
-                                    {{ m }}
-
-                                </th>
-
-                                <th class="text-center" style="width:120px">
-
-                                    รวม
-
-                                </th>
-
-                                <th class="text-center" style="width:90px">
-
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-                        <!-- BODY -->
-                        <tbody>
-
-                            <tr *ngFor="let t of targetList; let i = index">
-
-                                <!-- name -->
-                                <td class="ps-4">
-
-                                    <div class="fw-semibold mb-2">
-
-                                        รายการ {{ i + 1 }}
-
-                                    </div>
-
-                                    <input class="form-control form-control-sm" placeholder="หน่วยนับ"
-                                        [(ngModel)]="t.unit">
-
-                                </td>
-
-                                <!-- oct -->
-                                <td>
-                                    <input type="number" class="form-control form-control-sm text-center"
-                                        [(ngModel)]="t.oct">
-                                </td>
-
-                                <!-- nov -->
-                                <td>
-                                    <input type="number" class="form-control form-control-sm text-center"
-                                        [(ngModel)]="t.nov">
-                                </td>
-
-                                <!-- dec -->
-                                <td>
-                                    <input type="number" class="form-control form-control-sm text-center"
-                                        [(ngModel)]="t.dec">
-                                </td>
-
-                                <!-- jan -->
-                                <td>
-                                    <input type="number" class="form-control form-control-sm text-center"
-                                        [(ngModel)]="t.jan">
-                                </td>
-
-                                <!-- feb -->
-                                <td>
-                                    <input type="number" class="form-control form-control-sm text-center"
-                                        [(ngModel)]="t.feb">
-                                </td>
-
-                                <!-- mar -->
-                                <td>
-                                    <input type="number" class="form-control form-control-sm text-center"
-                                        [(ngModel)]="t.mar">
-                                </td>
-
-                                <!-- apr -->
-                                <td>
-                                    <input type="number" class="form-control form-control-sm text-center"
-                                        [(ngModel)]="t.apr">
-                                </td>
-
-                                <!-- may -->
-                                <td>
-                                    <input type="number" class="form-control form-control-sm text-center"
-                                        [(ngModel)]="t.may">
-                                </td>
-
-                                <!-- jun -->
-                                <td>
-                                    <input type="number" class="form-control form-control-sm text-center"
-                                        [(ngModel)]="t.jun">
-                                </td>
-
-                                <!-- jul -->
-                                <td>
-                                    <input type="number" class="form-control form-control-sm text-center"
-                                        [(ngModel)]="t.jul">
-                                </td>
-
-                                <!-- aug -->
-                                <td>
-                                    <input type="number" class="form-control form-control-sm text-center"
-                                        [(ngModel)]="t.aug">
-                                </td>
-
-                                <!-- sep -->
-                                <td>
-                                    <input type="number" class="form-control form-control-sm text-center"
-                                        [(ngModel)]="t.sep">
-                                </td>
-
-                                <!-- total -->
-                                <td>
-
-                                    <input class="form-control form-control-sm fw-bold text-center bg-light"
-                                        [value]="getTargetSum(t)" readonly>
-
-                                </td>
-
-                                <!-- remove -->
-                                <td class="text-center">
-
-                                    <button class="btn btn-outline-danger btn-sm rounded-circle"
-                                        *ngIf="targetList.length > 1" (click)="removeTargetRow(i,t)">
-
-                                        ✕
-
-                                    </button>
-
-                                </td>
-
-                            </tr>
-
-                        </tbody>
-
-                        <!-- FOOTER -->
-                        <tfoot class="table" style="background-color: #556398;">
-
-                            <tr>
-
-                                <td colspan="13" class="text-end fw-bold pe-4">
-
-                                    รวมทั้งหมด
-
-                                </td>
-
-                                <td>
-
-                                    <input class="form-control form-control-sm fw-bold text-center bg-white"
-                                        [value]="getGrandTotal()" readonly>
-
-                                </td>
-
-                                <td></td>
-
-                            </tr>
-
-                        </tfoot>
-
-                    </table>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- FOOTER -->
-        <div class="modal-footer border-0 bg-light">
-
-            <button class="btn btn-danger text-black rounded-pill px-4" (click)="modal.dismiss()">
-
-                ยกเลิก
-
-            </button>
-
-            <button class="btn btn-success text-black" [disabled]="isSaveLocked" (click)="saveTarget(modal)">
-
-                บันทึก
-
-            </button>
-
-        </div>
-
-    </ng-template>
 </div>
