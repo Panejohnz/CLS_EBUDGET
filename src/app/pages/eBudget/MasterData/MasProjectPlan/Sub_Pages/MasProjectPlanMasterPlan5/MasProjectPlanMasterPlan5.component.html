@@ -1,0 +1,795 @@
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center shared-page-header">
+    <h4 class="card-title mb-0 flex-grow-1 text-white">ความสอดคล้องกับแผนปฏิบัติการด้าน</h4>
+    <button type="button" class="btn btn-outline-secondary btn-sm" (click)="goBackToPlan()" style="background-color: rgb(125, 248, 125); color: #212529;">กลับหน้าแผนงาน</button>
+  </div>
+  <div class="card-body">
+    <ul class="nav nav-tabs mb-3 flex-wrap">
+      <li class="nav-item">
+        <button type="button" class="nav-link" [class.active]="currentTab === 1" (click)="goTab(1)">
+          ประเด็น
+        </button>
+      </li>
+      <li class="nav-item">
+        <button type="button" class="nav-link" [class.active]="currentTab === 2" (click)="goTab(2)">
+          เป้าหมายระดับประเด็น
+        </button>
+      </li>
+      <li class="nav-item">
+        <button type="button" class="nav-link" [class.active]="currentTab === 3" (click)="goTab(3)">
+          ตัวชี้วัดเป้าหมายระดับประเด็น
+        </button>
+      </li>
+      <li class="nav-item">
+        <button type="button" class="nav-link" [class.active]="currentTab === 4" (click)="goTab(4)">
+          แผนย่อยของแผนปฏิบัติการด้าน
+        </button>
+      </li>
+      <li class="nav-item">
+        <button type="button" class="nav-link" [class.active]="currentTab === 5" (click)="goTab(5)">
+         เป้าหมายย่อยของแผนปฏิบัติการด้าน
+        </button>
+      </li>
+      <li class="nav-item">
+        <button type="button" class="nav-link" [class.active]="currentTab === 6" (click)="goTab(6)">
+          แนวทางการพัฒนาภายใต้แผนย่อย
+        </button>
+      </li>
+    </ul>
+
+    <!-- Tab 1: ประเด็น -->
+    <div class="border rounded p-3 bg-light" *ngIf="currentTab === 1">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div style="width:300px;">
+            <input type="text" class="form-control" placeholder="ค้นหาประเด็น..."
+              [(ngModel)]="service.searchTerm" (input)="filterSearch()">
+          </div>
+          <div>
+            <button class="btn btn-success text-black" (click)="openAddPlanModal(addPlanModal)">
+              เพิ่มข้อมูล
+            </button>
+          </div>
+        </div>
+
+        <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+          <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+            <thead class="text-center text-white sticky-header" style="background-color: #556398;">
+              <tr>
+                <th style="width:5%">ลำดับ</th>
+                <th style="width:5%">ปีที่เริ่ม</th>
+                <th style="width:5%">ปีที่สิ้นสุด</th>
+                <th style="width:25%">ชื่อ</th>
+                <th style="width:10%">ชื่อย่อ</th>
+                <th style="width:5%">เรียงลำดับ</th>
+                <th style="width:8%">แก้ไข</th>
+                <th style="width:8%">ลบ</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (data of List_Mas_Master_Plan_5; track $index) {
+              <tr>
+                <td>{{ planPagination.startIndex + $index }}</td>
+                <td>{{ data.BgYear_Start }}</td>
+                <td>{{ data.BgYear_End }}</td>
+                <td style="text-align: left;">
+                  {{ data.Master_Plan_Name }}
+                </td>
+                <td>{{ data.Master_Plan_Short_Name }}</td>
+                <td>{{ data.Order_Seq }}</td>
+                <td>
+                  <button type="button" class="btn btn-warning btn-sm" (click)="openEditPlanModal(addPlanModal, data)">
+                    <i class="ri-pencil-line"></i>
+                  </button>
+                </td>
+                <td>
+                  <button type="button" class="btn btn-danger btn-sm" (click)="Delete_Mas_Master_Plan(data)">
+                    <i class="ri-delete-bin-line"></i>
+                  </button>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <div class="row justify-content-md-between align-items-md-center mt-2">
+          <div class="col col-sm-6">
+            <div class="dataTables_info mb-2 text-start">
+              แสดง {{ planPagination.total ? planPagination.startIndex : 0 }} ถึง {{ planPagination.total ? planPagination.endIndex : 0 }}
+              จากทั้งหมด {{ planPagination.total }} รายการ
+            </div>
+          </div>
+          <div class="col col-sm-6">
+            <div class="d-flex justify-content-sm-end">
+              <ngb-pagination [collectionSize]="planPagination.total" [(page)]="planPagination.page"
+                [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
+                (pageChange)="onPlanPageChange($event)">
+              </ngb-pagination>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 2: เป้าหมายระดับประเด็น (Y2) -->
+    <div class="border rounded p-3 bg-light" *ngIf="currentTab === 2">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div style="width:300px;">
+            <input type="text" class="form-control" placeholder="ค้นหาเป้าหมายระดับประเด็น..."
+              [(ngModel)]="searchGoalTerm" (input)="filterGoalSearch()">
+          </div>
+          <div>
+            <button class="btn btn-success text-black" (click)="openAddGoalModal(addGoalModal)">
+              เพิ่มข้อมูล
+            </button>
+          </div>
+        </div>
+
+        <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+          <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+            <thead class="text-center text-white sticky-header" style="background-color: #556398;">
+              <tr>
+                <th style="width:5%">ลำดับ</th>
+                <!-- <th style="width:15%">ประเด็น</th> -->
+                <th style="width:5%">ปีที่เริ่ม</th>
+                <th style="width:5%">ปีที่สิ้นสุด</th>
+                <th style="width:20%">ชื่อ</th>
+                <th style="width:10%">ชื่อย่อ</th>
+                <th style="width:5%">เรียงลำดับ</th>
+                <th style="width:8%">แก้ไข</th>
+                <th style="width:8%">ลบ</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (data of List_Mas_Master_Plan_Goal_5; track $index) {
+              <tr>
+                <td>{{ goalPagination.startIndex + $index }}</td>
+                <!-- <td>{{ getMasterPlanNameForGoalRow(data) }}</td> -->
+                <td>{{ data.BgYear_Start }}</td>
+                <td>{{ data.BgYear_End }}</td>
+                <td style="text-align: left;">
+                  {{ data.Plan_Goals_Name }}
+                </td>
+                <td>{{ data.Plan_Goals_Short_Name }}</td>
+                <td>{{ data.Order_Seq }}</td>
+                <td>
+                  <button type="button" class="btn btn-warning btn-sm" (click)="openEditGoalModal(addGoalModal, data)">
+                    <i class="ri-pencil-line"></i>
+                  </button>
+                </td>
+                <td>
+                  <button type="button" class="btn btn-danger btn-sm" (click)="Delete_Mas_Master_Plan_Goal(data)">
+                    <i class="ri-delete-bin-line"></i>
+                  </button>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <div class="row justify-content-md-between align-items-md-center mt-2">
+          <div class="col col-sm-6">
+            <div class="dataTables_info mb-2 text-start">
+              แสดง {{ goalPagination.total ? goalPagination.startIndex : 0 }} ถึง {{ goalPagination.total ? goalPagination.endIndex : 0 }}
+              จากทั้งหมด {{ goalPagination.total }} รายการ
+            </div>
+          </div>
+          <div class="col col-sm-6">
+            <div class="d-flex justify-content-sm-end">
+              <ngb-pagination [collectionSize]="goalPagination.total" [(page)]="goalPagination.page"
+                [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
+                (pageChange)="onGoalPageChange($event)">
+              </ngb-pagination>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: ตัวชี้วัดเป้าหมายระดับประเด็น -->
+    <div class="border rounded p-3 bg-light" *ngIf="currentTab === 3">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div style="width:300px;">
+            <input type="text" class="form-control" placeholder="ค้นหาตัวชี้วัดเป้าหมายระดับประเด็น..."
+              [(ngModel)]="searchTacticTerm" (input)="filterTacticSearch()">
+          </div>
+          <div>
+            <button class="btn btn-success text-black" (click)="openAddTacticModal(addTacticModal)">
+              เพิ่มข้อมูล
+            </button>
+          </div>
+        </div>
+
+        <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+          <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+            <thead class="text-center text-white sticky-header" style="background-color: #556398;">
+              <tr>
+                <th style="width:5%">ลำดับ</th>
+                <!-- <th style="width:12%">ประเด็น</th>
+                <th style="width:12%">เป้าหมาย (Y2)</th> -->
+                <th style="width:5%">ปีที่เริ่ม</th>
+                <th style="width:5%">ปีที่สิ้นสุด</th>
+                <th style="width:18%">ชื่อ</th>
+                <th style="width:8%">ชื่อย่อ</th>
+                <th style="width:5%">เรียงลำดับ</th>
+                <th style="width:8%">แก้ไข</th>
+                <th style="width:8%">ลบ</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (data of List_Mas_Master_Plan_Goals_Tactics_5; track $index) {
+              <tr>
+                <td>{{ tacticPagination.startIndex + $index }}</td>
+                <!-- <td>{{ getMasterPlanNameForTacticRow(data) }}</td>
+                <td>{{ getGoalNameForTacticRow(data) }}</td> -->
+                <td>{{ data.BgYear_Start }}</td>
+                <td>{{ data.BgYear_End }}</td>
+                <td style="text-align: left;">
+                  {{ data.Plan_Tactics_Name }}
+                </td>
+                <td>{{ data.Plan_Tactics_Short_Name }}</td>
+                <td>{{ data.Order_Seq }}</td>
+                <td>
+                  <button type="button" class="btn btn-warning btn-sm"
+                    (click)="openEditTacticModal(addTacticModal, data)">
+                    <i class="ri-pencil-line"></i>
+                  </button>
+                </td>
+                <td>
+                  <button type="button" class="btn btn-danger btn-sm"
+                    (click)="Delete_Mas_Master_Plan_Goals_Tactic(data)">
+                    <i class="ri-delete-bin-line"></i>
+                  </button>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <div class="row justify-content-md-between align-items-md-center mt-2">
+          <div class="col col-sm-6">
+            <div class="dataTables_info mb-2 text-start">
+              แสดง {{ tacticPagination.total ? tacticPagination.startIndex : 0 }} ถึง {{ tacticPagination.total ? tacticPagination.endIndex : 0 }}
+              จากทั้งหมด {{ tacticPagination.total }} รายการ
+            </div>
+          </div>
+          <div class="col col-sm-6">
+            <div class="d-flex justify-content-sm-end">
+              <ngb-pagination [collectionSize]="tacticPagination.total" [(page)]="tacticPagination.page"
+                [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
+                (pageChange)="onTacticPageChange($event)">
+              </ngb-pagination>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 4: แผนย่อยของแผนแม่บทฯ -->
+    <div class="border rounded p-3 bg-light" *ngIf="currentTab === 4">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div style="width:300px;">
+            <input type="text" class="form-control" placeholder="ค้นหาแผนย่อยของแผนปฏิบัติการด้าน..."
+              [(ngModel)]="searchSubPlanTerm" (input)="filterSubPlanSearch()">
+          </div>
+          <div>
+            <button class="btn btn-success text-black" (click)="openAddSubPlanModal(addSubPlanModal)">
+              เพิ่มข้อมูล
+            </button>
+          </div>
+        </div>
+
+        <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+          <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+            <thead class="text-center text-white sticky-header" style="background-color: #556398;">
+              <tr>
+                <th style="width:5%">ลำดับ</th>
+                <!-- <th style="width:15%">ประเด็น</th> -->
+                <th style="width:5%">ปีที่เริ่ม</th>
+                <th style="width:5%">ปีที่สิ้นสุด</th>
+                <th style="width:20%">ชื่อ</th>
+                <th style="width:10%">ชื่อย่อ</th>
+                <th style="width:5%">เรียงลำดับ</th>
+                <th style="width:8%">แก้ไข</th>
+                <th style="width:8%">ลบ</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (data of List_Mas_Sub_Master_Plan_5; track $index) {
+              <tr>
+                <td>{{ subPlanPagination.startIndex + $index }}</td>
+                <!-- <td>{{ getMasterPlanNameForSubPlanRow(data) }}</td> -->
+                <td>{{ data.BgYear_Start }}</td>
+                <td>{{ data.BgYear_End }}</td>
+                <td style="text-align: left;">
+                  {{ data.Sub_Master_Plan_Name }}
+                </td>
+                <td>{{ data.Sub_Master_Plan_Short_Name }}</td>
+                <td>{{ data.Order_Seq }}</td>
+                <td>
+                  <button type="button" class="btn btn-warning btn-sm"
+                    (click)="openEditSubPlanModal(addSubPlanModal, data)">
+                    <i class="ri-pencil-line"></i>
+                  </button>
+                </td>
+                <td>
+                  <button type="button" class="btn btn-danger btn-sm" (click)="Delete_Mas_Sub_Master_Plan(data)">
+                    <i class="ri-delete-bin-line"></i>
+                  </button>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <div class="row justify-content-md-between align-items-md-center mt-2">
+          <div class="col col-sm-6">
+            <div class="dataTables_info mb-2 text-start">
+              แสดง {{ subPlanPagination.total ? subPlanPagination.startIndex : 0 }} ถึง {{ subPlanPagination.total ? subPlanPagination.endIndex : 0 }}
+              จากทั้งหมด {{ subPlanPagination.total }} รายการ
+            </div>
+          </div>
+          <div class="col col-sm-6">
+            <div class="d-flex justify-content-sm-end">
+              <ngb-pagination [collectionSize]="subPlanPagination.total" [(page)]="subPlanPagination.page"
+                [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
+                (pageChange)="onSubPlanPageChange($event)">
+              </ngb-pagination>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 5: เป้าหมายแผนแม่บทย่อย (Y1) -->
+    <div class="border rounded p-3 bg-light" *ngIf="currentTab === 5">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div style="width:300px;">
+            <input type="text" class="form-control" placeholder="ค้นหาเป้าหมายย่อยของแผนปฏิบัติการด้าน..."
+              [(ngModel)]="searchSubGoalTerm" (input)="filterSubGoalSearch()">
+          </div>
+          <div>
+            <button class="btn btn-success text-black" (click)="openAddSubGoalModal(addSubGoalModal)">
+              เพิ่มข้อมูล
+            </button>
+          </div>
+        </div>
+
+        <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+          <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+            <thead class="text-center text-white sticky-header" style="background-color: #556398;">
+              <tr>
+                <th style="width:5%">ลำดับ</th>
+                <!-- <th style="width:12%">ประเด็น</th>
+                <th style="width:12%">แผนย่อย</th> -->
+                <th style="width:5%">ปีที่เริ่ม</th>
+                <th style="width:5%">ปีที่สิ้นสุด</th>
+                <th style="width:18%">ชื่อ</th>
+                <th style="width:8%">ชื่อย่อ</th>
+                <th style="width:5%">เรียงลำดับ</th>
+                <th style="width:8%">แก้ไข</th>
+                <th style="width:8%">ลบ</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (data of List_Mas_Sub_Master_Plan_Goal_5; track $index) {
+              <tr>
+                <td>{{ subGoalPagination.startIndex + $index }}</td>
+                <!-- <td>{{ getMasterPlanNameForSubGoalRow(data) }}</td>
+                <td>{{ getSubPlanNameForSubGoalRow(data) }}</td> -->
+                <td>{{ data.BgYear_Start }}</td>
+                <td>{{ data.BgYear_End }}</td>
+                <td style="text-align: left;">
+                  {{ data.Sub_Plan_Goals_Name }}
+                </td>
+                <td>{{ data.Sub_Plan_Goals_Short_Name }}</td>
+                <td>{{ data.Order_Seq }}</td>
+                <td>
+                  <button type="button" class="btn btn-warning btn-sm"
+                    (click)="openEditSubGoalModal(addSubGoalModal, data)">
+                    <i class="ri-pencil-line"></i>
+                  </button>
+                </td>
+                <td>
+                  <button type="button" class="btn btn-danger btn-sm" (click)="Delete_Mas_Sub_Master_Plan_Goals(data)">
+                    <i class="ri-delete-bin-line"></i>
+                  </button>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <div class="row justify-content-md-between align-items-md-center mt-2">
+          <div class="col col-sm-6">
+            <div class="dataTables_info mb-2 text-start">
+              แสดง {{ subGoalPagination.total ? subGoalPagination.startIndex : 0 }} ถึง {{ subGoalPagination.total ? subGoalPagination.endIndex : 0 }}
+              จากทั้งหมด {{ subGoalPagination.total }} รายการ
+            </div>
+          </div>
+          <div class="col col-sm-6">
+            <div class="d-flex justify-content-sm-end">
+              <ngb-pagination [collectionSize]="subGoalPagination.total" [(page)]="subGoalPagination.page"
+                [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
+                (pageChange)="onSubGoalPageChange($event)">
+              </ngb-pagination>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 6: แนวทางการพัฒนาภายใต้แผนย่อย -->
+    <div class="border rounded p-3 bg-light" *ngIf="currentTab === 6">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div style="width:300px;">
+            <input type="text" class="form-control" placeholder="ค้นหาแนวทางการพัฒนาภายใต้แผนย่อย..."
+              [(ngModel)]="searchGuidelineTerm" (input)="filterGuidelineSearch()">
+          </div>
+          <div>
+            <button class="btn btn-success text-black" (click)="openAddGuidelineModal(addGuidelineModal)">
+              เพิ่มข้อมูล
+            </button>
+          </div>
+        </div>
+
+        <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+          <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+            <thead class="text-center text-white sticky-header" style="background-color: #556398;">
+              <tr>
+                <th style="width:5%">ลำดับ</th>
+                <!-- <th style="width:12%">ประเด็น</th>
+                <th style="width:12%">แผนย่อย</th> -->
+                <th style="width:5%">ปีที่เริ่ม</th>
+                <th style="width:5%">ปีที่สิ้นสุด</th>
+                <th style="width:18%">ชื่อ</th>
+                <th style="width:8%">ชื่อย่อ</th>
+                <th style="width:5%">เรียงลำดับ</th>
+                <th style="width:8%">แก้ไข</th>
+                <th style="width:8%">ลบ</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (data of List_Mas_Sub_Plan_Guideline_5; track $index) {
+              <tr>
+                <td>{{ guidelinePagination.startIndex + $index }}</td>
+                <!-- <td>{{ getMasterPlanNameForGuidelineRow(data) }}</td>
+                <td>{{ getSubPlanNameForGuidelineRow(data) }}</td> -->
+                <td>{{ data.BgYear_Start }}</td>
+                <td>{{ data.BgYear_End }}</td>
+                <td style="text-align: left;">
+                  {{ data.Guidelines_Name }}
+                </td>
+                <td>{{ data.Guidelines_Short_Name }}</td>
+                <td>{{ data.Order_Seq }}</td>
+                <td>
+                  <button type="button" class="btn btn-warning btn-sm"
+                    (click)="openEditGuidelineModal(addGuidelineModal, data)">
+                    <i class="ri-pencil-line"></i>
+                  </button>
+                </td>
+                <td>
+                  <button type="button" class="btn btn-danger btn-sm" (click)="Delete_Mas_Sub_Plan_Guidelines(data)">
+                    <i class="ri-delete-bin-line"></i>
+                  </button>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <div class="row justify-content-md-between align-items-md-center mt-2">
+          <div class="col col-sm-6">
+            <div class="dataTables_info mb-2 text-start">
+              แสดง {{ guidelinePagination.total ? guidelinePagination.startIndex : 0 }} ถึง {{ guidelinePagination.total ? guidelinePagination.endIndex : 0 }}
+              จากทั้งหมด {{ guidelinePagination.total }} รายการ
+            </div>
+          </div>
+          <div class="col col-sm-6">
+            <div class="d-flex justify-content-sm-end">
+              <ngb-pagination [collectionSize]="guidelinePagination.total" [(page)]="guidelinePagination.page"
+                [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
+                (pageChange)="onGuidelinePageChange($event)">
+              </ngb-pagination>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal: ประเด็น -->
+<ng-template #addPlanModal let-modal>
+  <div class="modal-header shared-page-header p-3">
+    <h5 class="modal-title text-white">{{ isEditModePlan ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลประเด็น</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">ปีที่เริ่ม</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Master_Plan_5.BgYear_Start">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีสิ้นสุด</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Master_Plan_5.BgYear_End">
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">ชื่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Master_Plan_5.Master_Plan_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ชื่อย่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Master_Plan_5.Master_Plan_Short_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">เรียงลำดับ</label>
+        <input type="number" class="form-control" [(ngModel)]="Mas_Master_Plan_5.Order_Seq">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success text-black" (click)="BtnSavePlan()">บันทึก</button>
+    <button type="button" class="btn btn-danger text-black" (click)="modal.dismiss()">ยกเลิก</button>
+  </div>
+</ng-template>
+
+<!-- Modal: เป้าหมายระดับประเด็น (Y2) -->
+<ng-template #addGoalModal let-modal>
+  <div class="modal-header shared-page-header p-3">
+    <h5 class="modal-title text-white">{{ isEditModeGoal ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลเป้าหมายระดับประเด็น</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row g-3">
+      <div class="col-md-12">
+        <label class="form-label">ประเด็น <span class="text-danger">*</span></label>
+        <ng-select [items]="listMasMasterPlanAll" bindLabel="Master_Plan_Name" bindValue="Master_Plan_Id"
+          [(ngModel)]="Mas_Master_Plan_Goal_5.FK_Master_Plan" [searchable]="true" [clearable]="true"
+          appendTo="body" placeholder="-- เลือก --">
+        </ng-select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีที่เริ่ม</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Master_Plan_Goal_5.BgYear_Start">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีสิ้นสุด</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Master_Plan_Goal_5.BgYear_End">
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">ชื่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Master_Plan_Goal_5.Plan_Goals_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ชื่อย่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Master_Plan_Goal_5.Plan_Goals_Short_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">เรียงลำดับ</label>
+        <input type="number" class="form-control" [(ngModel)]="Mas_Master_Plan_Goal_5.Order_Seq">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success text-black" (click)="BtnSaveGoal()">บันทึก</button>
+    <button type="button" class="btn btn-danger text-black" (click)="modal.dismiss()">ยกเลิก</button>
+  </div>
+</ng-template>
+
+<!-- Modal: ตัวชี้วัดเป้าหมายระดับประเด็น -->
+<ng-template #addTacticModal let-modal>
+  <div class="modal-header shared-page-header p-3">
+    <h5 class="modal-title text-white">{{ isEditModeTactic ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลตัวชี้วัดเป้าหมายระดับประเด็น</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row g-3">
+      <div class="col-md-12">
+        <label class="form-label">ประเด็น <span class="text-danger">*</span></label>
+        @for (key of [tacticMasterPlanSelectKey]; track key) {
+        <ng-select [items]="listMasMasterPlanAll" bindLabel="Master_Plan_Name" bindValue="Master_Plan_Id"
+          [ngModel]="tacticModalMasterPlanId" (ngModelChange)="onTacticMasterPlanIdChange($event)"
+          [searchable]="true" [clearable]="true" appendTo="body" placeholder="-- เลือก --">
+        </ng-select>
+        }
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">เป้าหมายระดับประเด็น <span class="text-danger">*</span></label>
+        @for (key of [tacticGoalSelectKey]; track key) {
+        <ng-select [items]="tacticGoalOptions" bindLabel="Plan_Goals_Name" bindValue="Plan_Goals_Id"
+          [ngModel]="Mas_Master_Plan_Goals_Tactics_5.FK_Plan_Goals_Id" (ngModelChange)="onTacticGoalIdChange($event)"
+          [searchable]="true" [clearable]="true" appendTo="body" placeholder="-- เลือก --">
+        </ng-select>
+        }
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีที่เริ่ม</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Master_Plan_Goals_Tactics_5.BgYear_Start">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีสิ้นสุด</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Master_Plan_Goals_Tactics_5.BgYear_End">
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">ชื่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Master_Plan_Goals_Tactics_5.Plan_Tactics_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ชื่อย่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Master_Plan_Goals_Tactics_5.Plan_Tactics_Short_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">เรียงลำดับ</label>
+        <input type="number" class="form-control" [(ngModel)]="Mas_Master_Plan_Goals_Tactics_5.Order_Seq">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success text-black" (click)="BtnSaveTactic()">บันทึก</button>
+    <button type="button" class="btn btn-danger text-black" (click)="modal.dismiss()">ยกเลิก</button>
+  </div>
+</ng-template>
+
+<!-- Modal: แผนย่อยของแผนแม่บทฯ -->
+<ng-template #addSubPlanModal let-modal>
+  <div class="modal-header shared-page-header p-3">
+    <h5 class="modal-title text-white">{{ isEditModeSubPlan ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลแผนย่อยของแผนปฏิบัติการด้าน</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row g-3">
+      <div class="col-md-12">
+        <label class="form-label">ประเด็น <span class="text-danger">*</span></label>
+        <ng-select [items]="listMasMasterPlanAll" bindLabel="Master_Plan_Name" bindValue="Master_Plan_Id"
+          [(ngModel)]="Mas_Sub_Master_Plan_5.FK_Master_Plan" [searchable]="true" [clearable]="true"
+          appendTo="body" placeholder="-- เลือก --">
+        </ng-select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีที่เริ่ม</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Sub_Master_Plan_5.BgYear_Start">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีสิ้นสุด</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Sub_Master_Plan_5.BgYear_End">
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">ชื่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Sub_Master_Plan_5.Sub_Master_Plan_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ชื่อย่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Sub_Master_Plan_5.Sub_Master_Plan_Short_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">เรียงลำดับ</label>
+        <input type="number" class="form-control" [(ngModel)]="Mas_Sub_Master_Plan_5.Order_Seq">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success text-black" (click)="BtnSaveSubPlan()">บันทึก</button>
+    <button type="button" class="btn btn-danger text-black" (click)="modal.dismiss()">ยกเลิก</button>
+  </div>
+</ng-template>
+
+<!-- Modal: เป้าหมายแผนแม่บทย่อย (Y1) -->
+<ng-template #addSubGoalModal let-modal>
+  <div class="modal-header shared-page-header p-3">
+    <h5 class="modal-title text-white">{{ isEditModeSubGoal ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลเป้าหมายแผนย่อยของแผนปฏิบัติการด้าน</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row g-3">
+      <div class="col-md-12">
+        <label class="form-label">ประเด็น <span class="text-danger">*</span></label>
+        @for (key of [subGoalMasterPlanSelectKey]; track key) {
+        <ng-select [items]="listMasMasterPlanAll" bindLabel="Master_Plan_Name" bindValue="Master_Plan_Id"
+          [ngModel]="subGoalModalMasterPlanId" (ngModelChange)="onSubGoalMasterPlanIdChange($event)"
+          [searchable]="true" [clearable]="true" appendTo="body" placeholder="-- เลือก --">
+        </ng-select>
+        }
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">แผนย่อยของแผนปฏิบัติการด้าน<span class="text-danger">*</span></label>
+        @for (key of [subGoalSubPlanSelectKey]; track key) {
+        <ng-select [items]="subGoalSubPlanOptions" bindLabel="Sub_Master_Plan_Name" bindValue="Sub_Master_Plan_Id"
+          [ngModel]="Mas_Sub_Master_Plan_Goals_5.FK_Sub_Master_Plan" (ngModelChange)="onSubGoalSubPlanIdChange($event)"
+          [searchable]="true" [clearable]="true" appendTo="body" placeholder="-- เลือก --">
+        </ng-select>
+        }
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีที่เริ่ม</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Sub_Master_Plan_Goals_5.BgYear_Start">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีสิ้นสุด</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Sub_Master_Plan_Goals_5.BgYear_End">
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">ชื่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Sub_Master_Plan_Goals_5.Sub_Plan_Goals_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ชื่อย่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Sub_Master_Plan_Goals_5.Sub_Plan_Goals_Short_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">เรียงลำดับ</label>
+        <input type="number" class="form-control" [(ngModel)]="Mas_Sub_Master_Plan_Goals_5.Order_Seq">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success text-black" (click)="BtnSaveSubGoal()">บันทึก</button>
+    <button type="button" class="btn btn-danger text-black" (click)="modal.dismiss()">ยกเลิก</button>
+  </div>
+</ng-template>
+
+<!-- Modal: แนวทางการพัฒนาภายใต้แผนย่อย -->
+<ng-template #addGuidelineModal let-modal>
+  <div class="modal-header shared-page-header p-3">
+    <h5 class="modal-title text-white">{{ isEditModeGuideline ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลแนวทางการพัฒนาภายใต้แผนย่อย</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row g-3">
+      <div class="col-md-12">
+        <label class="form-label">แผนย่อยของแผนปฏิบัติการด้าน <span class="text-danger">*</span></label>
+        @for (key of [guidelineSubPlanSelectKey]; track key) {
+        <ng-select [items]="listMasSubMasterPlanAll" bindLabel="Sub_Master_Plan_Name" bindValue="Sub_Master_Plan_Id"
+          [ngModel]="Mas_Sub_Plan_Guidelines_5.FK_Sub_Master_Plan" (ngModelChange)="onGuidelineSubPlanIdChange($event)"
+          [searchable]="true" [clearable]="true" appendTo="body" placeholder="-- เลือก --">
+        </ng-select>
+        }
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีที่เริ่ม</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Sub_Plan_Guidelines_5.BgYear_Start">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ปีสิ้นสุด</label>
+        <input type="text" class="form-control" maxlength="4" (keydown)="masterService.allowOnlyNumber($event)"
+          [(ngModel)]="Mas_Sub_Plan_Guidelines_5.BgYear_End">
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">ชื่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Sub_Plan_Guidelines_5.Guidelines_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ชื่อย่อ</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Sub_Plan_Guidelines_5.Guidelines_Short_Name">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">เรียงลำดับ</label>
+        <input type="number" class="form-control" [(ngModel)]="Mas_Sub_Plan_Guidelines_5.Order_Seq">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success text-black" (click)="BtnSaveGuideline()">บันทึก</button>
+    <button type="button" class="btn btn-danger text-black" (click)="modal.dismiss()">ยกเลิก</button>
+  </div>
+</ng-template>
+
+
