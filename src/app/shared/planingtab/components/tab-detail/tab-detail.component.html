@@ -65,7 +65,14 @@
                     </div>
 
                     <div class="col-md-2">
-                        <input class="form-control" [(ngModel)]="item.Target" name="output_target_{{i}}">
+                        <input class="form-control" [(ngModel)]="item.Target" name="output_target_{{i}}"
+                            #outputTarget="ngModel"
+                            [ngClass]="{ 'is-invalid': outputTarget.invalid && (outputTarget.dirty || outputTarget.touched || outputTargetValidationSubmitted) }"
+                            required>
+                        <div class="invalid-feedback"
+                            *ngIf="outputTarget.invalid && (outputTarget.dirty || outputTarget.touched || outputTargetValidationSubmitted)">
+                            กรุณากรอกเป้าหมาย
+                        </div>
                     </div>
 
                     <div class="col-md-2">

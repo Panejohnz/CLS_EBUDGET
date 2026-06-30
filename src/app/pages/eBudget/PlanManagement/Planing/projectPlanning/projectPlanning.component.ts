@@ -19,6 +19,7 @@ import { AuthenticationService } from 'src/app/core/services/auth.service';
 import { ProjectPlanService } from 'src/app/core/services/ProjectPlan.service'
 import { BudgetYearService } from 'src/app/core/services/budget-year.service';
 import { TabGuidelineComponent } from 'src/app/shared/planingtab/components/tab-guideline/tab-guideline.component';
+import { TabDetailComponent } from 'src/app/shared/planingtab/components/tab-detail/tab-detail.component';
 
 
 @Component({
@@ -32,6 +33,8 @@ export class ProjectPlanningComponent implements OnInit, OnChanges {
   @Input() model: any;
   @ViewChild(TabGuidelineComponent)
   guidelineComp!: TabGuidelineComponent;
+  @ViewChild(TabDetailComponent)
+  detailComp?: TabDetailComponent;
   emptyplan: any = {
     Plan_Id: 0,
     Plan_Name: '',
@@ -169,6 +172,17 @@ export class ProjectPlanningComponent implements OnInit, OnChanges {
     this.project_planing.activities =
       this.project_planing.activities || [];
   }
+
+  validateDetailBeforeSave(): boolean {
+    if (!this.detailComp?.validateBeforeSave()) {
+      this.currentTab = 3;
+      basicAlert('info', 'กรุณากรอกเป้าหมายเชิงผลผลิตให้ครบ', '');
+      return false;
+    }
+
+    return true;
+  }
+
   get_data() {
     let model = {
       FUNC_CODE: "FUNC-Get_Project_Plan",

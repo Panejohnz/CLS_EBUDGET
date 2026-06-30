@@ -47,6 +47,12 @@ export class MasProjectPlanComponent {
       title: 'ความสอดคล้องกับเป้าหมาย SDGs',
       path: '/MasterData/MasProjectPlan/SDGsPlan',
       icon: 'ri-global-line'
+    },
+    {
+      no: 7,
+      title: 'ความสอดคล้องกับแผนปฏิบัติการด้าน',
+      path: '/MasterData/MasProjectPlan/MasterPlanY5',
+      icon: 'ri-global-line'
     }
   ];
 
@@ -112,3 +118,4 @@ export class MasProjectPlanComponent {
     );
   }
 }
+

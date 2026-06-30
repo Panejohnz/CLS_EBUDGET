@@ -2035,6 +2035,14 @@ export class AddPlanManagementComponent
 
     this.syncProjectPlanningPayload();
 
+    if (
+      this.isProjectPlanningExpenseType(this.model?.selectedExpenseTypeId) &&
+      this.projectPlanningComp &&
+      !this.projectPlanningComp.validateDetailBeforeSave()
+    ) {
+      return;
+    }
+
     const totalPlan = this.getAllBudget();
     const totalAllocation = this.resolveAllocationTotal();
     const originalUpdateAmount =

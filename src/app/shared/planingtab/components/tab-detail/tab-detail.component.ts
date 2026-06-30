@@ -136,6 +136,7 @@ export class TabDetailComponent implements OnInit, OnChanges {
   outcomes!: any[];
   expectedResults!: any[];
   targetGroups!: any[];
+  outputTargetValidationSubmitted = false;
 
   ngOnInit(): void {
 
@@ -240,10 +241,20 @@ export class TabDetailComponent implements OnInit, OnChanges {
   addOutput() {
     this.outputs.push({
       Name: '',
-      target: '',
+      Target: '',
       Unit: null
     });
     this.outputs = [...this.model.Project_Output];
+  }
+
+  validateBeforeSave(): boolean {
+    this.outputTargetValidationSubmitted = true;
+
+    return !(this.outputs || []).some((item: any) =>
+      item?.Target === null ||
+      item?.Target === undefined ||
+      String(item.Target).trim() === ''
+    );
   }
 
   async removeOutput(i: number, item: any) {

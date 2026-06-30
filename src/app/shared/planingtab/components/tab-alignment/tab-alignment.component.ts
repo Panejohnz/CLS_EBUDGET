@@ -179,9 +179,11 @@ export class TabAlignmentComponent implements OnChanges {
     return a === b;
   }
   currentYear: any
+  year: any
   loadAllMasterData() {
     this.budgetYearService.yearChanged$.subscribe(async year => {
       if (year) {
+        this.year = year
         if (year < 2500) {
           year = year + 543
         }
@@ -531,6 +533,8 @@ export class TabAlignmentComponent implements OnChanges {
       FK_Master_Plan_Id: id
     }).subscribe(res => {
       this.listMasterPlanGoal5 = res.List_Mas_Master_Plan_Goal_5 || [];
+      console.log('listMasterPlanGoal5', this.listMasterPlanGoal5);
+
     });
 
     this.callAPI("FUNC-GET_List_Mas_Sub_Master_Plan_5_By_FK", {
@@ -552,7 +556,7 @@ export class TabAlignmentComponent implements OnChanges {
     if (!id) return;
 
     this.callAPI("FUNC-GET_List_Mas_Master_Plan_Goal_Tactic_5_By_FK", {
-      FK_Plan_Goals_Id: id
+      FK_Plan_Goals_Id: id, BgYear: this.year
     }).subscribe(res => {
       this.listMasterPlanTactic5 = res.List_Mas_Master_Plan_Goal_Tactic_5 || [];
     });
