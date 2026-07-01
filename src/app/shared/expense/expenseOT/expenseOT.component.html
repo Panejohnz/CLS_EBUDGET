@@ -1,6 +1,6 @@
-<div class="card">
+<!-- <div class="card"> -->
 
-    <div class="card-header bg-light d-flex justify-content-between">
+    <!-- <div class="card-header bg-light d-flex justify-content-between">
 
         <span class="fw-bold">
 
@@ -14,15 +14,13 @@
 
         </button>
 
-    </div>
+    </div> -->
 
-    <div class="card-body">
+    <!-- <div class="card-body"> -->
 
-        <div class="expense-table-responsive">
-
-            <table class="table table-bordered align-middle expense-table text-center">
-
-                <thead class="table-light">
+<div class="expense-table-responsive">
+    <table class="table table-bordered align-middle text-center expense-table mb-0" style="table-layout: fixed;">
+        <thead class="text-center text-white expense-table-header">
 
                     <tr>
 
@@ -38,7 +36,7 @@
                             วันหยุด
                         </th>
 
-                        <th rowspan="2" style="width:50px"></th>
+                        <th rowspan="2" style="width:50px">ลบ</th>
 
                     </tr>
 
@@ -201,13 +199,12 @@
 
         <div class="mt-2">
 
-            <button class="btn btn-primary btn-sm" (click)="addRow()">
+                <button class="btn btn-primary" (click)="addRow()">
 
-                <i class="bx bx-plus"></i>
+        <i class="bx bx-plus text-black"></i>
+        <span class="text-black">เพิ่มรายการ</span>
 
-                เพิ่มรายการ
-
-            </button>
+    </button>
 
             <span class="text-danger ms-2">
 
@@ -220,9 +217,9 @@
 
         </div>
 
-    </div>
+    <!-- </div> -->
 
-</div>
+<!-- </div> -->
 
 <!-- ========================= -->
 <!-- modal ตั้งค่า rate -->

@@ -1,189 +1,184 @@
-<div class="card bg-light border-0">
+<!-- <div class="card-header bg-light fw-bold">
 
-    <div class="card-header bg-light fw-bold">
 
+    </div> -->
 
-    </div>
 
-    <div class="card-body">
+<div *ngFor="let item of committeeList; let i=index" class="card shadow-sm border-0 mb-4">
 
-        <div *ngFor="let item of committeeList; let i=index" class="card shadow-sm border-0 mb-4">
+    <!-- Header -->
+    <div class="card-header shared-page-header text-white">
 
-            <!-- header -->
-            <div class="card-header bg-white border-bottom">
+        <div class="d-flex justify-content-between align-items-center">
 
-                <div class="d-flex justify-content-between align-items-center gap-2">
+            <label class="fw-bold mb-0">
+                รายชื่อคณะกรรมการ / คณะอนุกรรมการ
+            </label>
 
-                    <div class="flex-grow-1">
+            <button class="btn btn-sm btn-danger" (click)="removeRow(i)">
 
-                        <label class="form-label fw-bold mb-2">
-
-                            รายชื่อคณะกรรมการ / คณะอนุกรรมการ
-
-                        </label>
-
-                        <input class="form-control" [(ngModel)]="item.committeeName"
-                            (ngModelChange)="updateDetailItems()" placeholder="ระบุชื่อคณะกรรมการ">
-
-                    </div>
-
-                    <button class="btn btn-outline-danger btn-sm mt-4" (click)="removeRow(i)">
-
-                        <i class="bx bx-trash"></i>
-
-                    </button>
-
-                </div>
-
-            </div>
-
-            <!-- body -->
-            <div class="card-body">
-
-                <div class="expense-table-responsive">
-
-                    <table class="table table-bordered align-middle expense-table text-center mb-0">
-
-                        <thead class="table-light">
-
-                            <tr>
-
-                                <th class="text-start">
-
-                                    ตำแหน่ง
-
-                                </th>
-
-                                <th style="width:120px">
-
-                                    จำนวนคน
-
-                                </th>
-
-                                <th style="width:140px">
-
-                                    จำนวนวัน/ครั้ง
-
-                                </th>
-
-                                <th style="width:180px">
-
-                                    ค่าตอบแทน (บาท)
-
-                                </th>
-
-                                <th style="width:180px">
-
-                                    รวม (บาท)
-
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody>
-
-                            <tr *ngFor="let role of item.roles">
-
-                                <!-- role -->
-                                <td class="text-start fw-semibold align-middle">
-
-                                    {{ role.name }}
-
-                                </td>
-
-                                <!-- qty -->
-                                <td>
-
-                                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center" [(ngModel)]="role.qty"
-                                        (ngModelChange)="calculate(i)">
-
-                                </td>
-
-                                <!-- day -->
-                                <td>
-
-                                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center" [(ngModel)]="role.day"
-                                        (ngModelChange)="calculate(i)">
-
-                                </td>
-
-                                <!-- rate -->
-                                <td>
-
-                                    <input type="text" class="form-control text-end"
-                                        [ngModel]="role.rate | number:'1.0-2'"
-                                        (ngModelChange)="onRateChange($event, role, i)">
-
-                                </td>
-
-                                <!-- total -->
-                                <td class="text-end fw-bold bg-light align-middle">
-
-                                    {{ role.total | number:'1.2-2' }}
-
-                                </td>
-
-                            </tr>
-
-                        </tbody>
-
-                        <tfoot class="table-light">
-
-                            <tr>
-
-                                <td colspan="4" class="text-end fw-bold">
-
-                                    รวมทั้งหมด
-
-                                </td>
-
-                                <td class="text-end fw-bold fs-6">
-
-                                    {{ item.total | number:'1.2-2' }}
-
-                                </td>
-
-                            </tr>
-
-                        </tfoot>
-
-                    </table>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- add -->
-        <div class="mb-2">
-
-            <button class="btn btn-primary btn-sm" (click)="addRow()">
-
-                <i class="bx bx-plus"></i>
-
-                เพิ่มรายการ
+                <i class="bx bx-trash"></i>
 
             </button>
 
-            <span class="text-danger ms-2">
 
-                จำนวน
-                {{committeeList.length}}
-                รายการ
-
-                รวมทั้งสิ้น
-
-                {{grandTotal | number:'1.2-2'}}
-
-                บาท
-
-            </span>
 
         </div>
 
     </div>
+
+    <!-- Body -->
+    <div class="card-body">
+
+        <input class="form-control" [(ngModel)]="item.committeeName" (ngModelChange)="updateDetailItems()"
+            placeholder="ระบุชื่อคณะกรรมการ">
+
+    </div>
+
+    <!-- body -->
+    <div class="card-body">
+
+        <div class="expense-table-responsive">
+
+            <table class="table table-bordered align-middle expense-table text-center mb-0">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th class="text-start">
+
+                            ตำแหน่ง
+
+                        </th>
+
+                        <th style="width:120px">
+
+                            จำนวนคน
+
+                        </th>
+
+                        <th style="width:140px">
+
+                            จำนวนวัน/ครั้ง
+
+                        </th>
+
+                        <th style="width:180px">
+
+                            ค่าตอบแทน (บาท)
+
+                        </th>
+
+                        <th style="width:180px; text-align: right">
+
+                            รวม (บาท)
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let role of item.roles">
+
+                        <!-- role -->
+                        <td class="text-start fw-semibold align-middle">
+
+                            {{ role.name }}
+
+                        </td>
+
+                        <!-- qty -->
+                        <td>
+
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                inputmode="decimal" class="form-control text-center" [(ngModel)]="role.qty"
+                                (ngModelChange)="calculate(i)">
+
+                        </td>
+
+                        <!-- day -->
+                        <td>
+
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                inputmode="decimal" class="form-control text-center" [(ngModel)]="role.day"
+                                (ngModelChange)="calculate(i)">
+
+                        </td>
+
+                        <!-- rate -->
+                        <td>
+
+                            <input type="text" class="form-control text-end" mask="separator.2" thousandSeparator=","
+                            decimalMarker="." inputmode="decimal" [ngModel]="role.rate"
+                                (ngModelChange)="onRateChange($event, role, i)">
+                        </td>
+
+                        <!-- total -->
+                        <td class="text-end fw-bold bg-light align-middle">
+
+                            {{ role.total | number:'1.2-2' }}
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+                <tfoot class="table-light">
+
+                    <tr>
+
+                        <td colspan="4" class="text-end fw-bold">
+
+                            รวมทั้งหมด
+
+                        </td>
+
+                        <td class="text-end fw-bold fs-6">
+
+                            {{ item.total | number:'1.2-2' }}
+
+                        </td>
+
+                    </tr>
+
+                </tfoot>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- add -->
+<div class="mb-2">
+
+    <button class="btn btn-primary" (click)="addRow()">
+
+        <i class="bx bx-plus text-black"></i>
+
+        <span class="text-black">เพิ่มรายการ</span>
+
+    </button>
+
+    <span class="text-danger ms-2">
+
+        จำนวน
+        {{committeeList.length}}
+        รายการ
+
+        รวมทั้งสิ้น
+
+        {{grandTotal | number:'1.2-2'}}
+
+        บาท
+
+    </span>
 
 </div>

@@ -54,6 +54,9 @@ export class ExpenseListSalaryComponent {
     }
 
   }
+
+
+
   closeModal() {
 
     this.model.dismiss();

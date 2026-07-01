@@ -1,18 +1,17 @@
-<div class="card shadow-sm expense-card">
-    <div class="card-body">
+
         <div class="expense-table-responsive">
             <table class="table table-bordered text-center expense-table align-middle mb-0" style="table-layout: fixed;">
                 <thead class="text-center text-white expense-table-header">
                     <tr>
                         <th rowspan="2">รายการ</th>
-                        <th rowspan="2">องค์ประชุม</th>
-                        <th rowspan="2">คน</th>
-                        <th rowspan="2">ครั้ง</th>
-                        <th colspan="2"></th>
+                        <th colspan="5">ประมาณการค่าใช้จ่าย</th>
                         <th rowspan="2">ค่าใช้จ่ายต่อคดี</th>
                         <th rowspan="2">รวมทั้งสิ้น</th>
                     </tr>
                     <tr>
+                        <th>องค์ประชุม</th>
+                        <th>คน</th>
+                        <th>ครั้ง</th>
                         <th>อัตรา</th>
                         <th>รวม</th>
                     </tr>
@@ -22,10 +21,11 @@
                     <tr *ngFor="let row of meetingList">
                         <td class="text-start fw-semibold">{{ row.name }}</td>
 
-                        <td class="bg-info-subtle">
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
-                                min="0" class="form-control text-center" [(ngModel)]="row.committee"
-                                (ngModelChange)="calculate(row)">
+                        <td >
+
+                            
+                            <input type="text" class="form-control text-center" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                                min="0"  [(ngModel)]="row.committee" (ngModelChange)="calculate(row)">
                         </td>
 
                         <td>
@@ -41,13 +41,14 @@
                         </td>
 
                         <td>
-                            <input type="text" class="form-control text-end" [ngModel]="row.rate | number:'1.0-2'"
-                                readonly>
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" 
+                               class="form-control text-end" [ngModel]="row.rate"
+                                readonly style="background-color: #ebeff3;">
                         </td>
 
                         <td class="fw-bold text-end">{{ row.meetingTotal | number:'1.2-2' }}</td>
                         <td class="fw-bold text-end">{{ row.caseCost | number:'1.2-2' }}</td>
-                        <td class="fw-bold text-end text-primary">{{ row.total | number:'1.2-2' }}</td>
+                        <td class="fw-bold text-end">{{ row.total | number:'1.2-2' }}</td>
                     </tr>
                 </tbody>
 
@@ -59,5 +60,3 @@
                 </tfoot>
             </table>
         </div>
-    </div>
-</div>

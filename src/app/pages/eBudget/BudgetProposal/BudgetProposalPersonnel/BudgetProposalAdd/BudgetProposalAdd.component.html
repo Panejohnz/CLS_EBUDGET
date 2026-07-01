@@ -2,7 +2,7 @@
 
     <div class="modal-header shared-page-header p-3">
         <h5 class="modal-title text-white">
-       จัดทำคำของบประมาณ
+            จัดทำคำของบประมาณ
         </h5>
 
         <button type="button" class="btn-close" (click)="closeModal()">
@@ -391,273 +391,308 @@
                 }
 
                 @else if(model.selectedExpenseTypeId == 9){
+                <div class="px-custom">
+                    <app-expense-rent-house [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-rent-house [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-rent-house>
+                    </app-expense-rent-house>
+                </div>
 
                 }
 
                 @else if(model.selectedExpenseTypeId == 13){
+                <div class="px-custom">
+                    <app-expense-ot [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-ot [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-ot>
+                    </app-expense-ot>
+                </div>
 
                 }
 
                 @else if(model.selectedExpenseTypeId == 17){
+                <div class="px-custom">
+                    <app-expense-meeting-support [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-meeting-support [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-meeting-support>
+                    </app-expense-meeting-support>
+                </div>
 
                 }
 
                 @else if(model.selectedExpenseTypeId == 18){
+                <div class="px-custom">
+                    <app-expense-meeting-litigation [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-meeting-litigation [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-meeting-litigation>
+                    </app-expense-meeting-litigation>
+                </div>
 
                 }
 
                 @else if(model.selectedExpenseTypeId == 19){
+                <div class="px-custom">
+                    <app-expense-committee [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-committee [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-committee>
+                    </app-expense-committee>
+                </div>
 
                 }
 
                 @else if(model.selectedExpenseTypeId == 20){
+                <div class="px-custom">
+                    <app-expense-car-allowance [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-car-allowance [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-car-allowance>
+                    </app-expense-car-allowance>
+                </div>
 
                 }
 
                 @else if(model.selectedExpenseTypeId == 21){
+                <div class="px-custom">
+                    <app-expense-travel [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-travel [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-travel>
+                    </app-expense-travel>
+                </div>
 
                 }
 
                 @else if(model.selectedExpenseTypeId == 22){
+                <div class="px-custom">
+                    <app-expense-training-seminar [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-training-seminar [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-training-seminar>
+                    </app-expense-training-seminar>
+                </div>
 
                 }
 
                 @else if([23].includes(model.selectedExpenseTypeId)){
+                <div class="px-custom">
+                    <app-expense-office-rent [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-office-rent [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-office-rent>
+                    </app-expense-office-rent>
+                </div>
 
                 }
 
                 @else if(model.selectedExpenseTypeId == 24){
+                <div class="px-custom">
+                    <app-expense-copier-rent [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-copier-rent [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-copier-rent>
+                    </app-expense-copier-rent>
+                </div>
 
                 }
 
                 @else if ([25,26,27,28,29,30,31].includes(model.selectedExpenseTypeId)) {
+                <div class="px-custom">
+                    <app-expense-service-contract [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-service-contract [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-service-contract>
+                    </app-expense-service-contract>
+                </div>
 
                 }
 
                 @else if ([32].includes(model.selectedExpenseTypeId)) {
+                <div class="px-custom">
+                    <app-expense-other [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-other [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-other>
+                    </app-expense-other>
+                </div>
 
                 }
 
                 @else if(model.selectedExpenseTypeId == 33){
+                <div class="px-custom">
+                    <app-expense-vehicle-repair [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-vehicle-repair [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-vehicle-repair>
+                    </app-expense-vehicle-repair>
+                </div>
 
                 }
 
                 @else if(model.selectedExpenseTypeId == 34){
+                <div class="px-custom">
+                    <app-expense-repair-construction [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-repair-construction [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-repair-construction>
+                    </app-expense-repair-construction>
+                </div>
 
                 }
 
                 @else if(model.selectedExpenseTypeId == 35){
+                <div class="px-custom">
+                    <app-expense-equipment-repair [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-equipment-repair [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-equipment-repair>
+                    </app-expense-equipment-repair>
+                </div>
 
                 }
 
                 @else if(model.selectedExpenseTypeId == 36){
+                <div class="px-custom">
+                    <app-expense-advertising [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-advertising [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-advertising>
+                    </app-expense-advertising>
+                </div>
 
                 }
 
                 @else if(model.selectedExpenseTypeId == 37){
+                <div class="px-custom">
+                    <app-expense-ceremonial [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-ceremonial [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-ceremonial>
+                    </app-expense-ceremonial>
+                </div>
 
                 }
 
                 @else if(model.selectedExpenseTypeId == 38){
+                <div class="px-custom">
+                    <app-expense-witness [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-witness [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-witness>
+                    </app-expense-witness>
+                </div>
 
                 }
 
                 @else if(model.selectedExpenseTypeId == 39){
+                <div class="px-custom">
+                    <app-expense-section61 [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-section61 [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-section61>
+                    </app-expense-section61>
+                </div>
 
                 }
 
                 @else if(model.selectedExpenseTypeId == 40){
+                <div class="px-custom">
+                    <app-expense-other-operating-cost [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-other-operating-cost [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-other-operating-cost>
+                    </app-expense-other-operating-cost>
+                </div>
 
                 }
 
                 @else if(model.selectedExpenseTypeId == 42){
+                <div class="px-custom">
+                    <app-expense-fuel-lubricant [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-fuel-lubricant [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-fuel-lubricant>
+                    </app-expense-fuel-lubricant>
+                </div>
 
                 }
 
                 @else if([41,43,44,45,46,47,48].includes(model.selectedExpenseTypeId)) {
+                <div class="px-custom">
+                    <app-expense-office-supplies-cost [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-office-supplies-cost [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-office-supplies-cost>
+                    </app-expense-office-supplies-cost>
+                </div>
 
                 }
 
                 @else if([49,50,51,52,53].includes(model.selectedExpenseTypeId)){
+                <div class="px-custom">
+                    <app-expense-utility-and-telecom-cost [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-utility-and-telecom-cost [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-utility-and-telecom-cost>
+                    </app-expense-utility-and-telecom-cost>
+                </div>
 
                 }
 
                 @else if(model.selectedExpenseTypeId == 54){
+                <div class="px-custom">
+                    <app-expense-system-maintenance-cost [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-system-maintenance-cost [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-system-maintenance-cost>
+                    </app-expense-system-maintenance-cost>
+                </div>
 
                 }
 
                 @else if(model.selectedExpenseTypeId == 55){
+                <div class="px-custom">
+                    <app-expense-car-rental-cost [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-car-rental-cost [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-car-rental-cost>
+                    </app-expense-car-rental-cost>
+                </div>
 
                 }
 
                 @else if(model.selectedExpenseTypeId == 44){
+                <div class="px-custom">
+                    <app-expense-computer-material-cost [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-computer-material-cost [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-computer-material-cost>
+                    </app-expense-computer-material-cost>
+                </div>
 
                 }
 
                 @else if([56,57,58,59,60,61,62,63].includes(model.selectedExpenseTypeId)){
+                <div class="px-custom">
+                    <app-expense-asset-investment-form [model]="model" [expenseItem]="expenseItem"
+                        [type]="mapExpenseType(model.selectedExpenseTypeId)">
 
-                <app-expense-asset-investment-form [model]="model" [expenseItem]="expenseItem"
-                    [type]="mapExpenseType(model.selectedExpenseTypeId)">
-
-                </app-expense-asset-investment-form>
+                    </app-expense-asset-investment-form>
+                </div>
 
                 }
 
                 @else if([65,66].includes(model.selectedExpenseTypeId)){
+                <div class="px-custom">
+                    <app-expense-construction-form [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-construction-form [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-construction-form>
+                    </app-expense-construction-form>
+                </div>
 
                 }
 
                 @else if([67].includes(model.selectedExpenseTypeId)){
+                <div class="px-custom">
+                    <app-expense-foreign-travel [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-foreign-travel [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-foreign-travel>
+                    </app-expense-foreign-travel>
+                </div>
 
                 }
 
                 @else if([68].includes(model.selectedExpenseTypeId)){
+                <div class="px-custom">
+                    <app-expense-witness-protection [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-witness-protection [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-witness-protection>
+                    </app-expense-witness-protection>
+                </div>
 
                 }
 
                 @else if([69].includes(model.selectedExpenseTypeId)){
+                <div class="px-custom">
+                    <app-expense-consultant-hire [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-consultant-hire [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-consultant-hire>
+                    </app-expense-consultant-hire>
+                </div>
 
                 }
 
                 @else if([72,71].includes(model.selectedExpenseTypeId)){
+                <div class="px-custom">
+                    <app-expense-grant-form [model]="model" [expenseItem]="expenseItem">
 
-                <app-expense-grant-form [model]="model" [expenseItem]="expenseItem">
-
-                </app-expense-grant-form>
+                    </app-expense-grant-form>
+                </div>
 
                 }
 
                 @else if ([64,70,73,74,75].includes(model.selectedExpenseTypeId)) {
+                <div class="px-custom">
+                    <projectPlanning [model]="model" [expenseItem]="expenseItem">
 
-                <projectPlanning [model]="model" [expenseItem]="expenseItem">
-
-                </projectPlanning>
+                    </projectPlanning>
+                </div>
 
                 }
+                <div class="px-custom">
+                    <app-expense-attachment *ngIf="![64,70,73,74,75].includes(model.selectedExpenseTypeId)"
+                        [model]="model">
 
-                <app-expense-attachment *ngIf="![64,70,73,74,75].includes(model.selectedExpenseTypeId)" [model]="model">
-
-                </app-expense-attachment>
+                    </app-expense-attachment>
+                </div>
 
             </div>
             <div style="height:15px"></div>

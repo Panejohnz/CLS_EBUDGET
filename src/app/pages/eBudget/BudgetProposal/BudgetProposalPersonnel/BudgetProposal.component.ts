@@ -598,8 +598,10 @@ export class ProjectBudgetProposalComponent {
       this.selectedProjectIds = [];
 
       this.modalService.open(content, {
-        size: 'xl',
-        backdrop: 'static'
+        // size: 'xl',
+        // backdrop: 'static'
+              backdrop: 'static',
+      windowClass: 'full-screen-modal'
       });
     })
   }

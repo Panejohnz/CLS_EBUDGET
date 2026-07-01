@@ -12,35 +12,46 @@
         <tbody>
             <tr>
                 <td class="text-start">อัตราเดิม</td>
+
                 <td>
-                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
-                        class="form-control text-center" [(ngModel)]="model.oldQty"
+                    <input type="text" class="form-control text-center" mask="separator.2" thousandSeparator=","
+                        decimalMarker="." inputmode="decimal" [(ngModel)]="model.oldQty"
                         (ngModelChange)="calculateRowOld()">
                 </td>
+
                 <td *ngIf="model.selectedExpenseTypeId == 5">
-                    <input type="text" class="form-control text-end" [ngModel]="model.oldMonth | number:'1.0-2'"
-                        (ngModelChange)="onAmountChange($event, 'oldMonth')">
+                    <input type="text" class="form-control text-end" mask="separator.2" thousandSeparator=","
+                        decimalMarker="." inputmode="decimal" [(ngModel)]="model.oldMonth"
+                        (ngModelChange)="calculateRowOld()" >
                 </td>
+
                 <td>
-                    <input type="text" class="form-control text-end" [ngModel]="model.oldYear | number:'1.0-2'"
-                        (ngModelChange)="onAmountChange($event, 'oldYear')">
+                    <input type="text" class="form-control text-end" mask="separator.2" thousandSeparator=","
+                        decimalMarker="." inputmode="decimal" [(ngModel)]="model.oldYear"
+                        (ngModelChange)="calculateRowOld()" >
                 </td>
             </tr>
 
             <tr>
                 <td class="text-start">อัตราใหม่</td>
+
                 <td>
-                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
-                        class="form-control text-center" [(ngModel)]="model.newQty"
+                    <input type="text" class="form-control text-center" mask="separator.2" thousandSeparator=","
+                        decimalMarker="." inputmode="decimal" [(ngModel)]="model.newQty"
                         (ngModelChange)="calculateRowNew()">
                 </td>
+
                 <td *ngIf="model.selectedExpenseTypeId == 5">
-                    <input type="text" class="form-control text-end" [ngModel]="model.newMonth | number:'1.0-2'"
-                        (ngModelChange)="onAmountChange($event, 'newMonth')">
+                    <input type="text" class="form-control text-end" mask="separator.2" thousandSeparator=","
+                        decimalMarker="." inputmode="decimal" [(ngModel)]="model.newMonth"
+                        (ngModelChange)="calculateRowNew()" >
                 </td>
+
                 <td>
-                    <input type="text" class="form-control text-end" [ngModel]="model.newYear | number:'1.0-2'"
-                        (ngModelChange)="onAmountChange($event, 'newYear')">
+                    <input type="text" class="form-control text-end" mask="separator.2" thousandSeparator=","
+                        decimalMarker="." inputmode="decimal" [(ngModel)]="model.newYear"
+                        (ngModelChange)="calculateRowNew()">
+
                 </td>
             </tr>
         </tbody>
@@ -48,9 +59,9 @@
         <tfoot>
             <tr>
                 <td class="text-end">รวม</td>
-                <td>{{ totalQty | number:'1.0-2' }}</td>
+                <td class="text-end">{{ totalQty | number:'1.2-2' }}</td>
                 <td *ngIf="model.selectedExpenseTypeId == 5"></td>
-                <td class="text-end">{{ totalAmount | number:'1.0-2' }}</td>
+                <td class="text-end">{{ totalAmount | number:'1.2-2' }}</td>
             </tr>
         </tfoot>
     </table>
