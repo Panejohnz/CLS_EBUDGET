@@ -1,5 +1,4 @@
-<div class="card shadow-sm expense-card">
-    <div class="card-body">
+
         <div class="expense-table-responsive">
             <table class="table table-bordered align-middle text-center expense-table mb-0" style="table-layout: fixed;">
                 <thead class="text-center text-white expense-table-header">
@@ -10,7 +9,7 @@
                         <th style="width:12%">จำนวนเดือน</th>
                         <th style="width:12%">อัตรา(บาท)</th>
                         <th style="width:12%">รวมทั้งสิ้น</th>
-                        <th style="width:4%"></th>
+                        <th style="width:4%">ลบ</th>
                     </tr>
                 </thead>
 
@@ -34,18 +33,19 @@
                         <td>
                             <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
                                 inputmode="decimal" class="form-control text-center" [(ngModel)]="item.qty"
-                                (ngModelChange)="calculate(i)">
+                                (ngModelChange)="calculate(i)"    placeholder="ระบุจำนวนเครื่อง">
                         </td>
 
                         <td>
                             <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
                                 inputmode="decimal" class="form-control text-center" [(ngModel)]="item.month"
-                                (ngModelChange)="calculate(i)">
+                                (ngModelChange)="calculate(i)" placeholder="ระบุจำนวนเดือน">
                         </td>
 
                         <td>
-                            <input type="text" class="form-control text-end" [ngModel]="formatNumber(item.price)"
-                                (ngModelChange)="onPriceChange($event, item, i)" inputmode="decimal">
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                            class="form-control text-end" [ngModel]="formatNumber(item.price)"
+                                (ngModelChange)="onPriceChange($event, item, i)" placeholder="ระบุอัตรา(บาท)">
                         </td>
 
                         <td class="fw-bold text-end text-primary">
@@ -72,12 +72,10 @@
 
         <div class="d-flex justify-content-between mt-3">
             <div>
-                <button class="btn btn-outline-primary" (click)="addItem()">
+                <button class="btn btn-primary" (click)="addItem()">
                     <i class="bx bx-plus"></i>
                     เพิ่มรายการ
                 </button>
                 <span class="text-danger ms-2">จำนวน {{ items.length }} รายการ</span>
             </div>
         </div>
-    </div>
-</div>

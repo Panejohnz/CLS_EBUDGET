@@ -1,10 +1,3 @@
-<div class="container-fluid bg-light p-3">
-
-  <div class="card shadow-sm border-0">
-
-    <!-- <div class="card-header bg-light fw-semibold">
-      แบบฟอร์มค่าเช่าทรัพย์สิน
-    </div> -->
 
     <div class="card-body p-0">
 
@@ -25,22 +18,22 @@
               </th>
 
               <th style="width:12%">
-                ค่าเช่า/ตรม.
+                ราคาค่าเช่า/ตรม.
               </th>
 
               <th style="width:12%">
-                ค่าเช่า/เดือน
+                ราคาค่าเช่า/เดือน
               </th>
 
               <th style="width:12%">
-                ค่าเช่า/ปี
+                ราคาค่าเช่า/ปี
               </th>
 
               <th style="width:20%">
                 วัตถุประสงค์
               </th>
 
-              <th style="width:5%"></th>
+              <th style="width:5%">ลบ</th>
 
             </tr>
 
@@ -63,32 +56,33 @@
 
                 <!-- <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-end" [(ngModel)]="item.area"
                   (ngModelChange)="calculate(item)"> -->
-                <input type="text" class="form-control text-center" [(ngModel)]="item.area">
+                <input type="text" class="form-control text-center" [(ngModel)]="item.area"    placeholder="ขนาดพื้นที่ (ตรม.)">
               </td>
 
 
               <!-- rate -->
               <td>
 
-                <input type="text" class="form-control text-end" [value]="item.pricePerSqm"
-                  (input)="formatInput($event, item, 'pricePerSqm'); calculate(item)" inputmode="decimal">
+                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"    placeholder="ระบุค่าเช่า/ตรม."
+                class="form-control text-end" [value]="item.pricePerSqm" (input)="formatInput($event, item, 'pricePerSqm');">
 
               </td>
 
               <!-- month -->
               <td>
 
-                <input type="text" class="form-control text-end" [value]="item.monthlyRent | number:'1.0-2'"
-                  (input)="formatInput($event, item, 'monthlyRent'); calculateYear(item)" inputmode="decimal">
+                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"    placeholder="ระบุค่าเช่า/ปี"
+                class="form-control text-end" [value]="item.monthlyRent"
+                  (input)="formatInput($event, item, 'monthlyRent'); calculateYear(item)">
 
               </td>
 
               <!-- year -->
               <td>
 
-                <input type="text" class="form-control text-end" [value]="item.yearlyRent | number:'1.0-2'"
-                  (input)="formatInput($event, item, 'yearlyRent'); calculateGrand(); updateDetailItems()"
-                  inputmode="decimal">
+                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" readonly  style="background-color: #ebeff3;"
+                class="form-control text-end" [value]="item.yearlyRent"
+                  (input)="formatInput($event, item, 'yearlyRent'); calculateGrand(); updateDetailItems()">
 
               </td>
               <!-- rate -->
@@ -127,10 +121,8 @@
               <!-- delete -->
               <td>
 
-                <button class="btn btn-sm btn-outline-danger" (click)="removeRow(i)">
-
-                  🗑
-
+                <button class="btn btn-sm btn-danger" (click)="removeRow(i)">
+                  <i class="bx bx-trash"></i>
                 </button>
 
               </td>
@@ -175,7 +167,7 @@
               </td>
 
               <!-- total year -->
-              <td class="text-end text-primary">
+              <td class="text-end">
 
                 {{
                 totalYear
@@ -196,14 +188,13 @@
 
     </div>
 
-  </div>
-
   <!-- footer -->
   <div class="d-flex justify-content-between mt-3">
 
-    <button class="btn btn-outline-primary btn-sm" (click)="addRow()">
+    <button class="btn btn-primary" (click)="addRow()">
 
-      + เพิ่มรายการ
+       <i class="bx bx-plus text-black"></i>
+                   <span class="text-black"> เพิ่มรายการ</span>
 
     </button>
 
@@ -215,4 +206,3 @@
 
   </div>
 
-</div>

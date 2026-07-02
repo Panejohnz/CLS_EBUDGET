@@ -46,7 +46,6 @@ export class ExpenseCopierRentComponent {
             ? response.List_Mas_Expense_Detial
             : [];
 
-
         this.loadExpenseRates();
       }, () => {
         this.Mas_Expense_Detial_List = [];
