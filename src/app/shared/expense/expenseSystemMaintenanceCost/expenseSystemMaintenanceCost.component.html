@@ -1,231 +1,227 @@
-<div class="card shadow-sm">
+<div class="expense-table-responsive">
 
-    <div class="card-body bg-light">
+    <table class="table table-bordered align-middle expense-table text-center mb-0">
 
-        <div class="expense-table-responsive">
+        <!-- header -->
+        <thead class="text-center text-white expense-table-header">
 
-            <table class="table table-bordered align-middle expense-table text-center bg-white mb-0">
+            <tr>
 
-                <!-- HEADER -->
-                <thead class="text-center text-white expense-table-header">
+                <th width="5%">
 
-                    <tr>
+                    ลำดับ
 
-                        <th width="5%">
+                </th>
 
-                            ลำดับ
+                <th width="35%">
 
-                        </th>
+                    รายการ
 
-                        <th width="35%">
+                </th>
 
-                            รายการ
+                <th width="10%">
 
-                        </th>
+                    จำนวน
 
-                        <th width="15%">
+                </th>
 
-                            จำนวน (บาท)
+                <th width="10%">
 
-                        </th>
+                    หน่วยนับ
 
-                        <th width="10%">
+                </th>
 
-                            จำนวน
+                <th width="10%">
 
-                        </th>
+                    จำนวนเดือน
 
-                        <th width="10%">
+                </th>
+                                <th width="15%">
 
-                            หน่วยนับ
+                    อัตราค่าใช้จ่าย (บาท)
 
-                        </th>
+                </th>
 
-                        <th width="10%">
+                <th width="5%">
 
-                            จำนวนเดือน
+                    รวมทั้งสิ้น
 
-                        </th>
+                </th>
 
-                        <th width="5%">
+                <th width="5%">ลบ</th>
 
-                            รวมทั้งสิ้น
+            </tr>
 
-                        </th>
+        </thead>
 
-                        <th width="5%"></th>
+        <!-- BODY -->
+        <tbody>
 
-                    </tr>
+            <tr *ngFor="let item of items; let i = index">
 
-                </thead>
+                <!-- index -->
+                <td>
 
-                <!-- BODY -->
-                <tbody>
+                    {{ i + 1 }}
 
-                    <tr *ngFor="let item of items; let i = index">
+                </td>
 
-                        <!-- index -->
-                        <td>
+                <!-- name -->
+                <td>
 
-                            {{ i + 1 }}
+                    <input class="form-control " [(ngModel)]="item.name" placeholder="ระบุรายการ"
+                        (ngModelChange)="updateDetailItems()">
 
-                        </td>
+                </td>
 
-                        <!-- name -->
-                        <td>
+                <!-- qty -->
+                <td>
 
-                            <input class="form-control form-control-sm" [(ngModel)]="item.name"
-                                (ngModelChange)="updateDetailItems()">
+                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                        class="form-control  text-center" [(ngModel)]="item.qty" placeholder="ระบุจำนวน"
+                        (ngModelChange)="calculate(i)">
 
-                        </td>
+                </td>
 
-                        <!-- price -->
-                        <td>
+                <!-- unit -->
+                <td>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.price"
-                                (ngModelChange)="calculate(i)">
+                    <select class="form-select" [(ngModel)]="item.unit"
+                        (ngModelChange)="updateDetailItems()">
 
-                        </td>
+                        <option>
 
-                        <!-- qty -->
-                        <td>
+                            คน
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.qty"
-                                (ngModelChange)="calculate(i)">
+                        </option>
 
-                        </td>
+                        <option>
 
-                        <!-- unit -->
-                        <td>
+                            งาน
 
-                            <select class="form-select form-select-sm" [(ngModel)]="item.unit"
-                                (ngModelChange)="updateDetailItems()">
+                        </option>
 
-                                <option>
+                        <option>
 
-                                    คน
+                            ครั้ง
 
-                                </option>
+                        </option>
 
-                                <option>
+                        <option>
 
-                                    งาน
+                            ระบบ
 
-                                </option>
+                        </option>
 
-                                <option>
+                    </select>
 
-                                    ครั้ง
+                </td>
 
-                                </option>
+                <!-- month -->
+                <td>
 
-                                <option>
+                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                        class="form-control  text-end" [(ngModel)]="item.month" placeholder="ระบุจำนวนเดือน" 
+                        (ngModelChange)="calculate(i)">
 
-                                    ระบบ
+                </td>
+                
+                <!-- price -->
+                <td>
 
-                                </option>
+                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                        class="form-control  text-end" [(ngModel)]="item.price" placeholder="ระบุราคา/หน่วย" 
+                        (ngModelChange)="calculate(i)">
 
-                            </select>
+                </td>
 
-                        </td>
 
-                        <!-- month -->
-                        <td>
+                <!-- total -->
+                <td class="text-end fw-bold text-black">
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.month"
-                                (ngModelChange)="calculate(i)">
+                    {{
+                    item.total
+                    | number:'1.2-2'
+                    }}
 
-                        </td>
+                </td>
 
-                        <!-- total -->
-                        <td class="text-end fw-bold text-primary">
+                <!-- remove -->
+                <td>
 
-                            {{
-                            item.total
-                            | number:'1.2-2'
-                            }}
+                    <button class="btn btn-danger btn-sm" (click)="removeItem(i)">
 
-                        </td>
+                                      <i class="bx bx-trash"></i>
 
-                        <!-- remove -->
-                        <td>
+                    </button>
 
-                            <button class="btn btn-danger btn-sm" (click)="removeItem(i)">
+                </td>
 
-                                🗑
+            </tr>
 
-                            </button>
+        </tbody>
 
-                        </td>
+        <!-- FOOTER -->
+        <tfoot>
 
-                    </tr>
+            <tr>
 
-                </tbody>
+                <td colspan="3" class="text-end fw-bold">
 
-                <!-- FOOTER -->
-                <tfoot>
+                    รวมทั้งสิ้น
 
-                    <tr>
+                </td>
 
-                        <td colspan="3" class="text-end fw-bold">
+                <td class="fw-bold">
 
-                            รวมทั้งสิ้น
+                    {{ totalQty | number:'1.0-2' }}
 
-                        </td>
+                </td>
 
-                        <td class="fw-bold">
+                <td></td>
 
-                            {{ totalQty | number:'1.0-2' }}
+                <td class="fw-bold">
 
-                        </td>
+                    {{ totalMonth | number:'1.0-2' }}
 
-                        <td></td>
+                </td>
 
-                        <td class="fw-bold">
+                <td class="text-end fw-bold text-white">
 
-                            {{ totalMonth | number:'1.0-2' }}
+                    {{
+                    grandTotal
+                    | number:'1.2-2'
+                    }}
 
-                        </td>
+                </td>
 
-                        <td class="text-end fw-bold text-primary">
+                <td colspan="2"></td>
 
-                            {{
-                            grandTotal
-                            | number:'1.2-2'
-                            }}
+            </tr>
 
-                        </td>
+        </tfoot>
 
-                        <td colspan="2"></td>
+    </table>
 
-                    </tr>
+</div>
 
-                </tfoot>
+<!-- ACTION -->
+<div class="mt-3 d-flex justify-content-between align-items-center">
 
-            </table>
+    <div>
 
-        </div>
+        <button class="btn btn-primary" (click)="addItem()">
 
-        <!-- ACTION -->
-        <div class="mt-3 d-flex justify-content-between align-items-center">
+               <i class="bx bx-plus text-black"></i>
+                   <span class="text-black"> เพิ่มรายการ</span>
 
-            <div>
+        </button>
 
-                <button class="btn btn-primary btn-sm" (click)="addItem()">
+        <span class="ms-2 text-danger">
 
-                    + เพิ่มรายการ
+            จำนวน {{ items.length }} รายการ
 
-                </button>
-
-                <span class="ms-2 text-danger">
-
-                    จำนวน {{ items.length }} รายการ
-
-                </span>
-
-            </div>
-
-        </div>
+        </span>
 
     </div>
 

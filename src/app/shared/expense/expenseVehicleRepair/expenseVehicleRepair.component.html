@@ -1,177 +1,148 @@
-<div class="container-fluid bg-light p-3">
+<div class="card-body p-0">
 
-  <div class="card shadow-sm">
+  <div class="expense-table-responsive">
 
-    <div class="card-header bg-light fw-bold">
+    <table class="table table-bordered align-middle expense-table text-center mb-0">
 
-      แบบฟอร์มค่าซ่อมยานพาหนะและขนส่ง
+      <!-- header -->
+      <thead class="text-center text-white expense-table-header">
+
+        <tr>
+
+          <th style="width:5%">
+            ลำดับ
+          </th>
+
+          <th style="width:45%">
+            รายการ
+          </th>
+
+          <th style="width:10%">
+            จำนวนคัน
+          </th>
+          <th style="width:15%">
+            อัตราค่าซ่อม/คัน
+          </th>
+          <th style="width:15% text-end">
+            รวมค่าใช้จ่าย
+          </th>
+          <th style="width:5%">ลบ</th>
+
+        </tr>
+
+
+      </thead>
+
+      <!-- body -->
+      <tbody>
+
+        <tr *ngFor="let item of items; let i=index">
+
+          <!-- no -->
+          <td>
+
+            {{ i + 1 }}
+
+          </td>
+
+          <!-- item -->
+          <td>
+
+            <ng-select appendTo="body" dropdownPosition="auto" [items]="Mas_Expense_Detial_List"
+              bindLabel="Expense_Detial_Name" bindValue="Expense_Detial_Id" [(ngModel)]="item.pairId"
+              name="vehicle_repair_detail_{{i}}" placeholder="-- เลือกรายการ --" [clearable]="false"
+              (change)="onSelectChange(item)">
+            </ng-select>
+
+            <!-- custom -->
+            <input *ngIf="isOtherItem(item)" type="text" class="form-control mt-1" placeholder="ระบุรายการ"
+              [(ngModel)]="item.customName" (ngModelChange)="updateDetailItems()">
+
+          </td>
+
+          <!-- qty -->
+          <td>
+
+            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+              class="form-control text-end" [(ngModel)]="item.quantity" (ngModelChange)="calculate()" placeholder="ระบุจำนวน">
+
+          </td>
+
+          <!-- price -->
+          <td>
+
+            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+              class="form-control text-end" [(ngModel)]="item.price" (ngModelChange)="calculate()" placeholder="ระบุอัตราค่าซ่อม">
+
+          </td>
+
+          <!-- total -->
+          <td class="text-end fw-bold text-black">
+
+            {{
+            getTotal(item)
+            | number:'1.2-2'
+            }}
+
+          </td>
+
+          <!-- delete -->
+          <td>
+
+            <button class="btn btn-danger btn-sm" (click)="removeItem(i)">
+
+                      <i class="bx bx-trash"></i>
+
+            </button>
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+  <!-- footer -->
+  <div class="d-flex justify-content-between align-items-center p-3 border-top">
+
+    <!-- left -->
+    <div>
+
+      <button class="btn btn-primary" (click)="addItem()">
+
+             <i class="bx bx-plus text-black"></i>
+                   <span class="text-black"> เพิ่มรายการ</span>
+
+      </button>
+
+      <span class="ms-3 text-danger">
+
+        จำนวน {{ items.length }} รายการ
+
+      </span>
 
     </div>
 
-    <div class="card-body p-0">
+    <!-- right -->
+    <div class="text-end">
 
-      <div class="expense-table-responsive">
+      <div class="fw-bold">
 
-        <table class="table table-bordered expense-table mb-0 align-middle text-center">
+        รวมทั้งสิ้น :
 
-          <!-- header -->
-          <thead class="text-center text-white expense-table-header">
+        <span class="text-black">
 
-            <tr>
+          {{
+          getGrandTotal()
+          | number:'1.2-2'
+          }}
 
-              <th style="width:5%">
-                ลำดับ
-              </th>
+          บาท
 
-              <th style="width:45%">
-                รายการ
-              </th>
-
-              <th colspan="3">
-                จำนวน
-              </th>
-
-              <th style="width:5%"></th>
-
-            </tr>
-
-            <tr>
-
-              <th></th>
-
-              <th></th>
-
-              <th style="width:10%">
-                คัน
-              </th>
-
-              <th style="width:15%">
-                ค่าซ่อม/คัน
-              </th>
-
-              <th style="width:15%">
-                รวม
-              </th>
-
-              <th></th>
-
-            </tr>
-
-          </thead>
-
-          <!-- body -->
-          <tbody>
-
-            <tr *ngFor="let item of items; let i=index">
-
-              <!-- no -->
-              <td>
-
-                {{ i + 1 }}
-
-              </td>
-
-              <!-- item -->
-              <td>
-
-                <ng-select appendTo="body" dropdownPosition="auto" [items]="Mas_Expense_Detial_List"
-                  bindLabel="Expense_Detial_Name" bindValue="Expense_Detial_Id" [(ngModel)]="item.pairId"
-                  name="vehicle_repair_detail_{{i}}" placeholder="-- เลือกรายการ --" [clearable]="false"
-                  (change)="onSelectChange(item)">
-                </ng-select>
-
-                <!-- custom -->
-                <input *ngIf="isOtherItem(item)" type="text" class="form-control mt-1" placeholder="ระบุรายการ"
-                  [(ngModel)]="item.customName" (ngModelChange)="updateDetailItems()">
-
-              </td>
-
-              <!-- qty -->
-              <td>
-
-                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-end" [(ngModel)]="item.quantity"
-                  (ngModelChange)="calculate()">
-
-              </td>
-
-              <!-- price -->
-              <td>
-
-                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-end" [(ngModel)]="item.price"
-                  (ngModelChange)="calculate()">
-
-              </td>
-
-              <!-- total -->
-              <td class="text-end fw-bold text-success">
-
-                {{
-                getTotal(item)
-                | number:'1.2-2'
-                }}
-
-              </td>
-
-              <!-- delete -->
-              <td>
-
-                <button class="btn btn-outline-danger btn-sm" (click)="removeItem(i)">
-
-                  🗑
-
-                </button>
-
-              </td>
-
-            </tr>
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-      <!-- footer -->
-      <div class="d-flex justify-content-between align-items-center p-3 border-top">
-
-        <!-- left -->
-        <div>
-
-          <button class="btn btn-primary btn-sm" (click)="addItem()">
-
-            + เพิ่มรายการ
-
-          </button>
-
-          <span class="ms-3 text-danger">
-
-            จำนวน {{ items.length }} รายการ
-
-          </span>
-
-        </div>
-
-        <!-- right -->
-        <div class="text-end">
-
-          <div class="fw-bold">
-
-            รวมทั้งหมด :
-
-            <span class="text-success">
-
-              {{
-              getGrandTotal()
-              | number:'1.2-2'
-              }}
-
-              บาท
-
-            </span>
-
-          </div>
-
-        </div>
+        </span>
 
       </div>
 

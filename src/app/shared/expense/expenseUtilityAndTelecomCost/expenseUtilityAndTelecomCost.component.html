@@ -1,13 +1,10 @@
-<div class="card shadow-sm">
 
-    <div class="card-body bg-light">
+  <div class="expense-table-responsive">
 
-        <div class="expense-table-responsive">
+    <table class="table table-bordered align-middle expense-table text-center mb-0">
 
-            <table class="table table-bordered align-middle expense-table text-center bg-white mb-0">
-
-                <!-- HEADER -->
-                <thead class="text-center text-white expense-table-header">
+      <!-- header -->
+      <thead class="text-center text-white expense-table-header">
 
                     <tr>
 
@@ -25,17 +22,17 @@
 
                         <th width="25%">
 
-                            ต่อเดือน (บาท)
+                            ค่าใช้จ่าย/ต่อเดือน (บาท)
 
                         </th>
 
                         <th width="25%">
 
-                            ต่อปี (บาท)
+                            ค่าใช้จ่าย/ต่อปี (บาท)
 
                         </th>
 
-                        <th width="5%"></th>
+                        <th width="5%">ลบ</th>
 
                     </tr>
 
@@ -56,7 +53,7 @@
                         <!-- name -->
                         <td>
 
-                            <input type="text" class="form-control form-control-sm" [(ngModel)]="item.name"
+                            <input type="text" class="form-control " [(ngModel)]="item.name"  placeholder="ระบุรายการ"
                                 (ngModelChange)="updateDetailItems()">
 
                         </td>
@@ -64,13 +61,14 @@
                         <!-- monthly -->
                         <td>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"  placeholder="ระบุค่าใช้จ่าย/ต่อเดือน"
+                            class="form-control text-end"
                                 [(ngModel)]="item.monthly" (ngModelChange)="calculate(i)">
 
                         </td>
 
                         <!-- yearly -->
-                        <td class="text-end fw-bold text-primary">
+                        <td class="text-end fw-bold text-black">
 
                             {{
                             item.yearly
@@ -84,7 +82,7 @@
 
                             <button class="btn btn-danger btn-sm" (click)="removeItem(i)">
 
-                                🗑
+                                 <i class="bx bx-trash"></i>
 
                             </button>
 
@@ -101,7 +99,7 @@
 
                         <td colspan="2" class="text-end fw-bold">
 
-                            รวม
+                            รวมทั้งสิ้น
 
                         </td>
 
@@ -114,7 +112,7 @@
 
                         </td>
 
-                        <td class="text-end fw-bold text-primary">
+                        <td class="text-end fw-bold text-white">
 
                             {{
                             grandTotal
@@ -138,9 +136,10 @@
 
             <div>
 
-                <button class="btn btn-primary btn-sm" (click)="addItem()">
+                <button class="btn btn-primary" (click)="addItem()">
 
-                    + เพิ่มรายการ
+                     <i class="bx bx-plus text-black"></i>
+                   <span class="text-black"> เพิ่มรายการ</span>
 
                 </button>
 
@@ -154,6 +153,3 @@
 
         </div>
 
-    </div>
-
-</div>

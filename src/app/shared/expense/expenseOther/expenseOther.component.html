@@ -1,10 +1,4 @@
-<div class="card bg-light border">
 
-    <div class="card-header bg-light fw-bold">
-
-        แบบฟอร์มค่าใช้จ่ายอื่นๆ
-
-    </div>
 
     <div class="card-body p-2">
 
@@ -26,22 +20,21 @@
                         </th>
 
                         <th style="width:10%">
-                            จำนวนรายการ
-                        </th>
-
-                        <th style="width:15%">
-                            จำนวนเงิน (บาท)
+                            จำนวน
                         </th>
 
                         <th style="width:10%">
                             จำนวนเดือน
                         </th>
-
-                        <th style="width:15%">
-                            รวมรายปี
+                         <th style="width:15%">
+                                อัตราค่าเช่า/เดือน (บาท)
                         </th>
 
-                        <th style="width:5%"></th>
+                        <th style="width:15%">
+                                อัตราค่าเช่า/ปี (บาท)
+                        </th>
+
+                        <th style="width:5%">ลบ</th>
 
                     </tr>
 
@@ -62,7 +55,7 @@
                         <!-- name -->
                         <td>
 
-                            <input class="form-control form-control-sm" [(ngModel)]="item.name"
+                            <input class="form-control" [(ngModel)]="item.name"
                                 (ngModelChange)="updateDetailItems()" placeholder="ระบุชื่อรายการ">
 
                         </td>
@@ -70,32 +63,36 @@
                         <!-- qty -->
                         <td>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-center" [(ngModel)]="item.qty"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" placeholder="ระบุจำนวน"
+                            class="form-control  text-center" [(ngModel)]="item.qty"
                                 (ngModelChange)="calculate(item)">
 
                         </td>
 
-                        <!-- price -->
+                         <!-- month -->
                         <td>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.price"
-                                (ngModelChange)="calculate(item)">
-
-                        </td>
-
-                        <!-- month -->
-                        <td>
-
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-center"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" placeholder="ระบุจำนวนเดือน"
+                            class="form-control text-center"
                                 [(ngModel)]="item.months" (ngModelChange)="calculate(item)">
 
                         </td>
+                        <!-- price -->
+                        <td>
+
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"  placeholder="ระบุอัตราค่าเช่า/เดือน"
+                            class="form-control text-end" [(ngModel)]="item.price"
+                                (ngModelChange)="calculate(item)">
+
+                        </td>
+
+                       
 
                         <!-- total -->
                         <td>
 
-                            <input class="form-control form-control-sm text-end fw-bold text-primary"
-                                [value]="item.total | number:'1.2-2'" readonly>
+                            <input class="form-control text-end fw-bold " placeholder="อัตราค่าเช่า/ปี"
+                                [value]="item.total | number:'1.2-2'" readonly    style="background-color: #ebeff3;">
 
                         </td>
 
@@ -104,7 +101,7 @@
 
                             <button class="btn btn-danger btn-sm" (click)="removeItem(i)">
 
-                                <i class="bx bx-trash"></i>
+                                   <i class="bx bx-trash"></i>
 
                             </button>
 
@@ -117,15 +114,15 @@
                 <!-- footer -->
                 <tfoot>
 
-                    <tr class="table-light fw-bold">
+                    <tr class="table fw-bold expense-table-header">
 
                         <td colspan="5" class="text-end">
 
-                            รวม
+                            รวมทั้งสิ้น
 
                         </td>
 
-                        <td class="text-end text-primary">
+                        <td class="text-end">
 
                             {{
                             grandTotal
@@ -149,9 +146,11 @@
 
             <div>
 
-                <button class="btn btn-secondary btn-sm" (click)="addItem()">
+                <button class="btn btn-primary" (click)="addItem()">
 
-                    เพิ่มรายการ
+                 <i class="bx bx-plus text-black"></i>
+                   <span class="text-black"> เพิ่มรายการ</span>
+
 
                 </button>
 
@@ -167,4 +166,3 @@
 
     </div>
 
-</div>

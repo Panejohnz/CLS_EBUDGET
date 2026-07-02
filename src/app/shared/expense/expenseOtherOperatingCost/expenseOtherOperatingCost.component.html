@@ -1,191 +1,161 @@
-<div class="container-fluid bg-light p-3">
+<div class="expense-table-responsive">
 
-    <div class="card shadow-sm">
+    <table class="table table-bordered align-middle expense-table text-center mb-0">
 
-        <div class="card-body p-0">
+        <!-- header -->
+        <thead class="text-center text-white expense-table-header">
 
-            <div class="expense-table-responsive">
+            <tr>
 
-                <table class="table table-bordered expense-table mb-0 text-center align-middle">
+                <th style="width:5%">
 
-                    <!-- HEADER -->
-                    <thead class="text-center text-white expense-table-header">
+                    ลำดับ
 
-                        <tr>
+                </th>
 
-                            <th style="width:5%">
+                <th style="width:45%">
 
-                                ลำดับ
+                    รายการ
 
-                            </th>
+                </th>
 
-                            <th style="width:45%">
+                <th style="width:10%">
 
-                                รายการ
+                    จำนวน
 
-                            </th>
+                </th>
 
-                            <th colspan="3">
+                <th style="width:15%">
 
-                                ค่าใช้สอย
+                    ราคา/หน่วย
 
-                            </th>
+                </th>
 
-                            <th style="width:5%"></th>
+                <th style="width:15%">
 
-                        </tr>
+                    รวมค่าใช้จ่าย
 
-                        <tr>
+                </th>
 
-                            <th></th>
+                <th style="width:5%">ลบ</th>
 
-                            <th></th>
+            </tr>
 
-                            <th style="width:10%">
 
-                                จำนวน
+        </thead>
 
-                            </th>
+        <!-- BODY -->
+        <tbody>
 
-                            <th style="width:15%">
+            <tr *ngFor="let item of items; let i = index">
 
-                                ราคา/หน่วย
+                <!-- index -->
+                <td>
 
-                            </th>
+                    {{ i + 1 }}
 
-                            <th style="width:15%">
+                </td>
 
-                                รวม
+                <!-- name -->
+                <td>
 
-                            </th>
+                    <input type="text" class="form-control" [(ngModel)]="item.name" placeholder="ระบุรายการ"
+                        (ngModelChange)="updateDetailItems()">
 
-                            <th></th>
+                </td>
 
-                        </tr>
+                <!-- qty -->
+                <td>
 
-                    </thead>
+                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                        placeholder="ระบุจำนวน" class="form-control text-center" [(ngModel)]="item.quantity"
+                        (ngModelChange)="updateDetailItems()">
 
-                    <!-- BODY -->
-                    <tbody>
+                </td>
 
-                        <tr *ngFor="let item of items; let i = index">
+                <!-- price -->
+                <td>
 
-                            <!-- index -->
-                            <td>
+                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                        placeholder="ระบุราคา/หน่วย" class="form-control text-end" [(ngModel)]="item.price"
+                        (ngModelChange)="updateDetailItems()">
 
-                                {{ i + 1 }}
+                </td>
 
-                            </td>
+                <!-- total -->
+                <td class="text-end fw-bold">
 
-                            <!-- name -->
-                            <td>
+                    {{
+                    getTotal(item)
+                    | number:'1.2-2'
+                    }}
 
-                                <input type="text" class="form-control" [(ngModel)]="item.name"
-                                    (ngModelChange)="updateDetailItems()">
+                </td>
 
-                            </td>
+                <!-- remove -->
+                <td>
 
-                            <!-- qty -->
-                            <td>
+                    <button class="btn btn-danger btn-sm" (click)="removeItem(i)">
 
-                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-end" [(ngModel)]="item.quantity"
-                                    (ngModelChange)="updateDetailItems()">
-
-                            </td>
-
-                            <!-- price -->
-                            <td>
-
-                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-end" [(ngModel)]="item.price"
-                                    (ngModelChange)="updateDetailItems()">
-
-                            </td>
-
-                            <!-- total -->
-                            <td class="text-end fw-bold">
-
-                                {{
-                                getTotal(item)
-                                | number:'1.2-2'
-                                }}
-
-                            </td>
-
-                            <!-- remove -->
-                            <td>
-
-                                <button class="btn btn-outline-danger btn-sm" (click)="removeItem(i)">
-
-                                    🗑
-
-                                </button>
-
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                    <!-- FOOTER -->
-                    <tfoot>
-
-                        <tr class="bg-light fw-bold">
-
-                            <td colspan="2" class="text-end">
-
-                                รวมทั้งสิ้น
-
-                            </td>
-
-                            <td>
-
-                                {{ getTotalQty() | number:'1.0-2' }}
-
-                            </td>
-
-                            <td></td>
-
-                            <td class="text-end text-primary">
-
-                                {{
-                                getGrandTotal()
-                                | number:'1.2-2'
-                                }}
-
-                            </td>
-
-                            <td></td>
-
-                        </tr>
-
-                    </tfoot>
-
-                </table>
-
-            </div>
-
-            <!-- ACTION -->
-            <div class="d-flex justify-content-between align-items-center p-3">
-
-                <div>
-
-                    <button class="btn btn-primary btn-sm" (click)="addItem()">
-
-                        + เพิ่มรายการ
+                        <i class="bx bx-trash"></i>
 
                     </button>
 
-                    <span class="ms-3 text-danger">
+                </td>
 
-                        จำนวน {{ items.length }} รายการ
+            </tr>
 
-                    </span>
+        </tbody>
 
-                </div>
+        <!-- FOOTER -->
+        <tfoot>
 
-            </div>
+            <tr class="expense-table-header">
 
-        </div>
+                <td colspan="4" class="text-end">
+
+                    รวมทั้งสิ้น
+
+                </td>
+
+
+                <td class="text-end text-white fw-bold">
+
+                    {{
+                    getGrandTotal()
+                    | number:'1.2-2'
+                    }}
+
+                </td>
+
+                <td></td>
+
+            </tr>
+
+        </tfoot>
+
+    </table>
+
+</div>
+
+<!-- ACTION -->
+<div class="d-flex justify-content-between align-items-center p-3">
+
+    <div>
+
+        <button class="btn btn-primary" (click)="addItem()">
+
+            <i class="bx bx-plus text-black"></i>
+            <span class="text-black"> เพิ่มรายการ</span>
+
+
+        </button>
+
+        <span class="ms-3 text-danger">
+
+            จำนวน {{ items.length }} รายการ
+
+        </span>
 
     </div>
 
