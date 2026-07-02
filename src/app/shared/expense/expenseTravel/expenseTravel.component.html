@@ -112,6 +112,14 @@
             </div>
         </div>
 
+        <div class="d-flex justify-content-end mb-3">
+            <div class="fw-bold text-end">
+                รวมทั้งสิ้นทุกรายการ:
+                {{ getGrandTotal() | number:'1.2-2' }}
+                บาท
+            </div>
+        </div>
+
         <button type="button" class="btn btn-primary" (click)="addSection()">
                      <i class="bx bx-plus text-black"></i><span class="text-black"> เพิ่มรายการ</span>
         </button>

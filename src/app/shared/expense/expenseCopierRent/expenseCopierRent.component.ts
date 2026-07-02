@@ -47,10 +47,10 @@ export class ExpenseCopierRentComponent {
             : [];
 
 
-        this.loadExpenseRates();
+        this.bindData();
       }, () => {
         this.Mas_Expense_Detial_List = [];
-        this.loadExpenseRates();
+        this.bindData();
       });
 
 
@@ -62,10 +62,18 @@ export class ExpenseCopierRentComponent {
 
   }
 
-  loadExpenseRates() {
+  loadExpenseRates(item: any, index: number) {
+    const selectedDetail = this.getSelectedExpenseDetail(item?.type);
+    const selectedDetailId = this.getExpenseDetailId(selectedDetail);
+
+    if (!selectedDetailId) {
+      this.calculate(index);
+      return;
+    }
+
     let model = {
       FUNC_CODE: "FUNC-Get_Mas_Expense_Rate",
-      Fk_Expense_Id: this.model.selectedExpenseTypeId
+      Fk_Expense_Id: selectedDetailId
     };
 
     this.serviceebud.GatewayGetData(model)
@@ -78,10 +86,15 @@ export class ExpenseCopierRentComponent {
             ? expenseRateList
             : [];
 
-        this.bindData();
-        this.applyRatesToExistingRows();
+        const rate = this.getRateForType(item.type);
+
+        if (rate > 0) {
+          item.price = rate;
+        }
+
+        this.calculate(index);
       }, () => {
-        this.bindData();
+        this.calculate(index);
       });
   }
 
@@ -220,21 +233,6 @@ export class ExpenseCopierRentComponent {
     return this.getRowRate(byId ?? byName ?? this.Mas_Expense_Detial_Rate_List[fallbackIndex]);
   }
 
-  private applyRatesToExistingRows() {
-    this.items.forEach((item: any, index: number) => {
-      if (this.isOtherType(item) || Number(item.price) > 0) {
-        return;
-      }
-
-      const rate = this.getRateForType(item.type);
-
-      if (rate > 0) {
-        item.price = rate;
-        this.calculate(index);
-      }
-    });
-  }
-
   bindData() {
 
     const rows =
@@ -336,13 +334,7 @@ export class ExpenseCopierRentComponent {
       return;
     }
 
-    const rate = this.getRateForType(item.type);
-
-    if (rate > 0) {
-      item.price = rate;
-    }
-
-    this.calculate(index);
+    this.loadExpenseRates(item, index);
   }
   async removeItem(index: number) {
 
