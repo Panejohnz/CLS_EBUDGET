@@ -1,21 +1,11 @@
-<div class="card shadow-sm">
 
-    <!-- Header -->
-    <div class="card-header text-white fw-bold" style="background:#2f4ea1;">
 
-        แบบฟอร์มค่าซ่อมแซมครุภัณฑ์
+  <div class="expense-table-responsive">
 
-    </div>
+    <table class="table table-bordered align-middle expense-table text-center mb-0">
 
-    <!-- body -->
-    <div class="card-body bg-light">
-
-        <div class="expense-table-responsive">
-
-            <table class="table table-bordered align-middle expense-table text-center bg-white mb-0">
-
-                <!-- header -->
-                <thead class="text-center text-white expense-table-header">
+      <!-- header -->
+      <thead class="text-center text-white expense-table-header">
 
                     <tr>
 
@@ -36,10 +26,10 @@
                         </th>
 
                         <th width="15%">
-                            รวม
+                            รวมค่าใช้จ่าย
                         </th>
 
-                        <th width="5%"></th>
+                        <th width="5%">ลบ</th>
 
                     </tr>
 
@@ -60,7 +50,7 @@
                         <!-- item -->
                         <td>
 
-                            <input class="form-control form-control-sm" [(ngModel)]="item.name"
+                            <input class="form-control" [(ngModel)]="item.name"
                                 (ngModelChange)="updateDetailItems()" placeholder="ระบุรายการ">
 
                         </td>
@@ -68,21 +58,21 @@
                         <!-- qty -->
                         <td>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.qty"
-                                (ngModelChange)="calculate(i)">
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-end" [(ngModel)]="item.qty"
+                                (ngModelChange)="calculate(i)" placeholder="ระบุจำนวน">
 
                         </td>
 
                         <!-- price -->
                         <td>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.price"
-                                placeholder="ระบุราคา" (ngModelChange)="calculate(i)">
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-end" [(ngModel)]="item.price"
+                                placeholder="ระบุราคา" (ngModelChange)="calculate(i)" placeholder="ระบุราคา/หน่วย">
 
                         </td>
 
                         <!-- total -->
-                        <td class="text-end fw-bold text-primary">
+                        <td class="text-end fw-bold text-black">
 
                             {{
                             item.total
@@ -96,7 +86,7 @@
 
                             <button class="btn btn-danger btn-sm" (click)="removeItem(i)">
 
-                                🗑
+                                 <i class="bx bx-trash"></i>
 
                             </button>
 
@@ -109,22 +99,14 @@
                 <!-- footer -->
                 <tfoot>
 
-                    <tr style="background:#2f4ea1; color:white;">
+                    <tr class="expense-table-header">
 
-                        <td colspan="2" class="text-end fw-bold">
+                        <td colspan="4" class="text-end fw-bold">
 
                             รวมทั้งสิ้น
 
                         </td>
 
-                        <!-- qty -->
-                        <td class="fw-bold">
-
-                            {{ getTotalQty() | number:'1.0-2' }}
-
-                        </td>
-
-                        <td></td>
 
                         <!-- total -->
                         <td class="text-end fw-bold">
@@ -151,9 +133,9 @@
 
             <div>
 
-                <button class="btn btn-primary btn-sm" (click)="addItem()">
-
-                    + เพิ่มรายการ
+                <button class="btn btn-primary" (click)="addItem()">
+          <i class="bx bx-plus text-black"></i>
+                   <span class="text-black"> เพิ่มรายการ</span>
 
                 </button>
 
@@ -166,7 +148,3 @@
             </div>
 
         </div>
-
-    </div>
-
-</div>

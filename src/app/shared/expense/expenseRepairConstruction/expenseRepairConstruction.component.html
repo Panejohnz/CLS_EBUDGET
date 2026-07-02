@@ -1,15 +1,17 @@
-<div class="card shadow-sm expense-card">
-    <div class="card-body">
-        <div class="expense-table-responsive">
-            <table class="table table-bordered align-middle text-center expense-table mb-0" style="table-layout: fixed;">
-                <thead class="text-center text-white expense-table-header">
+
+  <div class="expense-table-responsive">
+
+    <table class="table table-bordered align-middle expense-table text-center mb-0">
+
+      <!-- header -->
+      <thead class="text-center text-white expense-table-header">
                     <tr>
                         <th style="width:5%">ลำดับ</th>
                         <th style="width:35%">รายการ</th>
                         <th style="width:15%">จำนวน</th>
                         <th style="width:20%">ราคา/หน่วย</th>
-                        <th style="width:20%">รวม</th>
-                        <th style="width:5%"></th>
+                        <th style="width:20%">รวมค่าใช้จ่าย</th>
+                        <th style="width:5%">ลบ</th>
                     </tr>
                 </thead>
 
@@ -24,22 +26,22 @@
 
                         <td>
                             <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
-                                inputmode="decimal" class="form-control text-center" [(ngModel)]="item.qty"
+                                inputmode="decimal" class="form-control text-center" [(ngModel)]="item.qty" placeholder="ระบุจำนวน"
                                 (ngModelChange)="calculate(i)">
                         </td>
 
                         <td>
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." placeholder="ระบุราคา/หน่วย" 
                                 inputmode="decimal" class="form-control text-end" [(ngModel)]="item.price"
                                 (ngModelChange)="calculate(i)">
                         </td>
 
-                        <td class="fw-bold text-end text-primary">
+                        <td class="fw-bold text-end text-black">
                             {{ item.total | number:'1.2-2' }}
                         </td>
 
                         <td>
-                            <button class="btn btn-sm btn-outline-danger" (click)="removeItem(i)">
+                            <button class="btn btn-sm btn-danger" (click)="removeItem(i)">
                                 <i class="bx bx-trash"></i>
                             </button>
                         </td>
@@ -48,9 +50,7 @@
 
                 <tfoot>
                     <tr>
-                        <td colspan="2" class="text-end">รวมทั้งสิ้น</td>
-                        <td>{{ getTotalQty() | number:'1.0-2' }}</td>
-                        <td></td>
+                        <td colspan="4" class="text-end">รวมทั้งสิ้น</td>
                         <td class="text-end">{{ grandTotal | number:'1.2-2' }}</td>
                         <td></td>
                     </tr>
@@ -60,12 +60,10 @@
 
         <div class="d-flex justify-content-between mt-3">
             <div>
-                <button class="btn btn-outline-primary" (click)="addItem()">
-                    <i class="bx bx-plus"></i>
-                    เพิ่มรายการ
+                <button class="btn btn-primary" (click)="addItem()">
+             <i class="bx bx-plus text-black"></i>
+                   <span class="text-black"> เพิ่มรายการ</span>
                 </button>
                 <span class="text-danger ms-2">จำนวน {{ items.length }} รายการ</span>
             </div>
         </div>
-    </div>
-</div>
