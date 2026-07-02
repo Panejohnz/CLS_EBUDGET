@@ -21,6 +21,7 @@ export class ExpenseSection61Component {
 
   Mas_Expense_Detial_List: any[] = [];
   Mas_Expense_Detial_Rate_List: any[] = [];
+  caseSizeOptions: any[] = [];
   private currentExpenseTypeId: any = null;
 
   main = {
@@ -77,9 +78,11 @@ export class ExpenseSection61Component {
             ? expenseDetailList
             : [];
 
+        this.caseSizeOptions = this.getCaseSizeOptions();
         this.loadExpenseRates();
       }, () => {
         this.Mas_Expense_Detial_List = [];
+        this.caseSizeOptions = this.getCaseSizeOptions();
         this.loadExpenseRates();
       });
   }
@@ -99,6 +102,7 @@ export class ExpenseSection61Component {
 
     if (expenseIds.length == 0) {
       this.Mas_Expense_Detial_Rate_List = [];
+      this.caseSizeOptions = this.getCaseSizeOptions();
       this.bindData();
       this.applyMasterRates();
       return;
@@ -125,10 +129,12 @@ export class ExpenseSection61Component {
               : list;
           }, []);
 
+        this.caseSizeOptions = this.getCaseSizeOptions();
         this.bindData();
         this.applyMasterRates();
       }, () => {
         this.Mas_Expense_Detial_Rate_List = [];
+        this.caseSizeOptions = this.getCaseSizeOptions();
         this.bindData();
         this.applyMasterRates();
       });
@@ -181,6 +187,10 @@ export class ExpenseSection61Component {
   }
 
   private getTypeName(type: any): string {
+    if (type && !['allowance', 'hotel', 'travel', 'other'].includes(type)) {
+      return this.getExpenseDetailName(type);
+    }
+
     const nameMap: any = {
       allowance: 'ค่าเบี้ยเลี้ยง',
       hotel: 'ค่าที่พัก',
@@ -188,6 +198,22 @@ export class ExpenseSection61Component {
     };
 
     return nameMap[type] ?? type ?? '';
+  }
+
+  private getExpenseDetailName(value: any): string {
+    const detail = this.getExpenseDetailById(value);
+
+    return detail?.Expense_Detial_Name ??
+      detail?.Expense_Detail ??
+      detail?.Expense_Name ??
+      value ??
+      '';
+  }
+
+  private getExpenseDetailById(value: any): any {
+    return this.Mas_Expense_Detial_List.find((detail: any) =>
+      this.isSameId(this.getExpenseDetailId(detail), value)
+    );
   }
 
   private resolveItemType(row: any): string {
@@ -235,6 +261,91 @@ export class ExpenseSection61Component {
           text.includes(detailText)
         );
     });
+  }
+
+  private getDetailSizeText(row: any): string {
+    const explicitSize = [
+      row?.Case_Size,
+      row?.Case_Size_Name,
+      row?.Size,
+      row?.Size_Name,
+      row?.Expense_Size,
+      row?.Expense_Size_Name,
+      row?.Level_Name,
+      row?.Group_Name,
+      row?.Type_Name
+    ].find((value: any) => value !== null && value !== undefined && value !== '');
+
+    if (explicitSize) {
+      return explicitSize.toString().trim();
+    }
+
+    const text = [
+      row?.Expense_Detial_Name,
+      row?.Expense_Detail,
+      row?.Expense_Name,
+      row?.Expense_Detial_Short_Name,
+      row?.Rate_Name,
+      row?.Code
+    ].filter(Boolean).join(' ');
+
+    const match = text.match(/ขนาดคดี\s*[SML]|ขนาด\s*[SML]|\b[SML]\b/i);
+
+    return match ? match[0].replace(/\s+/g, ' ').trim() : '';
+  }
+
+  private normalizeCaseSize(value: any): string {
+    const text = (value ?? '').toString().trim();
+
+    if (!text) {
+      return '';
+    }
+
+    const sizeLetter = text.match(/[SML]/i)?.[0]?.toUpperCase();
+
+    return sizeLetter
+      ? `ขนาดคดี ${sizeLetter}`
+      : text;
+  }
+
+  getCaseSizeOptions(): any[] {
+    const options = [
+      ...this.Mas_Expense_Detial_List,
+      ...this.Mas_Expense_Detial_Rate_List
+    ].map((row: any) => this.normalizeCaseSize(this.getDetailSizeText(row)))
+      .filter((value: string) => !!value);
+
+    const uniqueOptions = options.filter((value: string, index: number, list: string[]) =>
+      list.indexOf(value) === index
+    );
+
+    return uniqueOptions.length
+      ? uniqueOptions
+      : ['ขนาดคดี S', 'ขนาดคดี M', 'ขนาดคดี L'];
+  }
+
+  getExpenseOptions(group: any): any[] {
+    const groupSize = this.normalizeCaseSize(group?.name);
+
+    if (!groupSize) {
+      return [];
+    }
+
+    const filtered = this.Mas_Expense_Detial_List.filter((detail: any) => {
+      const detailSize = this.normalizeCaseSize(this.getDetailSizeText(detail));
+
+      return !detailSize || detailSize === groupSize;
+    });
+
+    return filtered.length
+      ? filtered
+      : [];
+  }
+
+  getGroupRate(group: any): number {
+    return (group?.items || []).reduce((sum: number, item: any) => {
+      return sum + (Number(item?.amount) || 0);
+    }, 0);
   }
 
   private getRateForExpenseDetail(name: any): number {
@@ -288,9 +399,9 @@ export class ExpenseSection61Component {
   private applyMasterRates() {
     this.caseList.forEach((group: any) => {
       (group.items || []).forEach((item: any) => {
-        if (item.type == 'other') return;
+        if (item.expenseDetailId == 'other' || item.type == 'other') return;
 
-        const rate = this.getRateForExpenseDetail(this.getTypeName(item.type));
+        const rate = this.getRateForExpenseDetail(this.getTypeName(item.expenseDetailId || item.type));
 
         if (rate > 0) {
           item.amount = rate;
@@ -342,13 +453,7 @@ export class ExpenseSection61Component {
     if (rows.length == 0) {
 
       this.caseList = [
-
-        this.createGroup('ขนาดคดี S'),
-
-        this.createGroup('ขนาดคดี M'),
-
-        this.createGroup('ขนาดคดี L')
-
+        this.createGroup('')
       ];
 
       return;
@@ -396,6 +501,11 @@ export class ExpenseSection61Component {
         type:
           this.resolveItemType(row),
 
+        expenseDetailId:
+          row.Fk_Expense_Detail_Id ||
+          this.getExpenseDetailId(this.getExpenseDetailByName(row.Expense_Detail || row.Month_Name)) ||
+          '',
+
         customName:
           row.Expense_Detail || '',
 
@@ -425,6 +535,8 @@ export class ExpenseSection61Component {
 
       type: '',
 
+      expenseDetailId: '',
+
       customName: '',
 
       amount: 0
@@ -432,6 +544,15 @@ export class ExpenseSection61Component {
     });
 
   }
+
+  addGroup() {
+    this.caseList.push(
+      this.createGroup('')
+    );
+
+    this.calculate(this.caseList[this.caseList.length - 1]);
+  }
+
   async removeItem(group: any, item: any) {
 
     const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
@@ -451,15 +572,35 @@ export class ExpenseSection61Component {
 
   onTypeChange(item: any, group: any) {
 
-    if (item.type == 'other') {
+    if (item.expenseDetailId == 'other') {
+      item.type = 'other';
       item.amount = 0;
       item.customName = '';
     } else {
-      item.amount = this.getRateForExpenseDetail(this.getTypeName(item.type));
+      item.type = item.expenseDetailId;
+      item.customName = this.getExpenseDetailName(item.expenseDetailId);
+      item.amount = this.getRateForExpenseDetail(this.getTypeName(item.expenseDetailId));
     }
 
     this.calculate(group);
 
+  }
+
+  onCaseSizeChange(group: any) {
+    group.items.forEach((item: any) => {
+      const hasSelectedOption = this.getExpenseOptions(group).some((detail: any) =>
+        this.isSameId(this.getExpenseDetailId(detail), item.expenseDetailId)
+      );
+
+      if (item.expenseDetailId && !hasSelectedOption) {
+        item.type = '';
+        item.expenseDetailId = '';
+        item.customName = '';
+        item.amount = 0;
+      }
+    });
+
+    this.calculate(group);
   }
 
   calculate(group: any, update = true) {
@@ -567,18 +708,18 @@ export class ExpenseSection61Component {
 
           // item
           Month_Name:
-            item.type,
+            item.expenseDetailId || item.type,
 
           Fk_Expense_Detail_Id:
-            item.type == 'other'
+            item.expenseDetailId == 'other'
               ? 0
-              : this.getExpenseDetailId(this.getExpenseDetailByName(this.getTypeName(item.type))) || 0,
+              : item.expenseDetailId || this.getExpenseDetailId(this.getExpenseDetailByName(this.getTypeName(item.type))) || 0,
 
           Expense_Detail:
 
-            item.type == 'other'
+            item.expenseDetailId == 'other'
               ? item.customName
-              : item.type,
+              : this.getExpenseDetailName(item.expenseDetailId || item.type),
 
           Price:
             item.amount,
