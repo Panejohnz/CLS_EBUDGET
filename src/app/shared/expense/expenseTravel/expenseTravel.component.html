@@ -97,6 +97,16 @@
                                 </td>
                             </tr>
                         </tbody>
+
+                        <tfoot>
+                            <tr>
+                                <td colspan="6" class="text-end">รวมทั้งสิ้น</td>
+                                <td class="fw-bold text-end">
+                                    {{ getSectionTotal(section) | number:'1.2-2' }}
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>

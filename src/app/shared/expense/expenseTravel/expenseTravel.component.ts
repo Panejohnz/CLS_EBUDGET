@@ -425,6 +425,12 @@ export class ExpenseTravelComponent {
 
   }
 
+  getSectionTotal(section: any): number {
+    return (section?.details || []).reduce((sum: number, detail: any) => {
+      return sum + (Number(detail?.total) || 0);
+    }, 0);
+  }
+
   normalizeSelectId(value: any): number | null {
     if (value === null || value === undefined || value === '') {
       return null;
