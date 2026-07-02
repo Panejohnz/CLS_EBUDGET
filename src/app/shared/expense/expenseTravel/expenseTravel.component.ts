@@ -431,6 +431,12 @@ export class ExpenseTravelComponent {
     }, 0);
   }
 
+  getGrandTotal(): number {
+    return (this.sections || []).reduce((sum: number, section: any) => {
+      return sum + this.getSectionTotal(section);
+    }, 0);
+  }
+
   normalizeSelectId(value: any): number | null {
     if (value === null || value === undefined || value === '') {
       return null;
@@ -719,6 +725,8 @@ export class ExpenseTravelComponent {
       });
 
     });
+
+    this.model.Total = this.getGrandTotal();
 
   }
 
