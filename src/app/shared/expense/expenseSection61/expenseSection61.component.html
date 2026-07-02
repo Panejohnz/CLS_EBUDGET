@@ -4,44 +4,45 @@
 
                 <div class="expense-table-responsive">
 
-                        <table class="table table-bordered align-middle expense-table text-center bg-white mb-0">
+                        <table class="table table-bordered align-middle expense-table text-center bg-white mb-0"
+                                style="table-layout: fixed;">
 
                                 <!-- HEADER -->
                                 <thead class="text-center text-white expense-table-header">
 
                                         <tr>
 
-                                                <th rowspan="3" style="width:15%">
+                                                <th rowspan="2" style="width:14%">
 
                                                         ขนาด
 
                                                 </th>
 
-                                                <th rowspan="3" style="width:25%">
+                                                <th rowspan="2" style="width:28%">
 
                                                         รายการ
 
                                                 </th>
 
-                                                <th colspan="3">
+                                                <th colspan="3" style="width:24%">
 
                                                         ประมาณการ
 
                                                 </th>
 
-                                                <th rowspan="3">
+                                                <th rowspan="2" style="width:12%">
 
                                                         อัตรา
 
                                                 </th>
 
-                                                <th rowspan="3">
+                                                <th rowspan="2" style="width:11%">
 
                                                         ค่าใช้จ่ายต่อคดี
 
                                                 </th>
 
-                                                <th rowspan="3">
+                                                <th rowspan="2" style="width:11%">
 
                                                         รวมทั้งสิ้น
 
@@ -51,19 +52,19 @@
 
                                         <tr>
 
-                                                <th rowspan="2">
+                                                <th style="width:8%">
 
                                                         คดี
 
                                                 </th>
 
-                                                <th rowspan="2">
+                                                <th style="width:8%">
 
                                                         คน
 
                                                 </th>
 
-                                                <th rowspan="2">
+                                                <th style="width:8%">
 
                                                         วัน
 
@@ -87,7 +88,7 @@
 
                                                 </td>
 
-                                                <td colspan="5"></td>
+                                                <td colspan="4"></td>
 
                                                 <!-- cost per case -->
                                                 <td class="text-end">
@@ -145,17 +146,10 @@
 
                                                                 - ค่าใช้จ่าย
 
-                                                                <button class="btn btn-sm btn-primary ms-2"
-                                                                        (click)="addItem(group)">
-
-                                                                        ➕
-
-                                                                </button>
-
                                                         </div>
 
                                                         <!-- item -->
-                                                        <div *ngFor="let item of group.items" class="d-flex gap-2 mt-1">
+                                                        <div *ngIf="group.items[0] as item" class="d-flex gap-2 mt-1">
 
                                                                 <!-- dropdown -->
                                                                 <select class="form-select form-select-sm"
@@ -170,34 +164,20 @@
                                                                         </option>
 
                                                                         <option *ngFor="let option of getExpenseOptions(group)"
-                                                                                [ngValue]="option.Expense_Detial_Id">
+                                                                                [ngValue]="getExpenseDetailOptionId(option)">
 
                                                                                 {{ option.Expense_Detial_Name }}
-
-                                                                        </option>
-
-                                                                        <option value="other">
-
-                                                                                อื่นๆ
 
                                                                         </option>
 
                                                                 </select>
 
                                                                 <!-- other -->
-                                                                <input *ngIf="item.type === 'other'" type="text"
+                                                                <input *ngIf="isOtherExpenseDetail(item)" type="text"
                                                                         class="form-control form-control-sm"
                                                                         placeholder="ระบุรายการ"
                                                                         [(ngModel)]="item.customName"
                                                                         (ngModelChange)="updateDetailItems()">
-
-                                                                <!-- remove -->
-                                                                <button class="btn btn-danger btn-sm"
-                                                                        (click)="removeItem(group, item)">
-
-                                                                        ✕
-
-                                                                </button>
 
                                                         </div>
 
@@ -233,16 +213,16 @@
                                                 <!-- rate -->
                                                 <td class="text-end">
 
-                                                        <div *ngFor="let item of group.items" class="mt-1">
+                                                        <div *ngIf="group.items[0] as item" class="mt-1">
 
-                                                                <input *ngIf="item.expenseDetailId === 'other'" type="text"
+                                                                <input *ngIf="isOtherExpenseDetail(item)" type="text"
                                                                         mask="separator.2" thousandSeparator=","
                                                                         decimalMarker="." inputmode="decimal"
                                                                         class="form-control form-control-sm text-end"
                                                                         placeholder="ราคา" [(ngModel)]="item.amount"
                                                                         (ngModelChange)="calculate(group)">
 
-                                                                <div *ngIf="item.expenseDetailId !== 'other'"
+                                                                <div *ngIf="!isOtherExpenseDetail(item)"
                                                                         class="form-control form-control-sm text-end bg-light">
 
                                                                         {{
@@ -251,15 +231,6 @@
                                                                         }}
 
                                                                 </div>
-
-                                                        </div>
-
-                                                        <div class="fw-bold mt-1">
-
-                                                                {{
-                                                                getGroupRate(group)
-                                                                | number:'1.2-2'
-                                                                }}
 
                                                         </div>
 
