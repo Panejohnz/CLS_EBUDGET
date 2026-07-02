@@ -274,7 +274,7 @@ export class ExpenseMeetingLitigationComponent {
 
     // รวมเบี้ยประชุม
     row.meetingTotal =
-      people * times * rate;
+      times  * rate;
 
     // ค่าใช้จ่ายต่อคดี
     row.caseCost =
@@ -282,7 +282,7 @@ export class ExpenseMeetingLitigationComponent {
 
     // รวมทั้งสิ้น
     row.total =
-      committee * row.meetingTotal;
+      committee * row.caseCost;
 
     this.calculateGrandTotal();
     this.updateDetailItems();

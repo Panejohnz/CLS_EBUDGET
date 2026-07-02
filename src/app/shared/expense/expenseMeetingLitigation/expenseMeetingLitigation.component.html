@@ -1,62 +1,58 @@
+<div class="expense-table-responsive">
+    <table class="table table-bordered text-center expense-table align-middle mb-0" style="table-layout: fixed;">
+        <thead class="text-center text-white expense-table-header">
+            <tr>
+                <th rowspan="2">รายการ</th>
+                <th rowspan="2">องค์ประชุม</th>
+                <th rowspan="2">คน</th>
+                <th colspan="3">ประมาณการค่าใช้จ่าย</th>
+                <th rowspan="2">ค่าใช้จ่ายต่อคดี</th>
+                <th rowspan="2">รวมทั้งสิ้น</th>
+            </tr>
+            <tr>
+                <th>ครั้ง</th>
+                <th>อัตรา</th>
+                <th>รวม</th>
+            </tr>
+        </thead>
 
-        <div class="expense-table-responsive">
-            <table class="table table-bordered text-center expense-table align-middle mb-0" style="table-layout: fixed;">
-                <thead class="text-center text-white expense-table-header">
-                    <tr>
-                        <th rowspan="2">รายการ</th>
-                        <th colspan="5">ประมาณการค่าใช้จ่าย</th>
-                        <th rowspan="2">ค่าใช้จ่ายต่อคดี</th>
-                        <th rowspan="2">รวมทั้งสิ้น</th>
-                    </tr>
-                    <tr>
-                        <th>องค์ประชุม</th>
-                        <th>คน</th>
-                        <th>ครั้ง</th>
-                        <th>อัตรา</th>
-                        <th>รวม</th>
-                    </tr>
-                </thead>
+        <tbody>
+            <tr *ngFor="let row of meetingList">
+                <td class="text-start fw-semibold">{{ row.name }}</td>
 
-                <tbody>
-                    <tr *ngFor="let row of meetingList">
-                        <td class="text-start fw-semibold">{{ row.name }}</td>
+                <td>
 
-                        <td >
 
-                            
-                            <input type="text" class="form-control text-center" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
-                                min="0"  [(ngModel)]="row.committee" (ngModelChange)="calculate(row)">
-                        </td>
+                    <input type="text" class="form-control text-center" mask="separator.2" thousandSeparator=","
+                        decimalMarker="." inputmode="decimal" min="0" [(ngModel)]="row.committee"
+                        (ngModelChange)="calculate(row)" placeholder="ระบุจำนวนองค์ประชุม">
+                </td>
+                <td>
+                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                        min="0" class="form-control text-center" [(ngModel)]="row.people"
+                        (ngModelChange)="calculate(row)" placeholder="ระบุจำนวนคน">
+                </td>
+                <td>
+                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                        min="0" class="form-control text-center" [(ngModel)]="row.times"
+                        (ngModelChange)="calculate(row)" placeholder="ระบุจำนวนครั้ง">
+                </td>
+                <td>
+                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                        class="form-control text-end" [ngModel]="row.rate" readonly style="background-color: #ebeff3;">
+                </td>
 
-                        <td>
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
-                                min="0" class="form-control text-center" [(ngModel)]="row.people"
-                                (ngModelChange)="calculate(row)">
-                        </td>
+                <td class="fw-bold text-end">{{ row.meetingTotal | number:'1.2-2' }}</td>
+                <td class="fw-bold text-end">{{ row.caseCost | number:'1.2-2' }}</td>
+                <td class="fw-bold text-end">{{ row.total | number:'1.2-2' }}</td>
+            </tr>
+        </tbody>
 
-                        <td>
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
-                                min="0" class="form-control text-center" [(ngModel)]="row.times"
-                                (ngModelChange)="calculate(row)">
-                        </td>
-
-                        <td>
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" 
-                               class="form-control text-end" [ngModel]="row.rate"
-                                readonly style="background-color: #ebeff3;">
-                        </td>
-
-                        <td class="fw-bold text-end">{{ row.meetingTotal | number:'1.2-2' }}</td>
-                        <td class="fw-bold text-end">{{ row.caseCost | number:'1.2-2' }}</td>
-                        <td class="fw-bold text-end">{{ row.total | number:'1.2-2' }}</td>
-                    </tr>
-                </tbody>
-
-                <tfoot>
-                    <tr>
-                        <td colspan="7" class="text-end">รวมทั้งสิ้น</td>
-                        <td class="text-end">{{ grandTotal | number:'1.2-2' }}</td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
+        <tfoot>
+            <tr>
+                <td colspan="7" class="text-end">รวมทั้งสิ้น</td>
+                <td class="text-end">{{ grandTotal | number:'1.2-2' }}</td>
+            </tr>
+        </tfoot>
+    </table>
+</div>

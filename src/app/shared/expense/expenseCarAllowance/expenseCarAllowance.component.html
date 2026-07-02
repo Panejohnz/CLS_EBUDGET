@@ -1,5 +1,4 @@
-<div class="card shadow-sm expense-card">
-    <div class="card-body">
+
         <div class="expense-table-responsive">
             <table class="table table-bordered align-middle text-center expense-table mb-0" style="table-layout: fixed;">
                 <thead class="text-center text-white expense-table-header">
@@ -7,9 +6,9 @@
                         <th style="width:30%">ชื่อ - นามสกุล</th>
                         <th style="width:20%">ตำแหน่ง</th>
                         <th style="width:10%">จำนวน (คัน)</th>
-                        <th style="width:15%">ต่อเดือน</th>
-                        <th style="width:15%">ต่อปี</th>
-                        <th style="width:5%"></th>
+                        <th style="width:15%">ค่าใช้จ่ายต่อเดือน</th>
+                        <th style="width:15%">ค่าใช้จ่ายต่อปี</th>
+                        <th style="width:5%">ลบ</th>
                     </tr>
                 </thead>
 
@@ -17,12 +16,12 @@
                     <tr *ngFor="let item of list; let i = index">
                         <td>
                             <input class="form-control" [(ngModel)]="item.name"
-                                (ngModelChange)="updateDetailItems()" placeholder="ชื่อ - นามสกุล">
+                                (ngModelChange)="updateDetailItems()" placeholder="ระบุชื่อ - นามสกุล">
                         </td>
 
                         <td>
                             <select class="form-select" [(ngModel)]="item.position" (change)="updateDetailItems()">
-                                <option value="">-- ตำแหน่งงาน --</option>
+                                <option value="">-- กรุณาเลือกตำแหน่งงาน --</option>
                                 <option value="เลขาธิการ ป.ป.ท.">เลขาธิการ ป.ป.ท.</option>
                                 <option value="รองเลขาธิการ ป.ป.ท.">รองเลขาธิการ ป.ป.ท.</option>
                                 <option value="ผู้ช่วยเลขาธิการ ป.ป.ท.">ผู้ช่วยเลขาธิการ ป.ป.ท.</option>
@@ -31,21 +30,22 @@
 
                         <td>
                             <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
-                                class="form-control text-center" [(ngModel)]="item.qty"
+                                class="form-control text-center" [(ngModel)]="item.qty"  placeholder="ระบุจำนวนคัน"
                                 (ngModelChange)="calculate(item)">
                         </td>
 
                         <td>
-                            <input type="text" class="form-control text-end" [ngModel]="item.rate | number:'1.0-2'"
-                                (ngModelChange)="onRateChange($event, item)">
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                                class="form-control text-end" [ngModel]="item.rate"
+                                (ngModelChange)="onRateChange($event, item)"  placeholder="ค่าใช้จ่ายต่อเดือน">
                         </td>
 
-                        <td class="fw-bold text-end text-primary">
+                        <td class="fw-bold text-end text-black">
                             {{ item.total | number:'1.2-2' }}
                         </td>
 
                         <td>
-                            <button class="btn btn-sm btn-outline-danger" (click)="remove(item)">
+                            <button class="btn btn-sm btn-danger" (click)="remove(item)">
                                 <i class="bx bx-trash"></i>
                             </button>
                         </td>
@@ -66,12 +66,10 @@
 
         <div class="d-flex justify-content-between mt-3">
             <div>
-                <button class="btn btn-outline-primary" (click)="add()">
-                    <i class="bx bx-plus"></i>
-                    เพิ่มรายการ
+                <button class="btn btn-primary" (click)="add()">
+                    <i class="bx bx-plus text-black"></i>
+                   <span class="text-black"> เพิ่มรายการ</span>
                 </button>
                 <span class="text-danger ms-2">จำนวน {{ list.length }} รายการ</span>
             </div>
         </div>
-    </div>
-</div>

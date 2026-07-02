@@ -1,21 +1,21 @@
 <div class="card shadow-sm expense-card">
     <div class="card-body">
         <div *ngFor="let section of sections; let s = index" class="d-flex mb-3">
-            <div class="text-center fw-bold text-white rounded-start d-flex align-items-center justify-content-center"
+            <!-- <div class="text-center fw-bold text-white rounded-start d-flex align-items-center justify-content-center"
                 style="width:60px; background-color:#556398;">
-                {{ s + 1 }}
-            </div>
+            </div> -->
 
-            <div class="flex-grow-1 border rounded-end p-3">
+            <div class="flex-grow-1 border border-dark  rounded-end p-3">
                 <div class="d-flex gap-2 mb-3">
-                    <input class="form-control" [(ngModel)]="section.description" (ngModelChange)="updateDetailItems()"
+                      <label>{{ s + 1 }}. </label>
+                      <input class="form-control" [(ngModel)]="section.description" (ngModelChange)="updateDetailItems()"
                         placeholder="คำอธิบายรายการ เช่น เดินทางไปประชุม เป็นต้น">
 
-                    <button type="button" class="btn btn-sm btn-outline-primary text-nowrap" (click)="addDetail(section)">
-                        + เพิ่มรายละเอียด
+                    <button type="button" class="btn btn-sm btn-primary text-nowrap" (click)="addDetail(section)">
+                        <i class="bx bx-plus text-black"></i><span class="text-black"> เพิ่มค่าใช้จ่าย</span>
                     </button>
 
-                    <button type="button" class="btn btn-sm btn-outline-danger" (click)="remove(s)">
+                    <button type="button" class="btn btn-sm btn-danger" (click)="remove(s)">
                         <i class="bx bx-trash"></i>
                     </button>
                 </div>
@@ -25,18 +25,17 @@
                         style="table-layout: fixed;">
                         <thead class="text-center text-white expense-table-header">
                             <tr>
-                                <th style="width:220px" class="text-start">
-                                    {{ s + 1 }}.1
-                                    <br>
+                                <th style="width:220px">
+
                                     ระดับ
                                 </th>
-                                <th style="width:260px">รายการ</th>
+                                <th style="width:260px">รายการค่าใช้จ่าย</th>
                                 <th style="width:110px">ครั้ง</th>
                                 <th style="width:130px">จำนวนคน</th>
                                 <th style="width:180px">จำนวนวัน/คืน/เที่ยว</th>
                                 <th style="width:160px">อัตรา/วัน (บาท)</th>
                                 <th style="width:170px">รวมทั้งสิ้น (บาท)</th>
-                                <th style="width:60px"></th>
+                                <th style="width:60px">ลบ</th>
                             </tr>
                         </thead>
 
@@ -55,43 +54,43 @@
                                         [items]="detail.expenseDetails || []"
                                         bindLabel="Expense_Detial_Name" bindValue="Expense_Detial_Id"
                                         [(ngModel)]="detail.pairId" name="travel_expense_detail_{{s}}_{{i}}"
-                                        placeholder="-- เลือกรายการ --" [clearable]="false"
+                                        placeholder="-- เลือกรายการค่าใช้จ่าย --" [clearable]="false"
                                         [disabled]="!detail.level" (change)="onExpenseDetailChange(detail)">
                                     </ng-select>
                                 </td>
 
                                 <td>
                                     <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
-                                        inputmode="decimal" class="form-control text-center" [(ngModel)]="detail.times"
+                                        inputmode="decimal" class="form-control text-center" [(ngModel)]="detail.times" placeholder="ระบุจำนวนครั้ง"
                                         (ngModelChange)="updateDetailItems()">
                                 </td>
 
                                 <td>
-                                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." placeholder="ระบุจำนวนคน"
                                         inputmode="decimal" class="form-control text-center"
                                         [(ngModel)]="detail.peopleCount" (ngModelChange)="calculate(detail)">
                                 </td>
 
                                 <td>
-                                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." placeholder="ระบุจำนวนวัน/คืน/เที่ยว"
                                         inputmode="decimal" class="form-control text-center"
                                         [(ngModel)]="detail.dayCount" (ngModelChange)="calculate(detail)">
                                 </td>
 
                                 <td>
-                                    <input type="text" class="form-control text-end" mask="separator.2"
+                                    <input type="text" class="form-control text-end" mask="separator.2" placeholder="ระบุอัตรา"
                                         thousandSeparator="," decimalMarker="." inputmode="decimal"
                                         [readonly]="!detail.isOtherRate"
                                         [class.bg-light]="!detail.isOtherRate"
                                         [(ngModel)]="detail.rate" (ngModelChange)="calculate(detail)">
                                 </td>
 
-                                <td class="fw-bold text-end text-primary">
+                                <td class="fw-bold text-end">
                                     {{ detail.total | number:'1.2-2' }}
                                 </td>
 
                                 <td>
-                                    <button type="button" class="btn btn-sm btn-outline-danger"
+                                    <button type="button" class="btn btn-sm btn-danger"
                                         (click)="removeDetail(section, i)">
                                         <i class="bx bx-trash"></i>
                                     </button>
@@ -103,8 +102,8 @@
             </div>
         </div>
 
-        <button type="button" class="btn btn-outline-primary btn-sm" (click)="addSection()">
-            + เพิ่มรายการ
+        <button type="button" class="btn btn-primary" (click)="addSection()">
+                     <i class="bx bx-plus text-black"></i><span class="text-black"> เพิ่มรายการ</span>
         </button>
     </div>
 </div>
