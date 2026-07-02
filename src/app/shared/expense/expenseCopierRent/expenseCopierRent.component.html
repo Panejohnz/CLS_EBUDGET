@@ -48,12 +48,12 @@
                                 (ngModelChange)="onPriceChange($event, item, i)" placeholder="ระบุอัตรา(บาท)">
                         </td>
 
-                        <td class="fw-bold text-end text-primary">
+                        <td class="fw-bold text-end">
                             {{ item.total | number:'1.2-2' }}
                         </td>
 
                         <td>
-                            <button class="btn btn-sm btn-outline-danger" (click)="removeItem(i)">
+                            <button class="btn btn-sm btn-danger" (click)="removeItem(i)">
                                 <i class="bx bx-trash"></i>
                             </button>
                         </td>
@@ -73,8 +73,8 @@
         <div class="d-flex justify-content-between mt-3">
             <div>
                 <button class="btn btn-primary" (click)="addItem()">
-                    <i class="bx bx-plus"></i>
-                    เพิ่มรายการ
+                    <i class="bx bx-plus text-black"></i>
+                     <span class="text-black">เพิ่มรายการ</span> 
                 </button>
                 <span class="text-danger ms-2">จำนวน {{ items.length }} รายการ</span>
             </div>

@@ -1,14 +1,9 @@
-<div class="card shadow-sm">
 
-    <!-- body -->
-    <div class="card-body bg-light">
+      <div class="expense-table-responsive">
 
-        <div class="expense-table-responsive">
+        <table class="table table-bordered align-middle expense-table text-center mb-0">
 
-            <table class="table table-bordered align-middle expense-table text-center bg-white mb-0">
-
-                <!-- header -->
-                <thead class="text-center text-white expense-table-header">
+          <thead class="text-center text-white expense-table-header">
 
                     <tr>
 
@@ -38,7 +33,7 @@
                             รวมทั้งสิ้น
                         </th>
 
-                        <th width="3%"></th>
+                        <th width="3%">ลบ</th>
 
                     </tr>
 
@@ -59,7 +54,7 @@
                         <!-- name -->
                         <td>
 
-                            <input class="form-control form-control-sm" [(ngModel)]="item.name"
+                            <input class="form-control" [(ngModel)]="item.name"
                                 (ngModelChange)="updateDetailItems()" placeholder="ระบุรายการ">
 
                         </td>
@@ -70,7 +65,7 @@
 
                             <!-- <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-center" [(ngModel)]="item.qty"
                                 (ngModelChange)="calculate(i)"> -->
-                            <input type="text" class="form-control form-control-sm text-center"
+                            <input type="text" class="form-control text-center"   placeholder="ระบุจำนวน"
                                 [value]="displayInputNumber(item.qty)"
                                 (input)="formatInput($event, item, 'qty'); calculate(i)" inputmode="decimal">
 
@@ -106,8 +101,8 @@
 
                             <!-- <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-center" [(ngModel)]="item.month"
                                 (ngModelChange)="calculate(i)"> -->
-                            <input type="text" class="form-control form-control-sm text-center"
-                                [value]="displayInputNumber(item.month)"
+                            <input type="text" class="form-control text-center"
+                                [value]="displayInputNumber(item.month)" placeholder="ระบุจำนวนเดือน"
                                 (input)="formatInput($event, item, 'month'); calculate(i)" inputmode="decimal">
 
                         </td>
@@ -117,7 +112,7 @@
 
                             <!-- <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.price"
                                 (ngModelChange)="calculate(i)"> -->
-                            <input type="text" class="form-control form-control-sm text-end pe-3"
+                            <input type="text" class="form-control text-end pe-3" placeholder="ระบุอัตรา (บาท)"
                                 [value]="displayInputNumber(item.price)"
                                 (input)="formatInput($event, item, 'price'); calculate(i)" inputmode="decimal">
 
@@ -138,7 +133,7 @@
 
                             <button class="btn btn-danger btn-sm" (click)="removeItem(i)">
 
-                                🗑
+                               <i class="bx bx-trash"></i>
 
                             </button>
 
@@ -149,7 +144,7 @@
                 </tbody>
 
                 <!-- footer -->
-                <tfoot class="table-light fw-bold">
+                <tfoot class="table fw-bold expense-table-header">
 
                     <tr>
 
@@ -181,9 +176,10 @@
         <!-- footer action -->
         <div class="mt-3 d-flex justify-content-between align-items-center">
 
-            <button class="btn btn-primary btn-sm" (click)="addItem()">
+            <button class="btn btn-primary" (click)="addItem()">
 
-                + เพิ่มรายการ
+              <i class="bx bx-plus text-black"></i>
+                   <span class="text-black"> เพิ่มรายการ</span>
 
             </button>
 
@@ -195,6 +191,3 @@
 
         </div>
 
-    </div>
-
-</div>
