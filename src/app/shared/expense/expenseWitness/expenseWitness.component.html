@@ -126,9 +126,18 @@
 
                     <tr class="fw-bold">
 
-                        <td colspan="5" class="text-end">
+                        <td colspan="4" class="text-end">
 
                             รวมทั้งสิ้น
+
+                        </td>
+
+                        <td class="text-end">
+
+                            {{
+                            getCost(list[0])
+                            | number:'1.2-2'
+                            }}
 
                         </td>
 

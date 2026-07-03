@@ -38,6 +38,8 @@ export class ExpenseWitnessComponent {
 
       level: 1,
 
+      size: 'S',
+
       case: 0,
 
       person: 0,
@@ -52,6 +54,8 @@ export class ExpenseWitnessComponent {
 
       level: 1,
 
+      size: 'M',
+
       case: 0,
 
       person: 0,
@@ -65,6 +69,8 @@ export class ExpenseWitnessComponent {
       name: 'ขนาดคดี L',
 
       level: 1,
+
+      size: 'L',
 
       case: 0,
 
@@ -130,29 +136,28 @@ export class ExpenseWitnessComponent {
   }
 
   loadExpenseRates() {
-    const expenseIds = [
-      this.model.selectedExpenseTypeId,
-      ...this.Mas_Expense_Detial_List.map((detail: any) =>
+    const expenseDetailIds = this.Mas_Expense_Detial_List
+      .map((detail: any) =>
         this.getExpenseDetailId(detail)
       )
-    ].filter((id: any, index: number, list: any[]) =>
-      id !== null &&
-      id !== undefined &&
-      id !== '' &&
-      list.findIndex((item: any) => this.isSameId(item, id)) === index
-    );
+      .filter((id: any, index: number, list: any[]) =>
+        id !== null &&
+        id !== undefined &&
+        id !== '' &&
+        list.findIndex((item: any) => this.isSameId(item, id)) === index
+      );
 
-    if (expenseIds.length == 0) {
+    if (expenseDetailIds.length == 0) {
       this.Mas_Expense_Detial_Rate_List = [];
       this.bindData();
       this.applyMasterRates();
       return;
     }
 
-    const requests = expenseIds.map((expenseId: any) =>
+    const requests = expenseDetailIds.map((expenseDetailId: any) =>
       this.serviceebud.GatewayGetData({
-        FUNC_CODE: "FUNC-Get_Mas_Expense_Rate",
-        Fk_Expense_Id: expenseId
+        FUNC_CODE: "FUNC-Get_Mas_Mas_Expense_Rate",
+        Fk_Expense_Id: expenseDetailId
       }).pipe(
         catchError(() => of({ List_Mas_Expense_Rate: [] }))
       )
@@ -162,12 +167,7 @@ export class ExpenseWitnessComponent {
       .subscribe((responses: any[]) => {
         this.Mas_Expense_Detial_Rate_List =
           responses.reduce((list: any[], response: any) => {
-            const expenseRateList =
-              response?.List_Mas_Expense_Rate;
-
-            return Array.isArray(expenseRateList)
-              ? list.concat(expenseRateList)
-              : list;
+            return list.concat(this.getExpenseRateList(response));
           }, []);
 
         this.bindData();
@@ -225,6 +225,43 @@ export class ExpenseWitnessComponent {
     ].filter(Boolean).join(' '));
   }
 
+  private getExpenseRateList(response: any): any[] {
+    if (Array.isArray(response?.List_Mas_Expense_Rate)) {
+      return response.List_Mas_Expense_Rate;
+    }
+
+    if (response?.Mas_Expense_Rate) {
+      return [response.Mas_Expense_Rate];
+    }
+
+    return [];
+  }
+
+  private getCaseSizeLetter(value: any): string {
+    if (typeof value === 'object' && value?.size) {
+      const size = value.size.toString().trim().toUpperCase();
+
+      return ['S', 'M', 'L'].includes(size) ? size : '';
+    }
+
+    const text = [
+      value?.Child_Detial_Name,
+      value?.Child_Detail_Name,
+      value?.Expense_Detail,
+      value?.Expense_Detial_Name,
+      value?.Expense_Name,
+      value?.Expense_Detial_Short_Name,
+      value?.Rate_Name,
+      value?.Type_Name,
+      value?.Code,
+      typeof value === 'string' ? value : ''
+    ].filter(Boolean).join(' ');
+
+    const match = text.match(/(?:ขนาดคดี|ขนาด)?\s*\b([SML])\b/i);
+
+    return match?.[1]?.toUpperCase() || '';
+  }
+
   private getExpenseDetailByName(name: any): any {
     const text = this.normalizeText(name);
 
@@ -249,14 +286,27 @@ export class ExpenseWitnessComponent {
     });
   }
 
-  private getRateForExpenseDetail(name: any): number {
-    const detail = this.getExpenseDetailByName(name);
-    const detailId = this.getExpenseDetailId(detail);
-    const detailRate = this.getRowRate(detail);
+  private getExpenseDetailBySize(size: any): any {
+    const sizeLetter = this.getCaseSizeLetter(size);
 
-    if (detailRate > 0) {
-      return detailRate;
+    if (!sizeLetter) {
+      return null;
     }
+
+    return this.Mas_Expense_Detial_List.find((detail: any) =>
+      this.getCaseSizeLetter(detail) === sizeLetter
+    );
+  }
+
+  private getRateForExpenseDetail(itemOrName: any): number {
+    const name = typeof itemOrName === 'object'
+      ? itemOrName?.name
+      : itemOrName;
+    const sizeLetter = this.getCaseSizeLetter(itemOrName);
+    const detail =
+      this.getExpenseDetailBySize(sizeLetter) ||
+      this.getExpenseDetailByName(name);
+    const detailId = this.getExpenseDetailId(detail);
 
     const byId = this.Mas_Expense_Detial_Rate_List.find((row: any) =>
       this.isSameId(this.getExpenseDetailId(row), detailId)
@@ -266,11 +316,20 @@ export class ExpenseWitnessComponent {
       return this.getRowRate(byId);
     }
 
+    const bySize = this.Mas_Expense_Detial_Rate_List.find((row: any) =>
+      sizeLetter && this.getCaseSizeLetter(row) === sizeLetter
+    );
+
+    if (bySize) {
+      return this.getRowRate(bySize);
+    }
+
     const text = this.normalizeText(name);
     const byName = this.Mas_Expense_Detial_Rate_List.find((row: any) => {
       const rateText = this.getRateRowText(row);
 
       return rateText &&
+        text &&
         (
           rateText.includes(text) ||
           text.includes(rateText)
@@ -285,14 +344,20 @@ export class ExpenseWitnessComponent {
       this.isSameId(this.getExpenseDetailId(item), detailId)
     );
 
-    return this.getRowRate(this.Mas_Expense_Detial_Rate_List[detailIndex]);
+    const byIndex = this.getRowRate(this.Mas_Expense_Detial_Rate_List[detailIndex]);
+
+    if (byIndex > 0) {
+      return byIndex;
+    }
+
+    return this.getRowRate(detail);
   }
 
   private applyMasterRates() {
     this.list.forEach((item: any) => {
       if (item.level != 1) return;
 
-      const rate = this.getRateForExpenseDetail(item.name);
+      const rate = this.getRateForExpenseDetail(item);
 
       if (rate > 0) {
         item.rate = rate;
@@ -323,13 +388,12 @@ export class ExpenseWitnessComponent {
 
       if (item.level != 1) return;
 
-      const found = rows.find(
+      const detail = this.getExpenseDetailBySize(item.size) || this.getExpenseDetailByName(item.name);
 
-        (x: any) =>
-
-          x.Expense_Detail ==
-          item.name
-
+      const found = rows.find((x: any) =>
+        x.Expense_Detail == item.name ||
+        this.getCaseSizeLetter(x) == item.size ||
+        this.isSameId(x.Fk_Expense_Detail_Id, this.getExpenseDetailId(detail))
       );
 
       if (found) {
@@ -346,7 +410,7 @@ export class ExpenseWitnessComponent {
         item.rate =
           this.toNumber(found.Rate) ||
           this.toNumber(found.Expense_Rate) ||
-          this.getRateForExpenseDetail(item.name);
+          this.getRateForExpenseDetail(item);
 
       }
 
@@ -467,7 +531,7 @@ export class ExpenseWitnessComponent {
           item.name,
 
         Fk_Expense_Detail_Id:
-          this.getExpenseDetailId(this.getExpenseDetailByName(item.name)) || 0,
+          this.getExpenseDetailId(this.getExpenseDetailBySize(item.size) || this.getExpenseDetailByName(item.name)) || 0,
 
         Day:
           item.case,

@@ -3,6 +3,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { catchError, forkJoin, of } from 'rxjs';
 import { EbudgetService } from 'src/app/core/services/ebudget.service'
 
+declare const confirmAlert: any;
+
 @Component({
   selector: 'app-expense-section61',
   templateUrl: './expenseSection61.component.html',
@@ -92,8 +94,6 @@ export class ExpenseSection61Component {
   }
 
   loadExpenseDetails() {
-    console.log(this.model);
-    
     this.currentExpenseTypeId = this.model.selectedExpenseTypeId;
     this.masterLoaded = false;
     this.detailItemsSignature = '';
@@ -362,26 +362,29 @@ export class ExpenseSection61Component {
       row?.Purpose
     ].find((value: any) => value !== null && value !== undefined && value !== '');
 
-    const text = (explicitSize ?? [
+    if (explicitSize) {
+      return explicitSize.toString().trim();
+    }
+
+    const text = [
       row?.Expense_Detial_Name,
       row?.Expense_Detail,
       row?.Expense_Name,
       row?.Expense_Detial_Short_Name,
       row?.Rate_Name,
       row?.Code
-    ].filter(Boolean).join(' ')).toString();
+    ].filter(Boolean).join(' ').toString();
 
     const sizeLetter = text.match(/[SML]/i)?.[0]?.toUpperCase();
 
     return sizeLetter
       ? this.getCaseSizeLabel(sizeLetter)
-      : this.normalizeCaseSize(text);
+      : '';
   }
 
   getCaseSizeOptions(): any[] {
     const options = [
-      ...this.Mas_Expense_Detial_List,
-      ...this.Mas_Expense_Detial_Rate_List
+      ...this.Mas_Expense_Detial_List
     ].map((row: any) => this.getNormalizedCaseSizeFromRow(row))
       .filter((value: string) => !!value);
 
@@ -408,15 +411,21 @@ export class ExpenseSection61Component {
       return [];
     }
 
+    const hasGroupedDetails = this.Mas_Expense_Detial_List.some((detail: any) =>
+      !!this.getNormalizedCaseSizeFromRow(detail)
+    );
+
     const filtered = this.Mas_Expense_Detial_List.filter((detail: any) => {
       const detailSize = this.getNormalizedCaseSizeFromRow(detail);
 
-      return detailSize === groupSize;
+      return this.normalizeText(detailSize) === this.normalizeText(groupSize);
     });
 
     return filtered.length
       ? filtered
-      : this.Mas_Expense_Detial_List;
+      : hasGroupedDetails
+        ? []
+        : this.Mas_Expense_Detial_List;
   }
 
   getExpenseDetailOptionId(option: any): number | '' {
@@ -496,7 +505,7 @@ export class ExpenseSection61Component {
 
       person: 0,
 
-      day: 1,
+      day: 0,
 
       items: [
         this.newItem()
@@ -674,15 +683,53 @@ export class ExpenseSection61Component {
     this.calculate(this.caseList[this.caseList.length - 1]);
   }
 
+  async removeGroup(index: number) {
+    const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
+
+    if (!userConfirmed) {
+      return;
+    }
+
+    const group = this.caseList[index];
+
+    (group?.items || []).forEach((item: any) => {
+      if (item?.requestItemId) {
+        this.serviceebud.DeleteBudgetRequestDetailItem(item.requestItemId).subscribe();
+      }
+    });
+
+    this.caseList.splice(index, 1);
+
+    if (this.caseList.length == 0) {
+      this.caseList.push(this.createGroup(''));
+    }
+
+    this.recalculateAllGroups();
+    this.updateDetailItems();
+  }
+
+  private recalculateAllGroups() {
+    if (this.caseList.length == 0) {
+      this.main.costPerCase = 0;
+      this.main.total = 0;
+      return;
+    }
+
+    this.caseList.forEach((group: any) => {
+      this.calculate(group, false);
+    });
+  }
+
   onTypeChange(item: any, group: any) {
 
     item.expenseDetailId = this.normalizeId(item.expenseDetailId);
     item.type = item.expenseDetailId;
-    item.customName = this.getExpenseDetailName(item.expenseDetailId);
 
     if (this.isOtherExpenseDetail(item)) {
+      item.customName = '';
       item.amount = 0;
     } else {
+      item.customName = this.getExpenseDetailName(item.expenseDetailId);
       item.amount = this.getRateForExpenseDetail(item.expenseDetailId);
     }
 
@@ -791,6 +838,21 @@ export class ExpenseSection61Component {
 
       group.items.forEach((item: any) => {
 
+        const isBlankRow =
+          !item?.requestItemId &&
+          !group?.name &&
+          !item?.expenseDetailId &&
+          !item?.type &&
+          !item?.customName &&
+          this.toNumber(group?.case) == 0 &&
+          this.toNumber(group?.person) == 0 &&
+          this.toNumber(group?.day) == 0 &&
+          this.toNumber(item?.amount) == 0;
+
+        if (isBlankRow) {
+          return;
+        }
+
         this.model.Budget_Request_Detail_Item.push({
 
           Request_Item_Id:
@@ -822,7 +884,7 @@ export class ExpenseSection61Component {
           Expense_Detail:
 
             this.isOtherExpenseDetail(item)
-              ? item.customName || this.getExpenseDetailName(item.expenseDetailId || item.type)
+              ? item.customName || ''
               : this.getExpenseDetailName(item.expenseDetailId || item.type),
 
           Price:

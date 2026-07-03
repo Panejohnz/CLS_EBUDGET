@@ -43,6 +43,8 @@
 
                                                 </th>
 
+                                                <th rowspan="2" style="width:5%"></th>
+
                                         </tr>
 
                                         <tr>
@@ -106,7 +108,7 @@
                                         </tr> -->
 
                                         <!-- LOOP -->
-                                        <tr *ngFor="let group of caseList">
+                                        <tr *ngFor="let group of caseList; let i = index">
 
                                                 <!-- size -->
                                                 <td>
@@ -245,6 +247,17 @@
 
                                                 </td>
 
+                                                <td>
+
+                                                        <button type="button" class="btn btn-danger btn-sm"
+                                                                (click)="removeGroup(i)">
+
+                                                                <i class="bx bx-trash"></i>
+
+                                                        </button>
+
+                                                </td>
+
                                         </tr>
 
                                 </tbody>
@@ -268,6 +281,8 @@
                                                         }}
 
                                                 </td>
+
+                                                <td></td>
 
                                         </tr>
 
