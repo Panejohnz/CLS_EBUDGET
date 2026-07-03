@@ -99,7 +99,7 @@
 
                             </ng-select>
 
-                            <input *ngIf="isOtherCar(item)" type="text" class="form-control form-control-sm mt-2"
+                            <input *ngIf="isOtherCar(item)" type="text" class="form-control  mt-2"
                                 [class.is-invalid]="!item.otherCarName"
                                 name="car_rental_other_{{tab}}_{{i}}" [(ngModel)]="item.otherCarName"
                                 (ngModelChange)="onOtherCarNameChange()" placeholder="ระบุประเภทรถ" required>
@@ -111,7 +111,7 @@
                         </td>
 
                         <!-- qty -->
-                        <td>
+                        <td  class="align-top">
 
                             <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."  placeholder="ระบุจำนวนคัน"
                                 inputmode="decimal" class="form-control  text-center" [(ngModel)]="item.qty"
@@ -120,7 +120,7 @@
                         </td>
 
                         <!-- month -->
-                        <td>
+                        <td  class="align-top">
 
                             <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." placeholder="ระบุจำนวนเดือน"
                                 inputmode="decimal" class="form-control text-center" 
@@ -130,7 +130,7 @@
 
                         
                         <!-- price -->
-                        <td>
+                        <td  class="align-top">
 
                             <input type="text" class="form-control text-end"
                                 [class.bg-light]="!isOtherCar(item)"
@@ -142,7 +142,7 @@
 
 
                         <!-- total -->
-                        <td class="text-end fw-bold text-black">
+                        <td class="text-end fw-bold text-black align-top">
 
                             {{
                             item.total
@@ -152,7 +152,7 @@
                         </td>
 
                         <!-- remove -->
-                        <td>
+                        <td  class="align-top">
 
                             <button class="btn btn-danger btn-sm" (click)="removeItem(i)">
 

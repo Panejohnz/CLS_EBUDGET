@@ -89,7 +89,7 @@
                         </td>
 
                         <!-- qty -->
-                        <td>
+                        <td class="align-top">
 
                             <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." placeholder="ระบุจำนวน"
                                 inputmode="decimal" class="form-control text-center" [(ngModel)]="item.qty"
@@ -98,7 +98,7 @@
                         </td>
 
                         <!-- unit -->
-                        <td>
+                        <td class="align-top">
 
                             <ng-select appendTo="body" dropdownPosition="auto" [items]="Mas_Unit_Lists"
                                 bindLabel="Unit_Name" bindValue="Unit_Id" [(ngModel)]="item.unitId"
@@ -109,7 +109,7 @@
                         </td>
 
                         <!-- price -->
-                        <td>
+                        <td class="align-top">
 
                             <input [readonly]="!isTextMode && !isOtherDetail(item)" type="text" mask="separator.2" thousandSeparator="," placeholder="ระบุราคา/หน่วย"
                                 decimalMarker="." inputmode="decimal" class="form-control text-end"
@@ -118,7 +118,7 @@
                         </td>
 
                         <!-- total -->
-                        <td class="text-end fw-bold">
+                        <td class="text-end fw-bold align-top">
 
                             {{
                             item.total
@@ -128,7 +128,7 @@
                         </td>
 
                         <!-- remark -->
-                        <td>
+                        <td class="align-top">
 
                             <input class="form-control" [(ngModel)]="item.remark" placeholder="ระบุหมายเหตุ"
                                 (ngModelChange)="updateDetailItems()">
@@ -136,7 +136,7 @@
                         </td>
 
                         <!-- remove -->
-                        <td>
+                        <td class="align-top">
 
                             <button class="btn btn-danger btn-sm" (click)="removeItem(i)">
 

@@ -43,7 +43,7 @@
 
                                                 </th>
 
-                                                <th rowspan="2" style="width:5%"></th>
+                                                <th rowspan="2" style="width:5%">ลบ</th>
 
                                         </tr>
 
@@ -174,7 +174,7 @@
                                                 <!-- case -->
                                                 <td>
 
-                                                        <input type="text" mask="separator.2" thousandSeparator=","
+                                                        <input type="text" mask="separator.2" thousandSeparator="," placeholder="ระบุจำนวนคดี"
                                                                 decimalMarker="." inputmode="decimal"
                                                                 class="form-control text-center" [(ngModel)]="group.case"
                                                                 (ngModelChange)="calculate(group)">
@@ -184,7 +184,7 @@
                                                 <!-- people -->
                                                 <td>
 
-                                                        <input type="text" mask="separator.2" thousandSeparator=","
+                                                        <input type="text" mask="separator.2" thousandSeparator="," placeholder="ระบุจำนวนคน"
                                                                 decimalMarker="." inputmode="decimal"
                                                                 class="form-control text-center" [(ngModel)]="group.person"
                                                                 (ngModelChange)="calculate(group)">
@@ -194,7 +194,7 @@
                                                 <!-- day -->
                                                 <td>
 
-                                                        <input type="text" mask="separator.2" thousandSeparator=","
+                                                        <input type="text" mask="separator.2" thousandSeparator="," placeholder="ระบุจำนวนวัน"
                                                                 decimalMarker="." inputmode="decimal"
                                                                 class="form-control text-center" [(ngModel)]="group.day"
                                                                 (ngModelChange)="calculate(group)">
@@ -206,11 +206,11 @@
 
                                                         <div *ngIf="group.items[0] as item" class="mt-1">
 
-                                                                <input *ngIf="isOtherExpenseDetail(item)" type="text"
+                                                                <input *ngIf="isOtherExpenseDetail(item)" type="text" placeholder="ระบุอัตรา" mask="separator.2" thousandSeparator=","
                                                                         mask="separator.2" thousandSeparator=","
                                                                         decimalMarker="." inputmode="decimal"
                                                                         class="form-control  text-end"
-                                                                        placeholder="ราคา" [(ngModel)]="item.amount"
+                                                                       [(ngModel)]="item.amount"
                                                                         (ngModelChange)="calculate(group)">
 
                                                                 <div *ngIf="!isOtherExpenseDetail(item)"
