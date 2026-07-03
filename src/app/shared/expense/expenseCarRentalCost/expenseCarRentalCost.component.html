@@ -99,6 +99,15 @@
 
                             </ng-select>
 
+                            <input *ngIf="isOtherCar(item)" type="text" class="form-control form-control-sm mt-2"
+                                [class.is-invalid]="!item.otherCarName"
+                                name="car_rental_other_{{tab}}_{{i}}" [(ngModel)]="item.otherCarName"
+                                (ngModelChange)="onOtherCarNameChange()" placeholder="ระบุประเภทรถ" required>
+
+                            <div *ngIf="isOtherCar(item) && !item.otherCarName" class="invalid-feedback d-block text-start">
+                                กรุณาระบุประเภทรถ
+                            </div>
+
                         </td>
 
                         <!-- qty -->
@@ -123,9 +132,11 @@
                         <!-- price -->
                         <td>
 
-                            <input type="text" class="form-control text-end" mask="separator.2" placeholder="ระบุค่าเช่า/เดือน"
+                            <input type="text" class="form-control text-end"
+                                [class.bg-light]="!isOtherCar(item)"
+                                mask="separator.2" placeholder="ระบุค่าเช่า/เดือน"
                                 thousandSeparator="," decimalMarker="." inputmode="decimal" [(ngModel)]="item.price"
-                                (ngModelChange)="calculate(i)">
+                                [disabled]="!isOtherCar(item)" (ngModelChange)="calculate(i)">
 
                         </td>
 

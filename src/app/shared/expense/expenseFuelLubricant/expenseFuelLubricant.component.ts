@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { catchError, forkJoin, of } from 'rxjs';
 import { EbudgetService } from 'src/app/core/services/ebudget.service';
 
 @Component({
@@ -18,6 +19,7 @@ export class ExpenseFuelLubricantComponent {
 
   list: any[] = [];
   Mas_Expense_Detial_List: any[] = [];
+  Mas_Expense_Detial_Rate_List: any[] = [];
   private currentExpenseTypeId: any = null;
 
   ngOnInit() {
@@ -61,10 +63,60 @@ export class ExpenseFuelLubricantComponent {
             ? expenseDetailList
             : [];
 
-        this.bindData();
+        this.loadExpenseRates();
       }, () => {
         this.Mas_Expense_Detial_List = [];
+        this.loadExpenseRates();
+      });
+  }
+
+  loadExpenseRates() {
+    const expenseIds = [
+      this.model.selectedExpenseTypeId,
+      ...this.Mas_Expense_Detial_List.map((detail: any) =>
+        this.getExpenseDetailId(detail)
+      )
+    ].filter((id: any, index: number, list: any[]) =>
+      id !== null &&
+      id !== undefined &&
+      id !== '' &&
+      list.findIndex((item: any) => this.isSameId(item, id)) === index
+    );
+
+    if (expenseIds.length == 0) {
+      this.Mas_Expense_Detial_Rate_List = [];
+      this.bindData();
+      this.applyRatesToExistingRows();
+      return;
+    }
+
+    const requests = expenseIds.map((expenseId: any) =>
+      this.serviceebud.GatewayGetData({
+        FUNC_CODE: "FUNC-Get_Mas_Expense_Rate",
+        Fk_Expense_Id: expenseId
+      }).pipe(
+        catchError(() => of({ List_Mas_Expense_Rate: [] }))
+      )
+    );
+
+    forkJoin(requests)
+      .subscribe((responses: any[]) => {
+        this.Mas_Expense_Detial_Rate_List =
+          responses.reduce((list: any[], response: any) => {
+            const expenseRateList =
+              response?.List_Mas_Expense_Rate;
+
+            return Array.isArray(expenseRateList)
+              ? list.concat(expenseRateList)
+              : list;
+          }, []);
+
         this.bindData();
+        this.applyRatesToExistingRows();
+      }, () => {
+        this.Mas_Expense_Detial_Rate_List = [];
+        this.bindData();
+        this.applyRatesToExistingRows();
       });
   }
 
@@ -79,6 +131,48 @@ export class ExpenseFuelLubricantComponent {
 
   private normalizeText(value: any): string {
     return (value ?? '').toString().trim().toLowerCase().replace(/\s+/g, '');
+  }
+
+  private toNumber(value: any): number {
+    return Number(value?.toString().replace(/,/g, '')) || 0;
+  }
+
+  private isSameId(a: any, b: any): boolean {
+    return a !== null &&
+      a !== undefined &&
+      b !== null &&
+      b !== undefined &&
+      Number(a) === Number(b);
+  }
+
+  private getExpenseDetailId(row: any): any {
+    return row?.Expense_Detial_Id ??
+      row?.Expense_Detail_Id ??
+      row?.Fk_Expense_Detial_Id ??
+      row?.Fk_Expense_Detail_Id;
+  }
+
+  private getRowRate(row: any): number {
+    return this.toNumber(
+      row?.Request_Rate ??
+      row?.Expense_Rate ??
+      row?.Rate ??
+      row?.Price ??
+      row?.Total
+    );
+  }
+
+  private getRateRowText(row: any): string {
+    return this.normalizeText([
+      row?.Expense_Detail,
+      row?.Expense_Name,
+      row?.Expense_Short_Name,
+      row?.Expense_Detial_Name,
+      row?.Expense_Detial_Short_Name,
+      row?.Rate_Name,
+      row?.Type_Name,
+      row?.Code
+    ].filter(Boolean).join(' '));
   }
 
   private resolveExpenseDetailId(row: any): number | null {
@@ -110,9 +204,108 @@ export class ExpenseFuelLubricantComponent {
     );
   }
 
+  getExpenseDetailRate(detail: any): number {
+    const detailId = this.getExpenseDetailId(detail);
+    const detailRate = this.getRowRate(detail);
+
+    if (detailRate > 0) {
+      return detailRate;
+    }
+
+    const byId = this.Mas_Expense_Detial_Rate_List.find((row: any) =>
+      this.isSameId(this.getExpenseDetailId(row), detailId)
+    );
+
+    if (byId) {
+      return this.getRowRate(byId);
+    }
+
+    const detailText = this.normalizeText([
+      detail?.Expense_Detial_Name,
+      detail?.Expense_Detail,
+      detail?.Expense_Name,
+      detail?.Expense_Detial_Short_Name
+    ].filter(Boolean).join(' '));
+
+    const byName = this.Mas_Expense_Detial_Rate_List.find((row: any) => {
+      const rateText = this.getRateRowText(row);
+
+      return rateText &&
+        detailText &&
+        (
+          rateText.includes(detailText) ||
+          detailText.includes(rateText)
+        );
+    });
+
+    if (byName) {
+      return this.getRowRate(byName);
+    }
+
+    const detailIndex = this.Mas_Expense_Detial_List.findIndex((item: any) =>
+      this.isSameId(this.getExpenseDetailId(item), detailId)
+    );
+
+    return this.getRowRate(this.Mas_Expense_Detial_Rate_List[detailIndex]);
+  }
+
+  private isOtherExpenseDetail(detail: any): boolean {
+    const detailText = this.normalizeText([
+      detail?.Expense_Detial_Name,
+      detail?.Expense_Detail,
+      detail?.Expense_Name,
+      detail?.Expense_Detial_Short_Name
+    ].filter(Boolean).join(' '));
+
+    return detailText.includes(this.normalizeText('\u0e2d\u0e37\u0e48\u0e19')) ||
+      detailText.includes('other');
+  }
+
+  isOtherType(item: any): boolean {
+    return this.isOtherExpenseDetail(this.getSelectedExpenseDetail(item));
+  }
+
+  private isOtherExpenseDetailId(detailId: any): boolean {
+    const normalizedId = this.normalizeSelectId(detailId);
+    const detail = this.Mas_Expense_Detial_List.find((item: any) =>
+      this.normalizeSelectId(item?.Expense_Detial_Id) === normalizedId
+    );
+
+    return this.isOtherExpenseDetail(detail);
+  }
+
   onTypeChange(item: any) {
     const selected = this.getSelectedExpenseDetail(item);
     item.type = selected?.Expense_Detial_Name || '';
+
+    if (this.isOtherExpenseDetail(selected)) {
+      item.month = 0;
+    } else {
+      item.otherType = '';
+      item.month = selected
+        ? this.getExpenseDetailRate(selected) || 0
+        : 0;
+    }
+
+    this.calculate(item);
+  }
+
+  private applyRatesToExistingRows() {
+    this.list.forEach((item: any) => {
+      if (!item?.pairId || this.isOtherType(item)) return;
+
+      const rate = this.getExpenseDetailRate(this.getSelectedExpenseDetail(item));
+
+      if (rate > 0) {
+        item.month = rate;
+        item.year = rate * 12;
+      }
+    });
+
+    this.updateDetailItems();
+  }
+
+  onOtherTypeChange() {
     this.updateDetailItems();
   }
 
@@ -138,6 +331,7 @@ export class ExpenseFuelLubricantComponent {
           requestItemId: 0,
           pairId: null,
           type: '',
+          otherType: '',
           month: 0,
           year: 0
         }
@@ -161,6 +355,11 @@ export class ExpenseFuelLubricantComponent {
         type:
           row.Expense_Detail || '',
 
+        otherType:
+          this.isOtherExpenseDetailId(this.resolveExpenseDetailId(row))
+            ? row.Expense_Detail || ''
+            : '',
+
         month:
           row.Per_Month || 0,
 
@@ -182,6 +381,8 @@ export class ExpenseFuelLubricantComponent {
       pairId: null,
 
       type: '',
+
+      otherType: '',
 
       month: 0,
 
@@ -263,7 +464,9 @@ export class ExpenseFuelLubricantComponent {
           this.model.selectedExpenseTypeId,
 
         Expense_Detail:
-          item.type,
+          this.isOtherType(item)
+            ? item.otherType || ''
+            : item.type,
 
         Fk_Expense_Detail_Id:
           item.pairId || 0,
