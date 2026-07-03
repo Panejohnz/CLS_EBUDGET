@@ -82,6 +82,10 @@
                                 (change)="onMaterialChange(item, $event, i)">
                             </ng-select>
 
+                            <input *ngIf="!isTextMode && isOtherDetail(item)" class="form-control mt-1"
+                                placeholder="ระบุรายการ" [(ngModel)]="item.customMaterialName"
+                                (ngModelChange)="updateDetailItems()">
+
                         </td>
 
                         <!-- qty -->
@@ -107,7 +111,7 @@
                         <!-- price -->
                         <td>
 
-                            <input [readonly]="!isTextMode" type="text" mask="separator.2" thousandSeparator="," placeholder="ระบุราคา/หน่วย"
+                            <input [readonly]="!isTextMode && !isOtherDetail(item)" type="text" mask="separator.2" thousandSeparator="," placeholder="ระบุราคา/หน่วย"
                                 decimalMarker="." inputmode="decimal" class="form-control text-end"
                                 [(ngModel)]="item.price" (ngModelChange)="calculate(i)">
 

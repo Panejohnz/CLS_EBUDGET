@@ -109,6 +109,7 @@ export class ExpenseOfficeSuppliesCostComponent {
       requestItemId: 0,
       material: null,
       materialName: '',
+      customMaterialName: '',
       qty: 0,
       unit: '',
       unitId: null,
@@ -141,6 +142,10 @@ export class ExpenseOfficeSuppliesCostComponent {
     }
 
     this.items = rows.map((row: any) => {
+      const otherOption = this.getOtherDetailOption();
+      const isOtherRow = !this.isTextMode &&
+        Number(row.Fk_Expense_Detail_Id) === Number(otherOption?.Expense_Detial_Id);
+
       return {
 
         requestItemId: row.Request_Item_Id || 0,
@@ -153,6 +158,9 @@ export class ExpenseOfficeSuppliesCostComponent {
 
         materialName:
           row.Expense_Detail || '',
+
+        customMaterialName:
+          isOtherRow ? (row.Expense_Detail || '') : '',
 
         qty:
           row.Quantity || 0,
@@ -182,6 +190,22 @@ export class ExpenseOfficeSuppliesCostComponent {
 
   private normalizeText(value: any): string {
     return (value ?? '').toString().trim().toLowerCase().replace(/\s+/g, '');
+  }
+
+  private getOtherDetailOption(): any {
+    const otherText = this.normalizeText('\u0e2d\u0e37\u0e48\u0e19\u0e46');
+
+    return this.Mas_Expense_Detial_List.find((detail: any) =>
+      this.normalizeText(detail?.Expense_Detial_Name) === otherText ||
+      this.normalizeText(detail?.Expense_Detail) === otherText
+    );
+  }
+
+  isOtherDetail(item: any): boolean {
+    const otherOption = this.getOtherDetailOption();
+
+    return !!otherOption &&
+      Number(item?.material) === Number(otherOption?.Expense_Detial_Id);
   }
 
   resolveUnitIds() {
@@ -220,6 +244,7 @@ export class ExpenseOfficeSuppliesCostComponent {
 
     item.material = obj?.Expense_Detial_Id || null;
     item.materialName = obj?.Expense_Detial_Name || '';
+    item.customMaterialName = this.isOtherDetail(item) ? '' : item.materialName;
 
     const requestRate =
       obj?.Request_Rate ??
@@ -227,7 +252,7 @@ export class ExpenseOfficeSuppliesCostComponent {
       obj?.REQUEST_RATE ??
       0;
 
-    item.price = Number(requestRate) || 0;
+    item.price = this.isOtherDetail(item) ? 0 : (Number(requestRate) || 0);
 
     this.calculate(index);
   }
@@ -331,7 +356,9 @@ export class ExpenseOfficeSuppliesCostComponent {
         Expense_Detail:
           this.isTextMode
             ? (item.materialName || '')
-            : (detail?.Expense_Detial_Name || ''),
+            : (this.isOtherDetail(item)
+              ? (item.customMaterialName || '')
+              : (detail?.Expense_Detial_Name || '')),
 
         Quantity:
           Number(item.qty?.toString().replace(/,/g, '') || 0),
