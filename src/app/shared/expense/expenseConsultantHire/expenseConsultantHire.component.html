@@ -1,14 +1,10 @@
-<div class="container-fluid mt-2">
 
     <div class="card shadow-sm">
 
-        <div class="card-header bg-light fw-bold">
-            แบบฟอร์มค่าจ้างที่ปรึกษา
-        </div>
-
         <div class="p-2">
-            <button class="btn btn-primary btn-sm" (click)="addProject()">
-                + เพิ่มรายการ
+            <button class="btn btn-primary" (click)="addProject()">
+                         <i class="bx bx-plus text-black"></i>
+                   <span class="text-black"> เพิ่มรายการ</span>
             </button>
         </div>
 
@@ -20,9 +16,10 @@
 
                 <thead class="text-center text-white expense-table-header">
                     <tr>
-                        <th colspan="2" class="text-start">รายการ</th>
-                        <th width="150">รวม</th>
-                        <th width="60"></th>
+                        <th style="width: 5%;">ลำดับ</th>
+                        <th style="width: 75%;" class="text-start">ชื่อโครงการ</th>
+                        <th style="width: 10%;">รวมทั้งโครงการ</th>
+                        <th style="width: 10%;">ลบโครงการ</th>
                     </tr>
                 </thead>
 
@@ -30,25 +27,25 @@
 
                     <tr>
 
-                        <td width="60">{{p+1}}</td>
+                        <td style="width: 5%; text-align: center;">{{p+1}}</td>
 
                         <td>
 
-                            <label class="fw-bold">
+                            <label >
                                 ระบุชื่อโครงการ
                             </label>
 
-                            <input class="form-control form-control-sm" [(ngModel)]="project.project_name"
+                            <input class="form-control" [(ngModel)]="project.project_name" placeholder="ระบุชื่อโครงการ"
                                 (input)="updateDetailItems()">
 
                         </td>
 
-                        <td class="text-end fw-bold">
+                        <td class="text-end">
                             {{project.totalCost | number:'1.2-2'}}
                         </td>
 
                         <td class="text-center">
-                            <button *ngIf="projects.length > 1" class="btn btn-sm btn-outline-danger"
+                            <button *ngIf="projects.length > 1" class="btn btn-sm btn-danger"
                                 (click)="removeProject(p)" title="ลบรายการ">
                                 <i class="bx bx-trash"></i>
                             </button>
@@ -66,22 +63,22 @@
 
                                 <div class="col-md-6">
 
-                                    <label class="fw-bold">
+                                    <label>
                                         เหตุผลความจำเป็น
                                     </label>
 
-                                    <textarea class="form-control" [(ngModel)]="project.reason"
+                                    <textarea class="form-control" [(ngModel)]="project.reason" placeholder="ระบุเหตุผลความจำเป็น"
                                         (input)="updateDetailItems()"></textarea>
 
                                 </div>
 
                                 <div class="col-md-6">
 
-                                    <label class="fw-bold">
+                                    <label>
                                         ผลประโยชน์ที่จะได้รับ
                                     </label>
 
-                                    <textarea class="form-control" [(ngModel)]="project.benefit"
+                                    <textarea class="form-control" [(ngModel)]="project.benefit" placeholder="ระบุผลประโยชน์ที่จะได้รับ"
                                         (input)="updateDetailItems()"></textarea>
 
                                 </div>
@@ -108,43 +105,45 @@
 
                     <tr>
 
-                        <th width="60">
+                        <th style="width: 5%">
                             ลำดับ
                         </th>
 
-                        <th class="text-start">
+                        <th style="width: 30%" class="text-center">
                             รายการ
                         </th>
 
-                        <th width="200">
+                        <th style="width: 10%">
                             กลุ่มวิชาชีพ
                         </th>
 
-                        <th colspan="3">
+                        <th colspan="3" style="width: 10%">
                             ระดับการศึกษา
                         </th>
 
-                        <th width="120">
+                        <th style="width: 10%">
                             ประสบการณ์
                         </th>
 
-                        <th width="120">
+                        <th style="width: 10%">
                             จำนวน
                         </th>
 
-                        <th width="120">
+                        <th style="width: 10%">
                             เดือน
                         </th>
 
-                        <th width="150">
+                        <th style="width: 10%">
                             อัตรา
                         </th>
 
-                        <th width="150">
+                        <th style="width: 10%">
                             รวม
                         </th>
 
-                        <th width="60"></th>
+                        <th style="width: 8%">
+                            ลบรายการ
+                        </th>
 
                     </tr>
 
@@ -192,10 +191,8 @@
 
                         <td>
 
-                            <button class="btn btn-sm btn-outline-secondary" (click)="addMainDetail(p)">
-
-                                เพิ่ม
-
+                            <button class="btn btn-sm btn-secondary" (click)="addMainDetail(p)">
+                   <span class="text-black"> เพิ่ม</span>
                             </button>
 
                         </td>
@@ -462,4 +459,3 @@
 
     </div>
 
-</div>
