@@ -25,11 +25,11 @@ export class ExpenseWitnessComponent {
 
   list: any[] = [
 
-    {
-      name: 'ค่าตอบแทนและค่าใช้จ่ายแก่พยาน',
-      level: 0,
-      children: true
-    },
+    // {
+    //   name: 'ค่าตอบแทนและค่าใช้จ่ายแก่พยาน',
+    //   level: 0,
+    //   children: true
+    // },
 
     {
       requestItemId: 0,
