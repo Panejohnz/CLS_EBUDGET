@@ -76,7 +76,7 @@
                         <!-- case -->
                         <td>
 
-                            <input *ngIf="!row.children" type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-end"
+                            <input *ngIf="!row.children" type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center"
                                 [(ngModel)]="row.case" (ngModelChange)="calculate()" placeholder="ระบุจำนวนคดี">
 
                         </td>
@@ -84,7 +84,7 @@
                         <!-- people -->
                         <td>
 
-                            <input *ngIf="!row.children" type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-end"
+                            <input *ngIf="!row.children" type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center"
                                 [(ngModel)]="row.person" (ngModelChange)="calculate()" placeholder="ระบุจำนวนคน">
 
                         </td>
@@ -131,7 +131,14 @@
                             รวมทั้งสิ้น
 
                         </td>
+<td class="text-end">
 
+                            {{
+                            getCost(list[0])
+                            | number:'1.2-2'
+                            }}
+
+                        </td>
                         <td class="text-end">
 
                             {{
