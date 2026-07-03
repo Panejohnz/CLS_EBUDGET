@@ -140,7 +140,9 @@ export class ExpenseCarRentalCostComponent {
 
       carName: '',
 
-      qty: 1,
+      otherCarName: '',
+
+      qty: 0,
 
       price: 0,
 
@@ -188,29 +190,41 @@ export class ExpenseCarRentalCostComponent {
 
     }
 
+    const filledRows =
+
+      rows.filter((row: any) => this.isPersistedRentalRow(row));
+
     const oldRows =
 
-      rows.filter(
+      filledRows.filter(
 
         (x: any) =>
 
-          x.Expense_Name == 'old'
+          x.Expense_Name == 'old' ||
+          x.Purpose == 'old'
 
       );
 
     const newRows =
 
-      rows.filter(
+      filledRows.filter(
 
         (x: any) =>
 
-          x.Expense_Name == 'new'
+          x.Expense_Name == 'new' ||
+          x.Purpose == 'new'
 
       );
 
+    const fallbackRows =
+
+      oldRows.length || newRows.length
+        ? []
+        : filledRows;
+
     this.itemsOld =
 
-      oldRows.map((row: any) => {
+      (oldRows.length ? oldRows : fallbackRows).map((row: any) => {
 
         return this.mapRow(row);
 
@@ -261,6 +275,11 @@ export class ExpenseCarRentalCostComponent {
       carName:
         row.Expense_Detail || '',
 
+      otherCarName:
+        this.isOtherExpenseDetailId(this.resolveExpenseDetailId(row))
+          ? row.Expense_Detail || ''
+          : '',
+
       qty:
         row.Quantity || 0,
 
@@ -285,6 +304,20 @@ export class ExpenseCarRentalCostComponent {
 
     };
 
+  }
+
+  private isPersistedRentalRow(row: any): boolean {
+    return this.normalizeSelectId(
+      row?.Fk_Expense_Detail_Id ??
+      row?.Fk_Expense_Detial_Id ??
+      row?.Expense_Detail_Id ??
+      row?.Expense_Detial_Id
+    ) != null ||
+      this.toNumber(row?.Quantity) > 0 ||
+      this.toNumber(row?.Price) > 0 ||
+      this.toNumber(row?.Month) > 0 ||
+      this.toNumber(row?.Total) > 0 ||
+      !!(row?.Expense_Detail || '').toString().trim();
   }
 
   normalizeSelectId(value: any): number | null {
@@ -369,6 +402,31 @@ export class ExpenseCarRentalCostComponent {
     return this.Mas_Expense_Detial_List.find((detail: any) =>
       this.normalizeSelectId(detail?.Expense_Detial_Id) === carId
     );
+  }
+
+  private isOtherExpenseDetail(detail: any): boolean {
+    const detailText = this.normalizeText([
+      detail?.Expense_Detial_Name,
+      detail?.Expense_Detail,
+      detail?.Expense_Name,
+      detail?.Expense_Detial_Short_Name
+    ].filter(Boolean).join(' '));
+
+    return detailText.includes(this.normalizeText('\u0e2d\u0e37\u0e48\u0e19')) ||
+      detailText.includes('other');
+  }
+
+  isOtherCar(item: any): boolean {
+    return this.isOtherExpenseDetail(this.getSelectedExpenseDetail(item));
+  }
+
+  private isOtherExpenseDetailId(detailId: any): boolean {
+    const normalizedId = this.normalizeSelectId(detailId);
+    const detail = this.Mas_Expense_Detial_List.find((item: any) =>
+      this.normalizeSelectId(this.getExpenseDetailId(item)) === normalizedId
+    );
+
+    return this.isOtherExpenseDetail(detail);
   }
 
   getExpenseDetailRate(detail: any): number {
@@ -479,11 +537,14 @@ export class ExpenseCarRentalCostComponent {
     const selected = this.getSelectedExpenseDetail(item);
     item.carName = selected?.Expense_Detial_Name || '';
 
-    if (selected) {
-
+    if (this.isOtherExpenseDetail(selected)) {
+      item.price = 0;
+    } else {
+      item.otherCarName = '';
       item.price =
-        this.getExpenseDetailRate(selected) || item.price || 0;
-
+        selected
+          ? this.getExpenseDetailRate(selected) || 0
+          : 0;
     }
 
     this.calculate(i);
@@ -507,6 +568,20 @@ export class ExpenseCarRentalCostComponent {
 
     this.updateDetailItems();
 
+  }
+
+  onOtherCarNameChange() {
+    this.updateDetailItems();
+  }
+
+  private isFilledItem(item: any): boolean {
+    return this.normalizeSelectId(item?.car) != null ||
+      this.toNumber(item?.qty) > 0 ||
+      this.toNumber(item?.price) > 0 ||
+      this.toNumber(item?.month) > 0 ||
+      this.toNumber(item?.total) > 0 ||
+      !!(item?.otherCarName || '').toString().trim() ||
+      !!(item?.carName || '').toString().trim();
   }
 
   calculateAll() {
@@ -576,6 +651,10 @@ export class ExpenseCarRentalCostComponent {
     // OLD
     this.itemsOld.forEach((item: any) => {
 
+      if (!this.isFilledItem(item)) {
+        return;
+      }
+
       this.model.Budget_Request_Detail_Item.push({
 
         Request_Item_Id:
@@ -587,8 +666,13 @@ export class ExpenseCarRentalCostComponent {
         Expense_Name:
           'old',
 
+        Purpose:
+          'old',
+
         Expense_Detail:
-          item.carName || '',
+          this.isOtherCar(item)
+            ? item.otherCarName || ''
+            : item.carName || '',
 
         Fk_Expense_Detail_Id:
           item.car || 0,
@@ -615,6 +699,10 @@ export class ExpenseCarRentalCostComponent {
     // NEW
     this.itemsNew.forEach((item: any) => {
 
+      if (!this.isFilledItem(item)) {
+        return;
+      }
+
       this.model.Budget_Request_Detail_Item.push({
 
         Request_Item_Id:
@@ -626,8 +714,13 @@ export class ExpenseCarRentalCostComponent {
         Expense_Name:
           'new',
 
+        Purpose:
+          'new',
+
         Expense_Detail:
-          item.carName || '',
+          this.isOtherCar(item)
+            ? item.otherCarName || ''
+            : item.carName || '',
 
         Fk_Expense_Detail_Id:
           item.car || 0,

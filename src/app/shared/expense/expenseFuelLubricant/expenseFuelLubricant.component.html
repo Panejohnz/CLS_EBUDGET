@@ -60,13 +60,23 @@
                         (change)="onTypeChange(item)">
                     </ng-select>
 
+                    <input *ngIf="isOtherType(item)" type="text" class="form-control form-control-sm mt-2"
+                        [class.is-invalid]="!item.otherType"
+                        name="fuel_lubricant_other_{{i}}" [(ngModel)]="item.otherType"
+                        (ngModelChange)="onOtherTypeChange()" placeholder="ระบุประเภทยานพาหนะ" required>
+
+                    <div *ngIf="isOtherType(item) && !item.otherType" class="invalid-feedback d-block text-start">
+                        กรุณาระบุประเภทยานพาหนะ
+                    </div>
+
                 </td>
 
                 <!-- monthly -->
                 <td>
 
                     <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
-                        class="form-control text-end" [(ngModel)]="item.month" (ngModelChange)="calculate(item)">
+                        class="form-control text-end" [class.bg-light]="!isOtherType(item)"
+                        [(ngModel)]="item.month" [disabled]="!isOtherType(item)" (ngModelChange)="calculate(item)">
 
                 </td>
 

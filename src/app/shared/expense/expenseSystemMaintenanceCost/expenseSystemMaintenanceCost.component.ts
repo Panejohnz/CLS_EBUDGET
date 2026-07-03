@@ -26,6 +26,8 @@ export class ExpenseSystemMaintenanceCostComponent {
 
   grandTotal = 0;
 
+  Mas_Unit_Lists: any[] = [];
+
   ngOnInit() {
 
     if (!this.model) return;
@@ -37,7 +39,26 @@ export class ExpenseSystemMaintenanceCostComponent {
     }
 
     this.bindData();
+    this.loadUnits();
 
+  }
+
+  loadUnits() {
+    const model = {
+      FUNC_CODE: "FUNC-Get_List_Mas_Unit"
+    };
+
+    this.serviceebud.GatewayGetData(model)
+      .subscribe((response: any) => {
+        this.Mas_Unit_Lists =
+          Array.isArray(response.List_Mas_Unit)
+            ? response.List_Mas_Unit
+            : [];
+
+        this.resolveUnitIds();
+      }, () => {
+        this.Mas_Unit_Lists = [];
+      });
   }
 
   bindData() {
@@ -64,6 +85,7 @@ export class ExpenseSystemMaintenanceCostComponent {
           price: 0,
           qty: 0,
           unit: 'คน',
+          unitId: null,
           month: 0,
           total: 0,
           file: null,
@@ -94,6 +116,9 @@ export class ExpenseSystemMaintenanceCostComponent {
 
         unit:
           row.Unit_Name || 'คน',
+
+        unitId:
+          row.Fk_Unit_Id || null,
 
         month:
           row.Month || 0,
@@ -127,6 +152,8 @@ export class ExpenseSystemMaintenanceCostComponent {
       qty: 0,
 
       unit: 'คน',
+
+      unitId: null,
 
       month: 0,
 
@@ -220,6 +247,37 @@ export class ExpenseSystemMaintenanceCostComponent {
 
   }
 
+  private normalizeText(value: any): string {
+    return (value ?? '').toString().trim().toLowerCase().replace(/\s+/g, '');
+  }
+
+  resolveUnitIds() {
+    if (!this.Mas_Unit_Lists.length) {
+      return;
+    }
+
+    this.items.forEach((item: any) => {
+      if (item.unitId) {
+        return;
+      }
+
+      const unit = this.Mas_Unit_Lists.find((x: any) =>
+        this.normalizeText(x?.Unit_Name) === this.normalizeText(item.unit)
+      );
+
+      item.unitId = unit?.Unit_Id || null;
+    });
+  }
+
+  onUnitChange(item: any) {
+    const unit = this.Mas_Unit_Lists.find((x: any) =>
+      Number(x.Unit_Id) === Number(item.unitId)
+    );
+
+    item.unit = unit?.Unit_Name || '';
+    this.updateDetailItems();
+  }
+
   uploadFile(event: any, index: number) {
 
     const file = event.target.files[0];
@@ -270,6 +328,9 @@ export class ExpenseSystemMaintenanceCostComponent {
 
         Unit_Name:
           item.unit,
+
+        Fk_Unit_Id:
+          item.unitId || null,
 
         Month:
           item.month,

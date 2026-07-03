@@ -72,7 +72,13 @@
                         <!-- หน่วย -->
                         <td>
 
-                            <select class="form-select" [(ngModel)]="item.unit"
+                            <ng-select appendTo="body" dropdownPosition="auto" [items]="Mas_Unit_Lists"
+                                bindLabel="Unit_Name" bindValue="Unit_Id" [(ngModel)]="item.unitId"
+                                name="grant_unit_{{i}}" placeholder="-- เลือกหน่วยนับ --" [clearable]="false"
+                                (change)="onUnitChange(item)">
+                            </ng-select>
+
+                            <select *ngIf="false" class="form-select" [(ngModel)]="item.unit"
                                 (ngModelChange)="updateDetailItems()">
 
                                 <option value="คน">คน</option>
