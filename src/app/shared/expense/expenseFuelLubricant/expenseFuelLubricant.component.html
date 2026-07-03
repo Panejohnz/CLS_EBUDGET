@@ -1,165 +1,157 @@
-<div class="card shadow-sm">
+<div class="expense-table-responsive">
 
-    <div class="card-body bg-light">
+    <table class="table table-bordered align-middle expense-table text-center mb-0">
 
-        <div class="expense-table-responsive">
+        <!-- header -->
+        <thead class="text-center text-white expense-table-header">
 
-            <table class="table table-bordered align-middle expense-table text-center bg-white">
+            <tr>
 
-                <!-- HEADER -->
-                <thead class="text-center text-white expense-table-header">
+                <th style="width:5%">
 
-                    <tr>
+                    ลำดับ
 
-                        <th style="width:5%">
+                </th>
 
-                            ลำดับ
+                <th>
 
-                        </th>
+                    ประเภทยานพาหนะ
 
-                        <th>
+                </th>
+                <th style="width:15%">
 
-                            ประเภทยานพาหนะ
+                    ค่าใช้จ่าย/เดือน
 
-                        </th>
+                </th>
 
-                        <th colspan="2">
+                <th style="width:15%">
 
-                            ราคา
+                    ค่าใช้จ่าย/ปี
 
-                        </th>
+                </th>
 
-                        <th style="width:5%"></th>
 
-                    </tr>
+                <th style="width:5%">ลบ</th>
 
-                    <tr>
+            </tr>
 
-                        <th></th>
 
-                        <th></th>
 
-                        <th style="width:15%">
+        </thead>
 
-                            รวม/เดือน
+        <!-- BODY -->
+        <tbody>
 
-                        </th>
+            <tr *ngFor="let item of list; let i = index">
 
-                        <th style="width:15%">
+                <!-- index -->
+                <td>
 
-                            ต่อปี
+                    {{ i + 1 }}
 
-                        </th>
+                </td>
 
-                        <th></th>
+                <!-- dropdown -->
+                <td>
 
-                    </tr>
+                    <ng-select appendTo="body" dropdownPosition="auto" [items]="Mas_Expense_Detial_List"
+                        bindLabel="Expense_Detial_Name" bindValue="Expense_Detial_Id" [(ngModel)]="item.pairId"
+                        name="fuel_lubricant_detail_{{i}}" placeholder="-- เลือกรายการ --" [clearable]="false"
+                        (change)="onTypeChange(item)">
+                    </ng-select>
 
-                </thead>
+                </td>
 
-                <!-- BODY -->
-                <tbody>
+                <!-- monthly -->
+                <td>
 
-                    <tr *ngFor="let item of list; let i = index">
+                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                        class="form-control text-end" [(ngModel)]="item.month" (ngModelChange)="calculate(item)">
 
-                        <!-- index -->
-                        <td>
+                </td>
 
-                            {{ i + 1 }}
+                <!-- yearly -->
+                <td class="fw-bold text-end text-black">
 
-                        </td>
+                    {{
+                    item.year
+                    | number:'1.2-2'
+                    }}
 
-                        <!-- dropdown -->
-                        <td>
+                </td>
 
-                            <ng-select appendTo="body" dropdownPosition="auto" [items]="Mas_Expense_Detial_List"
-                                bindLabel="Expense_Detial_Name" bindValue="Expense_Detial_Id"
-                                [(ngModel)]="item.pairId" name="fuel_lubricant_detail_{{i}}"
-                                placeholder="-- เลือกรายการ --" [clearable]="false"
-                                (change)="onTypeChange(item)">
-                            </ng-select>
+                <!-- delete -->
+                <td>
 
-                        </td>
+                    <button class="btn btn-danger btn-sm" (click)="remove(i)">
 
-                        <!-- monthly -->
-                        <td>
+                        <i class="bx bx-trash"></i>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-end" [(ngModel)]="item.month"
-                                (ngModelChange)="calculate(item)">
+                    </button>
 
-                        </td>
+                </td>
 
-                        <!-- yearly -->
-                        <td class="fw-bold text-end text-primary">
+            </tr>
 
-                            {{
-                            item.year
-                            | number:'1.2-2'
-                            }}
+        </tbody>
 
-                        </td>
+        <!-- FOOTER -->
+        <tfoot>
 
-                        <!-- delete -->
-                        <td>
+            <tr class="fw-bold">
 
-                            <button class="btn btn-outline-danger btn-sm" (click)="remove(i)">
+                <td colspan="2" class="text-end">
 
-                                🗑
+                    รวมทั้งสิ้น
 
-                            </button>
+                </td>
 
-                        </td>
+                <td class="text-end">
 
-                    </tr>
+                    {{
+                    getTotal('month')
+                    | number:'1.2-2'
+                    }}
 
-                </tbody>
+                </td>
 
-                <!-- FOOTER -->
-                <tfoot>
+                <td class="text-end">
 
-                    <tr class="fw-bold">
+                    {{
+                    getTotal('year')
+                    | number:'1.2-2'
+                    }}
 
-                        <td colspan="2" class="text-end">
+                </td>
 
-                            รวม
+                <td></td>
 
-                        </td>
+            </tr>
 
-                        <td class="text-end">
+        </tfoot>
 
-                            {{
-                            getTotal('month')
-                            | number:'1.2-2'
-                            }}
-
-                        </td>
-
-                        <td class="text-end">
-
-                            {{
-                            getTotal('year')
-                            | number:'1.2-2'
-                            }}
-
-                        </td>
-
-                        <td></td>
-
-                    </tr>
-
-                </tfoot>
-
-            </table>
-
-        </div>
-
-        <!-- ADD -->
-        <button class="btn btn-primary mt-3" (click)="add()">
-
-            + เพิ่มรายการ
-
-        </button>
-
-    </div>
+    </table>
 
 </div>
+
+<!-- ADD
+<button class="btn btn-primary" (click)="add()">
+
+    <i class="bx bx-plus text-black"></i>
+    <span class="text-black"> เพิ่มรายการ</span>
+
+</button> -->
+
+
+        <!-- action -->
+        <div class="mt-3">
+
+            <button class="btn btn-primary" (click)="add()">
+
+            <i class="bx bx-plus text-black"></i>
+                   <span class="text-black"> เพิ่มรายการ</span>
+
+            </button>
+
+
+        </div>
