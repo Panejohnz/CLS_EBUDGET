@@ -12,6 +12,8 @@ export class ExpenseSection61Component {
 
   @Input() model: any;
 
+  @Input() modal: any;
+
   @Input() expenseItem: any;
 
   constructor(
@@ -35,20 +37,14 @@ export class ExpenseSection61Component {
 
   ngOnInit() {
 
-    if (!this.model) return;
-
-    if (!this.model.Budget_Request_Detail_Item) {
-
-      this.model.Budget_Request_Detail_Item = [];
-
-    }
+    if (!this.ensureModel()) return;
 
     this.loadExpenseDetails();
 
   }
 
   ngDoCheck() {
-    if (!this.model) return;
+    if (!this.ensureModel()) return;
 
     if (this.currentExpenseTypeId != this.model.selectedExpenseTypeId) {
       this.loadExpenseDetails();
@@ -71,7 +67,33 @@ export class ExpenseSection61Component {
 
   }
 
+  private ensureModel(): boolean {
+    if (!this.model && this.modal) {
+      this.model = this.modal;
+    }
+
+    if (!this.model) {
+      return false;
+    }
+
+    if (!this.model.selectedExpenseTypeId && this.expenseItem?.Expense_Id) {
+      this.model.selectedExpenseTypeId = this.expenseItem.Expense_Id;
+    }
+
+    if (!this.model.selectedExpenseTypeId) {
+      return false;
+    }
+
+    if (!this.model.Budget_Request_Detail_Item) {
+      this.model.Budget_Request_Detail_Item = [];
+    }
+
+    return true;
+  }
+
   loadExpenseDetails() {
+    console.log(this.model);
+    
     this.currentExpenseTypeId = this.model.selectedExpenseTypeId;
     this.masterLoaded = false;
     this.detailItemsSignature = '';
@@ -233,6 +255,7 @@ export class ExpenseSection61Component {
     return detail?.Expense_Detial_Name ??
       detail?.Expense_Detail ??
       detail?.Expense_Name ??
+      detail?.Expense_Detial_Short_Name ??
       value ??
       '';
   }
@@ -328,38 +351,72 @@ export class ExpenseSection61Component {
       : text;
   }
 
+  private getCaseSizeLabel(sizeLetter: string): string {
+    return `\u0e02\u0e19\u0e32\u0e14\u0e04\u0e14\u0e35 ${sizeLetter}`;
+  }
+
+  private getNormalizedCaseSizeFromRow(row: any): string {
+    const explicitSize = [
+      row?.Child_Detial_Name,
+      row?.Child_Detail_Name,
+      row?.Purpose
+    ].find((value: any) => value !== null && value !== undefined && value !== '');
+
+    const text = (explicitSize ?? [
+      row?.Expense_Detial_Name,
+      row?.Expense_Detail,
+      row?.Expense_Name,
+      row?.Expense_Detial_Short_Name,
+      row?.Rate_Name,
+      row?.Code
+    ].filter(Boolean).join(' ')).toString();
+
+    const sizeLetter = text.match(/[SML]/i)?.[0]?.toUpperCase();
+
+    return sizeLetter
+      ? this.getCaseSizeLabel(sizeLetter)
+      : this.normalizeCaseSize(text);
+  }
+
   getCaseSizeOptions(): any[] {
     const options = [
       ...this.Mas_Expense_Detial_List,
       ...this.Mas_Expense_Detial_Rate_List
-    ].map((row: any) => this.normalizeCaseSize(this.getDetailSizeText(row)))
+    ].map((row: any) => this.getNormalizedCaseSizeFromRow(row))
       .filter((value: string) => !!value);
 
     const uniqueOptions = options.filter((value: string, index: number, list: string[]) =>
       list.indexOf(value) === index
     );
 
-    return uniqueOptions.length
-      ? uniqueOptions
-      : ['ขนาดคดี S', 'ขนาดคดี M', 'ขนาดคดี L'];
+    if (uniqueOptions.length) {
+      return uniqueOptions;
+    }
+
+    return [
+      this.getCaseSizeLabel('S'),
+      this.getCaseSizeLabel('M'),
+      this.getCaseSizeLabel('L')
+    ];
+
   }
 
   getExpenseOptions(group: any): any[] {
-    const groupSize = this.normalizeCaseSize(group?.name);
+    const groupSize = this.getNormalizedCaseSizeFromRow({ Purpose: group?.name });
 
     if (!groupSize) {
       return [];
     }
 
     const filtered = this.Mas_Expense_Detial_List.filter((detail: any) => {
-      const detailSize = this.normalizeCaseSize(this.getDetailSizeText(detail));
+      const detailSize = this.getNormalizedCaseSizeFromRow(detail);
 
       return detailSize === groupSize;
     });
 
     return filtered.length
       ? filtered
-      : [];
+      : this.Mas_Expense_Detial_List;
   }
 
   getExpenseDetailOptionId(option: any): number | '' {
@@ -507,7 +564,10 @@ export class ExpenseSection61Component {
       );
 
       const detail = this.getExpenseDetailById(expenseDetailId);
-      const caseSize = row.Purpose || this.getDetailSizeText(detail) || '';
+      const caseSize = this.getNormalizedCaseSizeFromRow({
+        ...(detail || {}),
+        Purpose: row.Purpose
+      }) || '';
 
       const key = [
         caseSize || 'default',
