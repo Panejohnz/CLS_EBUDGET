@@ -1,6 +1,3 @@
-<div class="card shadow-sm">
-
-        <div class="card-body bg-light">
 
                 <div class="expense-table-responsive">
 
@@ -23,16 +20,14 @@
                                                         รายการค่าใช้จ่าย
 
                                                 </th>
+                                                <th rowspan="2" style="width:8%">
 
-                                                <th colspan="3" style="width:24%">
-
-                                                        ประมาณการ
+                                                        คดี
 
                                                 </th>
+                                                <th colspan="3" style="width:24%">
 
-                                                <th rowspan="2" style="width:12%">
-
-                                                        อัตรา
+                                                        ประมาณการค่าใช้จ่าย
 
                                                 </th>
 
@@ -51,13 +46,6 @@
                                         </tr>
 
                                         <tr>
-
-                                                <th style="width:8%">
-
-                                                        คดี
-
-                                                </th>
-
                                                 <th style="width:8%">
 
                                                         คน
@@ -69,6 +57,11 @@
                                                         วัน
 
                                                 </th>
+                                                 <th style="width:12%">
+
+                                                        อัตรา
+
+                                                </th>
 
                                         </tr>
 
@@ -77,7 +70,7 @@
                                 <!-- BODY -->
                                 <tbody>
 
-                                        <!-- MAIN -->
+                                        <!-- MAIN
                                         <tr class="bg-light fw-bold">
 
                                                 <td></td>
@@ -88,20 +81,20 @@
 
                                                 </td>
 
-                                                <td colspan="4"></td>
+                                                <td colspan="4"></td> -->
 
-                                                <!-- cost per case -->
-                                                <td class="text-end">
+                                        <!-- cost per case -->
+                                        <!-- <td class="text-end">
 
                                                         {{
                                                         main.costPerCase
                                                         | number:'1.2-2'
                                                         }}
 
-                                                </td>
+                                                </td> -->
 
-                                                <!-- total -->
-                                                <td class="text-end text-primary">
+                                        <!-- total -->
+                                        <!-- <td class="text-end text-primary">
 
                                                         {{
                                                         main.total
@@ -110,7 +103,7 @@
 
                                                 </td>
 
-                                        </tr>
+                                        </tr> -->
 
                                         <!-- LOOP -->
                                         <tr *ngFor="let group of caseList">
@@ -118,13 +111,12 @@
                                                 <!-- size -->
                                                 <td>
 
-                                                        <select class="form-select"
-                                                                [(ngModel)]="group.name"
+                                                        <select class="form-select" [(ngModel)]="group.name"
                                                                 (change)="onCaseSizeChange(group)">
 
                                                                 <option value="">
 
-                                                                        -- เลือกขนาด --
+                                                                        -- เลือกระดับ --
 
                                                                 </option>
 
@@ -142,24 +134,19 @@
                                                 <!-- รายการ -->
                                                 <td class="text-start">
 
-                                                        <div class="fw-semibold">
-
-                                                                - ค่าใช้จ่าย
-
-                                                        </div>
-
                                                         <!-- item -->
                                                         <div *ngIf="group.items[0] as item" class="d-flex gap-2 mt-1">
 
                                                                 <!-- dropdown -->
-                                                                <select class="form-select form-select-sm"
+                                                                <select class="form-select"
                                                                         [(ngModel)]="item.expenseDetailId"
                                                                         [disabled]="!group.name"
                                                                         (change)="onTypeChange(item, group)">
 
                                                                         <option value="">
 
-                                                                                {{ group.name ? '-- เลือกค่าใช้จ่าย --' : '-- เลือกขนาดก่อน --' }}
+                                                                                {{ group.name ? '-- เลือกค่าใช้จ่าย --'
+                                                                                : '-- เลือกระดับก่อน --' }}
 
                                                                         </option>
 
@@ -174,8 +161,7 @@
 
                                                                 <!-- other -->
                                                                 <input *ngIf="isOtherExpenseDetail(item)" type="text"
-                                                                        class="form-control form-control-sm"
-                                                                        placeholder="ระบุรายการ"
+                                                                        class="form-control" placeholder="ระบุรายการ"
                                                                         [(ngModel)]="item.customName"
                                                                         (ngModelChange)="updateDetailItems()">
 
@@ -186,8 +172,9 @@
                                                 <!-- case -->
                                                 <td>
 
-                                                        <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-end"
-                                                                [(ngModel)]="group.case"
+                                                        <input type="text" mask="separator.2" thousandSeparator=","
+                                                                decimalMarker="." inputmode="decimal"
+                                                                class="form-control text-center" [(ngModel)]="group.case"
                                                                 (ngModelChange)="calculate(group)">
 
                                                 </td>
@@ -195,8 +182,9 @@
                                                 <!-- people -->
                                                 <td>
 
-                                                        <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-end"
-                                                                [(ngModel)]="group.person"
+                                                        <input type="text" mask="separator.2" thousandSeparator=","
+                                                                decimalMarker="." inputmode="decimal"
+                                                                class="form-control text-center" [(ngModel)]="group.person"
                                                                 (ngModelChange)="calculate(group)">
 
                                                 </td>
@@ -204,8 +192,9 @@
                                                 <!-- day -->
                                                 <td>
 
-                                                        <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-end"
-                                                                [(ngModel)]="group.day"
+                                                        <input type="text" mask="separator.2" thousandSeparator=","
+                                                                decimalMarker="." inputmode="decimal"
+                                                                class="form-control text-center" [(ngModel)]="group.day"
                                                                 (ngModelChange)="calculate(group)">
 
                                                 </td>
@@ -218,12 +207,12 @@
                                                                 <input *ngIf="isOtherExpenseDetail(item)" type="text"
                                                                         mask="separator.2" thousandSeparator=","
                                                                         decimalMarker="." inputmode="decimal"
-                                                                        class="form-control form-control-sm text-end"
+                                                                        class="form-control  text-end"
                                                                         placeholder="ราคา" [(ngModel)]="item.amount"
                                                                         (ngModelChange)="calculate(group)">
 
                                                                 <div *ngIf="!isOtherExpenseDetail(item)"
-                                                                        class="form-control form-control-sm text-end bg-light">
+                                                                        class="form-control  text-end bg-light">
 
                                                                         {{
                                                                         item.amount
@@ -247,7 +236,7 @@
                                                 </td>
 
                                                 <!-- total -->
-                                                <td class="text-end fw-bold text-primary">
+                                                <td class="text-end fw-bold text-black">
 
                                                         {{
                                                         group.total
@@ -288,10 +277,23 @@
 
                 </div>
 
-                <button type="button" class="btn btn-primary mt-3" (click)="addGroup()">
-                        เพิ่มแถว
+
+
+                  <!-- bottom -->
+        <div class="mt-3 d-flex justify-content-between align-items-center">
+
+            <div>
+
+                <button class="btn btn-primary" (click)="addGroup()">
+
+                           <i class="bx bx-plus text-black"></i>
+                   <span class="text-black"> เพิ่มรายการ</span>
+
                 </button>
+
+
+            </div>
 
         </div>
 
-</div>
+
