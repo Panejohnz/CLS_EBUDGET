@@ -185,13 +185,13 @@
 
                         <td>1</td>
 
-                        <td colspan="10" class="text-start fw-bold">
+                        <td colspan="10" class="text-start">
                             บุคลากรหลัก
                         </td>
 
                         <td>
 
-                            <button class="btn btn-sm btn-secondary" (click)="addMainDetail(p)">
+                            <button class="btn btn-sm btn-success" (click)="addMainDetail(p)">
                    <span class="text-black"> เพิ่ม</span>
                             </button>
 
@@ -207,14 +207,14 @@
 
                         <td>
 
-                            <input class="form-control form-control-sm" [(ngModel)]="main.name"
+                            <input class="form-control text-start" [(ngModel)]="main.name" placeholder="ระบุบุคลากรหลัก"
                                 (input)="updateDetailItems()">
 
                         </td>
 
                         <td>
 
-                            <input class="form-control form-control-sm" [(ngModel)]="main.field"
+                            <input class="form-control text-center" [(ngModel)]="main.field" placeholder="ระบุกลุ่มวิชาชีพ"
                                 (input)="updateDetailItems()">
 
                         </td>
@@ -239,28 +239,29 @@
 
                         <td>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm" [(ngModel)]="main.exp"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" 
+                            class="form-control text-center" [(ngModel)]="main.exp" placeholder="ระบุประสบการณ์"
                                 (input)="updateDetailItems()">
 
                         </td>
 
                         <td>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm" [(ngModel)]="main.qty"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center" [(ngModel)]="main.qty" placeholder="ระบุจำนวน"
                                 (input)="calculateMain(p)">
 
                         </td>
 
                         <td>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm" [(ngModel)]="main.month"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-center" [(ngModel)]="main.month" placeholder="ระบุเดือน"
                                 (input)="calculateMain(p)">
 
                         </td>
 
                         <td>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm" [(ngModel)]="main.rate"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control text-end" [(ngModel)]="main.rate" placeholder="ระบุอัตรา"
                                 (input)="calculateMain(p)">
 
                         </td>
@@ -273,9 +274,9 @@
 
                         <td>
 
-                            <button class="btn btn-sm btn-outline-danger" (click)="removeMain(p,i)">
+                            <button class="btn btn-sm btn-danger" (click)="removeMain(p,i)">
 
-                                🗑
+                               <i class="bx bx-trash"></i>
 
                             </button>
 
@@ -289,15 +290,15 @@
 
                         <td>2</td>
 
-                        <td colspan="10" class="text-start fw-bold">
+                        <td colspan="10" class="text-start">
                             บุคลากรสนับสนุน
                         </td>
 
                         <td>
 
-                            <button class="btn btn-sm btn-outline-secondary" (click)="addSupportDetail(p)">
+                            <button class="btn btn-sm btn-success" (click)="addSupportDetail(p)">
 
-                                เพิ่ม
+                                    <span class="text-black"> เพิ่ม</span>
 
                             </button>
 
@@ -313,14 +314,14 @@
 
                         <td>
 
-                            <input class="form-control form-control-sm" [(ngModel)]="sup.name"
+                            <input class="form-control text-start" [(ngModel)]="sup.name" placeholder="ระบุบุคลากรสนับสนุน"
                                 (input)="updateDetailItems()">
 
                         </td>
 
                         <td>
 
-                            <input class="form-control form-control-sm" [(ngModel)]="sup.field"
+                            <input class="form-control text-center" [(ngModel)]="sup.field" placeholder="ระบุกลุ่มวิชาชีพ"
                                 (input)="updateDetailItems()">
 
                         </td>
@@ -345,28 +346,32 @@
 
                         <td>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm" [(ngModel)]="sup.exp"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                             class="form-control text-center" [(ngModel)]="sup.exp" placeholder="ระบุประสบการณ์"
                                 (input)="updateDetailItems()">
 
                         </td>
 
                         <td>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm" [(ngModel)]="sup.qty"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" 
+                            class="form-control text-center" [(ngModel)]="sup.qty" placeholder="ระบุจำนวน"
                                 (input)="calculateSupport(p)">
 
                         </td>
 
                         <td>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm" [(ngModel)]="sup.month"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" 
+                            class="form-control text-center" [(ngModel)]="sup.month" placeholder="ระบุเดือน"
                                 (input)="calculateSupport(p)">
 
                         </td>
 
                         <td>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm" [(ngModel)]="sup.rate"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" 
+                            class="form-control text-end" [(ngModel)]="sup.rate" placeholder="ระบุอัตรา"
                                 (input)="calculateSupport(p)">
 
                         </td>
@@ -379,10 +384,9 @@
 
                         <td>
 
-                            <button class="btn btn-sm btn-outline-danger" (click)="removeSupport(p,i)">
+                            <button class="btn btn-sm btn-danger" (click)="removeSupport(p,i)">
 
-                                🗑
-
+                              <i class="bx bx-trash"></i>
                             </button>
 
                         </td>
@@ -395,15 +399,15 @@
 
                         <td>3</td>
 
-                        <td colspan="10" class="text-start fw-bold">
+                        <td colspan="10" class="text-start">
                             ค่าใช้จ่ายอื่น
                         </td>
 
                         <td>
 
-                            <button class="btn btn-sm btn-outline-secondary" (click)="addOtherDetail(p)">
+                            <button class="btn btn-sm btn-success" (click)="addOtherDetail(p)">
 
-                                เพิ่ม
+                                <span class="text-black"> เพิ่ม</span>
 
                             </button>
 
@@ -419,7 +423,7 @@
 
                         <td class="text-start">
 
-                            <input class="form-control form-control-sm" [(ngModel)]="other.name"
+                            <input class="form-control text-start" [(ngModel)]="other.name" Placeholder="ระบุค่าใช้จ่ายอื่น"
                                 (input)="updateDetailItems()">
 
                         </td>
@@ -428,7 +432,7 @@
 
                         <td>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm" [(ngModel)]="other.rate"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control" [(ngModel)]="other.rate" placeholder="ระบุอัตราค่าใช้จ่าย"
                                 (input)="calculateOther(p)">
 
                         </td>
@@ -441,10 +445,9 @@
 
                         <td>
 
-                            <button class="btn btn-sm btn-outline-danger" (click)="removeOther(p,i)">
+                            <button class="btn btn-sm btn-danger" (click)="removeOther(p,i)">
 
-                                🗑
-
+                                   <i class="bx bx-trash"></i>
                             </button>
 
                         </td>
