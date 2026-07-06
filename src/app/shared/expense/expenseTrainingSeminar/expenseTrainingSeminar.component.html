@@ -1,7 +1,4 @@
 <div class="card shadow-sm expense-card mb-3">
-    <div class="card-header">
-        <h5 class="mb-0">แบบฟอร์มค่าใช้จ่ายในการสัมมนาและฝึกอบรม</h5>
-    </div>
 
     <div class="card-body">
         <div class="row g-3">
@@ -38,36 +35,38 @@
 
 <div class="card shadow-sm expense-card">
     <div class="card-header">
-        <h5 class="mb-0">ค่าใช้จ่าย</h5>
+        <h5 class="mb-0">รายการค่าใช้จ่าย</h5>
     </div>
 
     <div class="card-body p-0">
         <div class="expense-table-responsive">
-            <table class="table table-bordered text-center expense-table align-middle mb-0"
-                style="table-layout: fixed;">
+
+            <table class="table table-bordered align-middle expense-table text-center mb-0">
+
+                <!-- header -->
                 <thead class="text-center text-white expense-table-header">
                     <tr>
-                        <th style="width:220px">ระดับ</th>
-                        <th style="width:250px">รายการค่าใช้จ่าย</th>
-                        <th style="width:100px">ครั้ง/รุ่น</th>
-                        <th colspan="4">จำนวนคน</th>
-                        <th colspan="2">ระบุจำนวน/หน่วย</th>
-                        <th colspan="2">อัตราค่าใช้จ่ายที่ตั้ง</th>
-                        <th style="width:150px">รวมเงิน (บาท)</th>
-                        <th style="width:50px"></th>
+                        <th style="width:10%">ระดับ</th>
+                        <th style="width:25%">รายการค่าใช้จ่าย</th>
+                        <th style="width:10%">ครั้ง/รุ่น</th>
+                        <th colspan="4" style="width:20%">จำนวนคน</th>
+                        <th colspan="2" style="width:10%">ระบุจำนวน/หน่วย</th>
+                        <th colspan="2" style="width:10%">อัตราค่าใช้จ่าย</th>
+                        <th style="width:10%">รวมค่าใช้จ่าย (บาท)</th>
+                        <th style="width:5%">ลบ</th>
                     </tr>
                     <tr>
                         <th></th>
                         <th></th>
                         <th></th>
-                        <th>ประเภท ก</th>
-                        <th>ประเภท ข</th>
-                        <th>บุคคลภายนอก</th>
-                        <th>รวมคน</th>
-                        <th>จำนวน</th>
-                        <th>หน่วยนับ</th>
-                        <th>อัตรา</th>
-                        <th>หน่วยนับ</th>
+                        <th style="width:5%">ประเภท ก</th>
+                        <th style="width:5%">ประเภท ข</th>
+                        <th style="width:5%">บุคคลภายนอก</th>
+                        <th style="width:5%">รวมคน</th>
+                        <th style="width:5%">จำนวน</th>
+                        <th style="width:5%">หน่วยนับ</th>
+                        <th style="width:5%">อัตรา</th>
+                        <th style="width:5%">หน่วยนับ</th>
                         <th></th>
                         <th></th>
                     </tr>
@@ -92,34 +91,34 @@
                         </td>
 
                         <td>
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." placeholder="ระบุจำนวนครั้ง/รุ่น" 
                                 inputmode="decimal" class="form-control text-center" [(ngModel)]="item.times"
                                 (ngModelChange)="calculate(item)">
                         </td>
 
                         <td>
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
-                                inputmode="decimal" class="form-control" [(ngModel)]="item.typeA"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." placeholder="ระบุจำนวนคนประเภท ก"
+                                inputmode="decimal" class="form-control text-center" [(ngModel)]="item.typeA"
                                 (ngModelChange)="calculate(item)">
                         </td>
 
                         <td>
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
-                                inputmode="decimal" class="form-control" [(ngModel)]="item.typeB"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." placeholder="ระบุจำนวนคนประเภท ข"
+                                inputmode="decimal" class="form-control text-center" [(ngModel)]="item.typeB"
                                 (ngModelChange)="calculate(item)">
                         </td>
 
                         <td>
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
-                                inputmode="decimal" class="form-control" [(ngModel)]="item.external"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." placeholder="ระบุจำนวนคนบุคคลภายนอก"
+                                inputmode="decimal" class="form-control text-center" [(ngModel)]="item.external"
                                 (ngModelChange)="calculate(item)">
                         </td>
 
                         <td class="fw-bold bg-light">{{ item.person }}</td>
 
                         <td>
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
-                                inputmode="decimal" class="form-control" [(ngModel)]="item.qty"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." placeholder="ระบุจำนวน"
+                                inputmode="decimal" class="form-control text-center" [(ngModel)]="item.qty"
                                 (ngModelChange)="calculate(item)">
                         </td>
 
@@ -138,8 +137,8 @@
                         </td>
 
                         <td>
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
-                                inputmode="decimal" class="form-control" [(ngModel)]="item.rate"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." placeholder="ระบุอัตราค่าใช้จ่าย"
+                                inputmode="decimal" class="form-control text-end" [(ngModel)]="item.rate"
                                 [readonly]="!item.isOtherRate" [class.bg-light]="!item.isOtherRate"
                                 (ngModelChange)="calculate(item)">
                         </td>
@@ -158,12 +157,12 @@
                             </ng-select>
                         </td>
 
-                        <td class="fw-semibold text-end text-primary">
+                        <td class="fw-semibold text-end text-black">
                             {{ item.total | number:'1.2-2' }}
                         </td>
 
                         <td>
-                            <button class="btn btn-sm btn-outline-danger" (click)="removeRow(i)">
+                            <button class="btn btn-sm btn-danger" (click)="removeRow(i)">
                                 <i class="bx bx-trash"></i>
                             </button>
                         </td>
@@ -182,8 +181,9 @@
     </div>
 
     <div class="card-footer d-flex justify-content-between">
-        <button class="btn btn-outline-primary btn-sm" (click)="addRow()">
-            + เพิ่มรายการ
+        <button class="btn btn-primary" (click)="addRow()">
+                 <i class="bx bx-plus text-black"></i>
+                   <span class="text-black"> เพิ่มรายการ</span>
         </button>
         <span class="text-danger">จำนวน {{ expenseList.length }} รายการ</span>
     </div>

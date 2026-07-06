@@ -547,7 +547,8 @@ export class ExpenseTrainingSeminarComponent {
     item.person = people;
 
     item.total =
-      people *
+      (Number(item.times) || 0) *
+      (Number(people) || 0) *
       (Number(item.qty) || 0) *
       (Number(item.rate) || 0);
 
