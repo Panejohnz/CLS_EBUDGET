@@ -440,9 +440,9 @@ export class ExpenseWitnessComponent {
             sum +
 
             (
-              (Number(r.person) || 0) *
+              this.toNumber(r.person) *
 
-              (Number(r.rate) || 0)
+              this.toNumber(r.rate)
             ),
 
           0
@@ -452,10 +452,16 @@ export class ExpenseWitnessComponent {
     }
 
     // child
-    return (Number(row.person) || 0) *
+    return this.toNumber(row.person) *
 
-      (Number(row.rate) || 0);
+      this.toNumber(row.rate);
 
+  }
+
+  getTotalCost(): number {
+    return this.list
+      .filter((x: any) => x.level === 1)
+      .reduce((sum: number, row: any) => sum + this.getCost(row), 0);
   }
 
   getTotal(row: any): number {
@@ -474,11 +480,11 @@ export class ExpenseWitnessComponent {
             sum +
 
             (
-              (Number(r.case) || 0) *
+              this.toNumber(r.case) *
 
-              (Number(r.person) || 0) *
+              this.toNumber(r.person) *
 
-              (Number(r.rate) || 0)
+              this.toNumber(r.rate)
             ),
 
           0
@@ -488,12 +494,18 @@ export class ExpenseWitnessComponent {
     }
 
     // child
-    return (Number(row.case) || 0) *
+    return this.toNumber(row.case) *
 
-      (Number(row.person) || 0) *
+      this.toNumber(row.person) *
 
-      (Number(row.rate) || 0);
+      this.toNumber(row.rate);
 
+  }
+
+  getGrandTotal(): number {
+    return this.list
+      .filter((x: any) => x.level === 1)
+      .reduce((sum: number, row: any) => sum + this.getTotal(row), 0);
   }
 
   updateDetailItems() {
