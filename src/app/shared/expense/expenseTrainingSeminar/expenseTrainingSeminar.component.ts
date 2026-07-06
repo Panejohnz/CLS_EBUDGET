@@ -295,6 +295,12 @@ export class ExpenseTrainingSeminarComponent {
     return name.includes('อื่น') || name.includes('other');
   }
 
+  getExpenseDetailNameForSave(item: any): string {
+    return this.isOtherExpenseDetail(item)
+      ? item.customExpenseType || ''
+      : item.expenseType || '';
+  }
+
   getExpenseDetailRate(item: any): number {
     const selected = this.getSelectedExpenseDetail(item);
 
@@ -335,6 +341,7 @@ export class ExpenseTrainingSeminarComponent {
     if (!hasSelectedInLevel) {
       item.pairId = null;
       item.expenseType = '';
+      item.customExpenseType = '';
       item.rate = 0;
       item.isOtherRate = false;
     }
@@ -420,6 +427,9 @@ export class ExpenseTrainingSeminarComponent {
         expenseType:
           row.Expense_Detail || '',
 
+        customExpenseType:
+          row.Expense_Detail || '',
+
         times:
           row.Times || 0,
 
@@ -472,6 +482,8 @@ export class ExpenseTrainingSeminarComponent {
 
       expenseType: '',
 
+      customExpenseType: '',
+
       times: 0,
 
       typeA: 0,
@@ -510,11 +522,13 @@ export class ExpenseTrainingSeminarComponent {
     item.isOtherRate = this.isOtherExpenseDetail(item);
 
     if (item.isOtherRate) {
+      item.customExpenseType = '';
       item.rate = '';
       this.calculate(item);
       return;
     }
 
+    item.customExpenseType = '';
     item.rate = this.getExpenseDetailRate(item);
     this.loadExpenseRates(item);
   }
@@ -578,7 +592,7 @@ export class ExpenseTrainingSeminarComponent {
           this.model.selectedExpenseTypeId,
 
         Expense_Detail:
-          item.expenseType,
+          this.getExpenseDetailNameForSave(item),
 
         Fk_Expense_Detail_Id:
           item.pairId || 0,
