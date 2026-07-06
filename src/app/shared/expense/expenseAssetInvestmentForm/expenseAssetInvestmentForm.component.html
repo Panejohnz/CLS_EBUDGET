@@ -145,8 +145,9 @@
                     <!-- price -->
                     <td class="align-top">
 
-                        <input [readonly]="!isTextMode" type="text" mask="separator.2" thousandSeparator="," placeholder="ระบุราคา/หน่วย" 
-                            decimalMarker="." inputmode="decimal" class="form-control  text-end" style="background-color: #ebeff3;"
+                        <input [readonly]="!isTextMode && !isOtherDetail(item)" type="text" mask="separator.2" thousandSeparator="," placeholder="ระบุราคา/หน่วย" 
+                            decimalMarker="." inputmode="decimal" class="form-control  text-end"
+                            [style.background-color]="(!isTextMode && !isOtherDetail(item)) ? '#ebeff3' : null"
                             [(ngModel)]="item.price" (ngModelChange)="calculate(i)">
 
                     </td>
