@@ -239,33 +239,26 @@ export class ExamineComponent {
 
         rows.forEach((row: any) => {
 
-          const oldPlan =
-            plans.find((p: any) =>
-
-              p.Fk_Plan_Id ==
-              row.Fk_Plan_Id
-
-              &&
-
-              p.Fk_Product_Id ==
-              row.Fk_Product_Id
-
-              &&
-
-              p.Fk_Activity_Id ==
-              row.Fk_Activity_Id
-
-              &&
-
-              p.Fk_Budget_Type ==
-              row.Fk_Budget_Type
-
-              &&
-
-              p.Fk_Expense_List ==
-              row.Fk_Expense_List
-
-            );
+          const rowRequestId = Number(
+            row.Request_Id ??
+            row.FK_Request_Id ??
+            0
+          );
+          const rowExpenseListId = Number(row.Fk_Expense_List || 0);
+          const matchedPlans = plans.filter((p: any) =>
+            Number(
+              p.FK_Request_Id ??
+              p.Fk_Request_Id ??
+              p.Request_Id ??
+              0
+            ) === rowRequestId
+          );
+          const oldPlan = (
+            matchedPlans.find((p: any) =>
+              Number(p.Fk_Expense_List || 0) === rowExpenseListId
+            ) ||
+            matchedPlans[0]
+          );
 
           // ถ้ามีข้อมูลเก่า
           if (oldPlan) {
@@ -275,16 +268,16 @@ export class ExamineComponent {
               oldPlan.Plan_Id || 0;
 
             row.Adjust1 =
-              oldPlan.Adjust1 || 0;
+              Number(oldPlan.Adjust1 ?? oldPlan.adjust1 ?? oldPlan.ADJUST1 ?? 0);
 
             row.Adjust2 =
-              oldPlan.Adjust2 || 0;
+              Number(oldPlan.Adjust2 ?? oldPlan.adjust2 ?? oldPlan.ADJUST2 ?? 0);
 
             row.Adjust3 =
-              oldPlan.Adjust3 || 0;
+              Number(oldPlan.Adjust3 ?? oldPlan.adjust3 ?? oldPlan.ADJUST3 ?? 0);
 
             row.Update_Amount =
-              oldPlan.Update_Amount || 0;
+              Number(oldPlan.Update_Amount ?? oldPlan.update_amount ?? 0);
 
           }
 
@@ -314,19 +307,22 @@ export class ExamineComponent {
           // PLAN
           // =====================
 
+          const planKey =
+            this.buildGroupKey(row.Fk_Plan_Id, row.Plan_Name);
+
           let plan = this.groupData.find(
 
             (x: any) =>
 
-              x.Plan_Name ==
-
-              row.Plan_Name
+              x.key == planKey
 
           );
 
           if (!plan) {
 
             plan = {
+
+              key: planKey,
 
               Plan_Name:
                 row.Plan_Name || '-',
@@ -345,19 +341,22 @@ export class ExamineComponent {
           // PRODUCT
           // =====================
 
+          const productKey =
+            this.buildGroupKey(row.Fk_Product_Id, row.Product_Name);
+
           let product = plan.products.find(
 
             (x: any) =>
 
-              x.Product_Name ==
-
-              row.Product_Name
+              x.key == productKey
 
           );
 
           if (!product) {
 
             product = {
+
+              key: productKey,
 
               Product_Name:
                 row.Product_Name || '-',
@@ -376,19 +375,22 @@ export class ExamineComponent {
           // ACTIVITY
           // =====================
 
+          const activityKey =
+            this.buildGroupKey(row.Fk_Activity_Id, row.Activity_Name);
+
           let activity = product.activities.find(
 
             (x: any) =>
 
-              x.Activity_Name ==
-
-              row.Activity_Name
+              x.key == activityKey
 
           );
 
           if (!activity) {
 
             activity = {
+
+              key: activityKey,
 
               Activity_Name:
                 row.Activity_Name || '-',
@@ -407,19 +409,25 @@ export class ExamineComponent {
           // BUDGET
           // =====================
 
+          const budgetKey =
+            this.buildGroupKey(row.Fk_Budget_Type, row.Budget_Type_Name || row.Budget_Type);
+
           let budget = activity.budgets.find(
 
             (x: any) =>
 
-              x.Budget_Type ==
-
-              (row.Budget_Type_Name || row.Budget_Type)
+              x.key == budgetKey
 
           );
 
           if (!budget) {
 
             budget = {
+
+              key: budgetKey,
+
+              Fk_Budget_Type:
+                row.Fk_Budget_Type || 0,
 
               Budget_Type:
                 row.Budget_Type_Name || row.Budget_Type || '-',
@@ -544,6 +552,15 @@ export class ExamineComponent {
 
     return items;
 
+  }
+
+  private buildGroupKey(id: any, name: any): string {
+    const normalizedId = Number(id || 0);
+    const normalizedName = String(name || '-').trim();
+
+    return normalizedId
+      ? `${normalizedId}`
+      : normalizedName;
   }
 
   // =====================================

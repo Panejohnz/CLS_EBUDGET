@@ -302,6 +302,21 @@ export class ProjectTransferComponent
 
     if (!date) return null;
 
+    if (date?.year && date?.month && date?.day) {
+      return {
+        ...date,
+        year: this.toChristianYear(Number(date.year))
+      };
+    }
+
+    if (date instanceof Date) {
+      return {
+        day: date.getDate(),
+        month: date.getMonth() + 1,
+        year: date.getFullYear()
+      };
+    }
+
     // yyyy-mm-dd
     if (
       typeof date === 'string' &&
@@ -312,7 +327,7 @@ export class ProjectTransferComponent
 
       return {
 
-        year: Number(parts[0]),
+        year: this.toChristianYear(Number(parts[0])),
         month: Number(parts[1]),
         day: Number(parts[2])
 
@@ -338,7 +353,7 @@ export class ProjectTransferComponent
 
           day: Number(parts[0]),
           month: Number(parts[1]),
-          year: Number(parts[2])
+          year: this.toChristianYear(Number(parts[2]))
 
         };
 
@@ -348,6 +363,10 @@ export class ProjectTransferComponent
 
     return null;
 
+  }
+
+  private toChristianYear(year: number): number {
+    return year > 2500 ? year - 543 : year;
   }
   onChangeFromDepartment(isEditMode = false) {
     const dep =
@@ -624,7 +643,7 @@ const plan =
 
     if (!date) return '';
 
-    const year = date.year;
+    const year = this.toChristianYear(date.year);
 
     const month =
       String(date.month).padStart(2, '0');

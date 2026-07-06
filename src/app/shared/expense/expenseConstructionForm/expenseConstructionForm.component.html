@@ -1,4 +1,4 @@
-<!-- table -->
+﻿<!-- table -->
 <div class="expense-table-responsive">
 
     <table class="table table-bordered align-middle expense-table text-center mb-0">
@@ -14,6 +14,10 @@
 
                 <th rowspan="2" width="20%">
                     รายการ
+                </th>
+
+                <th rowspan="2" width="12%">
+                    ประเภทผูกพัน
                 </th>
 
                 <th rowspan="2" width="10%">
@@ -71,27 +75,47 @@
 
                 </td>
 
+                <td>
+
+                    <div class="d-grid" style="grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <label class="border rounded px-2 py-1 mb-0 text-center">
+                            <input type="radio" [name]="'construction_binding_' + i"
+                                [checked]="item.bindingType === 'new'"
+                                (change)="onBindingTypeChange(item, 'new')">
+                            ผูกพันใหม่
+                        </label>
+
+                        <label class="border rounded px-2 py-1 mb-0 text-center">
+                            <input type="radio" [name]="'construction_binding_' + i"
+                                [checked]="item.bindingType === 'old'"
+                                (change)="onBindingTypeChange(item, 'old')">
+                            ผูกพันเดิม
+                        </label>
+                    </div>
+
+                </td>
+
                 <!-- ระยะเวลา -->
                 <td>
 
-                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" placeholder="ระบุปี"
-                        class="form-control  text-center" [(ngModel)]="item.year"
-                        (ngModelChange)="updateDetailItems()">
+                    <input type="text"
+                        placeholder="ระบุปี" class="form-control  text-center" [(ngModel)]="item.year"
+                        (ngModelChange)="onBaseYearChange()">
 
                 </td>
                 <!-- จำนวน -->
                 <td>
 
-                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" placeholder="ระบุจำนวน"
-                        class="form-control  text-center" [(ngModel)]="item.qty"
+                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                        placeholder="ระบุจำนวน" class="form-control  text-center" [(ngModel)]="item.qty"
                         (ngModelChange)="calculate(i)">
 
                 </td>
                 <!-- ราคา -->
                 <td>
 
-                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" placeholder="ระบุราคา/หน่วย"
-                        class="form-control  text-end" [(ngModel)]="item.price"
+                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                        placeholder="ระบุราคา/หน่วย" class="form-control  text-end" [(ngModel)]="item.price"
                         (ngModelChange)="calculate(i)">
 
                 </td>
@@ -108,8 +132,8 @@
                 <!-- สร้างใหม่ -->
                 <td>
 
-                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" placeholder="ระบุจำนวนสร้างใหม่"
-                        class="form-control  text-center" [(ngModel)]="item.newQty"
+                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                        placeholder="ระบุจำนวนสร้างใหม่" class="form-control  text-center" [(ngModel)]="item.newQty"
                         (ngModelChange)="updateDetailItems()">
 
                 </td>
@@ -117,8 +141,8 @@
                 <!-- ปรับปรุง -->
                 <td>
 
-                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" placeholder="ระบุจำนวนปรับปรุง"
-                        class="form-control text-center" [(ngModel)]="item.updateQty"
+                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                        placeholder="ระบุจำนวนปรับปรุง" class="form-control text-center" [(ngModel)]="item.updateQty"
                         (ngModelChange)="updateDetailItems()">
 
                 </td>
@@ -128,7 +152,7 @@
 
                     <button class="btn btn-danger btn-sm" (click)="removeItem(i)">
 
-                               <i class="bx bx-trash"></i>
+                        <i class="bx bx-trash"></i>
 
                     </button>
 
@@ -143,7 +167,7 @@
 
             <tr>
 
-                <td colspan="5" class="text-end fw-bold">
+                <td colspan="6" class="text-end fw-bold">
                     รวมทั้งสิ้น
                 </td>
 
@@ -160,31 +184,6 @@
         </tfoot>
 
     </table>
-
-</div>
-
-<!-- TYPE -->
-<div class="mt-4" *ngIf="expenseItem?.Expense_Id == 65">
-
-    <label class="fw-semibold me-3">
-        ประเภทผูกพัน
-    </label>
-
-    <label class="me-3">
-
-        <input type="checkbox" [(ngModel)]="isOld" (ngModelChange)="updateDetailItems()">
-
-        ผูกพันเดิม
-
-    </label>
-
-    <label>
-
-        <input type="checkbox" [(ngModel)]="isNew" (ngModelChange)="updateDetailItems()">
-
-        ผูกพันใหม่
-
-    </label>
 
 </div>
 
@@ -220,7 +219,7 @@
 
         <div class="col-md-2">
 
-            ปีที่ {{i+1}}
+            ปีที่ {{ yearly[i].year || '-' }}
 
         </div>
 
@@ -228,17 +227,33 @@
         <div class="col-md-5">
 
             <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
-                class="form-control  text-end" [(ngModel)]="yearly[i].amount"
-                (ngModelChange)="updateDetailItems()" placeholder="จำนวนเงิน">
+                class="form-control  text-end" [(ngModel)]="yearly[i].amount" (ngModelChange)="onYearlyAmountChange(i)"
+                placeholder="จำนวนเงิน">
 
         </div>
 
         <!-- milestone -->
         <div class="col-md-5">
 
-            <input class="form-control" [(ngModel)]="yearly[i].milestone"
-                (ngModelChange)="updateDetailItems()" placeholder="จำนวนงวด">
+            <input class="form-control" [(ngModel)]="yearly[i].milestone" (ngModelChange)="updateDetailItems()"
+                placeholder="จำนวนงวด">
 
+        </div>
+
+    </div>
+
+    <div class="row mt-2 align-items-center fw-bold">
+
+        <div class="col-md-2 text-end">
+            รวมทั้งสิ้น
+        </div>
+
+        <div class="col-md-5 text-end" [class.text-danger]="yearlyTotal > grandTotal">
+            {{ yearlyTotal | number:'1.2-2' }}
+        </div>
+
+        <div class="col-md-5 text-danger" *ngIf="yearlyTotal > grandTotal">
+            ยอดรวมต้องไม่เกินวงเงินรวม
         </div>
 
     </div>

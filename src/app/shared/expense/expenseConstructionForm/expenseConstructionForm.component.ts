@@ -15,6 +15,7 @@ export class ExpenseConstructionFormComponent {
   ];
 
   grandTotal = 0;
+  yearlyTotal = 0;
 
   isOld = false;
   isNew = false;
@@ -43,6 +44,10 @@ export class ExpenseConstructionFormComponent {
 
   }
 
+  private toNumber(value: any): number {
+    return Number(value?.toString().replace(/,/g, '')) || 0;
+  }
+
   // =========================
   // CREATE ITEM
   // =========================
@@ -52,6 +57,8 @@ export class ExpenseConstructionFormComponent {
     return {
 
       name: '',
+
+      bindingType: '',
 
       year: 0,
 
@@ -103,8 +110,8 @@ export class ExpenseConstructionFormComponent {
     const item = this.items[i];
 
     item.total =
-      (item.price || 0) *
-      (item.qty || 0);
+      this.toNumber(item.price) *
+      this.toNumber(item.qty);
 
     this.calculateAll();
 
@@ -117,9 +124,12 @@ export class ExpenseConstructionFormComponent {
     this.grandTotal =
       this.items.reduce((sum: number, item: any) => {
 
-        return sum + (item.total || 0);
+        return sum + this.toNumber(item.total);
 
       }, 0);
+
+    this.syncYearlyYears();
+    this.yearlyTotal = this.getYearlyTotal();
 
   }
 
@@ -139,13 +149,69 @@ export class ExpenseConstructionFormComponent {
           oldData[i]?.amount || 0,
 
         milestone:
-          oldData[i]?.milestone || ''
+          oldData[i]?.milestone || '',
+
+        year:
+          oldData[i]?.year || ''
 
       })
     );
 
+    this.syncYearlyYears();
     this.updateDetailItems();
 
+  }
+
+  onBaseYearChange() {
+    this.syncYearlyYears();
+    this.updateDetailItems();
+  }
+
+  onBindingTypeChange(item: any, value: string) {
+    item.bindingType = value;
+    this.syncBindingFlags();
+    this.updateDetailItems();
+  }
+
+  private syncBindingFlags() {
+    this.isNew = this.items.some((item: any) => item.bindingType === 'new');
+    this.isOld = this.items.some((item: any) => item.bindingType === 'old');
+  }
+
+  getBaseYear(): number {
+    return this.items.reduce((year: number, item: any) => {
+      return year || this.toNumber(item.year);
+    }, 0);
+  }
+
+  syncYearlyYears() {
+    const baseYear = this.getBaseYear();
+
+    this.yearly.forEach((row: any, index: number) => {
+      row.year = baseYear ? baseYear + index + 1 : '';
+    });
+  }
+
+  onYearlyAmountChange(index: number) {
+    this.yearlyTotal = this.getYearlyTotal();
+
+    if (this.yearlyTotal > this.grandTotal) {
+      const otherTotal = this.yearly.reduce((sum: number, row: any, i: number) => {
+        return i === index ? sum : sum + this.toNumber(row.amount);
+      }, 0);
+
+      this.yearly[index].amount = Math.max(this.grandTotal - otherTotal, 0);
+      this.yearlyTotal = this.getYearlyTotal();
+      basicAlert('warning', 'ยอดกระจายเงินรวมต้องไม่เกินวงเงินรวม', '');
+    }
+
+    this.updateDetailItems();
+  }
+
+  getYearlyTotal(): number {
+    return this.yearly.reduce((sum: number, row: any) => {
+      return sum + this.toNumber(row.amount);
+    }, 0);
   }
 
   // =========================
@@ -164,6 +230,8 @@ export class ExpenseConstructionFormComponent {
   // =========================
 
   updateDetailItems() {
+
+    this.yearlyTotal = this.getYearlyTotal();
 
     if (!this.model) {
       return;
@@ -187,6 +255,8 @@ export class ExpenseConstructionFormComponent {
     // =========================
     // FLAG
     // =========================
+
+    this.syncBindingFlags();
 
     this.model.Budget_Request_Detail_Item.push({
 
@@ -230,23 +300,26 @@ export class ExpenseConstructionFormComponent {
         Expense_Detail:
           item.name || '',
 
+        Month_Name:
+          item.bindingType || '',
+
         Day:
-          Number(item.year) || 0,
+          this.toNumber(item.year),
 
         Price:
-          Number(item.price) || 0,
+          this.toNumber(item.price),
 
         Quantity:
-          Number(item.qty) || 0,
+          this.toNumber(item.qty),
 
         Total:
-          Number(item.total) || 0,
+          this.toNumber(item.total),
 
         People:
-          Number(item.newQty) || 0,
+          this.toNumber(item.newQty),
 
         Sum_People:
-          Number(item.updateQty) || 0,
+          this.toNumber(item.updateQty),
 
         Sequence:
           i + 1
@@ -272,13 +345,16 @@ export class ExpenseConstructionFormComponent {
           'YEAR_' + (i + 1),
 
         Price:
-          Number(y.amount) || 0,
+          this.toNumber(y.amount),
+
+        Day:
+          this.toNumber(y.year),
 
         Reson:
           y.milestone || '',
 
         Total:
-          Number(y.amount) || 0,
+          this.toNumber(y.amount),
 
         Sequence:
           i + 1
@@ -286,6 +362,7 @@ export class ExpenseConstructionFormComponent {
       });
 
     });
+    this.yearlyTotal = this.getYearlyTotal();
     this.model.Total = this.grandTotal;
   }
 
@@ -361,6 +438,9 @@ export class ExpenseConstructionFormComponent {
           name:
             row.Expense_Detail || '',
 
+          bindingType:
+            row.Month_Name || (this.isNew ? 'new' : this.isOld ? 'old' : ''),
+
           year:
             Number(row.Day || 0),
 
@@ -382,6 +462,7 @@ export class ExpenseConstructionFormComponent {
         }));
 
     }
+    this.syncBindingFlags();
 
     // =========================
     // YEARLY
@@ -409,11 +490,16 @@ export class ExpenseConstructionFormComponent {
             Number(x.Price || 0),
 
           milestone:
-            x.Reson || ''
+            x.Reson || '',
+
+          year:
+            Number(x.Day || 0)
 
         }));
 
     }
+    this.syncYearlyYears();
+    this.yearlyTotal = this.getYearlyTotal();
     this.model.Total = this.grandTotal;
     this.calculateAll();
 
