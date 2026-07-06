@@ -3,6 +3,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { catchError, forkJoin, of } from 'rxjs';
 import { EbudgetService } from 'src/app/core/services/ebudget.service'
 
+declare const confirmAlert: any;
+
 @Component({
   selector: 'app-expense-witness',
   templateUrl: './expenseWitness.component.html',
@@ -11,6 +13,8 @@ import { EbudgetService } from 'src/app/core/services/ebudget.service'
 export class ExpenseWitnessComponent {
 
   @Input() model: any;
+
+  @Input() modal: any;
 
   @Input() expenseItem: any;
 
@@ -21,85 +25,41 @@ export class ExpenseWitnessComponent {
 
   Mas_Expense_Detial_List: any[] = [];
   Mas_Expense_Detial_Rate_List: any[] = [];
+  caseSizeOptions: any[] = [];
   private currentExpenseTypeId: any = null;
+  private detailItemsSignature = '';
+  private masterLoaded = false;
 
-  list: any[] = [
+  main = {
+    costPerCase: 0,
+    total: 0
+  };
 
-    // {
-    //   name: 'ค่าตอบแทนและค่าใช้จ่ายแก่พยาน',
-    //   level: 0,
-    //   children: true
-    // },
-
-    {
-      requestItemId: 0,
-
-      name: 'ขนาดคดี S',
-
-      level: 1,
-
-      size: 'S',
-
-      case: 0,
-
-      person: 0,
-
-      rate: 0
-    },
-
-    {
-      requestItemId: 0,
-
-      name: 'ขนาดคดี M',
-
-      level: 1,
-
-      size: 'M',
-
-      case: 0,
-
-      person: 0,
-
-      rate: 0
-    },
-
-    {
-      requestItemId: 0,
-
-      name: 'ขนาดคดี L',
-
-      level: 1,
-
-      size: 'L',
-
-      case: 0,
-
-      person: 0,
-
-      rate: 0
-    }
-
-  ];
+  caseList: any[] = [];
 
   ngOnInit() {
 
-    if (!this.model) return;
-
-    if (!this.model.Budget_Request_Detail_Item) {
-
-      this.model.Budget_Request_Detail_Item = [];
-
-    }
+    if (!this.ensureModel()) return;
 
     this.loadExpenseDetails();
 
   }
 
   ngDoCheck() {
-    if (!this.model) return;
+    if (!this.ensureModel()) return;
 
     if (this.currentExpenseTypeId != this.model.selectedExpenseTypeId) {
       this.loadExpenseDetails();
+      return;
+    }
+
+    if (this.masterLoaded) {
+      const signature = this.getCurrentDetailItemsSignature();
+
+      if (signature && signature !== this.detailItemsSignature) {
+        this.bindData();
+        this.applyMasterRates(false);
+      }
     }
   }
 
@@ -109,8 +69,34 @@ export class ExpenseWitnessComponent {
 
   }
 
+  private ensureModel(): boolean {
+    if (!this.model && this.modal) {
+      this.model = this.modal;
+    }
+
+    if (!this.model) {
+      return false;
+    }
+
+    if (!this.model.selectedExpenseTypeId && this.expenseItem?.Expense_Id) {
+      this.model.selectedExpenseTypeId = this.expenseItem.Expense_Id;
+    }
+
+    if (!this.model.selectedExpenseTypeId) {
+      return false;
+    }
+
+    if (!this.model.Budget_Request_Detail_Item) {
+      this.model.Budget_Request_Detail_Item = [];
+    }
+
+    return true;
+  }
+
   loadExpenseDetails() {
     this.currentExpenseTypeId = this.model.selectedExpenseTypeId;
+    this.masterLoaded = false;
+    this.detailItemsSignature = '';
 
     let model = {
       FUNC_CODE: "FUNC-Get_Mas_Expense_Detial",
@@ -128,36 +114,41 @@ export class ExpenseWitnessComponent {
             ? expenseDetailList
             : [];
 
+        this.caseSizeOptions = this.getCaseSizeOptions();
         this.loadExpenseRates();
       }, () => {
         this.Mas_Expense_Detial_List = [];
+        this.caseSizeOptions = this.getCaseSizeOptions();
         this.loadExpenseRates();
       });
   }
 
   loadExpenseRates() {
-    const expenseDetailIds = this.Mas_Expense_Detial_List
-      .map((detail: any) =>
+    const expenseIds = [
+      this.model.selectedExpenseTypeId,
+      ...this.Mas_Expense_Detial_List.map((detail: any) =>
         this.getExpenseDetailId(detail)
       )
-      .filter((id: any, index: number, list: any[]) =>
-        id !== null &&
-        id !== undefined &&
-        id !== '' &&
-        list.findIndex((item: any) => this.isSameId(item, id)) === index
-      );
+    ].filter((id: any, index: number, list: any[]) =>
+      id !== null &&
+      id !== undefined &&
+      id !== '' &&
+      list.findIndex((item: any) => this.isSameId(item, id)) === index
+    );
 
-    if (expenseDetailIds.length == 0) {
+    if (expenseIds.length == 0) {
       this.Mas_Expense_Detial_Rate_List = [];
+      this.caseSizeOptions = this.getCaseSizeOptions();
+      this.masterLoaded = true;
       this.bindData();
-      this.applyMasterRates();
+      this.applyMasterRates(false);
       return;
     }
 
-    const requests = expenseDetailIds.map((expenseDetailId: any) =>
+    const requests = expenseIds.map((expenseId: any) =>
       this.serviceebud.GatewayGetData({
-        FUNC_CODE: "FUNC-Get_Mas_Mas_Expense_Rate",
-        Fk_Expense_Id: expenseDetailId
+        FUNC_CODE: "FUNC-Get_Mas_Expense_Rate",
+        Fk_Expense_Id: expenseId
       }).pipe(
         catchError(() => of({ List_Mas_Expense_Rate: [] }))
       )
@@ -167,15 +158,24 @@ export class ExpenseWitnessComponent {
       .subscribe((responses: any[]) => {
         this.Mas_Expense_Detial_Rate_List =
           responses.reduce((list: any[], response: any) => {
-            return list.concat(this.getExpenseRateList(response));
+            const expenseRateList =
+              response?.List_Mas_Expense_Rate;
+
+            return Array.isArray(expenseRateList)
+              ? list.concat(expenseRateList)
+              : list;
           }, []);
 
+        this.caseSizeOptions = this.getCaseSizeOptions();
+        this.masterLoaded = true;
         this.bindData();
-        this.applyMasterRates();
+        this.applyMasterRates(false);
       }, () => {
         this.Mas_Expense_Detial_Rate_List = [];
+        this.caseSizeOptions = this.getCaseSizeOptions();
+        this.masterLoaded = true;
         this.bindData();
-        this.applyMasterRates();
+        this.applyMasterRates(false);
       });
   }
 
@@ -193,6 +193,16 @@ export class ExpenseWitnessComponent {
       b !== null &&
       b !== undefined &&
       Number(a) === Number(b);
+  }
+
+  private normalizeId(value: any): number | '' {
+    if (value === null || value === undefined || value === '') {
+      return '';
+    }
+
+    const numberValue = Number(value);
+
+    return Number.isNaN(numberValue) ? '' : numberValue;
   }
 
   private getExpenseDetailId(row: any): any {
@@ -225,41 +235,58 @@ export class ExpenseWitnessComponent {
     ].filter(Boolean).join(' '));
   }
 
-  private getExpenseRateList(response: any): any[] {
-    if (Array.isArray(response?.List_Mas_Expense_Rate)) {
-      return response.List_Mas_Expense_Rate;
+  private getTypeName(type: any): string {
+    if (type && !['allowance', 'hotel', 'travel', 'other'].includes(type)) {
+      return this.getExpenseDetailName(type);
     }
 
-    if (response?.Mas_Expense_Rate) {
-      return [response.Mas_Expense_Rate];
-    }
+    const nameMap: any = {
+      allowance: 'ค่าเบี้ยเลี้ยง',
+      hotel: 'ค่าที่พัก',
+      travel: 'ค่าพาหนะ'
+    };
 
-    return [];
+    return nameMap[type] ?? type ?? '';
   }
 
-  private getCaseSizeLetter(value: any): string {
-    if (typeof value === 'object' && value?.size) {
-      const size = value.size.toString().trim().toUpperCase();
+  private getExpenseDetailName(value: any): string {
+    const detail = this.getExpenseDetailById(value);
 
-      return ['S', 'M', 'L'].includes(size) ? size : '';
+    return detail?.Expense_Detial_Name ??
+      detail?.Expense_Detail ??
+      detail?.Expense_Name ??
+      detail?.Expense_Detial_Short_Name ??
+      value ??
+      '';
+  }
+
+  private getExpenseDetailById(value: any): any {
+    return this.Mas_Expense_Detial_List.find((detail: any) =>
+      this.isSameId(this.getExpenseDetailId(detail), value)
+    );
+  }
+
+  private resolveItemType(row: any): string {
+    const type = row?.Month_Name || row?.Expense_Detail || '';
+    const text = this.normalizeText(type);
+
+    if (['allowance', 'hotel', 'travel', 'other'].includes(type)) {
+      return type;
     }
 
-    const text = [
-      value?.Child_Detial_Name,
-      value?.Child_Detail_Name,
-      value?.Expense_Detail,
-      value?.Expense_Detial_Name,
-      value?.Expense_Name,
-      value?.Expense_Detial_Short_Name,
-      value?.Rate_Name,
-      value?.Type_Name,
-      value?.Code,
-      typeof value === 'string' ? value : ''
-    ].filter(Boolean).join(' ');
+    if (text.includes(this.normalizeText('ค่าเบี้ยเลี้ยง'))) {
+      return 'allowance';
+    }
 
-    const match = text.match(/(?:ขนาดคดี|ขนาด)?\s*\b([SML])\b/i);
+    if (text.includes(this.normalizeText('ค่าที่พัก')) || text.includes(this.normalizeText('ที่พัก'))) {
+      return 'hotel';
+    }
 
-    return match?.[1]?.toUpperCase() || '';
+    if (text.includes(this.normalizeText('ค่าพาหนะ')) || text.includes(this.normalizeText('พาหนะ'))) {
+      return 'travel';
+    }
+
+    return type ? 'other' : '';
   }
 
   private getExpenseDetailByName(name: any): any {
@@ -286,85 +313,226 @@ export class ExpenseWitnessComponent {
     });
   }
 
-  private getExpenseDetailBySize(size: any): any {
-    const sizeLetter = this.getCaseSizeLetter(size);
+  private getDetailSizeText(row: any): string {
+    const explicitSize = [
+      row?.Child_Detial_Name,
+      row?.Child_Detail_Name
+    ].find((value: any) => value !== null && value !== undefined && value !== '');
 
-    if (!sizeLetter) {
-      return null;
+    if (explicitSize) {
+      return explicitSize.toString().trim();
     }
 
-    return this.Mas_Expense_Detial_List.find((detail: any) =>
-      this.getCaseSizeLetter(detail) === sizeLetter
-    );
+    const text = [
+      row?.Expense_Detial_Name,
+      row?.Expense_Detail,
+      row?.Expense_Name,
+      row?.Expense_Detial_Short_Name,
+      row?.Rate_Name,
+      row?.Code
+    ].filter(Boolean).join(' ');
+
+    const match = text.match(/ขนาดคดี\s*[SML]|ขนาด\s*[SML]|\b[SML]\b/i);
+
+    return match ? match[0].replace(/\s+/g, ' ').trim() : '';
   }
 
-  private getRateForExpenseDetail(itemOrName: any): number {
-    const name = typeof itemOrName === 'object'
-      ? itemOrName?.name
-      : itemOrName;
-    const sizeLetter = this.getCaseSizeLetter(itemOrName);
-    const detail =
-      this.getExpenseDetailBySize(sizeLetter) ||
-      this.getExpenseDetailByName(name);
-    const detailId = this.getExpenseDetailId(detail);
+  private normalizeCaseSize(value: any): string {
+    const text = (value ?? '').toString().trim();
 
-    const byId = this.Mas_Expense_Detial_Rate_List.find((row: any) =>
-      this.isSameId(this.getExpenseDetailId(row), detailId)
+    if (!text) {
+      return '';
+    }
+
+    const sizeLetter = text.match(/[SML]/i)?.[0]?.toUpperCase();
+
+    return sizeLetter
+      ? `ขนาดคดี ${sizeLetter}`
+      : text;
+  }
+
+  private getCaseSizeLabel(sizeLetter: string): string {
+    return `\u0e02\u0e19\u0e32\u0e14\u0e04\u0e14\u0e35 ${sizeLetter}`;
+  }
+
+  private getNormalizedCaseSizeFromRow(row: any): string {
+    const explicitSize = [
+      row?.Child_Detial_Name,
+      row?.Child_Detail_Name,
+      row?.Purpose
+    ].find((value: any) => value !== null && value !== undefined && value !== '');
+
+    if (explicitSize) {
+      return explicitSize.toString().trim();
+    }
+
+    const text = [
+      row?.Expense_Detial_Name,
+      row?.Expense_Detail,
+      row?.Expense_Name,
+      row?.Expense_Detial_Short_Name,
+      row?.Rate_Name,
+      row?.Code
+    ].filter(Boolean).join(' ').toString();
+
+    const sizeLetter = text.match(/[SML]/i)?.[0]?.toUpperCase();
+
+    return sizeLetter
+      ? this.getCaseSizeLabel(sizeLetter)
+      : '';
+  }
+
+  getCaseSizeOptions(): any[] {
+    const options = [
+      ...this.Mas_Expense_Detial_List
+    ].map((row: any) => this.getNormalizedCaseSizeFromRow(row))
+      .filter((value: string) => !!value);
+
+    const uniqueOptions = options.filter((value: string, index: number, list: string[]) =>
+      list.indexOf(value) === index
+    );
+
+    if (uniqueOptions.length) {
+      return uniqueOptions;
+    }
+
+    return [
+      this.getCaseSizeLabel('S'),
+      this.getCaseSizeLabel('M'),
+      this.getCaseSizeLabel('L')
+    ];
+
+  }
+
+  getExpenseOptions(group: any): any[] {
+    const groupSize = this.getNormalizedCaseSizeFromRow({ Purpose: group?.name });
+
+    if (!groupSize) {
+      return [];
+    }
+
+    const hasGroupedDetails = this.Mas_Expense_Detial_List.some((detail: any) =>
+      !!this.getNormalizedCaseSizeFromRow(detail)
+    );
+
+    const filtered = this.Mas_Expense_Detial_List.filter((detail: any) => {
+      const detailSize = this.getNormalizedCaseSizeFromRow(detail);
+
+      return this.normalizeText(detailSize) === this.normalizeText(groupSize);
+    });
+
+    return filtered.length
+      ? filtered
+      : hasGroupedDetails
+        ? []
+        : this.Mas_Expense_Detial_List;
+  }
+
+  getExpenseDetailOptionId(option: any): number | '' {
+    return this.normalizeId(this.getExpenseDetailId(option));
+  }
+
+  getGroupRate(group: any): number {
+    return (group?.items || []).reduce((sum: number, item: any) => {
+      return sum + (Number(item?.amount) || 0);
+    }, 0);
+  }
+
+  isOtherExpenseDetail(item: any): boolean {
+    const name = this.normalizeText(this.getExpenseDetailName(item?.expenseDetailId || item?.type));
+
+    return name.includes(this.normalizeText('อื่น'));
+  }
+
+  private getRateForExpenseDetail(value: any): number {
+    const detail = this.getExpenseDetailById(value) ?? this.getExpenseDetailByName(value);
+    const detailId = this.normalizeId(this.getExpenseDetailId(detail) ?? value);
+
+    const byId = this.Mas_Expense_Detial_Rate_List.find((rate: any) =>
+      this.isSameId(rate?.Fk_Expense_Detail_Id, detailId) ||
+      this.isSameId(this.getExpenseDetailId(rate), detailId)
     );
 
     if (byId) {
       return this.getRowRate(byId);
     }
 
-    const bySize = this.Mas_Expense_Detial_Rate_List.find((row: any) =>
-      sizeLetter && this.getCaseSizeLetter(row) === sizeLetter
-    );
+    const detailRate = this.getRowRate(detail);
 
-    if (bySize) {
-      return this.getRowRate(bySize);
+    if (detailRate > 0) {
+      return detailRate;
     }
 
-    const text = this.normalizeText(name);
-    const byName = this.Mas_Expense_Detial_Rate_List.find((row: any) => {
-      const rateText = this.getRateRowText(row);
-
-      return rateText &&
-        text &&
-        (
-          rateText.includes(text) ||
-          text.includes(rateText)
-        );
-    });
-
-    if (byName) {
-      return this.getRowRate(byName);
-    }
-
-    const detailIndex = this.Mas_Expense_Detial_List.findIndex((item: any) =>
-      this.isSameId(this.getExpenseDetailId(item), detailId)
-    );
-
-    const byIndex = this.getRowRate(this.Mas_Expense_Detial_Rate_List[detailIndex]);
-
-    if (byIndex > 0) {
-      return byIndex;
-    }
-
-    return this.getRowRate(detail);
+    return 0;
   }
 
-  private applyMasterRates() {
-    this.list.forEach((item: any) => {
-      if (item.level != 1) return;
+  private getAmountFromRow(row: any): number {
+    const price = this.toNumber(row?.Price);
 
-      const rate = this.getRateForExpenseDetail(item);
+    return price > 0
+      ? price
+      : this.toNumber(row?.Expense_Rate) ||
+      this.getRateForExpenseDetail(row?.Fk_Expense_Detail_Id ?? row?.Month_Name ?? row?.Expense_Detail);
+  }
 
-      if (rate > 0) {
-        item.rate = rate;
-      }
+  private applyMasterRates(update = true) {
+    this.caseList.forEach((group: any) => {
+      (group.items || []).forEach((item: any) => {
+        if (this.isOtherExpenseDetail(item)) return;
+
+        const rate = this.getRateForExpenseDetail(item.expenseDetailId || item.type);
+
+        if (rate > 0) {
+          item.amount = rate;
+        }
+      });
+
+      this.calculate(group, false);
     });
 
-    this.updateDetailItems();
+    if (update) {
+      this.updateDetailItems();
+    }
+  }
+
+  createGroup(name: string) {
+
+    return {
+
+      name,
+
+      case: 0,
+
+      person: 0,
+
+      day: 0,
+
+      items: [
+        this.newItem()
+      ],
+
+      costPerCase: 0,
+
+      total: 0
+
+    };
+
+  }
+
+  newItem() {
+    return {
+
+      requestItemId: 0,
+
+      type: '',
+
+      expenseDetailId: '',
+
+      customName: '',
+
+      amount: 0
+
+    };
   }
 
   bindData() {
@@ -380,119 +548,274 @@ export class ExpenseWitnessComponent {
 
       );
 
+    this.detailItemsSignature = this.getDetailItemsSignature(rows);
+
+    // ไม่มีข้อมูล
     if (rows.length == 0) {
+
+      this.caseList = [
+        this.createGroup('')
+      ];
+
       return;
+
     }
 
-    this.list.forEach((item: any) => {
+    const groupedMap: any = {};
 
-      if (item.level != 1) return;
+    rows.forEach((row: any) => {
 
-      const detail = this.getExpenseDetailBySize(item.size) || this.getExpenseDetailByName(item.name);
-
-      const found = rows.find((x: any) =>
-        x.Expense_Detail == item.name ||
-        this.getCaseSizeLetter(x) == item.size ||
-        this.isSameId(x.Fk_Expense_Detail_Id, this.getExpenseDetailId(detail))
+      const expenseDetailId = this.normalizeId(
+        row.Fk_Expense_Detail_Id ||
+        row.Month_Name ||
+        this.getExpenseDetailId(this.getExpenseDetailByName(row.Expense_Detail)) ||
+        ''
       );
 
-      if (found) {
+      const detail = this.getExpenseDetailById(expenseDetailId);
+      const caseSize = this.getNormalizedCaseSizeFromRow({
+        ...(detail || {}),
+        Purpose: row.Purpose
+      }) || '';
 
-        item.requestItemId =
-          found.Request_Item_Id || 0;
+      const key = [
+        caseSize || 'default',
+        row.Fk_Expense_Detail_Id || row.Expense_Detail || row.Month_Name || row.Request_Item_Id || ''
+      ].join('_');
 
-        item.case =
-          found.Day || 0;
+      if (!groupedMap[key]) {
 
-        item.person =
-          found.People || 0;
+        groupedMap[key] = {
 
-        item.rate =
-          this.toNumber(found.Rate) ||
-          this.toNumber(found.Expense_Rate) ||
-          this.getRateForExpenseDetail(item);
+          name:
+            caseSize,
+
+          case:
+            row.Day || 0,
+
+          person:
+            row.People || 0,
+
+          day:
+            row.Month || 0,
+
+          items: [],
+
+          costPerCase: 0,
+
+          total: 0
+
+        };
 
       }
+
+      groupedMap[key].items.push({
+
+        requestItemId:
+          row.Request_Item_Id || 0,
+
+        type:
+          this.resolveItemType(row),
+
+        expenseDetailId:
+          expenseDetailId,
+
+        customName:
+          row.Expense_Detail || '',
+
+        amount:
+          this.getAmountFromRow(row)
+
+      });
+
+    });
+
+    this.caseList =
+      Object.values(groupedMap);
+
+    this.caseList.forEach((group: any) => {
+
+      this.calculate(group, false);
 
     });
 
   }
 
-  calculate() {
+  ensureSingleItem(group: any) {
+    if (!group.items?.length) {
+      group.items = [
+        this.newItem()
+      ];
+    }
 
+  }
+
+  private getCurrentDetailItemsSignature(): string {
+    const rows = (this.model?.Budget_Request_Detail_Item || []).filter(
+      (x: any) =>
+        x.Fk_Expense_Id ==
+        this.model.selectedExpenseTypeId
+    );
+
+    return this.getDetailItemsSignature(rows);
+  }
+
+  private getDetailItemsSignature(rows: any[]): string {
+    return (rows || []).map((row: any) => [
+      row.Request_Item_Id,
+      row.Fk_Expense_Id,
+      row.Fk_Expense_Detail_Id,
+      row.Purpose,
+      row.Day,
+      row.People,
+      row.Month,
+      row.Price,
+      row.Rate,
+      row.Total
+    ].join(':')).join('|');
+  }
+
+  addGroup() {
+    this.caseList.push(
+      this.createGroup('')
+    );
+
+    this.calculate(this.caseList[this.caseList.length - 1]);
+  }
+
+  async removeGroup(index: number) {
+    const userConfirmed = await confirmAlert('info', '\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 ?', '');
+
+    if (!userConfirmed) {
+      return;
+    }
+
+    const group = this.caseList[index];
+
+    (group?.items || []).forEach((item: any) => {
+      if (item?.requestItemId) {
+        this.serviceebud.DeleteBudgetRequestDetailItem(item.requestItemId).subscribe();
+      }
+    });
+
+    this.caseList.splice(index, 1);
+
+    if (this.caseList.length == 0) {
+      this.caseList.push(this.createGroup(''));
+    }
+
+    this.recalculateAllGroups();
     this.updateDetailItems();
+  }
+
+  private recalculateAllGroups() {
+    if (this.caseList.length == 0) {
+      this.main.costPerCase = 0;
+      this.main.total = 0;
+      return;
+    }
+
+    this.caseList.forEach((group: any) => {
+      this.calculate(group, false);
+    });
+  }
+
+  onTypeChange(item: any, group: any) {
+
+    item.expenseDetailId = this.normalizeId(item.expenseDetailId);
+    item.type = item.expenseDetailId;
+
+    if (this.isOtherExpenseDetail(item)) {
+      item.customName = '';
+      item.amount = 0;
+    } else {
+      item.customName = this.getExpenseDetailName(item.expenseDetailId);
+      item.amount = this.getRateForExpenseDetail(item.expenseDetailId);
+    }
+
+    this.calculate(group);
 
   }
 
-  getCost(row: any): number {
+  onCaseSizeChange(group: any) {
+    this.ensureSingleItem(group);
 
-    // parent
-    if (row.children) {
+    group.items.forEach((item: any) => {
+      const hasSelectedOption = this.getExpenseOptions(group).some((detail: any) =>
+        this.isSameId(this.getExpenseDetailId(detail), item.expenseDetailId)
+      );
 
-      return this.list
+      if (item.expenseDetailId && !hasSelectedOption) {
+        item.type = '';
+        item.expenseDetailId = '';
+        item.customName = '';
+        item.amount = 0;
+      }
+    });
 
-        .filter((x: any) => x.level === 1)
-
-        .reduce(
-
-          (sum: number, r: any) =>
-
-            sum +
-
-            (
-              (Number(r.person) || 0) *
-
-              (Number(r.rate) || 0)
-            ),
-
-          0
-
-        );
-
-    }
-
-    // child
-    return (Number(row.person) || 0) *
-
-      (Number(row.rate) || 0);
-
+    this.calculate(group);
   }
 
-  getTotal(row: any): number {
+  calculate(group: any, update = true) {
 
-    // parent
-    if (row.children) {
+    const itemTotal =
 
-      return this.list
+      group.items.reduce(
 
-        .filter((x: any) => x.level === 1)
+        (sum: number, i: any) => {
 
-        .reduce(
+          return sum + (Number(i.amount) || 0);
 
-          (sum: number, r: any) =>
+        },
 
-            sum +
+        0
 
-            (
-              (Number(r.case) || 0) *
+      );
 
-              (Number(r.person) || 0) *
+    const person =
+      Number(group.person) || 0;
 
-              (Number(r.rate) || 0)
-            ),
+    const day =
+      Number(group.day) || 0;
 
-          0
+    const caseVal =
+      Number(group.case) || 0;
 
-        );
+    group.costPerCase =
+      itemTotal * person * day;
+
+    group.total =
+      caseVal * group.costPerCase;
+
+    this.main.costPerCase =
+
+      this.caseList.reduce(
+
+        (sum: number, g: any) =>
+
+          sum + (Number(g.costPerCase) || 0),
+
+        0
+
+      );
+
+    this.main.total =
+
+      this.caseList.reduce(
+
+        (sum: number, g: any) =>
+
+          sum + (Number(g.total) || 0),
+
+        0
+
+      );
+
+    if (update) {
+
+      this.updateDetailItems();
 
     }
-
-    // child
-    return (Number(row.case) || 0) *
-
-      (Number(row.person) || 0) *
-
-      (Number(row.rate) || 0);
 
   }
 
@@ -511,69 +834,76 @@ export class ExpenseWitnessComponent {
       );
 
     // push ใหม่
-    this.list.forEach((item: any) => {
+    this.caseList.forEach((group: any) => {
 
-      // skip parent
-      if (item.level != 1) return;
+      group.items.forEach((item: any) => {
 
-      this.model.Budget_Request_Detail_Item.push({
+        const isBlankRow =
+          !item?.requestItemId &&
+          !group?.name &&
+          !item?.expenseDetailId &&
+          !item?.type &&
+          !item?.customName &&
+          this.toNumber(group?.case) == 0 &&
+          this.toNumber(group?.person) == 0 &&
+          this.toNumber(group?.day) == 0 &&
+          this.toNumber(item?.amount) == 0;
 
-        Request_Item_Id:
-          item.requestItemId || 0,
+        if (isBlankRow) {
+          return;
+        }
 
-        Fk_Expense_Id:
-          this.model.selectedExpenseTypeId,
+        this.model.Budget_Request_Detail_Item.push({
 
-        Purpose:
-          'ค่าตอบแทนและค่าใช้จ่ายแก่พยาน',
+          Request_Item_Id:
+            item.requestItemId || 0,
 
-        Expense_Detail:
-          item.name,
+          Fk_Expense_Id:
+            this.model.selectedExpenseTypeId,
 
-        Fk_Expense_Detail_Id:
-          this.getExpenseDetailId(this.getExpenseDetailBySize(item.size) || this.getExpenseDetailByName(item.name)) || 0,
+          // group
+          Purpose:
+            group.name,
 
-        Day:
-          item.case,
+          Day:
+            group.case,
 
-        People:
-          item.person,
+          People:
+            group.person,
 
-        Rate:
-          item.rate,
+          Month:
+            group.day,
 
-        Price:
-          this.getCost(item),
+          // item
+          Month_Name:
+            item.expenseDetailId || item.type,
 
-        Total:
-          this.getTotal(item)
+          Fk_Expense_Detail_Id:
+            item.expenseDetailId || this.getExpenseDetailId(this.getExpenseDetailByName(this.getTypeName(item.type))) || 0,
+
+          Expense_Detail:
+
+            this.isOtherExpenseDetail(item)
+              ? item.customName || ''
+              : this.getExpenseDetailName(item.expenseDetailId || item.type),
+
+          Price:
+            item.amount,
+
+          // summary
+          Rate:
+            group.costPerCase,
+
+          Total:
+            group.total
+
+        });
 
       });
 
     });
 
-  }
-
-  async save() {
-
-    const userConfirmed =
-      await confirmAlert(
-        'info',
-        'ต้องการบันทึกข้อมูล ?',
-        ''
-      );
-
-    if (userConfirmed) {
-
-      basicAlert(
-        'success',
-        'บันทึกข้อมูลแล้ว',
-        ''
-      );
-
-      this.model.dismiss();
-
-    }
+    this.detailItemsSignature = this.getCurrentDetailItemsSignature();
 
   }
 
