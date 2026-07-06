@@ -82,7 +82,7 @@
 
                 <tbody>
                     <tr *ngFor="let item of expenseList; let i=index">
-                        <td class="text-start">
+                        <td class="text-start align-top" >
                             <ng-select appendTo="body" dropdownPosition="auto" [items]="Mas_Business_Level"
                                 bindLabel="Level_Name" bindValue="Level_Id" [(ngModel)]="item.level"
                                 name="training_level_{{i}}" placeholder="-- เลือกระดับ --" [clearable]="false"
@@ -90,7 +90,7 @@
                             </ng-select>
                         </td>
 
-                        <td class="text-start">
+                        <td class="text-start align-top" >
                             <ng-select appendTo="body" dropdownPosition="auto" [items]="item.expenseDetails || []"
                                 bindLabel="Expense_Detial_Name" bindValue="Expense_Detial_Id" [(ngModel)]="item.pairId"
                                 name="training_expense_detail_{{i}}" placeholder="-- เลือกรายการ --" [clearable]="false"
@@ -101,40 +101,40 @@
                                 name="training_custom_expense_detail_{{i}}" (ngModelChange)="updateDetailItems()">
                         </td>
 
-                        <td>
+                        <td  class="align-top">
                             <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
                                 placeholder="ระบุจำนวนครั้ง/รุ่น" inputmode="decimal" class="form-control text-center"
                                 [(ngModel)]="item.times" (ngModelChange)="calculate(item)">
                         </td>
 
-                        <td>
+                        <td class="align-top">
                             <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
                                 placeholder="ระบุจำนวนคนประเภท ก" inputmode="decimal" class="form-control text-center"
                                 [(ngModel)]="item.typeA" (ngModelChange)="calculate(item)">
                         </td>
 
-                        <td>
+                        <td class="align-top">
                             <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
                                 placeholder="ระบุจำนวนคนประเภท ข" inputmode="decimal" class="form-control text-center"
                                 [(ngModel)]="item.typeB" (ngModelChange)="calculate(item)">
                         </td>
 
-                        <td>
+                        <td class="align-top">
                             <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
                                 placeholder="ระบุจำนวนคนบุคคลภายนอก" inputmode="decimal"
                                 class="form-control text-center" [(ngModel)]="item.external"
                                 (ngModelChange)="calculate(item)">
                         </td>
 
-                        <td class="fw-bold bg-light">{{ item.person }}</td>
+                        <td class="align-top fw-bold bg-light">{{ item.person }}</td>
 
-                        <td>
+                        <td class="align-top">
                             <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
                                 placeholder="ระบุจำนวน" inputmode="decimal" class="form-control text-center"
                                 [(ngModel)]="item.qty" (ngModelChange)="calculate(item)">
                         </td>
 
-                        <td>
+                        <td class="align-top">
                             <!-- <select class="form-select" [(ngModel)]="item.unit" (ngModelChange)="updateDetailItems()">
                                 <option>บาท</option>
                                 <option>คน</option>
@@ -148,14 +148,14 @@
                             </ng-select>
                         </td>
 
-                        <td>
+                        <td class="align-top">
                             <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
                                 placeholder="ระบุอัตราค่าใช้จ่าย" inputmode="decimal" class="form-control text-end"
                                 [(ngModel)]="item.rate" [readonly]="!item.isOtherRate"
                                 [class.bg-light]="!item.isOtherRate" (ngModelChange)="calculate(item)">
                         </td>
 
-                        <td>
+                        <td class="align-top">
                             <!-- <select class="form-select" [(ngModel)]="item.unit2" >
                                 <option>บาท</option>
                                 <option>คน</option>
@@ -169,11 +169,11 @@
                             </ng-select>
                         </td>
 
-                        <td class="fw-semibold text-end text-black">
+                        <td class="fw-semibold text-end text-black align-top">
                             {{ item.total | number:'1.2-2' }}
                         </td>
 
-                        <td>
+                        <td class="align-top">
                             <button class="btn btn-sm btn-danger" (click)="removeRow(i)">
                                 <i class="bx bx-trash"></i>
                             </button>
