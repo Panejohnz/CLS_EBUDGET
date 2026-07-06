@@ -21,7 +21,7 @@ import { EbudgetService } from 'src/app/core/services/ebudget.service'
     }
 
     .asset-investment-select ::ng-deep .ng-select-container {
-      min-height: 32px;
+      min-height: 35px;
       height: auto;
     }
 

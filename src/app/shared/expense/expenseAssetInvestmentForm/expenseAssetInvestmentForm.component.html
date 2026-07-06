@@ -1,275 +1,271 @@
-<div class="card shadow-sm">
 
-    <div class="card-body bg-light">
+    <!-- table -->
+    <div class="expense-table-responsive">
 
-        <!-- table -->
-        <div class="expense-table-responsive">
+        <table class="table table-bordered align-middle expense-table text-center mb-0">
 
-            <table class="table table-bordered align-middle expense-table text-center bg-white asset-investment-table">
+            <!-- header -->
+            <thead class="text-center text-white expense-table-header">
 
-                <!-- header -->
-                <thead class="text-center text-white expense-table-header">
+                <tr>
 
-                    <tr>
+                    <th rowspan="2" style="width:5%">
 
-                        <th rowspan="2" style="width:5%">
+                        ลำดับ
 
-                            ลำดับ
+                    </th>
 
-                        </th>
+                    <th rowspan="2" class="item-col" style="width:25%">
 
-                        <th rowspan="2" class="item-col">
+                        รายการ
 
-                            รายการ
+                    </th>
 
-                        </th>
+                    <th colspan="2" style="width:7%">
 
-                        <th colspan="2">
+                        ราคาในมาตรฐาน
 
-                            ราคาในมาตรฐาน
+                    </th>
+ <th rowspan="2" style="width:10%">
 
-                        </th>
+                        จำนวน
 
-                        <th rowspan="2" style="width:12%">
+                    </th>
 
-                            ราคา/หน่วย
+                    <th rowspan="2" style="width:10%">
 
-                        </th>
+                        ราคา/หน่วย
 
-                        <th rowspan="2" style="width:10%">
+                    </th>
 
-                            จำนวน
+                   
+                    <th rowspan="2" style="width:10%">
 
-                        </th>
+                        วงเงินรวม
 
-                        <th rowspan="2" style="width:13%">
+                    </th>
 
-                            วงเงินรวม
+                    <th colspan="2" style="width:28%">
 
-                        </th>
+                        เหตุผล
 
-                        <th colspan="2">
+                    </th>
 
-                            เหตุผล
+                    <th rowspan="2" style="width:5%">ลบ</th>
 
-                        </th>
+                </tr>
 
-                        <th rowspan="2"></th>
+                <tr>
 
-                    </tr>
+                    <th style="width:3%">
 
-                    <tr>
+                        ใน
 
-                        <th width="7%">
+                    </th>
 
-                            ใน
+                    <th style="width:3%">
 
-                        </th>
+                        นอก
 
-                        <th width="7%">
+                    </th>
 
-                            นอก
+                    <th style="width:14%">
 
-                        </th>
+                        จำนวนที่ขอใหม่
 
-                        <th width="15%">
+                    </th>
 
-                            จำนวนที่ขอใหม่
+                    <th style="width:14%">
 
-                        </th>
+                        จำนวนทดแทน
 
-                        <th width="15%">
+                    </th>
 
-                            จำนวนทดแทน
+                </tr>
 
-                        </th>
+            </thead>
 
-                    </tr>
+            <!-- body -->
+            <tbody>
 
-                </thead>
-
-                <!-- body -->
-                <tbody>
-
-                    <tr *ngFor="
+                <tr *ngFor="
                             let item of items;
                             let i = index
                         ">
 
-                        <!-- index -->
-                        <td>
+                    <!-- index -->
+                    <td class="align-top">
 
-                            {{ i + 1 }}
+                        {{ i + 1 }}
 
-                        </td>
+                    </td>
 
-                        <!-- item -->
-                        <td>
+                    <!-- item -->
+                    <td class="align-top">
 
-                            <input *ngIf="isTextMode" class="form-control form-control-sm"
-                                [(ngModel)]="item.materialName" (ngModelChange)="updateDetailItems()">
+                        <input *ngIf="isTextMode" class="form-control" [(ngModel)]="item.materialName"
+                            (ngModelChange)="updateDetailItems()">
 
-                            <ng-select *ngIf="!isTextMode" class="asset-investment-select" [items]="Mas_Expense_Detial_List" bindLabel="Expense_Detial_Name"
-                                bindValue="Expense_Detial_Id" [(ngModel)]="item.material"
-                                placeholder="--- โปรดเลือก ---" appendTo="body"
-                                (change)="onMaterialChange(item, $event, i)">
-                            </ng-select>
+                        <ng-select *ngIf="!isTextMode" class="asset-investment-select" [items]="Mas_Expense_Detial_List"
+                            bindLabel="Expense_Detial_Name" bindValue="Expense_Detial_Id" [(ngModel)]="item.material"
+                            placeholder="--- โปรดเลือก ---" appendTo="body"
+                            (change)="onMaterialChange(item, $event, i)">
+                        </ng-select>
 
-                            <input *ngIf="!isTextMode && isOtherDetail(item)" class="form-control form-control-sm mt-1"
-                                placeholder="ระบุรายการ" [(ngModel)]="item.customMaterialName"
-                                (ngModelChange)="updateDetailItems()">
+                        <input *ngIf="!isTextMode && isOtherDetail(item)" class="form-control mt-1"
+                            placeholder="ระบุรายการ" [(ngModel)]="item.customMaterialName"
+                            (ngModelChange)="updateDetailItems()">
 
-                        </td>
+                    </td>
 
-                        <!-- standard in -->
-                        <td>
+                    <!-- standard in -->
+                    <td class="align-top">
 
-                            <input type="checkbox" class="readonly-checkbox" [checked]="item.standardIn"
-                                tabindex="-1" aria-disabled="true">
+                        <input type="checkbox" class="readonly-checkbox" [checked]="item.standardIn" tabindex="-1" 
+                            aria-disabled="true" style="background-color: #ebeff3;">
 
-                        </td>
+                    </td>
 
-                        <!-- standard out -->
-                        <td>
+                    <!-- standard out -->
+                    <td class="align-top">
 
-                            <input type="checkbox" class="readonly-checkbox" [checked]="item.standardOut"
-                                tabindex="-1" aria-disabled="true">
+                        <input type="checkbox" class="readonly-checkbox" [checked]="item.standardOut" tabindex="-1"
+                            aria-disabled="true" style="background-color: #ebeff3;">
 
-                        </td>
+                    </td>
+                      <!-- qty -->
+                    <td class="align-top">
 
-                        <!-- price -->
-                        <td>
+                        <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." placeholder="ระบุจำนวน"
+                            inputmode="decimal" class="form-control  text-center" [(ngModel)]="item.qty"
+                            (ngModelChange)="calculate(i)">
 
-                            <input [readonly]="!isTextMode" type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
-                                inputmode="decimal" class="form-control form-control-sm text-end"
-                                [(ngModel)]="item.price" (ngModelChange)="calculate(i)">
+                    </td>
 
-                        </td>
+                    <!-- price -->
+                    <td class="align-top">
 
-                        <!-- qty -->
-                        <td>
+                        <input [readonly]="!isTextMode" type="text" mask="separator.2" thousandSeparator="," placeholder="ระบุราคา/หน่วย" 
+                            decimalMarker="." inputmode="decimal" class="form-control  text-end" style="background-color: #ebeff3;"
+                            [(ngModel)]="item.price" (ngModelChange)="calculate(i)">
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
-                                inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.qty"
-                                (ngModelChange)="calculate(i)">
+                    </td>
 
-                        </td>
+                  
 
-                        <!-- total -->
-                        <td class="text-end fw-bold text-primary">
+                    <!-- total -->
+                    <td class="text-end fw-bold text-black align-top">
 
-                            {{
-                            item.total
-                            | number:'1.2-2'
-                            }}
+                        {{
+                        item.total
+                        | number:'1.2-2'
+                        }}
 
-                        </td>
+                    </td>
 
-                        <!-- reason new -->
-                        <td>
+                    <!-- reason new -->
+                    <td>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
-                                inputmode="decimal" class="form-control form-control-sm" [(ngModel)]="item.newQty"
-                                (ngModelChange)="updateDetailItems()">
+                        <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."  placeholder="ระบุจำนวนที่ขอใหม่" 
+                            inputmode="decimal" class="form-control " [(ngModel)]="item.newQty"
+                            (ngModelChange)="updateDetailItems()">
 
-                            <textarea class="form-control form-control-sm mt-1" rows="2" placeholder="เหตุผลการขอใหม่"
-                                [(ngModel)]="item.reasonNew" (ngModelChange)="updateDetailItems()">
-
-                            </textarea>
-
-                        </td>
-
-                        <!-- reason replace -->
-                        <td>
-
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
-                                inputmode="decimal" class="form-control form-control-sm" [(ngModel)]="item.replaceQty"
-                                (ngModelChange)="updateDetailItems()">
-
-                            <textarea class="form-control form-control-sm mt-1" rows="2" placeholder="เหตุผลการทดแทน"
-                                [(ngModel)]="item.reasonReplace" (ngModelChange)="updateDetailItems()">
+                        <textarea class="form-control mt-1" rows="2" placeholder="ระบุเหตุผลการขอใหม่"
+                            [(ngModel)]="item.reasonNew" (ngModelChange)="updateDetailItems()">
 
                             </textarea>
 
-                        </td>
+                    </td>
 
-                        <!-- remove -->
-                        <td>
+                    <!-- reason replace -->
+                    <td>
 
-                            <button class="btn btn-danger btn-sm" (click)="removeItem(i)">
+                        <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."  placeholder="ระบุจำนวนที่ทดแทน" 
+                            inputmode="decimal" class="form-control " [(ngModel)]="item.replaceQty"
+                            (ngModelChange)="updateDetailItems()">
 
-                                🗑
+                        <textarea class="form-control mt-1" rows="2" placeholder="ระบุเหตุผลการทดแทน"
+                            [(ngModel)]="item.reasonReplace" (ngModelChange)="updateDetailItems()">
 
-                            </button>
+                            </textarea>
 
-                        </td>
+                    </td>
 
-                    </tr>
+                    <!-- remove -->
+                    <td>
 
-                </tbody>
+                        <button class="btn btn-danger btn-sm" (click)="removeItem(i)">
 
-                <!-- footer -->
-                <tfoot>
+                           <i class="bx bx-trash"></i>
 
-                    <tr>
+                        </button>
 
-                        <td colspan="6" class="text-end fw-bold">
+                    </td>
 
-                            รวม
+                </tr>
 
-                        </td>
+            </tbody>
 
-                        <td class="text-end fw-bold text-primary">
+            <!-- footer -->
+            <tfoot>
 
-                            {{
-                            grandTotal
-                            | number:'1.2-2'
-                            }}
+                <tr>
 
-                        </td>
+                    <td colspan="6" class="text-end fw-bold">
 
-                        <td colspan="3"></td>
+                        รวมทั้งสิ้น
 
-                    </tr>
+                    </td>
 
-                </tfoot>
+                    <td class="text-end fw-bold  text-white">
 
-            </table>
+                        {{
+                        grandTotal
+                        | number:'1.2-2'
+                        }}
 
-        </div>
+                    </td>
 
-        <!-- spec -->
-        <div class="mt-3">
+                    <td colspan="3"></td>
 
-            <label class="fw-semibold">
+                </tr>
 
-                คุณสมบัติ (spec)
+            </tfoot>
 
-            </label>
-
-            <textarea class="form-control" rows="4" [(ngModel)]="spec" (ngModelChange)="updateDetailItems()">
-
-            </textarea>
-
-        </div>
-
-        <!-- action -->
-        <div class="mt-3">
-
-            <button class="btn btn-primary btn-sm" (click)="addItem()">
-
-                + เพิ่มรายการ
-
-            </button>
-
-            <span class="ms-2 text-danger">
-
-                จำนวน {{ items.length }} รายการ
-
-            </span>
-
-        </div>
+        </table>
 
     </div>
 
-</div>
+    <!-- spec -->
+    <div class="mt-3">
+
+        <label class="fw-semibold">
+
+            คุณสมบัติ (spec)
+
+        </label>
+
+        <textarea class="form-control" rows="4" [(ngModel)]="spec" (ngModelChange)="updateDetailItems()">
+
+            </textarea>
+
+    </div>
+
+    <!-- action -->
+    <div class="mt-3">
+
+        <button class="btn btn-primary" (click)="addItem()">
+
+                <i class="bx bx-plus text-black"></i>
+                   <span class="text-black"> เพิ่มรายการ</span>
+
+        </button>
+
+        <span class="ms-2 text-danger">
+
+            จำนวน {{ items.length }} รายการ
+
+        </span>
+
+    </div>
+
