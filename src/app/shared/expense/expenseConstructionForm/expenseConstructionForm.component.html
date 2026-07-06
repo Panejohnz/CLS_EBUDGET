@@ -1,281 +1,279 @@
-<div class="card shadow-sm">
+<!-- table -->
+<div class="expense-table-responsive">
 
-    <div class="card-body">
+    <table class="table table-bordered align-middle expense-table text-center mb-0">
 
-        <!-- TABLE -->
-        <div class="expense-table-responsive">
+        <!-- header -->
+        <thead class="text-center text-white expense-table-header">
 
-            <table class="table table-bordered align-middle expense-table text-center">
+            <tr>
 
-                <thead class="text-center text-white expense-table-header">
+                <th rowspan="2" width="5%">
+                    ลำดับ
+                </th>
 
-                    <tr>
+                <th rowspan="2" width="20%">
+                    รายการ
+                </th>
 
-                        <th rowspan="2" width="5%">
-                            ลำดับ
-                        </th>
+                <th rowspan="2" width="10%">
+                    ระยะเวลา (ปี)
+                </th>
+                <th rowspan="2" width="15%">
+                    จำนวน
+                </th>
 
-                        <th rowspan="2" width="20%">
-                            รายการ
-                        </th>
+                <th rowspan="2" width="15%">
+                    ราคา/หน่วย
+                </th>
 
-                        <th rowspan="2" width="10%">
-                            ระยะเวลา (ปี)
-                        </th>
 
-                        <th rowspan="2" width="15%">
-                            ราคา/หน่วย
-                        </th>
+                <th rowspan="2" width="10%">
+                    วงเงินรวม
+                </th>
 
-                        <th rowspan="2" width="15%">
-                            จำนวน
-                        </th>
+                <th colspan="2" width="20%">
+                    เหตุผล
+                </th>
 
-                        <th rowspan="2" width="10%">
-                            วงเงินรวม
-                        </th>
+                <th rowspan="2" width="5%">ลบ</th>
 
-                        <th colspan="2" width="20%">
-                            เหตุผล
-                        </th>
+            </tr>
 
-                        <th rowspan="2" width="5%"></th>
+            <tr>
 
-                    </tr>
+                <th>
+                    สร้างใหม่
+                </th>
 
-                    <tr>
+                <th>
+                    ปรับปรุง
+                </th>
 
-                        <th>
-                            สร้างใหม่
-                        </th>
+            </tr>
 
-                        <th>
-                            ปรับปรุง
-                        </th>
+        </thead>
 
-                    </tr>
+        <tbody>
 
-                </thead>
+            <tr *ngFor="let item of items; let i=index">
 
-                <tbody>
+                <!-- index -->
+                <td>
+                    {{i+1}}
+                </td>
 
-                    <tr *ngFor="let item of items; let i=index">
+                <!-- รายการ -->
+                <td>
 
-                        <!-- index -->
-                        <td>
-                            {{i+1}}
-                        </td>
+                    <input class="form-control" [(ngModel)]="item.name" placeholder="ระบุรายการ"
+                        (ngModelChange)="updateDetailItems()">
 
-                        <!-- รายการ -->
-                        <td>
+                </td>
 
-                            <input class="form-control form-control-sm" [(ngModel)]="item.name"
-                                (ngModelChange)="updateDetailItems()">
+                <!-- ระยะเวลา -->
+                <td>
 
-                        </td>
+                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" placeholder="ระบุปี"
+                        class="form-control  text-center" [(ngModel)]="item.year"
+                        (ngModelChange)="updateDetailItems()">
 
-                        <!-- ระยะเวลา -->
-                        <td>
+                </td>
+                <!-- จำนวน -->
+                <td>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-center"
-                                [(ngModel)]="item.year" (ngModelChange)="updateDetailItems()">
+                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" placeholder="ระบุจำนวน"
+                        class="form-control  text-center" [(ngModel)]="item.qty"
+                        (ngModelChange)="calculate(i)">
 
-                        </td>
+                </td>
+                <!-- ราคา -->
+                <td>
 
-                        <!-- ราคา -->
-                        <td>
+                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" placeholder="ระบุราคา/หน่วย"
+                        class="form-control  text-end" [(ngModel)]="item.price"
+                        (ngModelChange)="calculate(i)">
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.price"
-                                (ngModelChange)="calculate(i)">
+                </td>
 
-                        </td>
 
-                        <!-- จำนวน -->
-                        <td>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.qty"
-                                (ngModelChange)="calculate(i)">
+                <!-- รวม -->
+                <td class="text-end fw-bold text-black">
 
-                        </td>
+                    {{item.total | number:'1.2-2'}}
 
-                        <!-- รวม -->
-                        <td class="text-end fw-bold text-primary">
+                </td>
 
-                            {{item.total | number:'1.2-2'}}
+                <!-- สร้างใหม่ -->
+                <td>
 
-                        </td>
+                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" placeholder="ระบุจำนวนสร้างใหม่"
+                        class="form-control  text-center" [(ngModel)]="item.newQty"
+                        (ngModelChange)="updateDetailItems()">
 
-                        <!-- สร้างใหม่ -->
-                        <td>
+                </td>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.newQty"
-                                (ngModelChange)="updateDetailItems()">
+                <!-- ปรับปรุง -->
+                <td>
 
-                        </td>
+                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" placeholder="ระบุจำนวนปรับปรุง"
+                        class="form-control text-center" [(ngModel)]="item.updateQty"
+                        (ngModelChange)="updateDetailItems()">
 
-                        <!-- ปรับปรุง -->
-                        <td>
+                </td>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end"
-                                [(ngModel)]="item.updateQty" (ngModelChange)="updateDetailItems()">
+                <!-- delete -->
+                <td>
 
-                        </td>
+                    <button class="btn btn-danger btn-sm" (click)="removeItem(i)">
 
-                        <!-- delete -->
-                        <td>
+                               <i class="bx bx-trash"></i>
 
-                            <button class="btn btn-danger btn-sm" (click)="removeItem(i)">
+                    </button>
 
-                                🗑
+                </td>
 
-                            </button>
+            </tr>
 
-                        </td>
+        </tbody>
 
-                    </tr>
+        <!-- FOOTER -->
+        <tfoot>
 
-                </tbody>
+            <tr>
 
-                <!-- FOOTER -->
-                <tfoot>
+                <td colspan="5" class="text-end fw-bold">
+                    รวมทั้งสิ้น
+                </td>
 
-                    <tr>
+                <td class="text-end fw-bold text-white">
 
-                        <td colspan="5" class="text-end fw-bold">
-                            รวม
-                        </td>
+                    {{grandTotal | number:'1.2-2'}}
 
-                        <td class="text-end fw-bold text-primary">
+                </td>
 
-                            {{grandTotal | number:'1.2-2'}}
+                <td colspan="3"></td>
 
-                        </td>
+            </tr>
 
-                        <td colspan="3"></td>
+        </tfoot>
 
-                    </tr>
+    </table>
 
-                </tfoot>
+</div>
 
-            </table>
+<!-- TYPE -->
+<div class="mt-4" *ngIf="expenseItem?.Expense_Id == 65">
+
+    <label class="fw-semibold me-3">
+        ประเภทผูกพัน
+    </label>
+
+    <label class="me-3">
+
+        <input type="checkbox" [(ngModel)]="isOld" (ngModelChange)="updateDetailItems()">
+
+        ผูกพันเดิม
+
+    </label>
+
+    <label>
+
+        <input type="checkbox" [(ngModel)]="isNew" (ngModelChange)="updateDetailItems()">
+
+        ผูกพันใหม่
+
+    </label>
+
+</div>
+
+<!-- BINDING YEAR -->
+<div class="mt-4">
+
+    <label class="fw-semibold">
+        ระยะผูกพัน
+    </label>
+
+    <div class="mt-2">
+
+        <label *ngFor="let y of [1,2,3,4,5]" class="me-3">
+
+            <input type="radio" name="bindingYear" [value]="y" [(ngModel)]="bindingYear" (change)="onYearChange()">
+
+            {{y}} ปี
+
+        </label>
+
+    </div>
+
+</div>
+
+<!-- YEARLY -->
+<div class="mt-4" *ngIf="bindingYear">
+
+    <label class="fw-semibold">
+        กระจายเงิน / งวดงาน
+    </label>
+
+    <div class="row mt-2 align-items-center" *ngFor="let y of yearly; let i=index">
+
+        <div class="col-md-2">
+
+            ปีที่ {{i+1}}
 
         </div>
 
-        <!-- TYPE -->
-        <div class="mt-4" *ngIf="expenseItem?.Expense_Id == 65">
+        <!-- amount -->
+        <div class="col-md-5">
 
-            <label class="fw-semibold me-3">
-                ประเภทผูกพัน
-            </label>
-
-            <label class="me-3">
-
-                <input type="checkbox" [(ngModel)]="isOld" (ngModelChange)="updateDetailItems()">
-
-                ผูกพันเดิม
-
-            </label>
-
-            <label>
-
-                <input type="checkbox" [(ngModel)]="isNew" (ngModelChange)="updateDetailItems()">
-
-                ผูกพันใหม่
-
-            </label>
+            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                class="form-control  text-end" [(ngModel)]="yearly[i].amount"
+                (ngModelChange)="updateDetailItems()" placeholder="จำนวนเงิน">
 
         </div>
 
-        <!-- BINDING YEAR -->
-        <div class="mt-4">
+        <!-- milestone -->
+        <div class="col-md-5">
 
-            <label class="fw-semibold">
-                ระยะผูกพัน
-            </label>
-
-            <div class="mt-2">
-
-                <label *ngFor="let y of [1,2,3,4,5]" class="me-3">
-
-                    <input type="radio" name="bindingYear" [value]="y" [(ngModel)]="bindingYear"
-                        (change)="onYearChange()">
-
-                    {{y}} ปี
-
-                </label>
-
-            </div>
+            <input class="form-control" [(ngModel)]="yearly[i].milestone"
+                (ngModelChange)="updateDetailItems()" placeholder="จำนวนงวด">
 
         </div>
 
-        <!-- YEARLY -->
-        <div class="mt-4" *ngIf="bindingYear">
+    </div>
 
-            <label class="fw-semibold">
-                กระจายเงิน / งวดงาน
-            </label>
+</div>
 
-            <div class="row mt-2 align-items-center" *ngFor="let y of yearly; let i=index">
+<!-- SPEC -->
+<div class="mt-4">
 
-                <div class="col-md-2">
+    <label class="fw-semibold">
+        คุณสมบัติ (spec)
+    </label>
 
-                    ปีที่ {{i+1}}
-
-                </div>
-
-                <!-- amount -->
-                <div class="col-md-5">
-
-                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="yearly[i].amount"
-                        (ngModelChange)="updateDetailItems()" placeholder="จำนวนเงิน">
-
-                </div>
-
-                <!-- milestone -->
-                <div class="col-md-5">
-
-                    <input class="form-control form-control-sm" [(ngModel)]="yearly[i].milestone"
-                        (ngModelChange)="updateDetailItems()" placeholder="จำนวนงวด">
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- SPEC -->
-        <div class="mt-4">
-
-            <label class="fw-semibold">
-                คุณสมบัติ (spec)
-            </label>
-
-            <textarea rows="4" class="form-control" [(ngModel)]="spec" (ngModelChange)="updateDetailItems()">
+    <textarea rows="4" class="form-control" [(ngModel)]="spec" (ngModelChange)="updateDetailItems()">
 
             </textarea>
 
-        </div>
+</div>
 
-        <!-- BUTTON -->
-        <div class="mt-4 d-flex justify-content-between align-items-center">
+<!-- BUTTON -->
+<div class="mt-4 d-flex justify-content-between align-items-center">
 
-            <div>
+    <div>
 
-                <button class="btn btn-primary btn-sm" (click)="addItem()">
+        <button class="btn btn-primary btn-sm" (click)="addItem()">
 
-                    + เพิ่มรายการ
+            + เพิ่มรายการ
 
-                </button>
+        </button>
 
-                <span class="ms-2 text-danger">
+        <span class="ms-2 text-danger">
 
-                    จำนวน {{items.length}} รายการ
+            จำนวน {{items.length}} รายการ
 
-                </span>
-
-            </div>
-
-        </div>
+        </span>
 
     </div>
 

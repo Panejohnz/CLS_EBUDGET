@@ -127,7 +127,7 @@
                         </td>
 
                         <!-- ระดับ -->
-                        <td>
+                        <td class="align-top">
 
                             <ng-select [items]="levelOptions" bindLabel="label" bindValue="value"
                                 [(ngModel)]="item.level" appendTo="body"
@@ -137,7 +137,7 @@
                         </td>
 
                         <!-- รายการ -->
-                        <td>
+                      <td class="align-top">
 
                             <ng-select [items]="item.expenseDetails" bindLabel="Expense_Detial_Name"
                                 bindValue="Expense_Detial_Id" [(ngModel)]="item.detailId" appendTo="body"
@@ -151,7 +151,7 @@
                         </td>
 
                         <!-- ครั้ง -->
-                        <td>
+                        <td class="align-top">
 
                             <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" placeholder="ระบุจำนวนครั้ง/รุ่น" class="form-control  text-center" [(ngModel)]="item.times"
                                 (ngModelChange)="calculate(i)">
@@ -159,7 +159,7 @@
                         </td>
 
                         <!-- จำนวนคน -->
-                        <td>
+                         <td class="align-top">
 
                             <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" placeholder="ระบุจำนวนคน" class="form-control  text-center" [(ngModel)]="item.person"
                                 (ngModelChange)="calculate(i)">
@@ -167,7 +167,7 @@
                         </td>
 
                         <!-- จำนวนวัน -->
-                        <td>
+                          <td class="align-top">
 
                             <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" placeholder="ระบุจำนวนวัน" class="form-control text-center" [(ngModel)]="item.days"
                                 (ngModelChange)="calculate(i)">
@@ -175,7 +175,7 @@
                         </td>
 
                         <!-- rate -->
-                        <td>
+                          <td class="align-top">
 
                             <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" placeholder="ระบุอัตราค่าใช้จ่าย"
                              class="form-control text-end" [(ngModel)]="item.rate"
@@ -185,14 +185,14 @@
                         </td>
 
                         <!-- total -->
-                        <td class="text-end fw-bold">
+                        <td class="text-end fw-bold align-top">
 
                             {{item.total | number:'1.2-2'}}
 
                         </td>
 
                         <!-- meeting type -->
-                        <td>
+                        <td class="align-top">
 
                             <ng-select [items]="meetingTypeOptions" bindLabel="label" bindValue="value"
                                 [(ngModel)]="item.meetingType" appendTo="body"
@@ -202,7 +202,7 @@
                         </td>
 
                         <!-- หนังสือเชิญ -->
-                        <td>
+                        <td class="align-top">
 
                             <input type="radio" [name]="'foreign_obligation_' + i"
                                 [checked]="item.hasInvite === true"
@@ -211,7 +211,7 @@
 
                         </td>
 
-                        <td>
+                         <td class="align-top">
 
                             <input type="radio" [name]="'foreign_obligation_' + i"
                                 [checked]="item.hasInvite === false"
@@ -220,7 +220,7 @@
                         </td>
 
                         <!-- ประเทศ -->
-                        <td>
+                       <td class="align-top">
 
                             <ng-select [items]="Mas_Country_List" bindLabel="Country_Name" bindValue="Country_Id"
                                 [(ngModel)]="item.Other_Name" appendTo="body" [searchable]="true"
@@ -228,10 +228,10 @@
                             </ng-select>
 
                         </td>
-                        <td>{{ getCountryGroupLabel(item) }}</td>
+                        <td class="align-top">{{ getCountryGroupLabel(item) }}</td>
 
                         <!-- ลบ -->
-                        <td>
+                        <td class="align-top">
 
                             <button class="btn btn-danger btn-sm" (click)="removeItem(i)">
 

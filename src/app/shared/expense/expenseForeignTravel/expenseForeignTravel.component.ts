@@ -24,10 +24,8 @@ export class ExpenseForeignTravelComponent {
   levelOptions: any[] = [];
   meetingTypeOptions: any[] = [
     { label: 'ประชุม', value: 'ประชุม' },
-    { label: 'อบรม/สัมมนา', value: 'อบรม/สัมมนา' },
-    { label: 'ศึกษาดูงาน', value: 'ศึกษาดูงาน' },
-    { label: 'เจรจา/หารือ', value: 'เจรจา/หารือ' },
-    { label: 'อื่นๆ', value: 'อื่นๆ' }
+    { label: 'ฝึกอบรม', value: 'ฝึกอบรม' },
+    { label: 'เจรจาระหว่างประเทศ', value: 'เจรจาระหว่างประเทศ' },
   ];
   obligationOptions: any[] = [
     { label: 'มี', value: true },
