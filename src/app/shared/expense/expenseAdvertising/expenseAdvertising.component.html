@@ -1,243 +1,235 @@
-<div class="card shadow-sm">
 
-    <div class="card-body bg-light">
+    <div class="expense-table-responsive">
 
-        <div class="expense-table-responsive">
+        <table class="table table-bordered align-middle expense-table text-center mb-0">
 
-            <table class="table table-bordered align-middle expense-table text-center bg-white mb-0">
+            <tbody>
 
-                <tbody>
+                <ng-container *ngFor="let group of groups; let gi = index">
 
-                    <ng-container *ngFor="let group of groups; let gi = index">
+                    <tr class="table" style="background-color: #556398;">
+                        <th width="5%" class="text-white">ลำดับ</th>
+                        <th colspan="5" width="77%" class="text-white">รายละเอียด</th>
+                        <th width="10%" class="text-end" class="text-white">รวมค่าใช้จ่าย</th>
+                        <th width="8%" class="text-center" class="text-white" colSpan="2">ลบรายการ</th>
+                    </tr>
 
-                        <!-- กลุ่มหลัก -->
-                        <tr class="table-light">
+                    <!-- กลุ่มหลัก -->
+                    <tr class="table-light">
 
-                            <!-- ลำดับ -->
-                            <td width="5%" class="fw-bold">
+                        <!-- ลำดับ -->
+                        <td width="5%" class="fw-bold align-top">
 
-                                {{ gi + 1 }}
-
-                            </td>
-
-                            <!-- detail -->
-                            <td colspan="6" class="text-start">
-
-                                <!-- ชื่อรายการ -->
-                                <input class="form-control form-control-sm mb-2" [(ngModel)]="group.name"
-                                    (ngModelChange)="updateDetailItems()" placeholder="ระบุรายการ">
-
-                                <!-- วัตถุประสงค์ -->
-                                <textarea class="form-control form-control-sm mb-2" rows="2"
-                                    [(ngModel)]="group.objective" (ngModelChange)="updateDetailItems()"
-                                    placeholder="วัตถุประสงค์"></textarea>
-
-                                <!-- ผลที่คาดว่าจะได้รับ -->
-                                <textarea class="form-control form-control-sm" rows="2" [(ngModel)]="group.result"
-                                    (ngModelChange)="updateDetailItems()" placeholder="ผลที่คาดว่าจะได้รับ"></textarea>
-
-                            </td>
-
-                            <!-- total -->
-                            <td class="text-end fw-bold align-top text-primary">
-
-                                {{
-                                group.total
-                                | number:'1.2-2'
-                                }}
-
-                            </td>
-
-                            <!-- delete -->
-                            <td class="align-top">
-
-                                <button class="btn btn-danger btn-sm" (click)="removeGroup(gi)">
-
-                                    🗑
-
-                                </button>
-
-                            </td>
-
-                        </tr>
-
-                        <!-- header item -->
-                        <tr class="text-center text-white fw-semibold" style="background-color:#556398;">
-
-                            <td></td>
-
-                            <td width="25%">
-                                รายการย่อย
-                            </td>
-
-                            <td width="12%">
-                                จำนวน/ระยะเวลา
-                            </td>
-
-                            <td width="12%">
-                                จำนวน/บาท
-                            </td>
-
-                            <td width="12%">
-                                จำนวน/ครั้ง
-                            </td>
-
-                            <td width="12%">
-                                อัตราที่ใช้
-                            </td>
-
-                            <td width="15%">
-                                รวม
-                            </td>
-
-                            <td width="5%"></td>
-
-                            <td width="2%"></td>
-
-                        </tr>
-
-                        <!-- รายการย่อย -->
-                        <tr *ngFor="let item of group.items; let i = index">
-
-                            <td></td>
-
-                            <!-- item name -->
-                            <td>
-
-                                <input class="form-control form-control-sm" [(ngModel)]="item.name"
-                                    (ngModelChange)="updateDetailItems()">
-
-                            </td>
-
-                            <!-- duration -->
-                            <td>
-
-                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end"
-                                    [(ngModel)]="item.duration" (ngModelChange)="calculate(gi,i)">
-
-                            </td>
-
-                            <!-- amount -->
-                            <td>
-
-                                <input type="text" class="form-control form-control-sm text-end"
-                                    mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
-                                    [(ngModel)]="item.amount" (ngModelChange)="calculate(gi,i)">
-
-                            </td>
-
-                            <!-- times -->
-                            <td>
-
-                                <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end"
-                                    [(ngModel)]="item.times" (ngModelChange)="calculate(gi,i)">
-
-                            </td>
-
-                            <!-- rate -->
-                            <td>
-
-                                <input type="text" class="form-control form-control-sm text-end"
-                                    mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
-                                    [(ngModel)]="item.rate" (ngModelChange)="calculate(gi,i)">
-
-                            </td>
-
-                            <!-- total -->
-                            <td class="text-end fw-bold">
-
-                                {{
-                                item.total
-                                | number:'1.2-2'
-                                }}
-
-                            </td>
-
-                            <!-- remove -->
-                            <td>
-
-                                <button class="btn btn-danger btn-sm" (click)="removeItem(gi,i)">
-
-                                    🗑
-
-                                </button>
-
-                            </td>
-
-                            <td></td>
-
-                        </tr>
-
-                        <!-- add item -->
-                        <tr>
-
-                            <td></td>
-
-                            <td colspan="7" class="text-start">
-
-                                <button class="btn btn-primary btn-sm" (click)="addItem(gi)">
-
-                                    + เพิ่มรายการย่อย
-
-                                </button>
-
-                            </td>
-
-                            <td></td>
-
-                        </tr>
-
-                    </ng-container>
-
-                </tbody>
-
-                <!-- footer -->
-                <tfoot>
-
-                    <tr class="table-secondary">
-
-                        <td colspan="7" class="text-end fw-bold">
-
-                            รวมทั้งสิ้น
+                            {{ gi + 1 }}
 
                         </td>
 
-                        <td class="text-end fw-bold text-primary">
+                        <!-- detail -->
+                        <td colspan="5" class="text-start align-top" >
+
+                            <!-- ชื่อรายการ -->
+                            <input class="form-control" [(ngModel)]="group.name"
+                                (ngModelChange)="updateDetailItems()" placeholder="ระบุรายการ">
+
+                            <!-- วัตถุประสงค์ -->
+                            <textarea class="form-control mt-2" rows="2" [(ngModel)]="group.objective"
+                                (ngModelChange)="updateDetailItems()" placeholder="วัตถุประสงค์"></textarea>
+
+                            <!-- ผลที่คาดว่าจะได้รับ -->
+                            <textarea class="form-control mt-2" rows="2" [(ngModel)]="group.result"
+                                (ngModelChange)="updateDetailItems()" placeholder="ผลที่คาดว่าจะได้รับ"></textarea>
+
+                        </td>
+
+                        <!-- total -->
+                        <td class="text-end fw-bold align-top text-black" >
 
                             {{
-                            grandTotal
+                            group.total
                             | number:'1.2-2'
                             }}
 
                         </td>
 
-                        <td></td>
+                        <!-- delete -->
+                        <td class="align-top" colspan="2"> 
+
+                            <button class="btn btn-danger btn-sm" (click)="removeGroup(gi)">
+
+                                <i class="bx bx-trash"></i>
+
+                            </button>
+
+                        </td>
 
                     </tr>
 
-                </tfoot>
+                    <!-- header item -->
+                    <tr class="text-center text-white" style="background-color: #556398;">
 
-            </table>
+                        <td width="25%" colSpan="2">
+                            รายการย่อย
+                        </td>
 
-        </div>
+                        <td width="15%">
+                            จำนวน/ระยะเวลา
+                        </td>
 
-        <!-- add group -->
-        <div class="mt-3">
+                        <td width="15%">
+                            จำนวน/บาท
+                        </td>
 
-            <button class="btn btn-primary btn-sm" (click)="addGroup()">
+                        <td width="15%">
+                            จำนวน/ครั้ง
+                        </td>
 
-                + เพิ่มรายการ
+                        <td width="15%">
+                            อัตราค่าใช้จ่าย
+                        </td>
 
-            </button>
+                        <td width="15%">
+                            รวมค่าใช้จ่าย
+                        </td>
 
-            <span class="ms-2 text-danger">
+                        <td width="10%" colSpan="3">ลบ</td>
 
-                จำนวน {{ groups.length }} รายการ
+                    </tr>
 
-            </span>
 
-        </div>
+                    <!-- รายการย่อย -->
+                    <tr *ngFor="let item of group.items; let i = index">
+
+                        <!-- item name -->
+                        <td colspan="2" class="text-start">
+
+                            <input class="form-control" [(ngModel)]="item.name" placeholder="ระบุรายการย่อย" 
+                                (ngModelChange)="updateDetailItems()">
+
+                        </td>
+
+                        <!-- duration -->
+                        <td>
+
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." placeholder="ระบุระยะเวลา" 
+                                inputmode="decimal" class="form-control text-center"
+                                [(ngModel)]="item.duration" (ngModelChange)="calculate(gi,i)">
+
+                        </td>
+
+                        <!-- amount -->
+                        <td>
+
+                            <input type="text" class="form-control  text-end" mask="separator.2" placeholder="ระบุจำนวน/บาท" 
+                                thousandSeparator="," decimalMarker="." inputmode="decimal" [(ngModel)]="item.amount"
+                                (ngModelChange)="calculate(gi,i)">
+
+                        </td>
+
+                        <!-- times -->
+                        <td>
+
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                inputmode="decimal" class="form-control  text-center"
+                                placeholder="ระบุจำนวน/ครั้ง"
+                                [(ngModel)]="item.times" (ngModelChange)="calculate(gi,i)">
+
+                        </td>
+
+                        <!-- rate -->
+                        <td>
+
+                            <input type="text" class="form-control  text-end" mask="separator.2" placeholder="ระบุอัตราที่ใช้" 
+                                thousandSeparator="," decimalMarker="." inputmode="decimal" [(ngModel)]="item.rate"
+                                (ngModelChange)="calculate(gi,i)">
+
+                        </td>
+
+                        <!-- total -->
+                        <td class="text-end fw-bold">
+
+                            {{
+                            item.total
+                            | number:'1.2-2'
+                            }}
+
+                        </td>
+
+                        <!-- remove -->
+                        <td colspan="2">
+
+                            <button class="btn btn-danger btn-sm" (click)="removeItem(gi,i)">
+
+                                <i class="bx bx-trash"></i>
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    <!-- add item -->
+                    <tr>
+                        <td colspan="6" class="text-start">
+
+                            <button class="btn btn-primary btn-sm" (click)="addItem(gi)">
+
+                                <i class="bx bx-plus text-black"></i>
+                                <span class="text-black"> เพิ่มค่าใช้จ่าย</span>
+
+                            </button>
+
+                        </td>
+                    </tr>
+
+                </ng-container>
+
+            </tbody>
+
+            <!-- footer -->
+            <tfoot>
+
+                <tr class="table" style="background-color: #556398;">
+
+                    <td colspan="6" class="text-end fw-bold">
+
+                        รวมทั้งสิ้น
+
+                    </td>
+
+                    <td class="text-end fw-bold text-white">
+
+                        {{
+                        grandTotal
+                        | number:'1.2-2'
+                        }}
+
+                    </td>
+
+                    <td></td>
+
+                </tr>
+
+            </tfoot>
+
+        </table>
 
     </div>
 
-</div>
+    <!-- add group -->
+    <div class="mt-3">
+
+        <button class="btn btn-primary" (click)="addGroup()">
+
+            <i class="bx bx-plus text-black"></i>
+            <span class="text-black"> เพิ่มรายการ</span>
+
+        </button>
+
+        <!-- <span class="ms-2 text-danger">
+
+            จำนวน {{ groups.length }} รายการ
+
+        </span> -->
+
+    </div>
+
