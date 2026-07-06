@@ -1,0 +1,12 @@
+.location-box {
+    height: 74px;               /* เท่ากับ textarea 3 แถว */
+    border: 1px solid #dee2e6;
+    border-radius: .375rem;
+    padding: 12px 16px;
+
+    display: flex;
+    align-items: center;
+    gap: 24px;
+
+    background: #fff;
+}

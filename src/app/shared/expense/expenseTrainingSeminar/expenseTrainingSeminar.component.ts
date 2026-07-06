@@ -5,7 +5,7 @@ import { EbudgetService } from 'src/app/core/services/ebudget.service'
 @Component({
   selector: 'app-expense-training-seminar',
   templateUrl: './expenseTrainingSeminar.component.html',
-  styles: ``
+  styleUrl: './expenseTrainingSeminar.component.scss',
 })
 export class ExpenseTrainingSeminarComponent {
 
@@ -561,7 +561,8 @@ export class ExpenseTrainingSeminarComponent {
     item.person = people;
 
     item.total =
-      people *
+      (Number(item.times) || 0) *
+      (Number(people) || 0) *
       (Number(item.qty) || 0) *
       (Number(item.rate) || 0);
 
