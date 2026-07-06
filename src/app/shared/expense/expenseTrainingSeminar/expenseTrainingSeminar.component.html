@@ -89,6 +89,9 @@
                                 name="training_expense_detail_{{i}}" placeholder="-- เลือกรายการ --" [clearable]="false"
                                 [disabled]="!item.level" (change)="onExpenseTypeChange(item)">
                             </ng-select>
+                            <input *ngIf="isOtherExpenseDetail(item)" type="text" class="form-control mt-2"
+                                placeholder="ระบุรายการอื่นๆ" [(ngModel)]="item.customExpenseType"
+                                name="training_custom_expense_detail_{{i}}" (ngModelChange)="updateDetailItems()">
                         </td>
 
                         <td>
