@@ -82,29 +82,28 @@ export class ExpenseCeremonialComponent {
   }
 
   loadExpenseRates() {
-    const expenseIds = [
-      this.model.selectedExpenseTypeId,
-      ...this.Mas_Expense_Detial_List.map((detail: any) =>
+    const expenseDetailIds = this.Mas_Expense_Detial_List
+      .map((detail: any) =>
         this.getExpenseDetailId(detail)
       )
-    ].filter((id: any, index: number, list: any[]) =>
-      id !== null &&
-      id !== undefined &&
-      id !== '' &&
-      list.findIndex((item: any) => this.isSameId(item, id)) === index
-    );
+      .filter((id: any, index: number, list: any[]) =>
+        id !== null &&
+        id !== undefined &&
+        id !== '' &&
+        list.findIndex((item: any) => this.isSameId(item, id)) === index
+      );
 
-    if (expenseIds.length == 0) {
+    if (expenseDetailIds.length == 0) {
       this.Mas_Expense_Detial_Rate_List = [];
       this.bindData();
       this.applyMasterRates();
       return;
     }
 
-    const requests = expenseIds.map((expenseId: any) =>
+    const requests = expenseDetailIds.map((expenseDetailId: any) =>
       this.serviceebud.GatewayGetData({
         FUNC_CODE: "FUNC-Get_Mas_Expense_Rate",
-        Fk_Expense_Id: expenseId
+        Fk_Expense_Id: expenseDetailId
       }).pipe(
         catchError(() => of({ List_Mas_Expense_Rate: [] }))
       )
@@ -114,12 +113,7 @@ export class ExpenseCeremonialComponent {
       .subscribe((responses: any[]) => {
         this.Mas_Expense_Detial_Rate_List =
           responses.reduce((list: any[], response: any) => {
-            const expenseRateList =
-              response?.List_Mas_Expense_Rate;
-
-            return Array.isArray(expenseRateList)
-              ? list.concat(expenseRateList)
-              : list;
+            return list.concat(this.getExpenseRateList(response));
           }, []);
 
         this.bindData();
@@ -177,6 +171,18 @@ export class ExpenseCeremonialComponent {
     ].filter(Boolean).join(' '));
   }
 
+  private getExpenseRateList(response: any): any[] {
+    if (Array.isArray(response?.List_Mas_Expense_Rate)) {
+      return response.List_Mas_Expense_Rate;
+    }
+
+    if (response?.Mas_Expense_Rate) {
+      return [response.Mas_Expense_Rate];
+    }
+
+    return [];
+  }
+
   private getExpenseDetailByName(name: any): any {
     const text = this.normalizeText(name);
 
@@ -195,20 +201,21 @@ export class ExpenseCeremonialComponent {
       return detailText &&
         (
           detailText === text ||
-        detailText.includes(text) ||
+          detailText.includes(text) ||
           text.includes(detailText)
         );
     });
   }
 
-  private getRateForExpenseDetail(name: any): number {
-    const detail = this.getExpenseDetailByName(name);
-    const detailId = this.getExpenseDetailId(detail);
-    const detailRate = this.getRowRate(detail);
+  private getExpenseDetailById(value: any): any {
+    return this.Mas_Expense_Detial_List.find((detail: any) =>
+      this.isSameId(this.getExpenseDetailId(detail), value)
+    );
+  }
 
-    if (detailRate > 0) {
-      return detailRate;
-    }
+  private getRateForExpenseDetail(value: any): number {
+    const detail = this.getExpenseDetailById(value) ?? this.getExpenseDetailByName(value);
+    const detailId = this.getExpenseDetailId(detail) ?? value;
 
     const byId = this.Mas_Expense_Detial_Rate_List.find((row: any) =>
       this.isSameId(this.getExpenseDetailId(row), detailId)
@@ -218,7 +225,12 @@ export class ExpenseCeremonialComponent {
       return this.getRowRate(byId);
     }
 
-    const text = this.normalizeText(name);
+    const text = this.normalizeText(
+      detail?.Expense_Detial_Name ??
+      detail?.Expense_Detail ??
+      detail?.Expense_Name ??
+      value
+    );
     const byName = this.Mas_Expense_Detial_Rate_List.find((row: any) => {
       const rateText = this.getRateRowText(row);
 
@@ -237,10 +249,26 @@ export class ExpenseCeremonialComponent {
       this.isSameId(this.getExpenseDetailId(item), detailId)
     );
 
-    return this.getRowRate(this.Mas_Expense_Detial_Rate_List[detailIndex]);
+    const byIndex = this.getRowRate(this.Mas_Expense_Detial_Rate_List[detailIndex]);
+
+    if (byIndex > 0) {
+      return byIndex;
+    }
+
+    return this.getRowRate(detail);
   }
 
   private getRowPrice(row: any): number {
+    const masterRate = this.getRateForExpenseDetail(
+      row?.Fk_Expense_Detail_Id ??
+      row?.Fk_Expense_Detial_Id ??
+      row?.Expense_Detail
+    );
+
+    if (masterRate > 0) {
+      return masterRate;
+    }
+
     const price = this.toNumber(row?.Price);
 
     return price > 0
@@ -489,13 +517,13 @@ export class ExpenseCeremonialComponent {
 
   }
 
-  newOtherItem() {
+  newOtherItem(name = '') {
 
     return {
 
       requestItemId: 0,
 
-      name: '',
+      name,
 
       meal: 0,
 
@@ -518,7 +546,7 @@ export class ExpenseCeremonialComponent {
     }
 
     group.otherItems.push(
-      this.newOtherItem()
+      this.newOtherItem('')
     );
 
     this.calculate(group);
@@ -559,31 +587,31 @@ export class ExpenseCeremonialComponent {
     // lunch
     group.lunch.total =
 
-      (Number(group.lunch.meal) || 0) *
+      this.toNumber(group.lunch.meal) *
 
-      (Number(group.lunch.person) || 0) *
+      this.toNumber(group.lunch.person) *
 
-      (Number(group.lunch.price) || 0);
+      this.toNumber(group.lunch.price);
 
     // snack
     group.snack.total =
 
-      (Number(group.snack.meal) || 0) *
+      this.toNumber(group.snack.meal) *
 
-      (Number(group.snack.person) || 0) *
+      this.toNumber(group.snack.person) *
 
-      (Number(group.snack.price) || 0);
+      this.toNumber(group.snack.price);
 
     // รวม
     (group.otherItems || []).forEach((item: any) => {
 
       item.total =
 
-        (Number(item.meal) || 0) *
+        this.toNumber(item.meal) *
 
-        (Number(item.person) || 0) *
+        this.toNumber(item.person) *
 
-        (Number(item.price) || 0);
+        this.toNumber(item.price);
 
     });
 
@@ -593,7 +621,7 @@ export class ExpenseCeremonialComponent {
 
         (sum: number, item: any) =>
 
-          sum + (Number(item.meal) || 0),
+          sum + this.toNumber(item.meal),
 
         0
 
@@ -605,7 +633,7 @@ export class ExpenseCeremonialComponent {
 
         (sum: number, item: any) =>
 
-          sum + (Number(item.person) || 0),
+          sum + this.toNumber(item.person),
 
         0
 
@@ -617,7 +645,7 @@ export class ExpenseCeremonialComponent {
 
         (sum: number, item: any) =>
 
-          sum + (Number(item.total) || 0),
+          sum + this.toNumber(item.total),
 
         0
 
@@ -625,25 +653,25 @@ export class ExpenseCeremonialComponent {
 
     group.totalMeal =
 
-      (Number(group.lunch.meal) || 0) +
+      this.toNumber(group.lunch.meal) +
 
-      (Number(group.snack.meal) || 0) +
+      this.toNumber(group.snack.meal) +
 
       otherTotalMeal;
 
     group.totalPerson =
 
-      (Number(group.lunch.person) || 0) +
+      this.toNumber(group.lunch.person) +
 
-      (Number(group.snack.person) || 0) +
+      this.toNumber(group.snack.person) +
 
       otherTotalPerson;
 
     group.grandTotal =
 
-      (Number(group.lunch.total) || 0) +
+      this.toNumber(group.lunch.total) +
 
-      (Number(group.snack.total) || 0) +
+      this.toNumber(group.snack.total) +
 
       otherGrandTotal;
 
@@ -665,7 +693,7 @@ export class ExpenseCeremonialComponent {
 
         (sum: number, g: any) =>
 
-          sum + (Number(g.grandTotal) || 0),
+          sum + this.toNumber(g.grandTotal),
 
         0
 
@@ -755,6 +783,18 @@ export class ExpenseCeremonialComponent {
       });
 
       (group.otherItems || []).forEach((item: any) => {
+
+        const isBlankOtherItem =
+          !item?.requestItemId &&
+          !item?.name &&
+          this.toNumber(item?.meal) == 0 &&
+          this.toNumber(item?.person) == 0 &&
+          this.toNumber(item?.price) == 0 &&
+          this.toNumber(item?.total) == 0;
+
+        if (isBlankOtherItem) {
+          return;
+        }
 
         this.model.Budget_Request_Detail_Item.push({
 
