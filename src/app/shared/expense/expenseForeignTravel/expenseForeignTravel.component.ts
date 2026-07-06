@@ -22,6 +22,17 @@ export class ExpenseForeignTravelComponent {
   Mas_Expense_Detial_Rate_List: any[] = [];
   Mas_Country_List: any[] = [];
   levelOptions: any[] = [];
+  meetingTypeOptions: any[] = [
+    { label: 'ประชุม', value: 'ประชุม' },
+    { label: 'อบรม/สัมมนา', value: 'อบรม/สัมมนา' },
+    { label: 'ศึกษาดูงาน', value: 'ศึกษาดูงาน' },
+    { label: 'เจรจา/หารือ', value: 'เจรจา/หารือ' },
+    { label: 'อื่นๆ', value: 'อื่นๆ' }
+  ];
+  obligationOptions: any[] = [
+    { label: 'มี', value: true },
+    { label: 'ไม่มี', value: false }
+  ];
   private currentExpenseTypeId: any = null;
 
   grandTotal = 0;
@@ -128,10 +139,24 @@ export class ExpenseForeignTravelComponent {
       country?.Country ??
       '';
 
+    const countryGroup =
+      country?.Country_Group_Name ??
+      country?.Country_Group ??
+      country?.CountryGroup ??
+      country?.Group_Country ??
+      country?.Group_Country_Name ??
+      country?.Country_Type ??
+      country?.Country_Type_Name ??
+      country?.Group_Name ??
+      country?.Zone_Name ??
+      country?.Region_Name ??
+      '';
+
     return {
       ...country,
       Country_Id: (countryId ?? '').toString(),
-      Country_Name: countryName
+      Country_Name: countryName,
+      Country_Group: countryGroup
     };
   }
 
@@ -286,6 +311,32 @@ export class ExpenseForeignTravelComponent {
     });
   }
 
+  isOtherExpenseDetail(item: any): boolean {
+    const detail = this.getExpenseDetailById(item?.detailId) ?? this.getExpenseDetailByName(item?.name);
+    const text = this.normalizeText(
+      detail?.Expense_Detial_Name ??
+      detail?.Expense_Detail ??
+      item?.name
+    );
+
+    return text.includes('อื่น') || text.includes('other');
+  }
+
+  getExpenseDetailNameForSave(item: any): string {
+    return this.isOtherExpenseDetail(item)
+      ? item.customName || ''
+      : item.name || '';
+  }
+
+  getCountryGroupLabel(item: any): string {
+    const countryId = (item?.Other_Name ?? '').toString();
+    const country = this.Mas_Country_List.find((row: any) =>
+      (row?.Country_Id ?? '').toString() === countryId
+    );
+
+    return country?.Country_Group_Name ?? country?.Country_Group ?? '';
+  }
+
   private getRateForExpenseDetail(name: any): number {
     const detail = this.getExpenseDetailByName(name);
     const detailId = this.getExpenseDetailId(detail);
@@ -328,6 +379,8 @@ export class ExpenseForeignTravelComponent {
 
   private applyMasterRates() {
     this.items.forEach((item: any, index: number) => {
+      if (this.isOtherExpenseDetail(item)) return;
+
       const rate = this.getRateForExpenseDetail(item.name);
 
       if (rate > 0) {
@@ -361,13 +414,15 @@ export class ExpenseForeignTravelComponent {
 
       total: 0,
 
-      meetingType: '',
+      customName: '',
+
+      meetingType: null,
 
       hasInvite: false,
 
-      Other_Name: '',
+      Other_Name: null,
 
-      level: ''
+      level: null
 
     };
 
@@ -452,7 +507,7 @@ export class ExpenseForeignTravelComponent {
       const level =
         row.Level_Name ||
         detail?.Child_Detial_Name ||
-        '';
+        null;
 
       const item = {
 
@@ -466,6 +521,9 @@ export class ExpenseForeignTravelComponent {
           detailId || null,
 
         name:
+          row.Expense_Detail || '',
+
+        customName:
           row.Expense_Detail || '',
 
         times:
@@ -486,13 +544,13 @@ export class ExpenseForeignTravelComponent {
           Number(row.Total || 0),
 
         meetingType:
-          row.Month_Name || '',
+          row.Month_Name || null,
 
         hasInvite:
           row.People_Type_A == 1,
 
         Other_Name:
-          (row.Other_Name ?? '').toString(),
+          row.Other_Name ? row.Other_Name.toString() : null,
 
         level:
           level,
@@ -564,6 +622,14 @@ export class ExpenseForeignTravelComponent {
     const detail = this.getExpenseDetailById(item.detailId);
 
     item.name = detail?.Expense_Detial_Name || '';
+    item.customName = '';
+
+    if (this.isOtherExpenseDetail(item)) {
+      item.rate = '';
+      this.calculate(index);
+      return;
+    }
+
     item.rate = detail ? this.getRateForExpenseDetail(item.name) : 0;
 
     this.calculate(index);
@@ -600,13 +666,13 @@ export class ExpenseForeignTravelComponent {
 
     x.total =
 
-      (Number(x.times) || 0) *
+      this.toNumber(x.times) *
 
-      (Number(x.person) || 0) *
+      this.toNumber(x.person) *
 
-      (Number(x.days) || 0) *
+      this.toNumber(x.days) *
 
-      (Number(x.rate) || 0);
+      this.toNumber(x.rate);
 
     this.calculateAll();
 
@@ -622,7 +688,7 @@ export class ExpenseForeignTravelComponent {
 
         (s, x) =>
 
-          s + (Number(x.total) || 0),
+          s + this.toNumber(x.total),
 
         0
 
@@ -734,7 +800,7 @@ export class ExpenseForeignTravelComponent {
           ),
 
         Expense_Detail:
-          this.toText(item.name),
+          this.toText(this.getExpenseDetailNameForSave(item)),
 
         Budget_Amount:
           this.toMoney(item.total),

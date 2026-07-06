@@ -98,6 +98,10 @@
 
                         <th style="width: 6%" colspan="2">
                             พันธะกรณีข้อตกลง
+                            <div class="d-flex justify-content-around small mt-1">
+                                <span>มี</span>
+                                <span>ไม่มี</span>
+                            </div>
                         </th>
 
                         <th style="width: 10%">
@@ -140,6 +144,9 @@
                                 placeholder="-- เลือกรายการ --" [disabled]="!item.level"
                                 (ngModelChange)="onExpenseDetailChange(item, i)">
                             </ng-select>
+                            <input *ngIf="isOtherExpenseDetail(item)" type="text" class="form-control mt-2"
+                                placeholder="ระบุรายการ" [(ngModel)]="item.customName"
+                                (ngModelChange)="updateDetailItems()">
 
                         </td>
 
@@ -172,7 +179,8 @@
 
                             <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" placeholder="ระบุอัตราค่าใช้จ่าย"
                              class="form-control text-end" [(ngModel)]="item.rate"
-                                readonly  style="background-color: #ebeff3;">
+                                [readonly]="!isOtherExpenseDetail(item)" [class.bg-light]="!isOtherExpenseDetail(item)"
+                                (ngModelChange)="calculate(i)">
 
                         </td>
 
@@ -186,16 +194,28 @@
                         <!-- meeting type -->
                         <td>
 
-                            <input class="form-control" [(ngModel)]="item.meetingType"
-                                (ngModelChange)="updateDetailItems()">
+                            <ng-select [items]="meetingTypeOptions" bindLabel="label" bindValue="value"
+                                [(ngModel)]="item.meetingType" appendTo="body"
+                                placeholder="-- เลือก --" (ngModelChange)="updateDetailItems()">
+                            </ng-select>
 
                         </td>
 
                         <!-- หนังสือเชิญ -->
-                        <td colspan="2">
+                        <td>
 
-                            <input type="checkbox" [(ngModel)]="item.hasInvite" (ngModelChange)="updateDetailItems()">
+                            <input type="radio" [name]="'foreign_obligation_' + i"
+                                [checked]="item.hasInvite === true"
+                                (change)="item.hasInvite = true; updateDetailItems()">
            
+
+                        </td>
+
+                        <td>
+
+                            <input type="radio" [name]="'foreign_obligation_' + i"
+                                [checked]="item.hasInvite === false"
+                                (change)="item.hasInvite = false; updateDetailItems()">
 
                         </td>
 
@@ -208,7 +228,7 @@
                             </ng-select>
 
                         </td>
-                        <td></td>
+                        <td>{{ getCountryGroupLabel(item) }}</td>
 
                         <!-- ลบ -->
                         <td>
