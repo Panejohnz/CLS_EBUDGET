@@ -10,20 +10,28 @@
             </div>
 
             <div class="col-md-2">
-                <label class="form-label fw-semibold">สถานที่จัดกิจกรรม</label>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" [(ngModel)]="locationOffice"
-                        (ngModelChange)="updateDetailItems()" id="government">
-                    <label class="form-check-label" for="government">ราชการ</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" [(ngModel)]="locationHotel"
-                        (ngModelChange)="updateDetailItems()" id="private">
-                    <label class="form-check-label" for="private">เอกชน</label>
+                <label class="form-label fw-semibold d-block">สถานที่จัดกิจกรรม</label>
+
+                <div class="d-flex gap-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="locationOffice"
+                            (ngModelChange)="updateDetailItems()" id="government">
+                        <label class="form-check-label" for="government">
+                            ราชการ
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="locationHotel"
+                            (ngModelChange)="updateDetailItems()" id="private">
+                        <label class="form-check-label" for="private">
+                            เอกชน
+                        </label>
+                    </div>
                 </div>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-5">
                 <label class="form-label fw-semibold">คำชี้แจง</label>
                 <textarea class="form-control" rows="3" [(ngModel)]="description" (ngModelChange)="updateDetailItems()"
                     placeholder="ระบุคำชี้แจง">
@@ -91,35 +99,36 @@
                         </td>
 
                         <td>
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." placeholder="ระบุจำนวนครั้ง/รุ่น" 
-                                inputmode="decimal" class="form-control text-center" [(ngModel)]="item.times"
-                                (ngModelChange)="calculate(item)">
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                placeholder="ระบุจำนวนครั้ง/รุ่น" inputmode="decimal" class="form-control text-center"
+                                [(ngModel)]="item.times" (ngModelChange)="calculate(item)">
                         </td>
 
                         <td>
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." placeholder="ระบุจำนวนคนประเภท ก"
-                                inputmode="decimal" class="form-control text-center" [(ngModel)]="item.typeA"
-                                (ngModelChange)="calculate(item)">
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                placeholder="ระบุจำนวนคนประเภท ก" inputmode="decimal" class="form-control text-center"
+                                [(ngModel)]="item.typeA" (ngModelChange)="calculate(item)">
                         </td>
 
                         <td>
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." placeholder="ระบุจำนวนคนประเภท ข"
-                                inputmode="decimal" class="form-control text-center" [(ngModel)]="item.typeB"
-                                (ngModelChange)="calculate(item)">
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                placeholder="ระบุจำนวนคนประเภท ข" inputmode="decimal" class="form-control text-center"
+                                [(ngModel)]="item.typeB" (ngModelChange)="calculate(item)">
                         </td>
 
                         <td>
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." placeholder="ระบุจำนวนคนบุคคลภายนอก"
-                                inputmode="decimal" class="form-control text-center" [(ngModel)]="item.external"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                placeholder="ระบุจำนวนคนบุคคลภายนอก" inputmode="decimal"
+                                class="form-control text-center" [(ngModel)]="item.external"
                                 (ngModelChange)="calculate(item)">
                         </td>
 
                         <td class="fw-bold bg-light">{{ item.person }}</td>
 
                         <td>
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." placeholder="ระบุจำนวน"
-                                inputmode="decimal" class="form-control text-center" [(ngModel)]="item.qty"
-                                (ngModelChange)="calculate(item)">
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                placeholder="ระบุจำนวน" inputmode="decimal" class="form-control text-center"
+                                [(ngModel)]="item.qty" (ngModelChange)="calculate(item)">
                         </td>
 
                         <td>
@@ -131,16 +140,16 @@
                             </select> -->
                             <ng-select appendTo="body" dropdownPosition="auto" [items]="Mas_Unit_Lists"
                                 bindLabel="Unit_Name" bindValue="Unit_Name" [(ngModel)]="item.unit"
-                                name="training_unit_{{i}}" placeholder="-- เลือกหน่วยนับ --"
-                                [clearable]="false" (ngModelChange)="updateDetailItems()">
+                                name="training_unit_{{i}}" placeholder="-- เลือกหน่วยนับ --" [clearable]="false"
+                                (ngModelChange)="updateDetailItems()">
                             </ng-select>
                         </td>
 
                         <td>
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." placeholder="ระบุอัตราค่าใช้จ่าย"
-                                inputmode="decimal" class="form-control text-end" [(ngModel)]="item.rate"
-                                [readonly]="!item.isOtherRate" [class.bg-light]="!item.isOtherRate"
-                                (ngModelChange)="calculate(item)">
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
+                                placeholder="ระบุอัตราค่าใช้จ่าย" inputmode="decimal" class="form-control text-end"
+                                [(ngModel)]="item.rate" [readonly]="!item.isOtherRate"
+                                [class.bg-light]="!item.isOtherRate" (ngModelChange)="calculate(item)">
                         </td>
 
                         <td>
@@ -152,8 +161,8 @@
                             </select> -->
                             <ng-select appendTo="body" dropdownPosition="auto" [items]="Mas_Unit_Lists"
                                 bindLabel="Unit_Name" bindValue="Unit_Name" [(ngModel)]="item.unit2"
-                                name="training_rate_unit_{{i}}" placeholder="-- เลือกหน่วยนับ --"
-                                [clearable]="false" (ngModelChange)="updateDetailItems()">
+                                name="training_rate_unit_{{i}}" placeholder="-- เลือกหน่วยนับ --" [clearable]="false"
+                                (ngModelChange)="updateDetailItems()">
                             </ng-select>
                         </td>
 
@@ -182,8 +191,8 @@
 
     <div class="card-footer d-flex justify-content-between">
         <button class="btn btn-primary" (click)="addRow()">
-                 <i class="bx bx-plus text-black"></i>
-                   <span class="text-black"> เพิ่มรายการ</span>
+            <i class="bx bx-plus text-black"></i>
+            <span class="text-black"> เพิ่มรายการ</span>
         </button>
         <span class="text-danger">จำนวน {{ expenseList.length }} รายการ</span>
     </div>

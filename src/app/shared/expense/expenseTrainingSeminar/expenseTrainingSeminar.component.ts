@@ -5,7 +5,7 @@ import { EbudgetService } from 'src/app/core/services/ebudget.service'
 @Component({
   selector: 'app-expense-training-seminar',
   templateUrl: './expenseTrainingSeminar.component.html',
-  styles: ``
+  styleUrl: './expenseTrainingSeminar.component.scss',
 })
 export class ExpenseTrainingSeminarComponent {
 
