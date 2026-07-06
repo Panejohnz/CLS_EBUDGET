@@ -6,10 +6,10 @@
         <div class="mb-3">
 
             <label class="fw-semibold">
-                รายการ
+                ชื่อโครงการ/รายการ
             </label>
 
-            <input class="form-control" [(ngModel)]="main.title" (ngModelChange)="updateDetailItems()">
+            <input class="form-control" [(ngModel)]="main.title" (ngModelChange)="updateDetailItems()" placeholder="ระบุชื่อโครงการ/รายการ">
 
         </div>
 
@@ -21,7 +21,7 @@
                     เหตุผลความจำเป็น
                 </label>
 
-                <textarea class="form-control" rows="4" [(ngModel)]="main.reason"
+                <textarea class="form-control" rows="4" [(ngModel)]="main.reason" placeholder="ระบุเหตุผลความจำเป็น"
                     (ngModelChange)="updateDetailItems()"></textarea>
 
             </div>
@@ -32,7 +32,7 @@
                     กลุ่มเป้าหมาย
                 </label>
 
-                <textarea class="form-control" rows="4" [(ngModel)]="main.target"
+                <textarea class="form-control" rows="4" [(ngModel)]="main.target" placeholder="ระบุกลุ่มเป้าหมาย"
                     (ngModelChange)="updateDetailItems()"></textarea>
 
             </div>
@@ -43,69 +43,73 @@
                     ผลประโยชน์ที่จะได้รับ
                 </label>
 
-                <textarea class="form-control" rows="4" [(ngModel)]="main.benefit"
+                <textarea class="form-control" rows="4" [(ngModel)]="main.benefit" placeholder="ระบุผลประโยชน์ที่จะได้รับ"
                     (ngModelChange)="updateDetailItems()"></textarea>
 
             </div>
 
         </div>
 
-        <!-- TABLE -->
-        <div class="expense-table-responsive">
+     <!-- table -->
+            <div class="expense-table-responsive">
 
-            <table class="table table-bordered align-middle expense-table text-center">
+                <table class="table table-bordered align-middle expense-table text-center mb-0">
 
-                <thead class="text-center text-white expense-table-header">
+                    <!-- header -->
+                    <thead class="text-center text-white expense-table-header">
 
                     <tr>
 
-                        <th>
+                        <th style="width: 5%">
                             ลำดับ
                         </th>
 
-                        <th>
+                        <th style="width: 7%">
                             ระดับ
                         </th>
 
-                        <th>
-                            รายการ
+                        <th style="width: 15%">
+                            รายการค่าใช้จ่าย
                         </th>
 
-                        <th>
+                        <th style="width: 7%">
                             ครั้ง/รุ่น
                         </th>
 
-                        <th>
+                        <th style="width: 7%">
                             จำนวนคน
                         </th>
 
-                        <th>
+                        <th style="width: 7%">
                             จำนวนวัน
                         </th>
 
-                        <th>
-                            อัตราที่ตั้ง
+                        <th style="width: 7%">
+                            อัตราค่าใช้จ่าย
                         </th>
 
-                        <th>
-                            รวม (บาท)
+                        <th style="width: 10%">
+                            รวมค่าใช้จ่าย
                         </th>
 
-                        <th>
+                        <th style="width: 8%">
                             ประเภทการประชุม
                         </th>
 
-                        <th>
-                            หนังสือเชิญ
+                        <th style="width: 6%" colspan="2">
+                            พันธะกรณีข้อตกลง
                         </th>
 
-                        <th>
+                        <th style="width: 10%">
                             ประเทศ
                         </th>
-
-                        <th></th>
+                        <th style="width: 6%">
+                            กลุ่มประเทศ (ก/ข/ค/ง/จ)
+                        </th>
+                        <th style="width: 5%">ลบ</th>
 
                     </tr>
+
 
                 </thead>
 
@@ -142,7 +146,7 @@
                         <!-- ครั้ง -->
                         <td>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.times"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" placeholder="ระบุจำนวนครั้ง/รุ่น" class="form-control  text-center" [(ngModel)]="item.times"
                                 (ngModelChange)="calculate(i)">
 
                         </td>
@@ -150,7 +154,7 @@
                         <!-- จำนวนคน -->
                         <td>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.person"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" placeholder="ระบุจำนวนคน" class="form-control  text-center" [(ngModel)]="item.person"
                                 (ngModelChange)="calculate(i)">
 
                         </td>
@@ -158,7 +162,7 @@
                         <!-- จำนวนวัน -->
                         <td>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.days"
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" placeholder="ระบุจำนวนวัน" class="form-control text-center" [(ngModel)]="item.days"
                                 (ngModelChange)="calculate(i)">
 
                         </td>
@@ -166,8 +170,9 @@
                         <!-- rate -->
                         <td>
 
-                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" class="form-control form-control-sm text-end" [(ngModel)]="item.rate"
-                                readonly>
+                            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal" placeholder="ระบุอัตราค่าใช้จ่าย"
+                             class="form-control text-end" [(ngModel)]="item.rate"
+                                readonly  style="background-color: #ebeff3;">
 
                         </td>
 
@@ -181,15 +186,16 @@
                         <!-- meeting type -->
                         <td>
 
-                            <input class="form-control form-control-sm" [(ngModel)]="item.meetingType"
+                            <input class="form-control" [(ngModel)]="item.meetingType"
                                 (ngModelChange)="updateDetailItems()">
 
                         </td>
 
                         <!-- หนังสือเชิญ -->
-                        <td>
+                        <td colspan="2">
 
                             <input type="checkbox" [(ngModel)]="item.hasInvite" (ngModelChange)="updateDetailItems()">
+           
 
                         </td>
 
@@ -202,13 +208,14 @@
                             </ng-select>
 
                         </td>
+                        <td></td>
 
                         <!-- ลบ -->
                         <td>
 
                             <button class="btn btn-danger btn-sm" (click)="removeItem(i)">
 
-                                🗑
+                                                   <i class="bx bx-trash"></i>
 
                             </button>
 
@@ -223,9 +230,9 @@
 
                     <tr>
 
-                        <td colspan="6" class="text-end fw-bold">
+                        <td colspan="7" class="text-end fw-bold">
 
-                            รวม
+                            รวมทั้งสิ้น
 
                         </td>
 
@@ -235,7 +242,7 @@
 
                         </td>
 
-                        <td colspan="5"></td>
+                        <td colspan="6"></td>
 
                     </tr>
 
@@ -248,9 +255,10 @@
         <!-- ปุ่ม -->
         <div class="mt-3">
 
-            <button class="btn btn-primary btn-sm" (click)="addItem()">
+            <button class="btn btn-primary" (click)="addItem()">
 
-                + เพิ่มรายการ
+               <i class="bx bx-plus text-black"></i>
+                <span class="text-black"> เพิ่มรายการ</span>
 
             </button>
 
