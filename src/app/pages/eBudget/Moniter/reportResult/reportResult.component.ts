@@ -442,7 +442,13 @@ export class ReportResultComponent
             this.Mas_Unit_Lists = Array.isArray(res.List_Mas_Unit)
               ? res.List_Mas_Unit
               : [];
-            const activities = this.mapPlanDetail(details);
+            const planSource =
+              res?.Project_Plan ||
+              res?.Budget_Plan ||
+              res?.ProjectPlan ||
+              res?.BudgetPlan ||
+              data;
+            const activities = this.mapPlanDetail(details, planSource);
             this.mapItems(items, activities);
             this.applyProjectReportData(activities, detailList, monthList);
 
@@ -571,7 +577,7 @@ export class ReportResultComponent
 
       });
   }
-  mapPlanDetail(data: any[]) {
+  mapPlanDetail(data: any[], planSource: any = this.selectedItem) {
 
     return data.map(x => ({
 
@@ -580,10 +586,16 @@ export class ReportResultComponent
       name: x.Activity_Name,
       owner: x.Responsible,
 
-      noBudget: x.Used_BG === 0,
-      consult: x.Is_Consult === 1,
-      consultSelf: this.getOperationValue(x, 'Operation1') === 1,
-      consultHire: this.getOperationValue(x, 'Operation2') === 1,
+      noBudget: this.isNoBudget(x, planSource, this.selectedItem),
+      consult: this.isConsult(x, planSource, this.selectedItem),
+      consultSelf:
+        this.getOperationValue(x, 'Operation1') === 1 ||
+        this.getOperationValue(planSource, 'Operation1') === 1 ||
+        this.getOperationValue(this.selectedItem, 'Operation1') === 1,
+      consultHire:
+        this.getOperationValue(x, 'Operation2') === 1 ||
+        this.getOperationValue(planSource, 'Operation2') === 1 ||
+        this.getOperationValue(this.selectedItem, 'Operation2') === 1,
 
       quarters: this.convertMonths(x.Months),
 
@@ -600,10 +612,18 @@ export class ReportResultComponent
         name: s.Activity_Name,
         owner: s.Responsible,
 
-        noBudget: s.Used_BG === 0,
-        consult: s.Is_Consult === 1,
-        consultSelf: this.getOperationValue(s, 'Operation1') === 1,
-        consultHire: this.getOperationValue(s, 'Operation2') === 1,
+        noBudget: this.isNoBudget(s, x, planSource, this.selectedItem),
+        consult: this.isConsult(s, x, planSource, this.selectedItem),
+        consultSelf:
+          this.getOperationValue(s, 'Operation1') === 1 ||
+          this.getOperationValue(x, 'Operation1') === 1 ||
+          this.getOperationValue(planSource, 'Operation1') === 1 ||
+          this.getOperationValue(this.selectedItem, 'Operation1') === 1,
+        consultHire:
+          this.getOperationValue(s, 'Operation2') === 1 ||
+          this.getOperationValue(x, 'Operation2') === 1 ||
+          this.getOperationValue(planSource, 'Operation2') === 1 ||
+          this.getOperationValue(this.selectedItem, 'Operation2') === 1,
 
         quarters: this.convertMonths(s.Months),
 
@@ -638,6 +658,69 @@ export class ReportResultComponent
       item?.[lowerField] ??
       0
     );
+  }
+
+  getActivitySelectedLabels(item: any): string[] {
+    const labels = [
+      item?.noBudget ? 'ไม่ใช้งบ' : 'ใช้งบ'
+    ];
+
+    if (item?.consultSelf) {
+      labels.push('ดำเนินการเอง');
+    }
+
+    if (item?.consultHire || item?.consult) {
+      labels.push('จ้างที่ปรึกษา');
+    }
+
+    return labels;
+  }
+
+  private isNoBudget(...items: any[]): boolean {
+    const source = items.find((item: any) =>
+      item?.Used_BG != null ||
+      item?.USED_BG != null ||
+      item?.used_BG != null ||
+      item?.usedBg != null ||
+      item?.noBudget != null
+    );
+
+    const rawValue =
+      source?.Used_BG ??
+      source?.USED_BG ??
+      source?.used_BG ??
+      source?.usedBg;
+
+    if (rawValue != null) {
+      const usedBg = Number(rawValue);
+
+      return usedBg === 0 || usedBg === 2;
+    }
+
+    if (source?.noBudget != null) {
+      return source.noBudget === true || source.noBudget === 1 || source.noBudget === '1';
+    }
+
+    return false;
+  }
+
+  private isConsult(...items: any[]): boolean {
+    const source = items.find((item: any) =>
+      item?.Is_Consult != null ||
+      item?.IS_CONSULT != null ||
+      item?.is_Consult != null ||
+      item?.isConsult != null ||
+      item?.consult != null
+    );
+
+    return Number(
+      source?.Is_Consult ??
+      source?.IS_CONSULT ??
+      source?.is_Consult ??
+      source?.isConsult ??
+      source?.consult ??
+      0
+    ) === 1;
   }
 
   private cloneReportList(list: any[]): any[] {
@@ -1304,9 +1387,9 @@ export class ReportResultComponent
         activity:
           detail.Activity_Name || selectedPlan?.Activity_Name || '',
         noBudget:
-          Number(detail.Used_BG ?? detail.USED_BG ?? selectedPlan?.Used_BG ?? 1) === 0,
+          this.isNoBudget(detail) || this.isNoBudget(selectedPlan),
         consult:
-          Number(detail.Is_Consult ?? detail.IS_CONSULT ?? selectedPlan?.Is_Consult ?? 0) === 1,
+          this.isConsult(detail) || this.isConsult(selectedPlan),
         consultSelf:
           this.getOperationValue(detail, 'Operation1') === 1 ||
           this.getOperationValue(selectedPlan, 'Operation1') === 1,

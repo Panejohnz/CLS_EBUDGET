@@ -258,21 +258,19 @@
     }
 
     .activity-label-box {
-        border: 1px solid #d7deea;
-        border-left: 4px solid #556398;
-        border-radius: 8px;
-        background: #f8fbff;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        background: #ffffff;
         padding: 10px 12px;
     }
 
     .activity-label-box.sub {
-        border-left-color: #7c9bbf;
         background: #ffffff;
     }
 
     .activity-title {
         color: #24324a;
-        font-weight: 700;
+        font-weight: 400;
         line-height: 1.45;
         white-space: pre-line;
         word-break: break-word;
@@ -280,30 +278,40 @@
 
     .activity-meta {
         display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
+        flex-direction: column;
+        gap: 4px;
         margin-top: 8px;
+        align-items: flex-start;
     }
 
-    .activity-pill {
+    .activity-option-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        align-items: center;
+        min-height: 20px;
+    }
+
+    .activity-option-label {
         display: inline-flex;
         align-items: center;
-        border-radius: 999px;
-        padding: 3px 9px;
-        font-size: 12px;
-        font-weight: 600;
-        background: #edf2f7;
-        color: #43526b;
+        color: #24324a;
+        font-size: 13px;
+        font-weight: 400;
     }
 
-    .activity-pill.success {
-        background: #e8f7ef;
-        color: #18794e;
+    .activity-option-label + .activity-option-label::before {
+        content: '|';
+        color: #9aa5b5;
+        margin-right: 14px;
     }
 
-    .activity-pill.muted {
-        background: #f1f3f5;
-        color: #6c757d;
+    .activity-report-separator td {
+        padding: 0;
+        height: 8px;
+        background: #eef2f6;
+        border-top: 1px solid #d8e0ea;
+        border-bottom: 1px solid #d8e0ea;
     }
 
     /* กำหนดความสูงของ Modal */
@@ -700,22 +708,13 @@
                                         </div>
 
                                         <div class="activity-meta">
-                                            <span class="activity-pill" [class.success]="!act.noBudget"
-                                                [class.muted]="act.noBudget">
-                                                {{ act.noBudget ? 'ไม่ใช้งบ' : 'ใช้งบ' }}
-                                            </span>
+                                            <div class="activity-option-row">
+                                                <span class="activity-option-label"
+                                                    *ngFor="let label of getActivitySelectedLabels(act)">
+                                                    {{ label }}
+                                                </span>
+                                            </div>
 
-                                            <span class="activity-pill muted" *ngIf="act.consultSelf">
-                                                ดำเนินการเอง
-                                            </span>
-
-                                            <span class="activity-pill muted" *ngIf="act.consultHire || act.consult">
-                                                จ้างที่ปรึกษา
-                                            </span>
-
-                                            <span class="activity-pill muted" *ngIf="act.owner">
-                                                ผู้รับผิดชอบ: {{ act.owner }}
-                                            </span>
                                         </div>
                                     </div>
                                 </td>
@@ -774,40 +773,8 @@
                         </ng-container>
 
                         <!-- ส่วนล่างกิจกรรมหลัก -->
-                        <tr>
-                            <td colspan="21" style="background-color: #556398;">
-
-                                <div class="d-flex justify-content-end align-items-center gap-2 flex-wrap">
-
-                                    <!-- กลุ่มผู้รับผิดชอบ -->
-                                    <div class="d-flex align-items-center gap-2" style="margin-right: 30px;">
-
-                                        <label class="mb-0 text-white">
-                                            ผู้รับผิดชอบ
-                                        </label>
-
-                                        <input type="text" class="form-control form-control-sm" style="width:220px"
-                                            [(ngModel)]="act.owner">
-
-
-                                        <button class="btn btn-sm btn-success"
-                                            (click)="openMultiplierModal(fullDataModal, act, 'act')"
-                                            [disabled]="act.SubActivities?.length > 0">
-                                            แบบฟอร์มตัวคูณ
-                                        </button>
-                                    </div>
-
-                                    <span class="fw-bold text-white" style="min-width: 100px;margin-right: 100px; ">
-                                        รวมผลคูณ : {{ getMultiplierTotal(act) | number:'1.2-2' }}
-                                    </span>
-
-                                    <span class="fw-bold text-white" style="min-width: 100px; margin-right: 100px;">
-                                        รวมวางแผน : {{ getActivityTotal(act) | number:'1.2-2' }}
-                                    </span>
-
-                                </div>
-
-                            </td>
+                        <tr class="activity-report-separator">
+                            <td colspan="21"></td>
                         </tr>
 
                         <!-- SubActivities -->
@@ -828,23 +795,13 @@
                                             </div>
 
                                             <div class="activity-meta">
-                                                <span class="activity-pill" [class.success]="!sub.noBudget"
-                                                    [class.muted]="sub.noBudget">
-                                                    {{ sub.noBudget ? 'ไม่ใช้งบ' : 'ใช้งบ' }}
-                                                </span>
+                                                <div class="activity-option-row">
+                                                    <span class="activity-option-label"
+                                                        *ngFor="let label of getActivitySelectedLabels(sub)">
+                                                        {{ label }}
+                                                    </span>
+                                                </div>
 
-                                                <span class="activity-pill muted" *ngIf="sub.consultSelf">
-                                                    ดำเนินการเอง
-                                                </span>
-
-                                                <span class="activity-pill muted"
-                                                    *ngIf="sub.consultHire || sub.consult">
-                                                    จ้างที่ปรึกษา
-                                                </span>
-
-                                                <span class="activity-pill muted" *ngIf="sub.owner">
-                                                    ผู้รับผิดชอบ: {{ sub.owner }}
-                                                </span>
                                             </div>
                                         </div>
                                     </td>
@@ -901,31 +858,8 @@
                             </ng-container>
 
                             <!-- ส่วนล่าง SubActivities -->
-                            <tr style="background-color: #E0E8F0;">
-                                <td colspan="21">
-
-                                    <div class="d-flex justify-content-end align-items-center gap-2">
-                                        <!-- กลุ่มผู้รับผิดชอบ -->
-                                        <div class="d-flex align-items-center gap-2" style="margin-right: 30px;">
-                                            <button class="btn btn-sm btn-success"
-                                                (click)="openMultiplierModal(fullDataModal, sub, 'sub')"
-                                                [disabled]="sub.SubActivities?.length > 0">
-                                                แบบฟอร์มตัวคูณ
-                                            </button>
-                                        </div>
-                                        <span class="fw-bold text-black" style="min-width: 100px;margin-right: 100px; ">
-                                            รวมผลคูณ :
-                                            {{ sub.multiplierTotal | number:'1.2-2' }}
-                                        </span>
-
-                                        <span class="fw-bold text-black" style="min-width: 100px;margin-right: 100px; ">
-                                            รวมวางแผน :
-                                            {{ getActivityTotal(sub) | number:'1.2-2' }}
-                                        </span>
-
-                                    </div>
-
-                                </td>
+                            <tr class="activity-report-separator">
+                                <td colspan="21"></td>
                             </tr>
 
                         </ng-container>
@@ -1461,3 +1395,5 @@
         [activity]="selectedActivity" [modal]="modal">
     </app-other-expense-project>
 </ng-template>
+
+
