@@ -115,7 +115,7 @@
 
                     <div class="row align-items-center">
 
-                        <div class="col-md-3">
+                        <div class="col-md-1">
 
                             <label class="fw-semibold mb-2 mb-md-0">
 
@@ -125,7 +125,7 @@
 
                         </div>
 
-                        <div class="col-md-9">
+                        <div class="col-md-11">
 
                             <ng-select [items]="Tri_lists" bindLabel="name" bindValue="Trimas_Id"
                                 [(ngModel)]="selectedTri" (change)="onChangeQuarter()" appendTo="body"
@@ -153,7 +153,8 @@
 
                         </label>
 
-                        <input class="form-control" placeholder="กรอกผลงาน" [(ngModel)]="form.Performance">
+                        <input class="form-control" placeholder="ระบุผลงาน" [(ngModel)]="form.Performance"
+                            mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal">
 
                     </div>
                     <!-- PROGRESS -->
@@ -164,8 +165,8 @@
                             ความก้าวหน้า
 
                         </label>
-
-                        <input class="form-control" placeholder="กรอกความก้าวหน้า" [(ngModel)]="form.Progress">
+                        <textarea rows="4" class="form-control" placeholder="ระบุความก้าวหน้า"
+                            [(ngModel)]="form.Progress">   </textarea>
 
                     </div>
 
@@ -178,7 +179,7 @@
 
                         </label>
 
-                        <textarea rows="4" class="form-control" placeholder="กรอกผลการดำเนินงาน"
+                        <textarea rows="4" class="form-control" placeholder="ระบุผลการดำเนินงาน"
                             [(ngModel)]="form.Indicators_Result">
 
                         </textarea>
@@ -194,7 +195,7 @@
 
                         </label>
 
-                        <textarea rows="4" class="form-control" placeholder="กรอกปัญหา / อุปสรรค"
+                        <textarea rows="4" class="form-control" placeholder="ระบุปัญหา / อุปสรรค"
                             [(ngModel)]="form.Problems">
 
                         </textarea>
@@ -210,7 +211,7 @@
 
                         </label>
 
-                        <textarea rows="4" class="form-control" placeholder="กรอกข้อเสนอแนะ"
+                        <textarea rows="4" class="form-control" placeholder="ระบุข้อเสนอแนะ"
                             [(ngModel)]="form.Suggestions">
 
                         </textarea>
