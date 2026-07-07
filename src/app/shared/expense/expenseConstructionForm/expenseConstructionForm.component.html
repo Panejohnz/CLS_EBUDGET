@@ -16,23 +16,23 @@
                     รายการ
                 </th>
 
-                <th rowspan="2" width="12%">
+                <th rowspan="2" width="10%">
                     ประเภทผูกพัน
                 </th>
 
-                <th rowspan="2" width="10%">
-                    ระยะเวลา (ปี)
+                <th rowspan="2" width="8%">
+                    ปีที่เริ่มต้น
                 </th>
-                <th rowspan="2" width="15%">
+                <th rowspan="2" width="10%">
                     จำนวน
                 </th>
 
-                <th rowspan="2" width="15%">
+                <th rowspan="2" width="10%">
                     ราคา/หน่วย
                 </th>
 
 
-                <th rowspan="2" width="10%">
+                <th rowspan="2" width="12%">
                     วงเงินรวม
                 </th>
 
@@ -98,7 +98,7 @@
                 <!-- ระยะเวลา -->
                 <td>
 
-                    <input type="text"
+                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
                         placeholder="ระบุปี" class="form-control  text-center" [(ngModel)]="item.year"
                         (ngModelChange)="onBaseYearChange()">
 
@@ -194,17 +194,22 @@
         ระยะผูกพัน
     </label>
 
-    <div class="mt-2">
+<div class="col-md-4 mt-2">
 
-        <label *ngFor="let y of [1,2,3,4,5]" class="me-3">
+    <label *ngFor="let y of [1,2,3,4,5]" class="me-3">
 
-            <input type="radio" name="bindingYear" [value]="y" [(ngModel)]="bindingYear" (change)="onYearChange()">
+        <input
+            type="radio"
+            name="bindingYear"
+            [value]="y"
+            [(ngModel)]="bindingYear"
+            (change)="onYearChange()">
 
-            {{y}} ปี
+        {{ y }} ปี
 
-        </label>
+    </label>
 
-    </div>
+</div>
 
 </div>
 
@@ -217,14 +222,14 @@
 
     <div class="row mt-2 align-items-center" *ngFor="let y of yearly; let i=index">
 
-        <div class="col-md-2">
+        <div class="col-md-1">
 
-            ปีที่ {{ yearly[i].year || '-' }}
+            ปีงบประมาณ {{ yearly[i].year || '-' }}
 
         </div>
 
         <!-- amount -->
-        <div class="col-md-5">
+        <div class="col-md-2">
 
             <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
                 class="form-control  text-end" [(ngModel)]="yearly[i].amount" (ngModelChange)="onYearlyAmountChange(i)"
@@ -233,26 +238,27 @@
         </div>
 
         <!-- milestone -->
-        <div class="col-md-5">
+        <div class="col-md-2">
 
             <input class="form-control" [(ngModel)]="yearly[i].milestone" (ngModelChange)="updateDetailItems()"
                 placeholder="จำนวนงวด">
 
         </div>
+           <div class="col-md-7"></div>
 
     </div>
 
     <div class="row mt-2 align-items-center fw-bold">
 
-        <div class="col-md-2 text-end">
+        <div class="col-md-1">
             รวมทั้งสิ้น
         </div>
 
-        <div class="col-md-5 text-end" [class.text-danger]="yearlyTotal > grandTotal">
+        <div class="col-md-2 text-end" [class.text-danger]="yearlyTotal > grandTotal">
             {{ yearlyTotal | number:'1.2-2' }}
         </div>
 
-        <div class="col-md-5 text-danger" *ngIf="yearlyTotal > grandTotal">
+        <div class="col-md-1 text-danger" *ngIf="yearlyTotal > grandTotal">
             ยอดรวมต้องไม่เกินวงเงินรวม
         </div>
 
@@ -274,7 +280,7 @@
 </div>
 
 <!-- BUTTON -->
-<div class="mt-4 d-flex justify-content-between align-items-center">
+<!-- <div class="mt-4 d-flex justify-content-between align-items-center">
 
     <div>
 
@@ -292,4 +298,4 @@
 
     </div>
 
-</div>
+</div> -->
