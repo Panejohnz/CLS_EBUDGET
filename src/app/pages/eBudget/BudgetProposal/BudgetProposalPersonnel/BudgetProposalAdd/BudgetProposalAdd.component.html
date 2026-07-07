@@ -688,7 +688,7 @@
 
                 }
                 <div class="px-custom">
-                    <app-expense-attachment *ngIf="![64,70,73,74,75].includes(model.selectedExpenseTypeId)"
+                    <app-expense-attachment *ngIf="![64,65,66,70,73,74,75].includes(model.selectedExpenseTypeId)"
                         [model]="model">
 
                     </app-expense-attachment>
@@ -702,7 +702,12 @@
                     ยกเลิก
                 </button>
 
-                <button class="btn btn-success text-black" [disabled]="isSaveLocked" (click)="save()">
+                <span class="text-danger me-2" *ngIf="isRequiredConstructionAttachmentMissing">
+                    กรุณาแนบไฟล์บังคับให้ครบ
+                </span>
+
+                <button class="btn btn-success text-black"
+                    [disabled]="isSaveLocked || isRequiredConstructionAttachmentMissing" (click)="save()">
                     บันทึก
                 </button>
 

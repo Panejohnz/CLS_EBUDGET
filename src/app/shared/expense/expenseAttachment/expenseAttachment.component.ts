@@ -12,6 +12,25 @@ import { EbudgetService } from 'src/app/core/services/ebudget.service';
       max-height: 120px;
       overflow: auto;
     }
+
+    .attachment-horizontal .card-body {
+      display: grid;
+      grid-template-columns: minmax(220px, 32%) 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .attachment-horizontal .card-body > :first-child {
+      min-height: 31px;
+      align-items: center;
+      margin-bottom: 0 !important;
+    }
+
+    @media (max-width: 767.98px) {
+      .attachment-horizontal .card-body {
+        grid-template-columns: 1fr;
+      }
+    }
   `
 })
 export class ExpenseAttachmentComponent {
@@ -27,6 +46,7 @@ export class ExpenseAttachmentComponent {
   @Input() filterValue: any = null;
   @Input() requestId: any = null;
   @Input() deleteFuncCode = 'FUNC-Delete_Budget_Request_File';
+  @Input() horizontal = false;
 
   private currentExpenseTypeId: any = null;
 
@@ -53,6 +73,7 @@ export class ExpenseAttachmentComponent {
       (x: any) =>
         String(x?.[this.filterField] ?? '') ===
         String(currentFilterValue ?? '') &&
+        this.isCurrentExpenseFile(x) &&
         !x.Pending_Delete &&
         Number(x.Active ?? 1) !== 0
     );
@@ -167,6 +188,19 @@ export class ExpenseAttachmentComponent {
 
   private get currentFilterValue(): any {
     return this.filterValue ?? this.model?.selectedExpenseTypeId ?? 0;
+  }
+
+  private isCurrentExpenseFile(item: any): boolean {
+    if (this.filterField === 'Fk_Expense_Id' || this.filterField === 'FK_EXPENSE_ID') {
+      return true;
+    }
+
+    if (this.model?.selectedExpenseTypeId == null) {
+      return true;
+    }
+
+    return String(item?.Fk_Expense_Id ?? item?.FK_EXPENSE_ID ?? '') ===
+      String(this.model.selectedExpenseTypeId);
   }
 
   private createAttachmentItem(file: File): any {
