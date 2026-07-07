@@ -640,24 +640,24 @@
                 <!-- sticky header -->
                 <thead class="text-center text-white sticky-header" style="background-color: #556398;">
                     <tr>
-                        <th rowspan="2" style="width:3%;">ลำดับ</th>
-                        <th rowspan="2" style="width:22%">กิจกรรม</th>
-                        <th colspan="4">ไตรมาส 1</th>
-                        <th colspan="4">ไตรมาส 2</th>
-                        <th colspan="4">ไตรมาส 3</th>
-                        <th colspan="4">ไตรมาส 4</th>
-                        <th rowspan="2" style="width:6%">รวมแผนเงิน</th>
-                        <th rowspan="2" style="width:6%">ผลการใช้จ่าย</th>
-                        <th rowspan="2" style="width:6%">ผลการเบิกจ่าย</th>
+                        <th rowspan="2" style="width:2%;">ลำดับ</th>
+                        <th rowspan="2" style="width:15%">กิจกรรม</th>
+                        <th colspan="4" style="width:17%">ไตรมาส 1</th>
+                        <th colspan="4" style="width:17%">ไตรมาส 2</th>
+                        <th colspan="4" style="width:17%">ไตรมาส 3</th>
+                        <th colspan="4" style="width:17%">ไตรมาส 4</th>
+                        <th rowspan="2" style="width:5%">รวมแผนเงิน</th>
+                        <th rowspan="2" style="width:5%">ผลการใช้จ่าย</th>
+                        <th rowspan="2" style="width:5%">ผลการเบิกจ่าย</th>
                         <!-- <th rowspan="2">ลบ</th> -->
                     </tr>
 
                     <tr>
                         <ng-container *ngFor="let i of [1,2,3,4]">
                             <th style="width:2%">เดือน</th>
-                            <th style="width:6%">แผนเงิน</th>
-                            <th style="width:6%">ผลใช้จ่าย</th>
-                            <th style="width:6%">ผลเบิกจ่าย</th>
+                            <th style="width:5%">แผนเงิน</th>
+                            <th style="width:5%">ผลใช้จ่าย</th>
+                            <th style="width:5%">ผลเบิกจ่าย</th>
                         </ng-container>
                     </tr>
                 </thead>
@@ -731,21 +731,21 @@
                                     </td>
 
                                     <td>
-                                        <input type="text" class="form-control form-control-sm text-end"
+                                        <input type="text" class="form-control text-end"
                                             [ngModel]="displayValue(q.months[rowIndex].budget)"
                                             (input)="onInputFormat($event, q.months[rowIndex])"
                                             (keypress)="allowOnlyNumber($event)"
-                                            [disabled]="act.noBudget || act.SubActivities?.length > 0">
+                                            [disabled]="act.noBudget || act.SubActivities?.length > 0" style="background-color: #ebeff3;" readonly>
                                     </td>
 
                                     <td>
-                                        <input class="form-control form-control-sm text-end"
-                                            [(ngModel)]="q.months[rowIndex].actual">
+                                        <input class="form-control  text-end"
+                                            [(ngModel)]="q.months[rowIndex].actual" style="background-color: #ebeff3;" readonly>
                                     </td>
 
                                     <td>
-                                        <input class="form-control form-control-sm text-end"
-                                            [(ngModel)]="q.months[rowIndex].resbill">
+                                        <input class="form-control  text-end"
+                                            [(ngModel)]="q.months[rowIndex].resbill" style="background-color: #ebeff3;" readonly>
                                     </td>
 
                                 </ng-container>
@@ -932,20 +932,20 @@
 
                     </ng-container>
 
-                    <tr class="table-light fw-bold">
-                        <td colspan="18" class="text-end">
+                    <tr class="table fw-bold" style="background-color: #556398;">
+                        <td colspan="18" class="text-end text-white">
                             รวมทั้งหมด
                         </td>
 
-                        <td class="text-end">
+                        <td class="text-end text-white">
                             {{ getProjectGrandPlanTotal() | number:'1.2-2' }}
                         </td>
 
-                        <td class="text-end">
+                        <td class="text-end text-white">
                             {{ getProjectGrandActualTotal() | number:'1.2-2' }}
                         </td>
 
-                        <td class="text-end">
+                        <td class="text-end text-white">
                             {{ getProjectGrandWithdrawTotal() | number:'1.2-2' }}
                         </td>
                     </tr>
