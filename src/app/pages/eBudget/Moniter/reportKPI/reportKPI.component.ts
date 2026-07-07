@@ -163,7 +163,7 @@ export class ReportKPIComponent implements OnInit {
         }
 
         this.sortService.page = 1;
-        console.log('   this.kpis =', this.kpis );
+        console.log('   this.kpis =', this.kpis);
 
       });
 
@@ -212,7 +212,7 @@ export class ReportKPIComponent implements OnInit {
   }
 
   getKpiUnitName(kpi: any): string {
-debugger
+    debugger
     const unitValue =
 
       kpi?.Unit ?? kpi?.Unit_Id ?? kpi?.Fk_Unit_Id ?? kpi?.FK_Unit_Id ?? null;
@@ -257,6 +257,7 @@ debugger
   ) {
 
     this.selectedKpi = item;
+    console.log('selectedKpi', this.selectedKpi);
 
     this.selectedTri = null;
 
@@ -337,8 +338,9 @@ debugger
               data.Problems || '',
 
             Suggestions:
-              data.Suggestions || ''
+              data.Suggestions || '',
 
+            Performance: data.Performance || ''
           };
 
         }
@@ -364,7 +366,8 @@ debugger
       Problems: '',
 
       Suggestions: ''
-
+      ,
+      Performance: ''
     };
 
   }

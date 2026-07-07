@@ -239,6 +239,8 @@ export class ReportResultComponent
         this.griddataTemp = [...this.allData];
         this.griddata = [...this.allData];
         this.applyFilter();
+
+
       });
 
   }
@@ -427,14 +429,7 @@ export class ReportResultComponent
             const monthList =
               res?.List_Report_Budget_Plan_Detail_Month || [];
 
-            console.log(
-              'List_Report_Budget_Plan_Detail',
-              detailList
-            );
-            console.log(
-              'List_Report_Budget_Plan_Detail_Month',
-              monthList
-            );
+         
 
             const investList =
               res?.List_Report_Budget_Plan_Investment || [];
@@ -452,7 +447,7 @@ export class ReportResultComponent
             this.applyProjectReportData(activities, detailList, monthList);
 
             this.model.activities = activities;
-
+            console.log('a', this.model.activities);
             const Progress_list =
               res.Report_Budget_Plan_Progress || {};
 
@@ -511,12 +506,16 @@ export class ReportResultComponent
 
                   this.reportSteps.forEach((step: any) => {
 
+                    const savedStep = investList.find(
+                      (x: any) => +x.Invest_Id === +step.Invest_Id
+                    );
+
                     step.checked =
-                      investList.some(
-                        (x: any) =>
-                          +x.Invest_Id === +step.Invest_Id
-                          && +x.Is_Proceed === 1
-                      );
+                      +savedStep?.Is_Proceed === 1;
+                    step.Report_Invest_Id =
+                      savedStep?.Report_Invest_Id || 0;
+                    step.Remark =
+                      savedStep?.Remark || '';
 
                   });
                   this.currentStepIndex =
@@ -583,6 +582,8 @@ export class ReportResultComponent
 
       noBudget: x.Used_BG === 0,
       consult: x.Is_Consult === 1,
+      consultSelf: this.getOperationValue(x, 'Operation1') === 1,
+      consultHire: this.getOperationValue(x, 'Operation2') === 1,
 
       quarters: this.convertMonths(x.Months),
 
@@ -601,6 +602,8 @@ export class ReportResultComponent
 
         noBudget: s.Used_BG === 0,
         consult: s.Is_Consult === 1,
+        consultSelf: this.getOperationValue(s, 'Operation1') === 1,
+        consultHire: this.getOperationValue(s, 'Operation2') === 1,
 
         quarters: this.convertMonths(s.Months),
 
@@ -622,6 +625,19 @@ export class ReportResultComponent
     } catch (error) {
       return fallback;
     }
+  }
+
+  private getOperationValue(item: any, field: 'Operation1' | 'Operation2'): number {
+    const upperField = field.toUpperCase();
+    const lowerField =
+      field.charAt(0).toLowerCase() + field.slice(1);
+
+    return Number(
+      item?.[field] ??
+      item?.[upperField] ??
+      item?.[lowerField] ??
+      0
+    );
   }
 
   private cloneReportList(list: any[]): any[] {
@@ -1287,6 +1303,18 @@ export class ReportResultComponent
         reportDetailId,
         activity:
           detail.Activity_Name || selectedPlan?.Activity_Name || '',
+        noBudget:
+          Number(detail.Used_BG ?? detail.USED_BG ?? selectedPlan?.Used_BG ?? 1) === 0,
+        consult:
+          Number(detail.Is_Consult ?? detail.IS_CONSULT ?? selectedPlan?.Is_Consult ?? 0) === 1,
+        consultSelf:
+          this.getOperationValue(detail, 'Operation1') === 1 ||
+          this.getOperationValue(selectedPlan, 'Operation1') === 1,
+        consultHire:
+          this.getOperationValue(detail, 'Operation2') === 1 ||
+          this.getOperationValue(selectedPlan, 'Operation2') === 1,
+        owner:
+          detail.Responsible || detail.Owner || selectedPlan?.Responsible || '',
         remark: '',
         quarters
       };
@@ -1456,6 +1484,7 @@ export class ReportResultComponent
         this.Report_Attach_File =
           this.extractReportAttachFiles(res, this.selectedItem?.Plan_Id, this.Progress_Id);
         this.syncReportAttachmentModel(this.Report_Attach_File);
+        console.log('this.Output_Result', this.Output_Result);
 
       });
 
@@ -1474,6 +1503,12 @@ export class ReportResultComponent
 
       );
 
+  }
+
+  private getSelectedQuarterName(): string {
+    return this.Tri_lists.find((item: any) =>
+      Number(item.Trimas_Id) === Number(this.selectedTri)
+    )?.name || '';
   }
 
   async save(modal: any) {
@@ -1535,7 +1570,10 @@ export class ReportResultComponent
       BgYear: this.currentYear,
       Progress_Id: this.Progress_Id || 0,
       Active: true,
-      Trimas_Id: this.selectedTri || 0
+      Trimas_Id: this.selectedTri || 0,
+      Trimas_Name: this.getSelectedQuarterName(),
+      Output_Result: JSON.stringify(this.Output_Result || []),
+      Outcome_Result: JSON.stringify(this.Outcome_Result || [])
     };
 
     const model = {
@@ -1552,9 +1590,11 @@ export class ReportResultComponent
       List_Report_Budget_Plan_Investment:
         this.selectedItem?.Fk_Budget_Type == 3
           ? this.reportSteps.map(x => ({
+            Report_Invest_Id: x.Report_Invest_Id || 0,
             Invest_Id: x.Invest_Id,
             Invest_Name: x.Invest_Name,
-            Is_Proceed: x.checked ? 1 : 0
+            Is_Proceed: x.checked ? 1 : 0,
+            Remark: x.Remark || ''
           }))
           : [],
 
@@ -1740,7 +1780,12 @@ export class ReportResultComponent
         .subscribe((response: any) => {
 
           this.reportSteps =
-            response.List_Mas_Report_Investment || [];
+            (response.List_Mas_Report_Investment || [])
+              .map((step: any) => ({
+                ...step,
+                checked: !!step.checked,
+                Remark: step.Remark || ''
+              }));
 
           this.modalRef =
             this.modalService.open(
@@ -1768,14 +1813,9 @@ export class ReportResultComponent
 
   }
   reportSteps: any[] = []
-  saveReport(modal: any) {
+  async saveReport(modal: any) {
 
-    const checkedList =
-      this.reportSteps
-        .filter(x => x.checked)
-        .map(x => x.Invest_Name);
-
-    modal.close();
+    await this.save(modal);
 
   }
 
