@@ -163,6 +163,7 @@ export class ReportKPIComponent implements OnInit {
         }
 
         this.sortService.page = 1;
+        console.log('   this.kpis =', this.kpis );
 
       });
 
@@ -211,7 +212,7 @@ export class ReportKPIComponent implements OnInit {
   }
 
   getKpiUnitName(kpi: any): string {
-
+debugger
     const unitValue =
 
       kpi?.Unit ?? kpi?.Unit_Id ?? kpi?.Fk_Unit_Id ?? kpi?.FK_Unit_Id ?? null;

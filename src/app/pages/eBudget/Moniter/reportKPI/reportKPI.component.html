@@ -29,7 +29,8 @@
                     <tr *ngFor="let item of pagedKpis; let i = index">
                         <td>{{pageStartIndex + i}}</td>
                         <td>{{item.BgYear}}</td>
-                        <td class="text-start">{{item.Indicators_Name}}</td>
+                        <td class="text-start">{{item.Indicators_Name}} {{item.Target}} {{getKpiUnitName(item)}}
+</td>
                         <td>
                             <button class="btn btn-primary btn-sm" (click)="openForm(reportModal,item)">
                                 <i class="ri-file-edit-line me-1"></i>
