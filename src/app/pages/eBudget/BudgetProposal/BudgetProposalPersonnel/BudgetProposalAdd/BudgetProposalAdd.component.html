@@ -698,13 +698,14 @@
             <div style="height:15px"></div>
             <!-- FIXED FOOTER -->
             <div class="modal-footer footer-fixed">
+                <span class="text-danger me-2" *ngIf="isRequiredConstructionAttachmentMissing">
+                    กรุณาแนบไฟล์บังคับให้ครบ
+                </span>
                 <button class="btn btn-danger text-black" (click)="closeModal()">
                     ยกเลิก
                 </button>
 
-                <span class="text-danger me-2" *ngIf="isRequiredConstructionAttachmentMissing">
-                    กรุณาแนบไฟล์บังคับให้ครบ
-                </span>
+                
 
                 <button class="btn btn-success text-black"
                     [disabled]="isSaveLocked || isRequiredConstructionAttachmentMissing" (click)="save()">
