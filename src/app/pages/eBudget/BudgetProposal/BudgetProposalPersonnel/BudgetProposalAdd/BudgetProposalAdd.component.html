@@ -702,7 +702,12 @@
                     ยกเลิก
                 </button>
 
-                <button class="btn btn-success text-black" [disabled]="isSaveLocked" (click)="save()">
+                <span class="text-danger me-2" *ngIf="isRequiredConstructionAttachmentMissing">
+                    กรุณาแนบไฟล์บังคับให้ครบ
+                </span>
+
+                <button class="btn btn-success text-black"
+                    [disabled]="isSaveLocked || isRequiredConstructionAttachmentMissing" (click)="save()">
                     บันทึก
                 </button>
 

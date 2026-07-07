@@ -24,6 +24,31 @@ export class ProjectBudgetProposalAddPersonnelComponent {
     return Number(this.userSession?.permissionData?.VIEW_DATA || 0) === 3;
   }
 
+  get isRequiredConstructionAttachmentMissing(): boolean {
+    return this.isConstructionExpense &&
+      this.getMissingRequiredConstructionAttachments().length > 0;
+  }
+
+  private constructionRequiredAttachments = [
+    { typeId: 1, label: 'แบบแปลน' },
+    { typeId: 2, label: 'เอกสารกรรมสิทธิ์' },
+    { typeId: 3, label: 'งวดงาน/งวดเงิน' },
+    { typeId: 4, label: 'ปร.4' },
+    { typeId: 5, label: 'ปร.5' },
+    { typeId: 6, label: 'BOQ' }
+  ];
+
+  private get isConstructionExpense(): boolean {
+    const selectedExpenseId =
+      Number(
+        this.model?.selectedExpenseTypeId ||
+        this.model?.Budget_Request?.Fk_Expense_List ||
+        0
+      );
+
+    return [65, 66].includes(selectedExpenseId);
+  }
+
   closeModal() {
 
     this.modalRef.dismiss();
@@ -650,6 +675,18 @@ export class ProjectBudgetProposalAddPersonnelComponent {
       return;
     }
 
+    const missingConstructionAttachments =
+      this.getMissingRequiredConstructionAttachments();
+
+    if (missingConstructionAttachments.length > 0) {
+      basicAlert(
+        'warning',
+        'กรุณาแนบไฟล์บังคับให้ครบ',
+        missingConstructionAttachments.join(', ')
+      );
+      return;
+    }
+
     const findById = (
       list: any[],
       key: string,
@@ -1102,6 +1139,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
           Ref_Module: item.Ref_Module || 'BUDGET_REQUEST',
           Ref_Level: item.Ref_Level || 'EXPENSE',
           Fk_Expense_Id: item.Fk_Expense_Id,
+          TYPE_ID: item.TYPE_ID || item.Type_Id || 0,
           Fk_Request_Detail_Item_Id: item.Fk_Request_Detail_Item_Id || 0,
           Row_Guid: item.Row_Guid || null,
           File_Name: item.File_Name || item.file?.name,
@@ -1119,6 +1157,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
           Ref_Module: item.Ref_Module || 'BUDGET_REQUEST',
           Ref_Level: item.Ref_Level || 'EXPENSE',
           Fk_Expense_Id: item.Fk_Expense_Id || 0,
+          TYPE_ID: item.TYPE_ID || item.Type_Id || 0,
           Fk_Request_Detail_Item_Id: item.Fk_Request_Detail_Item_Id || 0,
           Row_Guid: item.Row_Guid || null,
           File_Name: item.File_Name || item.NAME_FAKE || '',
@@ -1139,6 +1178,44 @@ export class ProjectBudgetProposalAddPersonnelComponent {
         error: error => reject(error)
       });
     });
+  }
+
+  private getMissingRequiredConstructionAttachments(): string[] {
+    if (!this.isConstructionExpense) {
+      return [];
+    }
+
+    return this.constructionRequiredAttachments
+      .filter(item => !this.hasConstructionAttachment(item.typeId))
+      .map(item => item.label);
+  }
+
+  private hasConstructionAttachment(typeId: number): boolean {
+    const selectedExpenseId =
+      Number(this.model?.selectedExpenseTypeId || 0);
+
+    return (this.model?.Budget_Request_Attach_File || [])
+      .some((item: any) =>
+        Number(item?.TYPE_ID ?? item?.Type_Id ?? item?.type_id ?? 0) === typeId &&
+        Number(item?.Fk_Expense_Id ?? item?.FK_EXPENSE_ID ?? item?.Expense_Id ?? 0) === selectedExpenseId &&
+        !item?.Pending_Delete &&
+        Number(item?.Active ?? item?.ACTIVE ?? 1) !== 0 &&
+        this.hasAttachmentFileValue(item)
+      );
+  }
+
+  private hasAttachmentFileValue(item: any): boolean {
+    return !!(
+      item?.file ||
+      item?.IDA ||
+      item?.GEN_FILE ||
+      item?.PATH_FILE ||
+      item?.File_Url ||
+      item?.FILE_URL ||
+      item?.File_Name ||
+      item?.FILE_NAME ||
+      item?.NAME_FAKE
+    );
   }
 
   private syncBudgetRequestTotal() {
