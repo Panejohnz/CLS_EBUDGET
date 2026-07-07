@@ -264,7 +264,7 @@ export class ReportKPIComponent implements OnInit {
     this.modalService.open(
       modal,
       {
-        size: 'lg',
+        size: 'xl',
         backdrop: 'static'
       }
     );

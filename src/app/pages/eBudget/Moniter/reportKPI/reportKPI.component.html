@@ -29,7 +29,7 @@
                     <tr *ngFor="let item of pagedKpis; let i = index">
                         <td>{{pageStartIndex + i}}</td>
                         <td>{{item.BgYear}}</td>
-                        <td class="text-start">{{item.Indicators_Name}}</td>
+                        <td class="text-start">{{item.Indicators_Name}} {{item.Target}} {{getKpiUnitName(item)}}</td>
                         <td>
                             <button class="btn btn-primary btn-sm" (click)="openForm(reportModal,item)">
                                 <i class="ri-file-edit-line me-1"></i>
@@ -66,13 +66,13 @@
 <ng-template #reportModal let-modal>
 
     <!-- HEADER -->
-      <div class="modal-header shared-page-header p-3">
+    <div class="modal-header shared-page-header p-3">
 
         <h5 class="modal-title text-white">
 
-                รายงานผลตัวชี้วัด </h5>
+            รายงานผลตัวชี้วัด </h5>
 
-           
+
         <button class="btn-close" (click)="modal.dismiss()">
 
         </button>
@@ -89,7 +89,7 @@
 
                 <div class="card-body">
 
-                    <div class="d-flex align-items-start gap-3">
+                    <div class="d-flex align-items-center gap-3">
 
                         <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center"
                             style="width:50px;height:50px;">
@@ -98,20 +98,8 @@
 
                         </div>
 
-                        <div>
-
-                            <div class="text-muted small mb-1">
-
-                                ตัวชี้วัด
-
-                            </div>
-
-                            <div class="fw-bold fs-6">
-
-                                {{selectedKpi.Indicators_Name}} {{selectedKpi.Target}} {{getKpiUnitName(selectedKpi)}}
-
-                            </div>
-
+                        <div class="fw-bold fs-6">
+                            {{selectedKpi.Indicators_Name}} {{selectedKpi.Target}} {{getKpiUnitName(selectedKpi)}}
                         </div>
 
                     </div>
