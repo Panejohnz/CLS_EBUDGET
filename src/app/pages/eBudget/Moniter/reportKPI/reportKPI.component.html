@@ -67,13 +67,13 @@
 <ng-template #reportModal let-modal>
 
     <!-- HEADER -->
-      <div class="modal-header shared-page-header p-3">
+    <div class="modal-header shared-page-header p-3">
 
         <h5 class="modal-title text-white">
 
-                รายงานผลตัวชี้วัด </h5>
+            รายงานผลตัวชี้วัด </h5>
 
-           
+
         <button class="btn-close" (click)="modal.dismiss()">
 
         </button>
@@ -90,7 +90,7 @@
 
                 <div class="card-body">
 
-                    <div class="d-flex align-items-start gap-3">
+                    <div class="d-flex align-items-center gap-3">
 
                         <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center"
                             style="width:50px;height:50px;">
@@ -99,20 +99,8 @@
 
                         </div>
 
-                        <div>
-
-                            <div class="text-muted small mb-1">
-
-                                ตัวชี้วัด
-
-                            </div>
-
-                            <div class="fw-bold fs-6">
-
-                                {{selectedKpi.Indicators_Name}} {{selectedKpi.Target}} {{getKpiUnitName(selectedKpi)}}
-
-                            </div>
-
+                        <div class="fw-bold fs-6">
+                            {{selectedKpi.Indicators_Name}} {{selectedKpi.Target}} {{getKpiUnitName(selectedKpi)}}
                         </div>
 
                     </div>
@@ -128,7 +116,7 @@
 
                     <div class="row align-items-center">
 
-                        <div class="col-md-3">
+                        <div class="col-md-1">
 
                             <label class="fw-semibold mb-2 mb-md-0">
 
@@ -138,7 +126,7 @@
 
                         </div>
 
-                        <div class="col-md-9">
+                        <div class="col-md-11">
 
                             <ng-select [items]="Tri_lists" bindLabel="name" bindValue="Trimas_Id"
                                 [(ngModel)]="selectedTri" (change)="onChangeQuarter()" appendTo="body"
@@ -166,7 +154,8 @@
 
                         </label>
 
-                        <input class="form-control" placeholder="กรอกผลงาน" [(ngModel)]="form.Performance">
+                        <input class="form-control" placeholder="ระบุผลงาน" [(ngModel)]="form.Performance"
+                            mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal">
 
                     </div>
                     <!-- PROGRESS -->
@@ -177,8 +166,8 @@
                             ความก้าวหน้า
 
                         </label>
-
-                        <input class="form-control" placeholder="กรอกความก้าวหน้า" [(ngModel)]="form.Progress">
+                        <textarea rows="4" class="form-control" placeholder="ระบุความก้าวหน้า"
+                            [(ngModel)]="form.Progress">   </textarea>
 
                     </div>
 
@@ -191,7 +180,7 @@
 
                         </label>
 
-                        <textarea rows="4" class="form-control" placeholder="กรอกผลการดำเนินงาน"
+                        <textarea rows="4" class="form-control" placeholder="ระบุผลการดำเนินงาน"
                             [(ngModel)]="form.Indicators_Result">
 
                         </textarea>
@@ -207,7 +196,7 @@
 
                         </label>
 
-                        <textarea rows="4" class="form-control" placeholder="กรอกปัญหา / อุปสรรค"
+                        <textarea rows="4" class="form-control" placeholder="ระบุปัญหา / อุปสรรค"
                             [(ngModel)]="form.Problems">
 
                         </textarea>
@@ -223,7 +212,7 @@
 
                         </label>
 
-                        <textarea rows="4" class="form-control" placeholder="กรอกข้อเสนอแนะ"
+                        <textarea rows="4" class="form-control" placeholder="ระบุข้อเสนอแนะ"
                             [(ngModel)]="form.Suggestions">
 
                         </textarea>

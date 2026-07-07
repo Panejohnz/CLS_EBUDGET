@@ -265,7 +265,7 @@ debugger
     this.modalService.open(
       modal,
       {
-        size: 'lg',
+        size: 'xl',
         backdrop: 'static'
       }
     );
