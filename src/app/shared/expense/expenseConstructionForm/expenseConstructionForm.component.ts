@@ -28,6 +28,16 @@ export class ExpenseConstructionFormComponent {
 
   files: any = {};
 
+  attachmentConfig = [
+    { typeId: 1, label: 'แบบแปลน', required: true },
+    { typeId: 2, label: 'เอกสารกรรมสิทธิ์', required: true },
+    { typeId: 3, label: 'งวดงาน/งวดเงิน', required: true },
+    { typeId: 4, label: 'ปร.4', required: true },
+    { typeId: 5, label: 'ปร.5', required: true },
+    { typeId: 6, label: 'BOQ', required: true },
+    { typeId: 7, label: 'อื่นๆ', required: false }
+  ];
+
   fileConfig = [
     { key: 'plan', label: 'แบบแปลน', required: true },
     { key: 'ownership', label: 'เอกสารกรรมสิทธิ์', required: true },
@@ -60,7 +70,7 @@ export class ExpenseConstructionFormComponent {
 
       bindingType: '',
 
-      year: 0,
+      year: '',
 
       price: 0,
 
