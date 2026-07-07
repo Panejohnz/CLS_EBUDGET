@@ -25,15 +25,22 @@ export class MasExpenseDetailComponent implements OnInit {
   List_Mas_Expense_Rate: any[] = [];
 
   readonly tabTitle = 'ค่าเบี้ยเลี้ยง ค่าเช่าที่พัก และค่าพาหนะ';
+  readonly rateTabTitle = 'จัดการอัตราค่าใช้จ่าย';
   readonly fkExpenseId = 21;
+  activeTab: 'detail' | 'rate' = 'detail';
 
   List_Mas_Expense_Detial: any[] = [];
   listMasExpenseDetialAll: any[] = [];
   listMasExpenseDetialFiltered: any[] = [];
+  List_Mas_Expense_Rate_Manage: any[] = [];
+  listMasExpenseRateManageAll: any[] = [];
+  listMasExpenseRateManageFiltered: any[] = [];
   List_Mas_Business_Level: any[] = [];
+  List_Mas_Expense_Lists: any[] = [];
 
   readonly pageSize = 30;
   pagination = { page: 1, startIndex: 0, endIndex: 0, total: 0 };
+  ratePagination = { page: 1, startIndex: 0, endIndex: 0, total: 0 };
 
   constructor(
     private modalService: NgbModal,
@@ -74,6 +81,38 @@ export class MasExpenseDetailComponent implements OnInit {
       this.listMasExpenseDetialAll = this.normalizeListIds(
         this.extractList(response?.List_Mas_Expense_Detial ?? response?.List_Mas_Expense_Detail),
         ['Expense_Detial_Id']
+      );
+      this.filterSearch();
+    });
+  }
+
+  setActiveTab(tab: 'detail' | 'rate'): void {
+    this.activeTab = tab;
+    this.service.searchTerm = '';
+
+    if (tab === 'rate') {
+      this.getRateManageData();
+      return;
+    }
+
+    this.filterSearch();
+  }
+
+  getRateManageData(): void {
+    this.serviceebud.GatewayGetData({
+      FUNC_CODE: 'FUNC-Get_Mas_Expense_Detail_For_Rate_Manage'
+    }).subscribe((response: any) => {
+      this.List_Mas_Business_Level = this.normalizeListIds(
+        this.extractList(response?.List_Mas_Business_Level),
+        ['Level_Id']
+      );
+      this.List_Mas_Expense_Lists = this.normalizeListIds(
+        this.extractList(response?.Mas_Expense_Lists),
+        ['Expense_Id']
+      );
+      this.listMasExpenseRateManageAll = this.normalizeListIds(
+        this.extractList(response?.List_Mas_Expense_Detial ?? response?.List_Mas_Expense_Detail),
+        ['Expense_Detial_Id', 'Fk_Expense_Id', 'Buslness_Level']
       );
       this.filterSearch();
     });
@@ -153,8 +192,27 @@ export class MasExpenseDetailComponent implements OnInit {
     this.pagination = { ...this.pagination, startIndex, endIndex, total };
   }
 
+  private refreshRatePage(): void {
+    const { slice, startIndex, endIndex, total } = this.slicePage(
+      this.listMasExpenseRateManageFiltered,
+      this.ratePagination.page
+    );
+    this.List_Mas_Expense_Rate_Manage = slice;
+    this.ratePagination = { ...this.ratePagination, startIndex, endIndex, total };
+  }
+
   filterSearch(): void {
     const keyword = (this.service.searchTerm || '').toLowerCase().trim();
+    if (this.activeTab === 'rate') {
+      this.listMasExpenseRateManageFiltered = this.filterListByKeyword(
+        this.listMasExpenseRateManageAll,
+        keyword
+      );
+      this.ratePagination.page = 1;
+      this.refreshRatePage();
+      return;
+    }
+
     this.listMasExpenseDetialFiltered = this.filterListByKeyword(
       this.listMasExpenseDetialAll,
       keyword
@@ -168,12 +226,25 @@ export class MasExpenseDetailComponent implements OnInit {
     this.refreshPage();
   }
 
+  onRatePageChange(page: number): void {
+    this.ratePagination.page = page;
+    this.refreshRatePage();
+  }
+
   private getBusinessLevelName(levelId: any): string {
     const normalizedId = this.normalizeSelectId(levelId);
     const level = this.List_Mas_Business_Level.find(
       (item) => this.normalizeSelectId(item.Level_Id) === normalizedId
     );
     return level?.Level_Name ?? '';
+  }
+
+  private getExpenseListName(expenseId: any): string {
+    const normalizedId = this.normalizeSelectId(expenseId);
+    const expense = this.List_Mas_Expense_Lists.find(
+      (item) => this.normalizeSelectId(item.Expense_Id) === normalizedId
+    );
+    return expense?.Expense_Name ?? '';
   }
 
   private getNextOrderSeq(list: any[]): number {
@@ -207,6 +278,67 @@ export class MasExpenseDetailComponent implements OnInit {
       Buslness_Level: this.normalizeSelectId(item.Buslness_Level)
     };
     this.detailModalRef = this.modalService.open(modal, { size: 'lg', backdrop: 'static' });
+  }
+
+  openAddRateManageDetailModal(modal: any): void {
+    this.isEditModeDetail = false;
+    this.selectedExpenseDetailRow = null;
+    this.Mas_Expense_Detial = {
+      Expense_Detial_Id: 0,
+      Fk_Expense_Id: null,
+      Expense_Name: '',
+      Buslness_Level: null,
+      Child_Detial_Name: '',
+      Expense_Detial_Name: '',
+      Expense_Detial_Short_Name: '',
+      Expense_Detial_Code: '',
+      Order_Seq: this.getNextOrderSeq(this.listMasExpenseRateManageAll)
+    };
+    this.List_Mas_Expense_Rate = [this.createEmptyRateRow()];
+    this.modalRef = this.modalService.open(modal, { size: 'xl', backdrop: 'static' });
+  }
+
+  openEditRateManageDetailModal(modal: any, item: any): void {
+    const detailId = this.getExpenseDetialId(item);
+    if (!detailId) {
+      Swal.fire({
+        title: 'ไม่พบข้อมูล',
+        text: 'ไม่พบรหัสรายการค่าใช้จ่าย',
+        icon: 'warning',
+        confirmButtonColor: 'rgb(3, 142, 220)',
+        confirmButtonText: 'OK',
+      });
+      return;
+    }
+
+    this.serviceebud.GatewayGetData({
+      FUNC_CODE: 'FUNC-Get_Mas_Mas_Expense_Rate',
+      Fk_Expense_Id: detailId
+    }).subscribe((response: any) => {
+      if (response.RESULT != null) {
+        Swal.fire({
+          title: 'เกิดข้อผิดพลาด!',
+          text: response.RESULT,
+          icon: 'warning',
+          confirmButtonColor: 'rgb(3, 142, 220)',
+          confirmButtonText: 'OK',
+        });
+        return;
+      }
+
+      this.isEditModeDetail = true;
+      this.selectedExpenseDetailRow = item;
+      this.Mas_Expense_Detial = {
+        ...item,
+        Fk_Expense_Id: this.normalizeSelectId(item.Fk_Expense_Id),
+        Buslness_Level: this.normalizeSelectId(item.Buslness_Level)
+      };
+      this.List_Mas_Expense_Rate = this.normalizeExpenseRateList(response);
+      if (!this.List_Mas_Expense_Rate.length) {
+        this.List_Mas_Expense_Rate = [this.createEmptyRateRow()];
+      }
+      this.modalRef = this.modalService.open(modal, { size: 'xl', backdrop: 'static' });
+    });
   }
 
   BtnSaveExpenseDetial(): void {
@@ -280,6 +412,133 @@ export class MasExpenseDetailComponent implements OnInit {
           this.get_data();
           return;
         }
+        Swal.fire({
+          title: 'เกิดข้อผิดพลาด!',
+          text: response.RESULT,
+          icon: 'warning',
+          confirmButtonColor: 'rgb(3, 142, 220)',
+          confirmButtonText: 'OK',
+        });
+      });
+    });
+  }
+
+  private prepareRateManageForSave(row: any): any {
+    return {
+      Expense_Rate_Id: this.normalizeSelectId(row.Expense_Rate_Id) ?? 0,
+      Start_Year: row.Start_Year ?? '',
+      End_Year: row.End_Year ?? '',
+      Fk_Expense_Detail_Id: this.normalizeSelectId(this.Mas_Expense_Detial.Expense_Detial_Id) ?? 0,
+      Expense_Name: this.Mas_Expense_Detial.Expense_Detial_Name ?? '',
+      Expense_Short_Name: this.Mas_Expense_Detial.Expense_Detial_Short_Name ?? '',
+      Expense_Rate: this.toBit(row.Is_Rate_Null) === 1 ? 0 : (Number(row.Expense_Rate) || 0),
+      Is_Rate_Null: this.toBit(row.Is_Rate_Null)
+    };
+  }
+
+  BtnSaveRateManageDetail(): void {
+    const expenseId = this.normalizeSelectId(this.Mas_Expense_Detial.Fk_Expense_Id);
+    const businessLevelName = (this.Mas_Expense_Detial.Child_Detial_Name || '').trim();
+
+    if (expenseId == null || expenseId === 0) {
+      Swal.fire({
+        title: 'กรุณากรอกข้อมูล',
+        text: 'กรุณาเลือกหมวดค่าใช้จ่าย',
+        icon: 'warning',
+        confirmButtonColor: 'rgb(3, 142, 220)',
+        confirmButtonText: 'OK',
+      });
+      return;
+    }
+    if (!businessLevelName) {
+      Swal.fire({
+        title: 'กรุณากรอกข้อมูล',
+        text: 'กรุณากรอกชื่อระดับ',
+        icon: 'warning',
+        confirmButtonColor: 'rgb(3, 142, 220)',
+        confirmButtonText: 'OK',
+      });
+      return;
+    }
+    if (!this.Mas_Expense_Detial.Expense_Detial_Name?.trim()) {
+      Swal.fire({
+        title: 'กรุณากรอกข้อมูล',
+        text: 'กรุณากรอกค่าใช้จ่าย',
+        icon: 'warning',
+        confirmButtonColor: 'rgb(3, 142, 220)',
+        confirmButtonText: 'OK',
+      });
+      return;
+    }
+
+    const listToSave = this.List_Mas_Expense_Rate.map((row) =>
+      this.prepareRateManageForSave(row)
+    );
+    const hasActiveRate = listToSave.some((row) =>
+      this.toBit(row.Is_Rate_Null) === 0 && Number(row.Expense_Rate) !== 0
+    );
+
+    if (!hasActiveRate) {
+      Swal.fire({
+        title: 'กรุณากรอกข้อมูล',
+        text: 'กรุณากำหนดอัตราอย่างน้อย 1 รายการ',
+        icon: 'warning',
+        confirmButtonColor: 'rgb(3, 142, 220)',
+        confirmButtonText: 'OK',
+      });
+      return;
+    }
+
+    this.Mas_Expense_Detial.Fk_Expense_Id = expenseId;
+    this.Mas_Expense_Detial.Child_Detial_Name = businessLevelName;
+    this.Mas_Expense_Detial.Expense_Name = this.getExpenseListName(expenseId);
+
+    this.serviceebud.GatewayGetData({
+      FUNC_CODE: 'Func-Save_Mas_Expense_Detial_With_Rate',
+      Mas_Expense_Detial: this.Mas_Expense_Detial,
+      List_Mas_Expense_Rate: listToSave
+    }).subscribe((response: any) => {
+      if (response.RESULT == null) {
+        Swal.fire({
+          title: 'บันทึกสำเร็จ!',
+          text: 'บันทึกข้อมูลค่าใช้จ่ายและอัตราเรียบร้อยแล้ว!',
+          icon: 'success',
+          confirmButtonColor: 'rgb(3, 142, 220)',
+          confirmButtonText: 'OK',
+        });
+        this.modalRef?.close();
+        this.getRateManageData();
+        return;
+      }
+
+      Swal.fire({
+        title: 'เกิดข้อผิดพลาด!',
+        text: response.RESULT,
+        icon: 'warning',
+        confirmButtonColor: 'rgb(3, 142, 220)',
+        confirmButtonText: 'OK',
+      });
+    });
+  }
+
+  Delete_Mas_Expense_Detial_For_Rate_Manage(item: any): void {
+    this.confirmDelete(item?.Expense_Detial_Name, () => {
+      this.serviceebud.GatewayGetData({
+        FUNC_CODE: 'Func-Delete_Mas_Expense_Detial',
+        Mas_Expense_Detial: item
+      }).subscribe((response: any) => {
+        if (response.RESULT == null) {
+          Swal.fire({
+            title: 'ลบสำเร็จ!',
+            text: 'ลบข้อมูลค่าใช้จ่ายและอัตราเรียบร้อยแล้ว!',
+            icon: 'success',
+            confirmButtonColor: 'rgb(3, 142, 220)',
+            confirmButtonText: 'OK',
+          });
+          this.getRateManageData();
+          return;
+        }
+
         Swal.fire({
           title: 'เกิดข้อผิดพลาด!',
           text: response.RESULT,
@@ -449,7 +708,11 @@ export class MasExpenseDetailComponent implements OnInit {
           confirmButtonText: 'OK',
         });
         this.modalRef?.close();
-        this.get_data();
+        if (this.activeTab === 'rate') {
+          this.getRateManageData();
+        } else {
+          this.get_data();
+        }
         return;
       }
       Swal.fire({

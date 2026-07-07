@@ -6,12 +6,20 @@
   <div class="card-body">
     <ul class="nav nav-tabs mb-3">
       <li class="nav-item">
-        <button type="button" class="nav-link active">
+        <button type="button" class="nav-link" [class.active]="activeTab === 'detail'"
+          (click)="setActiveTab('detail')">
           {{ tabTitle }}
+        </button>
+      </li>
+      <li class="nav-item">
+        <button type="button" class="nav-link" [class.active]="activeTab === 'rate'"
+          (click)="setActiveTab('rate')">
+          {{ rateTabTitle }}
         </button>
       </li>
     </ul>
 
+    @if (activeTab === 'detail') {
     <div class="border rounded p-3 bg-light">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <div style="width:300px;">
@@ -88,8 +96,199 @@
         </div>
       </div>
     </div>
+    }
+
+    @if (activeTab === 'rate') {
+    <div class="border rounded p-3 bg-light">
+      <div class="d-flex justify-content-between align-items-center mb-3 gap-2">
+        <div style="width:300px;">
+          <input type="text" class="form-control" placeholder="ค้นหา..."
+            [(ngModel)]="service.searchTerm" (input)="filterSearch()">
+        </div>
+        <button type="button" class="btn btn-success text-black" (click)="openAddRateManageDetailModal(rateManageDetailModal)">
+          <i class="ri-add-line me-1"></i>
+          เพิ่มข้อมูล
+        </button>
+      </div>
+
+      <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+        <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+          <thead class="text-center text-white sticky-header" style="background-color: #556398;">
+            <tr>
+              <th style="width:5%">ลำดับ</th>
+              <th style="width:18%">หมวดค่าใช้จ่าย</th>
+              <th style="width:15%">ชื่อระดับ</th>
+              <th style="width:22%">ค่าใช้จ่าย</th>
+              <th style="width:12%">ค่าใช้จ่าย (ย่อ)</th>
+              <th style="width:12%">รหัสค่าใช้จ่าย</th>
+              <th style="width:8%">เรียงลำดับ</th>
+              <th style="width:8%">กำหนดอัตรา</th>
+              <th style="width:8%">แก้ไข</th>
+              <th style="width:8%">ลบ</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of List_Mas_Expense_Rate_Manage; track row.Expense_Detial_Id) {
+            <tr>
+              <td>{{ ratePagination.startIndex + $index }}</td>
+              <td class="text-start">{{ row.Expense_Name || '-' }}</td>
+              <td>{{ row.Child_Detial_Name || '-' }}</td>
+              <td class="text-center">{{ row.Expense_Detial_Name || '-' }}</td>
+              <td>{{ row.Expense_Detial_Short_Name || '-' }}</td>
+              <td>{{ row.Expense_Detial_Code || '-' }}</td>
+              <td>{{ row.Order_Seq }}</td>
+              <td>
+                <button type="button" class="btn btn-success btn-sm"
+                  (click)="openEditRateModal(addRateModal, row)">
+                  <i class="ri-money-dollar-circle-line"></i>
+                </button>
+              </td>
+              <td>
+                <button type="button" class="btn btn-warning btn-sm"
+                  (click)="openEditRateManageDetailModal(rateManageDetailModal, row)">
+                  <i class="ri-pencil-line"></i>
+                </button>
+              </td>
+              <td>
+                <button type="button" class="btn btn-danger btn-sm" (click)="Delete_Mas_Expense_Detial_For_Rate_Manage(row)">
+                  <i class="ri-delete-bin-line"></i>
+                </button>
+              </td>
+            </tr>
+            }
+            @if (List_Mas_Expense_Rate_Manage.length === 0) {
+            <tr>
+              <td colspan="10" class="text-muted">ไม่พบข้อมูลค่าใช้จ่าย</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="row justify-content-md-between align-items-md-center mt-2">
+        <div class="col col-sm-6">
+          <div class="dataTables_info mb-2 text-start">
+            แสดง {{ ratePagination.total ? ratePagination.startIndex : 0 }} ถึง {{ ratePagination.total ? ratePagination.endIndex : 0 }}
+            จากทั้งหมด {{ ratePagination.total }} รายการ
+          </div>
+        </div>
+        <div class="col col-sm-6">
+          <div class="d-flex justify-content-sm-end">
+            <ngb-pagination [collectionSize]="ratePagination.total" [(page)]="ratePagination.page"
+              [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
+              (pageChange)="onRatePageChange($event)">
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
   </div>
 </div>
+
+<ng-template #rateManageDetailModal let-modal>
+  <div class="modal-header shared-page-header p-3">
+    <h5 class="modal-title text-white">{{ isEditModeDetail ? 'แก้ไข' : 'เพิ่ม' }}ข้อมูลค่าใช้จ่ายและอัตรา</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+
+  <div class="modal-body">
+    <div class="row g-3 mb-3">
+      <div class="col-md-6">
+        <label class="form-label">หมวดค่าใช้จ่าย <span class="text-danger">*</span></label>
+        <select class="form-select" [(ngModel)]="Mas_Expense_Detial.Fk_Expense_Id">
+          <option [ngValue]="null">-- เลือกหมวดค่าใช้จ่าย --</option>
+          @for (expense of List_Mas_Expense_Lists; track expense.Expense_Id) {
+          <option [ngValue]="expense.Expense_Id">{{ expense.Expense_Name }}</option>
+          }
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">ชื่อระดับ <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Expense_Detial.Child_Detial_Name">
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">ค่าใช้จ่าย <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Expense_Detial.Expense_Detial_Name">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">ค่าใช้จ่าย (ย่อ)</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Expense_Detial.Expense_Detial_Short_Name">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">รหัสค่าใช้จ่าย</label>
+        <input type="text" class="form-control" [(ngModel)]="Mas_Expense_Detial.Expense_Detial_Code">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">เรียงลำดับ</label>
+        <input type="number" class="form-control" [(ngModel)]="Mas_Expense_Detial.Order_Seq">
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h6 class="mb-0">กำหนดอัตรา</h6>
+      <button type="button" class="btn btn-success btn-sm text-black" (click)="addRateRow()">
+        + เพิ่มแถว
+      </button>
+    </div>
+
+    <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+      <table class="table table-bordered align-middle text-center mb-0">
+        <thead class="text-center text-white sticky-header" style="background-color: #556398;">
+          <tr>
+            <th style="width:8%">ลำดับ</th>
+            <th style="width:18%">ปีที่เริ่ม</th>
+            <th style="width:18%">ปีสิ้นสุด</th>
+            <th style="width:12%">ไม่ระบุ</th>
+            <th style="width:20%">อัตรา</th>
+            <th style="width:10%">ลบ</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of List_Mas_Expense_Rate; track $index) {
+          <tr>
+            <td>{{ $index + 1 }}</td>
+            <td>
+              <input type="text" class="form-control text-center" maxlength="4"
+                (keydown)="masterService.allowOnlyNumber($event)" [(ngModel)]="row.Start_Year">
+            </td>
+            <td>
+              <input type="text" class="form-control text-center" maxlength="4"
+                (keydown)="masterService.allowOnlyNumber($event)" [(ngModel)]="row.End_Year">
+            </td>
+            <td>
+              <input class="form-check-input" type="checkbox"
+                [checked]="isRateRowNullChecked(row)"
+                (change)="onRateIsNullChange(row, $any($event.target).checked)">
+            </td>
+            <td>
+              <input type="number" step="0.01" class="form-control text-center"
+                [class.rate-readonly]="isRateRowNullChecked(row)"
+                [readonly]="isRateRowNullChecked(row)"
+                [(ngModel)]="row.Expense_Rate">
+            </td>
+            <td>
+              <button type="button" class="btn btn-danger btn-sm" (click)="removeRateRow($index)">
+                <i class="ri-delete-bin-line"></i>
+              </button>
+            </td>
+          </tr>
+          }
+          @if (List_Mas_Expense_Rate.length === 0) {
+          <tr>
+            <td colspan="6" class="text-muted">ยังไม่มีข้อมูล กด "เพิ่มแถว" เพื่อเพิ่มอัตรา</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success text-black" (click)="BtnSaveRateManageDetail()">บันทึก</button>
+    <button type="button" class="btn btn-danger text-black" (click)="modal.dismiss()">ยกเลิก</button>
+  </div>
+</ng-template>
 
 <ng-template #addRateModal let-modal>
   <div class="modal-header shared-page-header p-3">
