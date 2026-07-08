@@ -35,6 +35,8 @@ export class MasExpenseDetailComponent implements OnInit {
   List_Mas_Expense_Rate_Manage: any[] = [];
   listMasExpenseRateManageAll: any[] = [];
   listMasExpenseRateManageFiltered: any[] = [];
+  rateExpenseTabs: any[] = [];
+  selectedRateExpenseId: any = null;
   List_Mas_Business_Level: any[] = [];
   List_Mas_Expense_Lists: any[] = [];
 
@@ -114,6 +116,10 @@ export class MasExpenseDetailComponent implements OnInit {
         this.extractList(response?.List_Mas_Expense_Detial ?? response?.List_Mas_Expense_Detail),
         ['Expense_Detial_Id', 'Fk_Expense_Id', 'Buslness_Level']
       );
+      this.rateExpenseTabs = this.buildRateExpenseTabs(this.listMasExpenseRateManageAll);
+      if (!this.rateExpenseTabs.some((tab) => tab.Fk_Expense_Id === this.selectedRateExpenseId)) {
+        this.selectedRateExpenseId = this.rateExpenseTabs[0]?.Fk_Expense_Id ?? null;
+      }
       this.filterSearch();
     });
   }
@@ -164,6 +170,20 @@ export class MasExpenseDetailComponent implements OnInit {
     );
   }
 
+  private buildRateExpenseTabs(source: any[]): any[] {
+    const tabs = new Map<any, any>();
+    source.forEach((row) => {
+      const expenseId = this.normalizeSelectId(row.Fk_Expense_Id);
+      if (expenseId != null && !tabs.has(expenseId)) {
+        tabs.set(expenseId, {
+          Fk_Expense_Id: expenseId,
+          Expense_Name: row.Expense_Name || this.getExpenseListName(expenseId) || '-'
+        });
+      }
+    });
+    return Array.from(tabs.values());
+  }
+
   private clampPage(page: number, total: number): number {
     const maxPage = Math.max(1, Math.ceil(total / this.pageSize) || 1);
     return Math.min(Math.max(1, page), maxPage);
@@ -204,8 +224,13 @@ export class MasExpenseDetailComponent implements OnInit {
   filterSearch(): void {
     const keyword = (this.service.searchTerm || '').toLowerCase().trim();
     if (this.activeTab === 'rate') {
+      const rateTabSource = this.selectedRateExpenseId == null
+        ? this.listMasExpenseRateManageAll
+        : this.listMasExpenseRateManageAll.filter(
+          (row) => this.normalizeSelectId(row.Fk_Expense_Id) === this.selectedRateExpenseId
+        );
       this.listMasExpenseRateManageFiltered = this.filterListByKeyword(
-        this.listMasExpenseRateManageAll,
+        rateTabSource,
         keyword
       );
       this.ratePagination.page = 1;
@@ -229,6 +254,11 @@ export class MasExpenseDetailComponent implements OnInit {
   onRatePageChange(page: number): void {
     this.ratePagination.page = page;
     this.refreshRatePage();
+  }
+
+  setRateExpenseTab(expenseId: any): void {
+    this.selectedRateExpenseId = this.normalizeSelectId(expenseId);
+    this.filterSearch();
   }
 
   private getBusinessLevelName(levelId: any): string {
