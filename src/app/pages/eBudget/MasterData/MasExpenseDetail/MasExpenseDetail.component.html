@@ -4,106 +4,11 @@
   </div>
 
   <div class="card-body">
-    <ul class="nav nav-tabs mb-3">
-      <li class="nav-item">
-        <button type="button" class="nav-link" [class.active]="activeTab === 'detail'"
-          (click)="setActiveTab('detail')">
-          {{ tabTitle }}
-        </button>
-      </li>
-      <li class="nav-item">
-        <button type="button" class="nav-link" [class.active]="activeTab === 'rate'"
-          (click)="setActiveTab('rate')">
-          {{ rateTabTitle }}
-        </button>
-      </li>
-    </ul>
-
-    @if (activeTab === 'detail') {
-    <div class="border rounded p-3 bg-light">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <div style="width:300px;">
-          <input type="text" class="form-control" placeholder="ค้นหา..."
-            [(ngModel)]="service.searchTerm" (input)="filterSearch()">
-        </div>
-        <button type="button" class="btn btn-success text-black" (click)="openAddDetailModal(editDetailModal)">
-                 <i class="ri-add-line me-1"></i>
-          เพิ่มข้อมูล
-        </button>
-      </div>
-
-      <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
-        <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
-          <thead class="text-center text-white sticky-header" style="background-color: #556398;">
-            <tr>
-              <th style="width:5%">ลำดับ</th>
-              <th style="width:15%">ชื่อระดับ</th>
-              <th style="width:20%">ค่าใช้จ่าย</th>
-              <th style="width:12%">ค่าใช้จ่าย (ย่อ)</th>
-              <th style="width:12%">รหัสค่าใช้จ่าย</th>
-              <th style="width:8%">เรียงลำดับ</th>
-              <th style="width:8%">กำหนดอัตรา</th>
-              <th style="width:8%">แก้ไข</th>
-              <th style="width:8%">ลบ</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (data of List_Mas_Expense_Detial; track $index) {
-            <tr>
-              <td>{{ pagination.startIndex + $index }}</td>
-              <td>{{ data.Child_Detial_Name }}</td>
-              <td class="text-center">{{ data.Expense_Detial_Name }}</td>
-              <td>{{ data.Expense_Detial_Short_Name || '-' }}</td>
-              <td>{{ data.Expense_Detial_Code || '-' }}</td>
-              <td>{{ data.Order_Seq }}</td>
-              <td>
-                <button type="button" class="btn btn-success btn-sm"
-                  (click)="openEditRateModal(addRateModal, data)">
-                  <i class="ri-money-dollar-circle-line"></i>
-                </button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-warning btn-sm"
-                  (click)="openEditDetailModal(editDetailModal, data)">
-                  <i class="ri-pencil-line"></i>
-                </button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-danger btn-sm" (click)="Delete_Mas_Expense_Detial(data)">
-                  <i class="ri-delete-bin-line"></i>
-                </button>
-              </td>
-            </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-
-      <div class="row justify-content-md-between align-items-md-center mt-2">
-        <div class="col col-sm-6">
-          <div class="dataTables_info mb-2 text-start">
-            แสดง {{ pagination.total ? pagination.startIndex : 0 }} ถึง {{ pagination.total ? pagination.endIndex : 0 }}
-            จากทั้งหมด {{ pagination.total }} รายการ
-          </div>
-        </div>
-        <div class="col col-sm-6">
-          <div class="d-flex justify-content-sm-end">
-            <ngb-pagination [collectionSize]="pagination.total" [(page)]="pagination.page"
-              [pageSize]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"
-              (pageChange)="onPageChange($event)">
-            </ngb-pagination>
-          </div>
-        </div>
-      </div>
-    </div>
-    }
-
-    @if (activeTab === 'rate') {
     <div class="border rounded p-3 bg-light">
       <div class="d-flex justify-content-between align-items-center mb-3 gap-2">
         <div style="width:300px;">
-          <input type="text" class="form-control" placeholder="ค้นหา..."
-            [(ngModel)]="service.searchTerm" (input)="filterSearch()">
+          <input type="text" class="form-control" placeholder="ค้นหาแท็บ..."
+            [(ngModel)]="tabSearchTerm" (input)="onTabSearchChange()">
         </div>
         <button type="button" class="btn btn-success text-black" (click)="openAddRateManageDetailModal(rateManageDetailModal)">
           <i class="ri-add-line me-1"></i>
@@ -113,16 +18,23 @@
 
       @if (rateExpenseTabs.length > 0) {
       <ul class="nav nav-tabs mb-3">
-        @for (tab of rateExpenseTabs; track tab.Fk_Expense_Id) {
+        @for (tab of filteredRateExpenseTabs; track tab.Fk_Expense_Id) {
         <li class="nav-item">
           <button type="button" class="nav-link" [class.active]="selectedRateExpenseId === tab.Fk_Expense_Id"
             (click)="setRateExpenseTab(tab.Fk_Expense_Id)">
-            {{ tab.Expense_Name }}
+            <span [innerHTML]="highlightTabName(tab.Expense_Name)"></span>
           </button>
         </li>
         }
       </ul>
       }
+
+      <div class="d-flex justify-content-start align-items-center mb-3">
+        <div style="width:300px;">
+          <input type="text" class="form-control" placeholder="ค้นหารายการ..."
+            [(ngModel)]="service.searchTerm" (input)="filterSearch()">
+        </div>
+      </div>
 
       <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
         <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
@@ -195,7 +107,6 @@
         </div>
       </div>
     </div>
-    }
   </div>
 </div>
 

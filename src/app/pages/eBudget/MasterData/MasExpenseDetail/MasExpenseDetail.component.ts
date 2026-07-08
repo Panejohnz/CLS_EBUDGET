@@ -27,7 +27,7 @@ export class MasExpenseDetailComponent implements OnInit {
   readonly tabTitle = 'ค่าเบี้ยเลี้ยง ค่าเช่าที่พัก และค่าพาหนะ';
   readonly rateTabTitle = 'จัดการอัตราค่าใช้จ่าย';
   readonly fkExpenseId = 21;
-  activeTab: 'detail' | 'rate' = 'detail';
+  activeTab: 'detail' | 'rate' = 'rate';
 
   List_Mas_Expense_Detial: any[] = [];
   listMasExpenseDetialAll: any[] = [];
@@ -37,6 +37,7 @@ export class MasExpenseDetailComponent implements OnInit {
   listMasExpenseRateManageFiltered: any[] = [];
   rateExpenseTabs: any[] = [];
   selectedRateExpenseId: any = null;
+  tabSearchTerm = '';
   List_Mas_Business_Level: any[] = [];
   List_Mas_Expense_Lists: any[] = [];
 
@@ -55,7 +56,7 @@ export class MasExpenseDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentYear = this.budgetYearService.getBgyear();
-    this.get_data();
+    this.getRateManageData();
 
     this.budgetYearService.yearChanged$.subscribe((year) => {
       if (year) {
@@ -63,7 +64,7 @@ export class MasExpenseDetailComponent implements OnInit {
           year = year + 543;
         }
         this.currentYear = year;
-        this.get_data();
+        this.getRateManageData();
       }
     });
   }
@@ -182,6 +183,38 @@ export class MasExpenseDetailComponent implements OnInit {
       }
     });
     return Array.from(tabs.values());
+  }
+
+  get filteredRateExpenseTabs(): any[] {
+    const keyword = (this.tabSearchTerm || '').toLowerCase().trim();
+    if (!keyword) {
+      return this.rateExpenseTabs;
+    }
+    return this.rateExpenseTabs.filter((tab) =>
+      (tab.Expense_Name || '').toLowerCase().includes(keyword)
+    );
+  }
+
+  highlightTabName(name: any): string {
+    const text = String(name || '');
+    const keyword = (this.tabSearchTerm || '').trim();
+    if (!keyword) {
+      return text;
+    }
+
+    const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return text.replace(new RegExp(escapedKeyword, 'gi'), (match) =>
+      `<mark class="px-1 py-0">${match}</mark>`
+    );
+  }
+
+  onTabSearchChange(): void {
+    if (
+      this.filteredRateExpenseTabs.length > 0 &&
+      !this.filteredRateExpenseTabs.some((tab) => tab.Fk_Expense_Id === this.selectedRateExpenseId)
+    ) {
+      this.setRateExpenseTab(this.filteredRateExpenseTabs[0].Fk_Expense_Id);
+    }
   }
 
   private clampPage(page: number, total: number): number {
