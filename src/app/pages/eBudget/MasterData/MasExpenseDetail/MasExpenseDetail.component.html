@@ -47,7 +47,7 @@
               <th style="width:12%">ค่าใช้จ่าย (ย่อ)</th>
               <th style="width:12%">รหัสค่าใช้จ่าย</th>
               <th style="width:8%">เรียงลำดับ</th>
-              <th style="width:8%">กำหนดอัตรา</th>
+              <!-- <th style="width:8%">กำหนดอัตรา</th> -->
               <th style="width:8%">แก้ไข</th>
               <th style="width:8%">ลบ</th>
             </tr>
@@ -62,12 +62,12 @@
               <td>{{ row.Expense_Detial_Short_Name || '-' }}</td>
               <td>{{ row.Expense_Detial_Code || '-' }}</td>
               <td>{{ row.Order_Seq }}</td>
-              <td>
+              <!-- <td>
                 <button type="button" class="btn btn-success btn-sm"
                   (click)="openEditRateModal(addRateModal, row)">
                   <i class="ri-money-dollar-circle-line"></i>
                 </button>
-              </td>
+              </td> -->
               <td>
                 <button type="button" class="btn btn-warning btn-sm"
                   (click)="openEditRateManageDetailModal(rateManageDetailModal, row)">
