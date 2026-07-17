@@ -248,7 +248,7 @@ export class TopbarComponent implements OnInit {
   logout() {
     this.menuService.clearMenu();
     this.authService.logout();
-    window.location.href = "https://app.celestsoft.com/CLS_ERP_MANANGEMENT_FRONT/";
+    window.location.href = "http://172.10.101.38/CLS_ERP_MANANGEMENT_FRONT/";
   }
 
   windowScroll() {

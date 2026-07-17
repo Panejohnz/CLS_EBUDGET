@@ -24,7 +24,7 @@ export class Report_R011Component {
 
   constructor(private sanitizer: DomSanitizer) {
     const url =
-      'https://app.celestsoft.com/CLS_ERP_BUDGET_REPORT/Report/Budget_Report_R011.aspx';
+      'http://172.10.101.38/CLS_ERP_BUDGET_REPORT/Report/Budget_Report_R011.aspx';
     this.reportUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 }

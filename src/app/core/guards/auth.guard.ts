@@ -40,7 +40,7 @@ export class AuthGuard implements CanActivate {
 
         // ถ้าไม่มี token
         if (!token) {
-            window.location.href = 'https://app.celestsoft.com/CLS_ERP_MANANGEMENT_FRONT/';
+            window.location.href = 'http://172.10.101.38/CLS_ERP_MANANGEMENT_FRONT/';
             return false;
         }
 
@@ -72,13 +72,13 @@ export class AuthGuard implements CanActivate {
             }
 
             // response ไม่ถูกต้อง
-            window.location.href = 'https://app.celestsoft.com/CLS_ERP_MANANGEMENT_FRONT/';
+            window.location.href = 'http://172.10.101.38/CLS_ERP_MANANGEMENT_FRONT/';
             return false;
 
         } catch (error) {
 
             // error
-            window.location.href = 'https://app.celestsoft.com/CLS_ERP_MANANGEMENT_FRONT/';
+            window.location.href = 'http://172.10.101.38/CLS_ERP_MANANGEMENT_FRONT/';
             return false;
         }
     }

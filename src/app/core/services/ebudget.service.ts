@@ -39,7 +39,7 @@ export class EbudgetService {
 
         // if (!this.currentUserSubject || !this.currentUserSubject.value) {
 
-        //     window.location.href = 'https://app.celestsoft.com/CLS_ERP_MANANGEMENT_FRONT/';
+        //     window.location.href = 'http://172.10.101.38/CLS_ERP_MANANGEMENT_FRONT/';
         //     return of(null);
         // }
 
@@ -66,7 +66,7 @@ export class EbudgetService {
 
         if (!this.currentUserSubject || !this.currentUserSubject.value) {
 
-            window.location.href = 'https://app.celestsoft.com/CLS_ERP_MANANGEMENT_FRONT/';
+            window.location.href = 'http://172.10.101.38/CLS_ERP_MANANGEMENT_FRONT/';
             return of(null);
         }
 
