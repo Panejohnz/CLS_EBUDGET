@@ -295,8 +295,8 @@ export class SignoffMinistryPlanningComponent {
 
     this.griddata.forEach((item: any) => {
 
-      // ไม่เลือกแถวที่ status = 7
-      if (item.Status_Id != 7) {
+      // ไม่เลือกแถวที่ status = 6
+      if (item.Status_Id != 6) {
         item.selected = checked;
       }
 

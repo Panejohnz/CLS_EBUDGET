@@ -86,10 +86,10 @@
                             @for(data of pagedGriddata; track $index){
                             <tr>
                                 <td class="text-center">
-                                    <input type="checkbox" [(ngModel)]="data.selected" [disabled]="data.Status_Id == 7"
-                                        [style.accent-color]="data.Status_Id == 7 ? '#bfbfbf' : ''"
-                                        [style.opacity]="data.Status_Id == 7 ? '0.5' : '1'"
-                                        [style.cursor]="data.Status_Id == 7 ? 'not-allowed' : 'pointer'">
+                                    <input type="checkbox" [(ngModel)]="data.selected" [disabled]="data.Status_Id == 6"
+                                        [style.accent-color]="data.Status_Id == 6 ? '#bfbfbf' : ''"
+                                        [style.opacity]="data.Status_Id == 6 ? '0.5' : '1'"
+                                        [style.cursor]="data.Status_Id == 6 ? 'not-allowed' : 'pointer'">
                                 </td>
                                 <td>{{pageStartIndex + $index}}</td>
                                 <td class="text-center">{{data.Department_Short_Name}}</td>
