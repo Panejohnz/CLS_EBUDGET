@@ -28,3 +28,20 @@ select,
     font-family: 'Sarabun', 'TH Sarabun New', sans-serif;
 }
 
+// Keep the application navigation and data-table headers on one shared surface.
+// Using the same CSS custom property avoids visual drift from separate hard-coded values.
+:root {
+  --ebudget-navy-surface: #556398;
+  --ebudget-sidebar-surface: #182142;
+}
+
+:root[data-sidebar="dark"] {
+  --vz-vertical-menu-bg: var(--ebudget-sidebar-surface);
+  --vz-vertical-menu-border: var(--ebudget-sidebar-surface);
+}
+
+.shared-page-header,
+.table .sticky-header th,
+.table .sticky-header td {
+  background-color: var(--ebudget-navy-surface) !important;
+}
