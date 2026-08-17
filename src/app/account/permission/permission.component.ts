@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, Optional } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-
+import { loginSuccess } from '../../store/Authentication/authentication.actions';
 // Login Auth
 import { environment } from '../../../environments/environment';
 import { AuthenticationService } from '../../core/services/auth.service';
@@ -13,13 +13,18 @@ import { of } from 'rxjs';
 import { MenuItem } from '../../layouts/sidebar/menu.model';
 import { Location } from '@angular/common';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-
+import { Store } from '@ngrx/store';
 interface PersonalGroupPermission {
   Personal_Id: string;
   Group_Id: string;
   Group_Name: string;
   Department_id: string;
   Department_Name: string;
+  System_id?: string;
+  System_Code?: string;
+  System_Name?: string;
+  Sytem_URL?: string;
+  In_System?: number;
   ACTIVEFACT: boolean;
   CREATE_DATE: string;
   CREATE_BY: string;
@@ -88,6 +93,8 @@ export class PermissionComponent implements OnInit, OnDestroy {
   token: string = '';
   permissions: PersonalGroupPermission[] = [];
   selectedGroup: PersonalGroupPermission | null = null;
+  selectedDepartmentId: string | null = null;
+  selectedGroupId: string | null = null;
   error: string = '';
   navigator = navigator; // For template access
 
@@ -115,6 +122,7 @@ export class PermissionComponent implements OnInit, OnDestroy {
     private http: HttpClient,
     private location: Location,
     private loadingService: LoadingService,
+    private store: Store,
     @Optional() private activeModal: NgbActiveModal
   ) {
     console.log('PermissionComponent constructor called');
@@ -162,42 +170,26 @@ export class PermissionComponent implements OnInit, OnDestroy {
     });
   }
 
-  private callGetAuthen(): void {
+  private async callGetAuthen(): Promise<void> {
     this.loadingService.show('กำลังตรวจสอบสิทธิ์...');
     this.error = '';
+    try {
+      const response: any = await this.authService.validateToken(this.token);
+      console.log('response', response);
 
-    // console.log('Calling validateToken with token:', this.token);
-
-    this.authService.validateToken(this.token).pipe(
-      timeout(10000), // 10 second timeout
-      catchError((error: any) => {
-        // console.error('Authentication error:', error);
-        // If authentication fails, still try to get permissions
-        return of({ RESULT: false });
-      })
-    ).subscribe({
-      next: (response: any) => {
-        // console.log('Authentication response:', response);
-        this.loadingService.hide();
-
-        if (response.RESULT == null) {
-          this.authen = response.AUTHEN_INFORMATION;
-          this.permissions = response.List_Personal_Group_Permission;
-          // Authentication successful, get permissions
-          // this.getPersonalGroupPermissions();
-        } else {
-          // No RESULT or authentication failed, still try to get permissions
-          // console.log('Authentication failed or no RESULT, trying to get permissions anyway');
-          // this.getPersonalGroupPermissions();
-        }
-      },
-      error: (error: any) => {
-        this.loadingService.hide();
-        // console.error('Authentication error:', error);
-        // Even if authentication fails, try to get permissions
-        // this.getPersonalGroupPermissions();
+      if (response?.RESULT == null) {
+        this.authen = response.USER_LOGIN;
+        this.permissions = response.List_Personal_Group_User || [];
+        console.log('permissions', this.permissions);
+      } else {
+        this.error = response?.RESULT || 'ไม่สามารถตรวจสอบสิทธิ์ได้';
       }
-    });
+    } catch (error) {
+      console.error('Validate token failed:', error);
+      this.error = 'ไม่สามารถเชื่อมต่อเพื่อตรวจสอบสิทธิ์ได้';
+    } finally {
+      this.loadingService.hide();
+    }
   }
 
   private getPersonalGroupPermissions(): void {
@@ -238,22 +230,26 @@ export class PermissionComponent implements OnInit, OnDestroy {
   }
 
   selectPermission(permission: PersonalGroupPermission): void {
-
     this.selectedGroup = permission;
     this.loadingService.show('กำลังโหลดเมนู...');
     this.error = '';
-    this.loadingService.hide();
     this.authService.storeSelectedPermission(permission, this.token, this.authen);
-    this.activeModal?.close();
-    this.router.navigate(['/Planing']);
-    return
+    this.authService.persistLoginToken(this.token);
+    this.authService.persistCurrentUser(this.authen || {});
+    localStorage.setItem('toast', 'true');
+    this.store.dispatch(loginSuccess({
+      user: {
+        ...this.authen,
+        token: this.token
+      } as any
+    }));
     // console.log('Selecting permission:', permission);
     // console.log('Token:', this.token);
 
-    // เรียก API เพื่อดึง menu ตาม permission ก่อน
-    this.http.post<MenuDataResponse>(environment.GET_MENU, {
+    this.http.post<MenuDataResponse>(environment.CLS_MANAGEMENT + 'GET_DATA/GetMenu', {
       token: this.token,
-      permission_id: permission.Group_Id
+      permission_id: permission.Group_Id,
+      System_Id: permission.System_id
     }).pipe(
       timeout(15000), // 15 second timeout
       catchError((error: any) => {
@@ -268,17 +264,11 @@ export class PermissionComponent implements OnInit, OnDestroy {
         this.loadingService.hide();
 
         if (menuData && menuData.List_tb_group_menu && menuData.List_tb_group_menu.length > 0) {
-          // Store selected permission using auth service
-          this.authService.storeSelectedPermission(permission, this.token, this.authen);
 
           this.List_tb_group_menu = menuData.List_tb_group_menu;
           this.List_menu = menuData.List_menu;
           this.List_submenu = menuData.List_submenu;
-
-          // แปลงข้อมูลเป็น menu structure
           const menuItems = this.convertToMenuStructure(menuData);
-
-          // Store complete session data
           this.sessionService.createNewSession(
             this.token,
             permission.Group_Id,
@@ -286,9 +276,43 @@ export class PermissionComponent implements OnInit, OnDestroy {
             this.authen,
             menuItems
           );
+          // localStorage.setItem('SESSION_KEY', JSON.stringify(menuItems));
+          if (permission.In_System == 1) {
+            this.activeModal?.close();
+            this.redirectToTrustedSystem(permission.Sytem_URL || environment.MANAGEMENT_FRONT);
+          } else {
+            const updateSession = localStorage.getItem("userSession");
+            this.http.post<any>(environment.UPDATE_SESSION, {
+              token: this.token,
+              updateSession: updateSession,
+            }).subscribe({
+              next: (response: any) => {
+                if (response.RESULT == null) {
+                  const targetUrl = this.createTrustedSystemUrl(permission.Sytem_URL || '');
+                  this.loadingService.hide();
 
-          // Navigate to main application
-          this.router.navigate(['/pages']);
+                  if (!targetUrl) {
+                    this.error = 'ไม่พบ URL ของระบบที่เลือก กรุณาติดต่อผู้ดูแลระบบ';
+                    return;
+                  }
+
+                  if (targetUrl) {
+                    this.activeModal?.close();
+                    window.location.assign(targetUrl);
+                    return;
+                  }
+                }
+              },
+              error: (error: any) => {
+                console.error('Menu loading error:', error);
+                this.error = 'ไม่สามารถไปยัง URL ที่กำหนดได้';
+              }
+            });
+
+
+
+
+          }
         } else {
           this.error = 'ไม่พบเมนูสำหรับสิทธิ์นี้ กรุณาติดต่อผู้ดูแลระบบ';
         }
@@ -299,6 +323,45 @@ export class PermissionComponent implements OnInit, OnDestroy {
         // console.error('Menu loading error:', error);
       }
     });
+
+    // เรียก API เพื่อดึง menu ตาม permission ก่อน
+
+  }
+
+  private redirectToTrustedSystem(baseUrl: string): void {
+    const targetUrl = this.createTrustedSystemUrl(baseUrl);
+    if (!targetUrl) {
+      this.loadingService.hide();
+      this.error = 'ไม่พบ URL ของระบบที่เลือก หรือ URL ไม่ได้รับอนุญาต';
+      return;
+    }
+
+    this.loadingService.hide();
+    window.location.assign(targetUrl);
+  }
+
+  private createTrustedSystemUrl(baseUrl: string): string {
+    const value = baseUrl.trim();
+    if (!value) {
+      return '';
+    }
+
+    try {
+      const url = new URL(value, window.location.origin);
+      const trustedHosts = new Set([window.location.hostname, '172.10.101.38']);
+      if (!trustedHosts.has(url.hostname)) {
+        return '';
+      }
+
+      // Both applications are hosted on the same origin, so the destination
+      // reads the already persisted session from storage. Never expose tokens
+      // in a URL (including a stale token already present in Sytem_URL).
+      url.searchParams.delete('Token');
+      url.searchParams.delete('token');
+      return url.toString();
+    } catch {
+      return '';
+    }
   }
 
   getUniqueGroups(): PersonalGroupPermission[] {
@@ -313,6 +376,75 @@ export class PermissionComponent implements OnInit, OnDestroy {
 
     return Array.from(uniqueGroups.values());
   }
+
+  getUniqueDepartments(): PersonalGroupPermission[] {
+    const departments = new Map<string, PersonalGroupPermission>();
+
+    this.permissions.forEach(permission => {
+      if (permission.Department_id && !departments.has(permission.Department_id)) {
+        departments.set(permission.Department_id, permission);
+      }
+    });
+
+    return Array.from(departments.values());
+  }
+
+  getGroupsForSelectedDepartment(): PersonalGroupPermission[] {
+    if (!this.selectedDepartmentId) {
+      return [];
+    }
+
+    const groups = new Map<string, PersonalGroupPermission>();
+    this.permissions
+      .filter(permission => permission.Department_id === this.selectedDepartmentId)
+      .forEach(permission => {
+        if (permission.Group_Id && !groups.has(permission.Group_Id)) {
+          groups.set(permission.Group_Id, permission);
+        }
+      });
+
+    return Array.from(groups.values());
+  }
+
+  getSystemsForSelection(): PersonalGroupPermission[] {
+    if (!this.selectedDepartmentId || !this.selectedGroupId) {
+      return [];
+    }
+
+    const systems = new Map<string, PersonalGroupPermission>();
+    this.permissions
+      .filter(permission =>
+        permission.Department_id === this.selectedDepartmentId &&
+        permission.Group_Id === this.selectedGroupId
+      )
+      .forEach(permission => {
+        const key = permission.System_id || permission.System_Code || permission.System_Name || permission.Group_Id;
+        if (!systems.has(key)) {
+          systems.set(key, permission);
+        }
+      });
+
+    return Array.from(systems.values());
+  }
+
+  onDepartmentChange(departmentId: string | null): void {
+    this.selectedDepartmentId = departmentId;
+    this.selectedGroupId = null;
+    this.selectedGroup = null;
+  }
+
+  onGroupChange(groupId: string | null): void {
+    this.selectedGroupId = groupId;
+    this.selectedGroup = null;
+  }
+
+  enterSelectedPermission(): void {
+    const permission = this.getSystemsForSelection()[0];
+    if (permission) {
+      this.selectPermission(permission);
+    }
+  }
+
 
   // Add retry method
   retry(): void {

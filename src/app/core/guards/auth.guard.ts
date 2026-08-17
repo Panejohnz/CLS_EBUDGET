@@ -26,17 +26,18 @@ export class AuthGuard implements CanActivate {
         route: ActivatedRouteSnapshot,
         state: RouterStateSnapshot
     ): Promise<boolean> {
-        debugger
         // เช็ค token และ permission เดิม
         const storedPermission = this.authenticationService.getStoredPermission();
         const storedToken = this.authenticationService.getStoredToken();
 
-        if (storedPermission && storedToken) {
+        const routeToken = route.queryParams['token'] || route.queryParams['Token'];
+
+        if (!routeToken && storedPermission && storedToken) {
             return true;
         }
 
         // รับ token จาก query param
-        const token = route.queryParams['token'] || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbjIiLCJqdGkiOiI0YWYzOWQ1OC03ODg4LTRjZTMtYWNhYi1lNGFkYTYxNGJmMjIiLCJleHAiOjE3ODE3ODA1ODYsImlzcyI6ImFwcC5jZWxlc3Rzb2Z0LmNvbSIsImF1ZCI6ImFwcC5jZWxlc3Rzb2Z0LmNvbSJ9.v4zIhf0LeHiH-b5Px3qqbYRgNhPh3PRMPBzb0M8Fvlc';
+        const token = routeToken || storedToken || localStorage.getItem('token');
 
         // ถ้าไม่มี token
         if (!token) {
@@ -68,6 +69,21 @@ export class AuthGuard implements CanActivate {
                     response
                 );
 
+                const rawSession = response?.RESULT ?? response;
+                const session = typeof rawSession === 'string' ? JSON.parse(rawSession) : rawSession;
+                const sessionToken = session?.token || token;
+
+                localStorage.setItem('token', sessionToken);
+                localStorage.setItem('userToken', sessionToken);
+                localStorage.setItem('userSession', JSON.stringify(session));
+
+                if (session?.permissionData) {
+                    localStorage.setItem('selectedPermission', JSON.stringify(session.permissionData));
+                }
+                if (session?.authenData) {
+                    localStorage.setItem('authen', JSON.stringify(session.authenData));
+                }
+
                 return true;
             }
 
@@ -76,8 +92,7 @@ export class AuthGuard implements CanActivate {
             return false;
 
         } catch (error) {
-
-            // error
+            console.error('GetUserSession request failed:', error);
             window.location.href = 'http://172.10.101.38/CLS_ERP_MANANGEMENT_FRONT/';
             return false;
         }

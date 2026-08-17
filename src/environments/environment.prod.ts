@@ -30,7 +30,10 @@ export const environment = {
   //ng build --base-href /CLS_ERP_BUDGET_FRONT/ --aot   --configuration production
   // ----------------------------------------------------------------------------
   //get permission from management
-  CLS_MANAGEMENT: 'http://172.10.101.38/CLS_ERP_MANANGEMENT/'
+  // Use the public HTTPS origin to avoid browser mixed-content and CORS failures.
+  CLS_MANAGEMENT: location.origin + '/CLS_ERP_MANANGEMENT/',
+  UPDATE_SESSION: location.origin + '/CLS_ERP_MANANGEMENT/GET_DATA/Update_Session',
+  MANAGEMENT_FRONT: location.origin + '/CLS_ERP_MANANGEMENT_FRONT/management/dashboard'
 
   // -------------------------------------------------------------------------------------------------------------------------
 

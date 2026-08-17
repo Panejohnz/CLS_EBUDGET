@@ -28,8 +28,9 @@ export const environment = {
   EXPORT_REPORT: 'https://fdaemonitor.fda.moph.go.th/CLS_EMONITOR_KPI_REPORT/Report/Report_R002.aspx',
   // ----------------------------------------------------------------------
   //get permission from management
-  CLS_MANAGEMENT: 'https://localhost:44334/'
-
+  CLS_MANAGEMENT: 'https://localhost:44334/',
+  UPDATE_SESSION: 'https://localhost:44334/GET_DATA/Update_Session',
+  MANAGEMENT_FRONT: 'http://localhost:4200/management/dashboard',
   // -----------------------------------------------------------------------------------------------------------------
 
 };
