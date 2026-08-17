@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Optional } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
@@ -12,6 +12,7 @@ import { timeout, catchError, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { MenuItem } from '../../layouts/sidebar/menu.model';
 import { Location } from '@angular/common';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 interface PersonalGroupPermission {
   Personal_Id: string;
@@ -83,6 +84,7 @@ interface MenuDataResponse {
  * Permission Component
  */
 export class PermissionComponent implements OnInit, OnDestroy {
+  @Input() compact = false;
   token: string = '';
   permissions: PersonalGroupPermission[] = [];
   selectedGroup: PersonalGroupPermission | null = null;
@@ -112,7 +114,8 @@ export class PermissionComponent implements OnInit, OnDestroy {
     private sessionService: SessionService,
     private http: HttpClient,
     private location: Location,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    @Optional() private activeModal: NgbActiveModal
   ) {
     console.log('PermissionComponent constructor called');
   }
@@ -142,7 +145,7 @@ export class PermissionComponent implements OnInit, OnDestroy {
   private checkTokenAndAuthenticate(): void {
     // Get token from query parameters
     this.route.queryParams.subscribe(params => {
-      this.token = params['Token'] || '9VqAJuAsnWN8jiKDKlAQHAUU';
+      this.token = params['Token'] || this.authService.getStoredToken() || '';
 
 
       if (!this.token) {
@@ -241,6 +244,7 @@ export class PermissionComponent implements OnInit, OnDestroy {
     this.error = '';
     this.loadingService.hide();
     this.authService.storeSelectedPermission(permission, this.token, this.authen);
+    this.activeModal?.close();
     this.router.navigate(['/Planing']);
     return
     // console.log('Selecting permission:', permission);

@@ -4,6 +4,46 @@
   padding: 2rem 0; // เพิ่ม padding ด้านบนและล่าง
 }
 
+// Compact variant is displayed in the topbar modal and does not inherit the auth-page backdrop.
+.auth-page.permission-compact {
+  min-height: auto !important;
+  display: block !important;
+  padding: 0;
+  background: #f8faff;
+
+  > .container {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  .row,
+  .col-12 {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .card {
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  .card:not(.permission-card),
+  .card:not(.permission-card) .card-body {
+    min-height: 0;
+  }
+
+  .card-body {
+    padding: 1.5rem !important;
+  }
+
+  .permission-card {
+    background: #fff;
+  }
+}
+
 .card {
   border: none;
   border-radius: 20px; // เพิ่ม border-radius

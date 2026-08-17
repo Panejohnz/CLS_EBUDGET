@@ -20,6 +20,7 @@ import { CartModel } from './topbar.model';
 import { cartData } from './data';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BehaviorSubject } from 'rxjs';
+import { PermissionComponent } from '../../account/permission/permission.component';
 
 @Component({
   selector: 'app-topbar',
@@ -249,6 +250,16 @@ export class TopbarComponent implements OnInit {
     this.menuService.clearMenu();
     this.authService.logout();
     window.location.href = "http://172.10.101.38/CLS_ERP_MANANGEMENT_FRONT/";
+  }
+
+  changePermission(): void {
+    const modalRef = this.modalService.open(PermissionComponent, {
+      size: 'xl',
+      centered: true,
+      scrollable: true,
+      windowClass: 'permission-selector-modal'
+    });
+    modalRef.componentInstance.compact = true;
   }
 
   windowScroll() {
