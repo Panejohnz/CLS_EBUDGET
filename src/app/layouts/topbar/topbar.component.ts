@@ -246,6 +246,11 @@ export class TopbarComponent implements OnInit {
   /**
    * Logout the user
    */
+  userInitial(name: string): string {
+    const value = String(name || '').trim();
+    return value.match(/[ก-ฮ]/)?.[0] || value.charAt(0) || '-';
+  }
+
   logout() {
     this.menuService.clearMenu();
     this.authService.logout();

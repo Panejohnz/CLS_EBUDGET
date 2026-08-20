@@ -86,3 +86,41 @@
     margin-right: 0.5rem !important;
   }
 }
+.topbar-user-toggle {
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: .35rem .55rem;
+  transition: background-color .2s ease, border-color .2s ease, box-shadow .2s ease;
+
+  &:hover,
+  &[aria-expanded='true'] { background: #f1f5f9; border-color: #dbe5f0; }
+  &[aria-expanded='true'] { box-shadow: 0 3px 10px rgba(34, 74, 117, .08); }
+}
+
+.topbar-user-menu {
+  width: 330px; padding: 0; overflow: hidden; border: 1px solid #dce6f0;
+  border-radius: 12px; box-shadow: 0 12px 28px rgba(31, 63, 96, .15);
+  animation: user-menu-in .18s ease-out;
+
+  .dropdown-divider { margin: 0; border-color: #e8eef5; }
+  .dropdown-item {
+    display: flex; align-items: center; gap: .7rem; padding: .78rem 1rem; color: #34495e;
+    transition: background-color .16s ease, color .16s ease;
+    i { width: 22px; color: #587593; font-size: 18px; text-align: center; }
+    &:hover { background: #f1f6fa; color: #1e5e93; i { color: #1e72ae; } }
+    &:last-child { color: #b34a4a; i { color: #b34a4a; } &:hover { background: #fff4f4; } }
+  }
+}
+
+.topbar-user-summary { display: flex; align-items: center; gap: .75rem; padding: 1rem; background: linear-gradient(135deg, #f1f6fa, #fbfdff); }
+.topbar-user-avatar { display: flex; width: 42px; height: 42px; align-items: center; justify-content: center; border-radius: 50%; background: #dceaf6; color: #286493; font-size: 18px; font-weight: 600; }
+.topbar-user-name { color: #29445f; font-weight: 600; }
+.topbar-user-label, .topbar-info-row small { display: block; color: #8292a3; font-size: 11px; }
+.topbar-user-info { display: grid; gap: .55rem; padding: .85rem 1rem; background: #fff; }
+.topbar-info-row {
+  display: flex; align-items: flex-start; gap: .65rem;
+  > i { width: 24px; margin-top: .15rem; color: #5d88ac; font-size: 17px; text-align: center; }
+  span { display: block; max-width: 250px; overflow: hidden; color: #415b73; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+}
+@keyframes user-menu-in { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 575.98px) { .topbar-user-menu { width: min(330px, calc(100vw - 24px)); } }

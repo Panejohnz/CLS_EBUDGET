@@ -513,7 +513,7 @@
                 </div> -->
 
                 <div class="dropdown ms-sm-3 header-item topbar-user" ngbDropdown>
-                    <button type="button" class="btn" id="page-header-user-dropdown" data-bs-toggle="dropdown"
+                    <button type="button" class="btn topbar-user-toggle" id="page-header-user-dropdown" data-bs-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false" ngbDropdownToggle>
                         <span class="d-flex align-items-center">
                             <img class="rounded-circle header-profile-user" src="assets/images/users/user-dummy-img.jpg"
@@ -528,12 +528,25 @@
                             </span>
                         </span>
                     </button>
-                    <div class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
+                    <div class="dropdown-menu dropdown-menu-end topbar-user-menu" ngbDropdownMenu>
                         <!-- item-->
-                        <h6 class="dropdown-header" *ngIf="userDisplayName">
+                        <div class="topbar-user-summary">
+                            <div class="topbar-user-avatar">{{ userInitial(userDisplayName) }}</div>
+                            <div class="min-w-0">
+                                <div class="topbar-user-name text-truncate">{{ userDisplayName || '-' }}</div>
+                                <div class="topbar-user-label">ข้อมูลผู้ใช้งาน</div>
+                            </div>
+                        </div>
+                        <div class="topbar-user-info">
+                            <div class="topbar-info-row">
+                                <i class="ri-building-2-line"></i>
+                                <div><small>หน่วยงาน</small><span>{{ departmentDisplayName || '-' }}</span></div>
+                            </div>
+                        </div>
+                        <h6 class="dropdown-header visually-hidden" *ngIf="userDisplayName">
                             ยินดีต้อนรับ | {{ userDisplayName }}
                         </h6>
-                        <div class="dropdown-item-text px-3 pb-2 text-muted" *ngIf="departmentDisplayName">
+                        <div class="dropdown-item-text px-3 pb-2 text-muted d-none" *ngIf="departmentDisplayName">
                             {{ departmentDisplayName }}
                         </div>
                         <!-- <a class="dropdown-item" routerLink="/pages/profile"><i class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Profile</span></a>
