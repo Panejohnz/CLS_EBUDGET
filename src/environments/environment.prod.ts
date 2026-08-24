@@ -33,7 +33,7 @@ export const environment = {
   // Use the public HTTPS origin to avoid browser mixed-content and CORS failures.
   CLS_MANAGEMENT: location.origin + '/CLS_ERP_MANANGEMENT/',
   UPDATE_SESSION: location.origin + '/CLS_ERP_MANANGEMENT/GET_DATA/Update_Session',
-  MANAGEMENT_FRONT: location.origin + '/CLS_ERP_MANANGEMENT_FRONT/management/dashboard'
+  MANAGEMENT_FRONT: location.origin + '/cls_erp_management_front/management/dashboard'
 
   // -------------------------------------------------------------------------------------------------------------------------
 

@@ -177,7 +177,7 @@ export class TopbarComponent implements OnInit {
   logout() {
 
     this.authService.logout();
-    window.location.href = 'http://172.10.101.38/CLS_ERP_MANANGEMENT_FRONT/';
+    window.location.href = 'http://172.10.101.38/cls_erp_management_front/';
     // this.router.navigate(['/auth/permission']);
   }
 

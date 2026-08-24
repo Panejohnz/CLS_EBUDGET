@@ -158,7 +158,7 @@ export class PermissionComponent implements OnInit, OnDestroy {
 
       if (!this.token) {
         // No token provided, redirect to FDA website
-        window.location.href = 'http://172.10.101.38/CLS_ERP_MANANGEMENT_FRONT/';
+        window.location.href = 'http://172.10.101.38/cls_erp_management_front/';
         return;
       }
 

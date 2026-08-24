@@ -39,7 +39,7 @@ export class EbudgetService {
 
         // if (!this.currentUserSubject || !this.currentUserSubject.value) {
 
-        //     window.location.href = 'http://172.10.101.38/CLS_ERP_MANANGEMENT_FRONT/';
+        //     window.location.href = 'http://172.10.101.38/cls_erp_management_front/';
         //     return of(null);
         // }
 
@@ -66,7 +66,7 @@ export class EbudgetService {
 
         if (!this.currentUserSubject || !this.currentUserSubject.value) {
 
-            window.location.href = 'http://172.10.101.38/CLS_ERP_MANANGEMENT_FRONT/';
+            window.location.href = 'http://172.10.101.38/cls_erp_management_front/';
             return of(null);
         }
 
