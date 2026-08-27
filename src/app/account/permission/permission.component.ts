@@ -243,8 +243,8 @@ export class PermissionComponent implements OnInit, OnDestroy {
         token: this.token
       } as any
     }));
-    // console.log('Selecting permission:', permission);
-    // console.log('Token:', this.token);
+    console.log('Selecting permission:', permission);
+    console.log('Token:', this.token);
 
     this.http.post<MenuDataResponse>(environment.CLS_MANAGEMENT + 'GET_DATA/GetMenu', {
       token: this.token,
@@ -262,7 +262,7 @@ export class PermissionComponent implements OnInit, OnDestroy {
       next: (menuData: MenuDataResponse) => {
         // console.log('Menu data loaded:', menuData);
         this.loadingService.hide();
-
+debugger
         if (menuData && menuData.List_tb_group_menu && menuData.List_tb_group_menu.length > 0) {
 
           this.List_tb_group_menu = menuData.List_tb_group_menu;
@@ -348,14 +348,25 @@ export class PermissionComponent implements OnInit, OnDestroy {
 
     try {
       const url = new URL(value, window.location.origin);
-      const trustedHosts = new Set([window.location.hostname, '172.10.101.38']);
+      const trustedHosts = new Set([
+        window.location.hostname,
+        '172.10.101.38',
+        'bfast.pacc.go.th',
+        'app.celestsoft.com',
+        'localhost'
+      ]);
       if (!trustedHosts.has(url.hostname)) {
         return '';
       }
 
-      // Both applications are hosted on the same origin, so the destination
-      // reads the already persisted session from storage. Never expose tokens
-      // in a URL (including a stale token already present in Sytem_URL).
+      // ใช้ host เดียวกับระบบปัจจุบันเสมอ เพื่อให้ userSession เดิมถูกอ่านได้
+      // รองรับค่่า Sytem_URL เก่าที่เคยเก็บเป็น app.celestsoft.com หรือ bfast.pacc.go.th
+      if (url.hostname !== window.location.hostname) {
+        url.protocol = window.location.protocol;
+        url.host = window.location.host;
+      }
+
+      // Never expose tokens in a URL (including a stale token already present in Sytem_URL).
       url.searchParams.delete('Token');
       url.searchParams.delete('token');
       return url.toString();
