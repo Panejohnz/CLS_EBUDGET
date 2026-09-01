@@ -462,12 +462,7 @@ const plan =
     this.form.balance = 0;
     this.displayBalance = '';
 
-    console.log('[ProjectTransfer] Loading plan balance', {
-      BgYear: bgYear,
-      Dept: departmentId,
-      Plan_Id: planId,
-      Total_Plan: totalPlan
-    });
+
 
     this.servicebud.GetBudgetPlanSumUse(bgYear, departmentId, planId)
       .subscribe({
@@ -488,14 +483,7 @@ const plan =
           this.form.balance = usedAmount;
           this.displayBalance = this.masterService.formatNumber(this.form.balance);
 
-          console.log(
-            '[ProjectTransfer] Get_Data_Budget_Plan_Sum_Use_By_BgYear_Dept response:\n' +
-            JSON.stringify(response, null, 2)
-          );
-          console.log('[ProjectTransfer] Plan balance calculated', {
-            sum_use_amount: usedAmount,
-            balance: this.form.balance
-          });
+  
         },
         error: (error: any) => {
           console.error('Unable to load used budget amount.', error);
