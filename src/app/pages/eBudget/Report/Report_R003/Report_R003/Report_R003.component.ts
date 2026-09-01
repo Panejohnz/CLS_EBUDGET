@@ -24,7 +24,7 @@ export class Report_R003Component {
 
   constructor(private sanitizer: DomSanitizer) {
     const url =
-      'http://172.10.101.38/CLS_ERP_BUDGET_REPORT/Report/Budget_Report_R003.aspx';
+      'https://bfast.pacc.go.th/CLS_ERP_BUDGET_REPORT/Report/Budget_Report_R003.aspx';
     this.reportUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 }

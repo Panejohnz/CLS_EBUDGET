@@ -20,7 +20,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 export class Report_R007Component implements OnInit {
   readonly reportTitle = 'รายงานแบบฟอร์มโครงการ';
   readonly baseReportUrl =
-    'http://172.10.101.38/CLS_ERP_BUDGET_REPORT/Report/Budget_Report_R007.aspx';
+    'https://bfast.pacc.go.th/CLS_ERP_BUDGET_REPORT/Report/Budget_Report_R007.aspx';
 
   reportUrl!: SafeResourceUrl;
 

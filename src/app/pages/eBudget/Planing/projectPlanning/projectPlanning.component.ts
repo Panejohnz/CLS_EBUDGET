@@ -122,7 +122,7 @@ export class ProjectPlanningComponent {
     });
 
     const url =
-      `http://172.10.101.38/CLS_ERP_BUDGET_REPORT/Report/Budget_Report_R007.aspx?${query.toString()}`;
+      `https://bfast.pacc.go.th/CLS_ERP_BUDGET_REPORT/Report/Budget_Report_R007.aspx?${query.toString()}`;
 
     window.open(url, '_blank');
   }

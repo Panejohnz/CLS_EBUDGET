@@ -41,7 +41,7 @@ export class AuthGuard implements CanActivate {
 
         // ถ้าไม่มี token
         if (!token) {
-            window.location.href = 'http://172.10.101.38/cls_erp_management_front/';
+            window.location.href = 'https://bfast.pacc.go.th/cls_erp_management_front/';
             return false;
         }
 
@@ -88,12 +88,12 @@ export class AuthGuard implements CanActivate {
             }
 
             // response ไม่ถูกต้อง
-            window.location.href = 'http://172.10.101.38/cls_erp_management_front/';
+            window.location.href = 'https://bfast.pacc.go.th/cls_erp_management_front/';
             return false;
 
         } catch (error) {
             console.error('GetUserSession request failed:', error);
-            window.location.href = 'http://172.10.101.38/cls_erp_management_front/';
+            window.location.href = 'https://bfast.pacc.go.th/cls_erp_management_front/';
             return false;
         }
     }

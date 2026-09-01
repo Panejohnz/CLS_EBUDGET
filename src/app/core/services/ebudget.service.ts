@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { getFirebaseBackend } from '../../authUtils';
 import { User } from 'src/app/store/Authentication/auth.models';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { catchError, map, finalize } from 'rxjs/operators';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { GlobalComponent } from "../../global-component";
@@ -39,7 +39,7 @@ export class EbudgetService {
 
         // if (!this.currentUserSubject || !this.currentUserSubject.value) {
 
-        //     window.location.href = 'http://172.10.101.38/cls_erp_management_front/';
+        //     window.location.href = 'https://bfast.pacc.go.th/cls_erp_management_front/';
         //     return of(null);
         // }
 
@@ -66,7 +66,7 @@ export class EbudgetService {
 
         if (!this.currentUserSubject || !this.currentUserSubject.value) {
 
-            window.location.href = 'http://172.10.101.38/cls_erp_management_front/';
+            window.location.href = 'https://bfast.pacc.go.th/cls_erp_management_front/';
             return of(null);
         }
 
@@ -85,6 +85,18 @@ export class EbudgetService {
             finalize(() => {
                 this.loadingService.hide();
             })
+        );
+    }
+
+    GetBudgetPlanSumUse(bgYear: number, departmentId: number, planId: number) {
+        const params = new HttpParams()
+            .set('BgYear', String(bgYear))
+            .set('Dept', String(departmentId))
+            .set('Plan_Id', String(planId));
+
+        return this.http.get<any>(
+            'https://app.celestsoft.com/CLS_ERP_API/Finance_Api/Get_Data_Budget_Plan_Sum_Use_By_BgYear_Dept',
+            { params }
         );
     }
 

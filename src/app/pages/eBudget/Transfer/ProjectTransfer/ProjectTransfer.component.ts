@@ -394,6 +394,11 @@ export class ProjectTransferComponent
         Number(this.form.From_Department_Id)
     );
 
+    this.form.projectBudget = 0;
+    this.form.balance = 0;
+    this.displayProjectBudget = '';
+    this.displayBalance = '';
+
   }
 
   onChangeToDepartment() {
@@ -438,12 +443,50 @@ const plan =
     this.displayProjectBudget =
       this.masterService.formatNumber(this.form.projectBudget);
 
-    this.form.balance =
-      Number(plan?.Total_Plan || 0);
+    this.loadPlanBalance(plan);
 
-    this.displayBalance =
-      this.masterService.formatNumber(this.form.balance);
+  }
 
+  private loadPlanBalance(plan: any): void {
+    const totalPlan = Number(plan?.Total_Plan || 0);
+    const departmentId = Number(this.form?.From_Department_Id || 0);
+    const planId = Number(this.form?.From_Plan_Id || 0);
+    const bgYear = Number(this.currentYear || 0);
+
+    if (!departmentId || !planId || !bgYear) {
+      this.form.balance = totalPlan;
+      this.displayBalance = this.masterService.formatNumber(totalPlan);
+      return;
+    }
+
+    this.form.balance = 0;
+    this.displayBalance = '';
+
+    this.servicebud.GetBudgetPlanSumUse(bgYear, departmentId, planId)
+      .subscribe({
+        next: (response: any) => {
+          if (
+            Number(this.form?.From_Department_Id) !== departmentId ||
+            Number(this.form?.From_Plan_Id) !== planId
+          ) {
+            return;
+          }
+
+          const usedAmount = (response?.List_Sum_Use_Amount_Budget_Plan_Api || [])
+            .reduce(
+              (total: number, item: any) => total + Number(item?.sum_use_amount || 0),
+              0
+            );
+
+          this.form.balance = totalPlan - usedAmount;
+          this.displayBalance = this.masterService.formatNumber(this.form.balance);
+        },
+        error: (error: any) => {
+          console.error('Unable to load used budget amount.', error);
+          this.form.balance = totalPlan;
+          this.displayBalance = this.masterService.formatNumber(totalPlan);
+        }
+      });
   }
 
   onChangeToPlan() {
