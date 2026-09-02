@@ -109,8 +109,20 @@ export class MasterService {
     decimalPlaces = 2
   ): void {
     const input = event.target as HTMLInputElement;
+    const cursorPosition = input.selectionStart ?? input.value.length;
+    const valueBeforeCursor = input.value.slice(0, cursorPosition);
     const result = this.formatCurrencyInput(input.value, decimalPlaces);
+
+    // Re-formatting the value inserts thousands separators and normally moves
+    // the browser caret to the end. Format the value before the caret as well
+    // so its equivalent position can be restored in the formatted value.
+    const formattedCursorPosition = Math.min(
+      this.formatCurrencyInput(valueBeforeCursor, decimalPlaces).formatted.length,
+      result.formatted.length
+    );
+
     input.value = result.formatted;
+    input.setSelectionRange(formattedCursorPosition, formattedCursorPosition);
     onChange(result);
   }
 }
