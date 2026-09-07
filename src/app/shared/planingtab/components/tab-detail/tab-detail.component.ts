@@ -20,8 +20,11 @@ export class TabDetailComponent implements OnInit, OnChanges {
     this.get_data()
   }
   allData: any
-  Mas_Unit_Lists: any
-  get_data() {
+  Mas_Unit_Lists: any[] = [];
+  readonly otherUnitValue = '__OTHER_UNIT__';
+  unitOptions: any[] = [{ Unit_Id: this.otherUnitValue, Unit_Name: 'อื่นๆ (ระบุ)' }];
+
+  get_data(onComplete?: () => void) {
     let model = {
       FUNC_CODE: "FUNC-Get_List_Mas_Unit",
     }
@@ -32,8 +35,73 @@ export class TabDetailComponent implements OnInit, OnChanges {
         ? response.List_Mas_Unit
         : [];
       this.Mas_Unit_Lists = [...this.allData];
-
+      this.unitOptions = [
+        ...this.Mas_Unit_Lists,
+        { Unit_Id: this.otherUnitValue, Unit_Name: 'อื่นๆ (ระบุ)' }
+      ];
+      onComplete?.();
     })
+  }
+
+  onUnitChange(unitId: any, item: any): void {
+    unitId = unitId?.Unit_Id ?? unitId;
+    if (unitId === this.otherUnitValue) {
+      item.Unit = null;
+      item.isAddingOtherUnit = true;
+      item.Other_Unit_Name = item.Other_Unit_Name || '';
+      return;
+    }
+
+    item.isAddingOtherUnit = false;
+    item.Other_Unit_Name = '';
+  }
+
+  saveOtherUnit(item: any): void {
+    const unitName = (item?.Other_Unit_Name || '').trim();
+    if (!unitName) {
+      basicAlert('warning', 'กรุณาระบุหน่วยนับ', '');
+      return;
+    }
+
+    const existingUnit = this.Mas_Unit_Lists.find((unit: any) =>
+      String(unit?.Unit_Name || '').trim().toLocaleLowerCase() === unitName.toLocaleLowerCase()
+    );
+    if (existingUnit) {
+      item.Unit = Number(existingUnit.Unit_Id) || existingUnit.Unit_Id;
+      item.isAddingOtherUnit = false;
+      item.Other_Unit_Name = '';
+      return;
+    }
+
+    item.isAddingOtherUnit = true;
+    this.serviceebud.GatewayGetData({
+      FUNC_CODE: 'Func-Save_Mas_Unit',
+      Mas_Unit: {
+        Unit_Id: 0,
+        Unit_Name: unitName
+      }
+    }).subscribe({
+      next: (response: any) => {
+        if (response?.RESULT != null) {
+          basicAlert('warning', 'ไม่สามารถบันทึกหน่วยนับได้', response.RESULT);
+          item.isAddingOtherUnit = false;
+          return;
+        }
+
+        this.get_data(() => {
+          const savedUnit = this.Mas_Unit_Lists.find((unit: any) =>
+            String(unit?.Unit_Name || '').trim().toLocaleLowerCase() === unitName.toLocaleLowerCase()
+          );
+          item.Unit = savedUnit ? (Number(savedUnit.Unit_Id) || savedUnit.Unit_Id) : null;
+          item.isAddingOtherUnit = false;
+          item.Other_Unit_Name = '';
+        });
+      },
+      error: () => {
+        item.isAddingOtherUnit = false;
+        basicAlert('warning', 'ไม่สามารถบันทึกหน่วยนับได้', '');
+      }
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {

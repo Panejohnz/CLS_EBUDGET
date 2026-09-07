@@ -77,12 +77,20 @@
 
                     <div class="col-md-2">
 
-                        <ng-select [items]="Mas_Unit_Lists" bindLabel="Unit_Name" bindValue="Unit_Id"
+                        <ng-select [items]="unitOptions" bindLabel="Unit_Name" bindValue="Unit_Id"
                             [(ngModel)]="item.Unit" name="output_unit_{{i}}" #outputUnit="ngModel" placeholder="-- เลือกหน่วยนับ --"
-                            [clearable]="false"
+                            [clearable]="false" (ngModelChange)="onUnitChange($event, item)"
                             [ngClass]="{ 'is-invalid': outputUnit.invalid && (outputUnit.dirty || outputUnit.touched) }"
                             required>
                         </ng-select>
+                        <div *ngIf="item.isAddingOtherUnit" class="input-group mt-1">
+                            <input type="text" class="form-control" [(ngModel)]="item.Other_Unit_Name"
+                                name="output_other_unit_{{i}}" placeholder="ระบุหน่วยนับ"
+                                (keyup.enter)="saveOtherUnit(item)">
+                            <button type="button" class="btn btn-outline-primary" (click)="saveOtherUnit(item)">
+                                เพิ่ม
+                            </button>
+                        </div>
                         <div class="invalid-feedback d-block"
                             *ngIf="outputUnit.invalid && (outputUnit.dirty || outputUnit.touched)">
                             กรุณาเลือกหน่วยนับ
@@ -178,9 +186,18 @@
 
             <div class="col-md-2">
 
-                <ng-select [items]="Mas_Unit_Lists" bindLabel="Unit_Name" bindValue="Unit_Id" [(ngModel)]="item.Unit"
-                    name="tg_unit_{{i}}" placeholder="-- เลือกหน่วยนับ --" [clearable]="false">
+                <ng-select [items]="unitOptions" bindLabel="Unit_Name" bindValue="Unit_Id" [(ngModel)]="item.Unit"
+                    name="tg_unit_{{i}}" placeholder="-- เลือกหน่วยนับ --" [clearable]="false"
+                    (ngModelChange)="onUnitChange($event, item)">
                 </ng-select>
+                <div *ngIf="item.isAddingOtherUnit" class="input-group mt-1">
+                    <input type="text" class="form-control" [(ngModel)]="item.Other_Unit_Name"
+                        name="tg_other_unit_{{i}}" placeholder="ระบุหน่วยนับ"
+                        (keyup.enter)="saveOtherUnit(item)">
+                    <button type="button" class="btn btn-outline-primary" (click)="saveOtherUnit(item)">
+                        เพิ่ม
+                    </button>
+                </div>
             </div>
 
             <div class="col-md-1 text-end">

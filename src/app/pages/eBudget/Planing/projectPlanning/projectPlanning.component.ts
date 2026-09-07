@@ -783,10 +783,10 @@ export class ProjectPlanningComponent {
   }
   Project_Plan: any
   async savePlan(modal: any) {
-    if (this.isSaveLocked) {
-      basicAlert('warning', '\u0e44\u0e21\u0e48\u0e2a\u0e32\u0e21\u0e32\u0e23\u0e16\u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01\u0e44\u0e14\u0e49', '');
-      return;
-    }
+    // if (this.isSaveLocked) {
+    //   basicAlert('warning', '\u0e44\u0e21\u0e48\u0e2a\u0e32\u0e21\u0e32\u0e23\u0e16\u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01\u0e44\u0e14\u0e49', '');
+    //   return;
+    // }
 
     const getId = (obj: any, key: string) =>
       typeof obj === 'object' ? obj?.[key] : obj;
