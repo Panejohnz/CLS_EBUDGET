@@ -742,7 +742,16 @@ export class ProjectPlanningComponent {
   firstLoad = true;
 
   get isSaveLocked(): boolean {
-    return Number(this.userSession?.permissionData?.VIEW_DATA || 0) === 3;
+    const statusId = this.project_planing?.Status_Id ??
+      this.project_planing?.STATUS_ID ??
+      this.project_planing?.Project_Plan?.Status_Id ??
+      this.project_planing?.Project_Plan?.STATUS_ID ??
+      0;
+
+    // VIEW_DATA = 3 may save a newly created project (and drafts at status 1).
+    // Once an existing project has progressed beyond status 1, it is read-only.
+    return Number(this.userSession?.permissionData?.VIEW_DATA || 0) === 3 &&
+      Number(statusId) > 1;
   }
 
   goTab(tab: number) {
