@@ -70,6 +70,7 @@ export class TabDetailComponent implements OnInit, OnChanges {
       item.Unit = Number(existingUnit.Unit_Id) || existingUnit.Unit_Id;
       item.isAddingOtherUnit = false;
       item.Other_Unit_Name = '';
+      basicAlert('warning', `หน่วย "${unitName}" มีในระบบแล้ว`, '');
       return;
     }
 
