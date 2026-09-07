@@ -79,7 +79,8 @@ export class TabDetailComponent implements OnInit, OnChanges {
       FUNC_CODE: 'Func-Save_Mas_Unit',
       Mas_Unit: {
         Unit_Id: 0,
-        Unit_Name: unitName
+        Unit_Name: unitName,
+        Create_User : "Admin"
       }
     }).subscribe({
       next: (response: any) => {
