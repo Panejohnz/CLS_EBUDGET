@@ -1635,7 +1635,11 @@ export class ReportResultComponent
 
   }
   getGrandActual() {
-    return this.selectedPlanUsedAmount;
+    return this.reportData
+      .reduce(
+        (sum: number, item: any) => sum + this.getTotalActual(item),
+        0
+      );
 
   }
 

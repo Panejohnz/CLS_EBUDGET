@@ -262,7 +262,7 @@ export class PermissionComponent implements OnInit, OnDestroy {
       next: (menuData: MenuDataResponse) => {
         // console.log('Menu data loaded:', menuData);
         this.loadingService.hide();
-debugger
+        debugger
         if (menuData && menuData.List_tb_group_menu && menuData.List_tb_group_menu.length > 0) {
 
           this.List_tb_group_menu = menuData.List_tb_group_menu;
@@ -459,8 +459,9 @@ debugger
 
   // Add retry method
   retry(): void {
-    this.error = '';
-    this.checkTokenAndAuthenticate();
+    // this.error = '';
+    // this.checkTokenAndAuthenticate();
+    window.location.href = 'https://bfast.pacc.go.th/cls_erp_management_front_demo/';
   }
 
   private convertToMenuStructure(menuData: MenuDataResponse): MenuItem[] {

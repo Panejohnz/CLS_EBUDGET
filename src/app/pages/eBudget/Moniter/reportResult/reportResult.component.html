@@ -1180,7 +1180,7 @@
 
                             <!-- TOTAL ACTUAL -->
                             <td *ngIf="mi === 0" [attr.rowspan]="3" class="text-end text-black">
-                                {{ getTotalPlan(item) | number }}
+                                {{ (i === 0 ? selectedPlanUsedAmount : 0) | number }}
                             </td>
                             <td *ngIf="mi === 0" [attr.rowspan]="3" class="text-end text-black">
 
@@ -1215,9 +1215,11 @@
                         </td>
 
                         <td class="text-end text-white">
+                            {{ selectedPlanUsedAmount | number }}
+                        </td>
+                        <td class="text-end text-white">
                             {{ getGrandWithdraw() | number }}
                         </td>
-                        <td></td>
 
                     </tr>
 
