@@ -29,7 +29,28 @@ export class ConfirmSuperDeptActionComponent {
         , public sortService: PaginationService, public serviceebud: EbudgetService
         , private authService: AuthenticationService, private budgetYearService: BudgetYearService) {
     }
-    allData: any[] = [];
+  allData: any[] = [];
+  userSession: any = {};
+
+  get isDepartmentLocked(): boolean {
+    return Number(this.userSession?.permissionData?.VIEW_DATA || 0) === 3;
+  }
+
+  get lockedDepartmentId(): any {
+    const permission = this.userSession?.permissionData || {};
+    return permission.Department_id ?? permission.Department_Id ?? permission.department_id ?? null;
+  }
+
+  private syncLockedDepartmentFilter(): void {
+    if (!this.isDepartmentLocked) return;
+
+    const permission = this.userSession?.permissionData || {};
+    const departmentId = this.lockedDepartmentId;
+    const matchedDepartment = this.Mas_Department_Lists.find((department: any) =>
+      String(department.Department_Id) === String(departmentId)
+    );
+    this.selectedDepartmentName = matchedDepartment?.Department_Name ?? permission.Department_Name ?? null;
+  }
   selectedDepartmentName: string | null = null;
   selectedPlanName: string | null = null;
   selectedProductName: string | null = null;
@@ -74,7 +95,7 @@ export class ConfirmSuperDeptActionComponent {
   get Total(): number {
     return this.griddata.reduce(
       (sum: number, item: any) =>
-        sum + Number(item.Total || item.budget || 0),
+        sum + Number(item.Total || 0),
       0
     );
   }
@@ -109,7 +130,8 @@ export class ConfirmSuperDeptActionComponent {
         Active: 1
     };
     currentYear: any
-    ngOnInit(): void {
+  ngOnInit(): void {
+    this.userSession = JSON.parse(localStorage.getItem('userSession') || '{}');
     this.sortService.pageSize = this.service.pageSize;
 
         this.budgetYearService.yearChanged$.subscribe(async year => {
@@ -127,7 +149,10 @@ export class ConfirmSuperDeptActionComponent {
     get_data() {
         let model = {
             FUNC_CODE: "FUNC-Get_Budget_Plan_ConfirmSuperDeptAction",
-            BgYear: this.currentYear
+            BgYear: this.currentYear,
+            ...(this.isDepartmentLocked && this.lockedDepartmentId != null && {
+                Department_Id: this.lockedDepartmentId
+            })
         }
         var getData = this.serviceebud.GatewayGetData(model);
         getData.subscribe((response: any) => {
@@ -158,6 +183,7 @@ export class ConfirmSuperDeptActionComponent {
         ? response.Mas_Activity_Lists
         : [];
 
+      this.syncLockedDepartmentFilter();
       this.buildFilterOptions();
       this.applyFilter();
     });
@@ -222,6 +248,12 @@ export class ConfirmSuperDeptActionComponent {
   }
 
   onDepartmentFilterChange() {
+    if (this.isDepartmentLocked) {
+      this.syncLockedDepartmentFilter();
+      this.applyFilter();
+      return;
+    }
+
     this.selectedPlanName = null;
     this.selectedProductName = null;
     this.selectedActivityName = null;
@@ -243,6 +275,7 @@ export class ConfirmSuperDeptActionComponent {
     this.sortService.page = 1;
 
     let data = [...this.allData];
+    this.syncLockedDepartmentFilter();
     this.updateCascadingFilterOptions();
 
     data = this.filterByDepartment(data);

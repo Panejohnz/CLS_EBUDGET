@@ -110,7 +110,29 @@ export class SingOffPlaningComponent {
   };
 
   currentYear: any
+  userSession: any = {};
+
+  get isDepartmentLocked(): boolean {
+    return Number(this.userSession?.permissionData?.VIEW_DATA || 0) === 3;
+  }
+
+  get lockedDepartmentId(): any {
+    const permission = this.userSession?.permissionData || {};
+    return permission.Department_id ?? permission.Department_Id ?? permission.department_id ?? null;
+  }
+
+  private syncLockedDepartmentFilter(): void {
+    if (!this.isDepartmentLocked) return;
+
+    const permission = this.userSession?.permissionData || {};
+    const department = this.Mas_Department_Lists.find((item: any) =>
+      String(item.Department_Id) === String(this.lockedDepartmentId)
+    );
+    this.selectedDepartmentName = department?.Department_Name ?? permission.Department_Name ?? null;
+  }
+
   ngOnInit(): void {
+    this.userSession = JSON.parse(localStorage.getItem('userSession') || '{}');
     this.sortService.pageSize = this.service.pageSize;
 
     this.budgetYearService.yearChanged$.subscribe(async year => {
@@ -129,7 +151,10 @@ export class SingOffPlaningComponent {
   get_data() {
     let model = {
       FUNC_CODE: "FUNC-Get_Project_plan_Sign_Off",
-      BgYear: this.currentYear
+      BgYear: this.currentYear,
+      ...(this.isDepartmentLocked && this.lockedDepartmentId != null && {
+        Department_Id: this.lockedDepartmentId
+      })
     }
     var getData = this.serviceebud.GatewayGetData(model);
     getData.subscribe((response: any) => {
@@ -160,6 +185,7 @@ export class SingOffPlaningComponent {
         ? response.Mas_Activity_Lists
         : [];
 
+      this.syncLockedDepartmentFilter();
       this.buildFilterOptions();
       this.applyFilter();
     });
@@ -225,6 +251,11 @@ export class SingOffPlaningComponent {
   }
 
   onDepartmentFilterChange() {
+    if (this.isDepartmentLocked) {
+      this.syncLockedDepartmentFilter();
+      this.applyFilter();
+      return;
+    }
     this.selectedPlanName = null;
     this.selectedProductName = null;
     this.selectedActivityName = null;
@@ -244,6 +275,8 @@ export class SingOffPlaningComponent {
 
   applyFilter() {
     this.sortService.page = 1;
+
+    this.syncLockedDepartmentFilter();
 
     let data = [...this.allData];
     this.updateCascadingFilterOptions();

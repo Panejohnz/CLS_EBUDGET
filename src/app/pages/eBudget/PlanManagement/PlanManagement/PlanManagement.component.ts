@@ -797,6 +797,10 @@ export class PlanManagementComponent {
     ];
   }
   async deletePlan(data: any) {
+    if (data.Status_Id > 1) {
+      basicAlert('warning', 'ไม่สามารถลบข้อมูลได้ เนื่องจากโครงการอยู่ในสถานะที่ไม่สามารถแก้ไขได้', '');
+      return;
+    }
     const userConfirmed = await confirmAlert('info', 'ต้องการลบข้อมูล ?', '');
 
     if (userConfirmed) {

@@ -12,17 +12,17 @@ export const environment = {
     measurementId: ''
   },
 //demo
-  // EMO_API: location.origin + "/CLS_E_BUDGET_BACKEND_DEMO/",
-  // DownloadExamUrl: location.origin + "/CLS_E_BUDGET_BACKEND_DEMO/DownLoad_File/Download_File_TEMPLATE",
-  // PreviewExamUrl: location.origin + "/CLS_E_BUDGET_BACKEND_DEMO/DownLoad_File/Preview_File_Template",
-  // GET_AUTHEN: location.origin + "/CLS_E_BUDGET_BACKEND_DEMO/GET_DATA/GET_AUTHEN",
-  // GET_MENU: location.origin + "/CLS_E_BUDGET_BACKEND_DEMO/GET_DATA/GetMenu",
+  EMO_API: location.origin + "/CLS_E_BUDGET_BACKEND_DEMO/",
+  DownloadExamUrl: location.origin + "/CLS_E_BUDGET_BACKEND_DEMO/DownLoad_File/Download_File_TEMPLATE",
+  PreviewExamUrl: location.origin + "/CLS_E_BUDGET_BACKEND_DEMO/DownLoad_File/Preview_File_Template",
+  GET_AUTHEN: location.origin + "/CLS_E_BUDGET_BACKEND_DEMO/GET_DATA/GET_AUTHEN",
+  GET_MENU: location.origin + "/CLS_E_BUDGET_BACKEND_DEMO/GET_DATA/GetMenu",
 //real
-  EMO_API: location.origin + "/CLS_E_BUDGET_BACKEND/",
-  DownloadExamUrl: location.origin + "/CLS_E_BUDGET_BACKEND/DownLoad_File/Download_File_TEMPLATE",
-  PreviewExamUrl: location.origin + "/CLS_E_BUDGET_BACKEND/DownLoad_File/Preview_File_Template",
-  GET_AUTHEN: location.origin + "/CLS_E_BUDGET_BACKEND/GET_DATA/GET_AUTHEN",
-  GET_MENU: location.origin + "/CLS_E_BUDGET_BACKEND/GET_DATA/GetMenu",
+  // EMO_API: location.origin + "/CLS_E_BUDGET_BACKEND/",
+  // DownloadExamUrl: location.origin + "/CLS_E_BUDGET_BACKEND/DownLoad_File/Download_File_TEMPLATE",
+  // PreviewExamUrl: location.origin + "/CLS_E_BUDGET_BACKEND/DownLoad_File/Preview_File_Template",
+  // GET_AUTHEN: location.origin + "/CLS_E_BUDGET_BACKEND/GET_DATA/GET_AUTHEN",
+  // GET_MENU: location.origin + "/CLS_E_BUDGET_BACKEND/GET_DATA/GetMenu",
 
   // เพิ่ม endpoint สำหรับ menu
   EXPORT_REPORT: 'https://fdaemonitor.fda.moph.go.th/CLS_EMONITOR_KPI_REPORT/Report/Report_R002.aspx',

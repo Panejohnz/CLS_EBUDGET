@@ -21,7 +21,16 @@ export class ProjectBudgetProposalAddPersonnelComponent {
   ) { }
 
   get isSaveLocked(): boolean {
-    return Number(this.userSession?.permissionData?.VIEW_DATA || 0) === 3;
+    const statusId = this.model?.Budget_Request?.Status_Id ??
+      this.model?.Budget_Request?.STATUS_ID ??
+      this.model?.Status_Id ??
+      this.model?.STATUS_ID ??
+      0;
+
+    // VIEW_DATA = 3 may save a new request (and requests at status 1).
+    // Requests that have progressed beyond status 1 are read-only.
+    return Number(this.userSession?.permissionData?.VIEW_DATA || 0) === 3 &&
+      Number(statusId) > 1;
   }
 
   get isRequiredConstructionAttachmentMissing(): boolean {

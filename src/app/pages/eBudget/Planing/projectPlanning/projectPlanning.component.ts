@@ -573,7 +573,7 @@ export class ProjectPlanningComponent {
     this.modalRef = this.modalService.open(modal, {
       backdrop: 'static',
       windowClass: 'full-screen-modal' //'modal-95'
-      
+
     });
   }
   copyProjectList: any[] = [];
@@ -760,7 +760,10 @@ export class ProjectPlanningComponent {
   }
 
   async deletePlan(data: any) {
-
+    if (data.Status_Id > 1) {
+      basicAlert('warning', 'ไม่สามารถลบข้อมูลได้ เนื่องจากโครงการอยู่ในสถานะที่ไม่สามารถแก้ไขได้', '');
+      return;
+    }
     const userConfirmed = await confirmAlert('info', 'ต้องการลบข้อมูล ?', '');
 
     if (userConfirmed) {

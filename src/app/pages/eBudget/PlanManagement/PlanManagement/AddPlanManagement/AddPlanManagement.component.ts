@@ -1153,7 +1153,16 @@ export class AddPlanManagementComponent
   ) { }
 
   get isSaveLocked(): boolean {
-    return Number(this.userSession?.permissionData?.VIEW_DATA || 0) === 3;
+    const statusId = this.model?.Budget_Plan?.Status_Id ??
+      this.model?.Budget_Plan?.STATUS_ID ??
+      this.model?.Status_Id ??
+      this.model?.STATUS_ID ??
+      0;
+
+    // VIEW_DATA = 3 may save a new plan (and plans at status 1).
+    // Plans that have progressed beyond status 1 are read-only.
+    return Number(this.userSession?.permissionData?.VIEW_DATA || 0) === 3 &&
+      Number(statusId) > 1;
   }
 
   readonly projectPlanningExpenseTypeIds = [64, 70, 73, 74, 75];
@@ -1201,6 +1210,31 @@ export class AddPlanManagementComponent
       Number(value);
 
     return Number.isFinite(numericValue) ? numericValue : null;
+  }
+
+  private isSameAmount(firstAmount: number, secondAmount: number): boolean {
+    return Math.round(firstAmount * 100) === Math.round(secondAmount * 100);
+  }
+
+  private validateEditedPlanTotals(
+    totalPlan: number,
+    updateAmount: number
+  ): boolean {
+    const isEditing = Number(this.model?.Budget_Plan?.Plan_Id || 0) > 0;
+    if (!isEditing) {
+      return true;
+    }
+
+    if (this.isSameAmount(totalPlan, updateAmount)) {
+      return true;
+    }
+
+    basicAlert(
+      'warning',
+      'จำนวนเงินไม่ตรงกัน',
+      'กรุณาระบุจำนวนเงินให้รวมเท่ากับทั้งรวมเงินวางแผนและรวมเงินจัดสรร'
+    );
+    return false;
   }
 
   dropdown_select = false;
@@ -2047,6 +2081,10 @@ export class AddPlanManagementComponent
     const totalAllocation = this.resolveAllocationTotal();
     const originalUpdateAmount =
       Number(this.model?.Budget_Plan?.Update_Amount ?? 0);
+
+    if (!this.validateEditedPlanTotals(totalPlan, originalUpdateAmount)) {
+      return;
+    }
 
     this.model.Total = totalAllocation;
 
