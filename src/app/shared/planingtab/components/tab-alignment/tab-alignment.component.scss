@@ -9,3 +9,7 @@
 .modal-dialog {
     overflow: visible !important;
 }
+.card-body:has(h6 .text-danger) .form-label::after {
+    color: var(--bs-danger);
+    content: ' *';
+}

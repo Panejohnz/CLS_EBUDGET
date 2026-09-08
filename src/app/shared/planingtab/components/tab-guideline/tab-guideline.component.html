@@ -59,7 +59,7 @@
                         </td>
                         <td *ngIf="rowIndex === 0" rowspan="3" class="text-start">
 
-                            <textarea rows="3" class="form-control mb-2" [(ngModel)]="act.name">
+                            <textarea rows="3" class="form-control mb-2" [(ngModel)]="act.name" placeholder="กรอกชื่อกิจกรรม">
     </textarea>
 
                             <!-- แถวบน -->
@@ -142,7 +142,7 @@
                                     ผู้รับผิดชอบ
                                 </label>
 
-                                <input type="text" class="form-control" style="width:220px" [(ngModel)]="act.owner">
+                                <input type="text" class="form-control" style="width:220px" [(ngModel)]="act.owner" placeholder="กรอกผู้รับผิดชอบ">
 
                                 <button class="btn btn-sm btn-primary" (click)="addSub(act)">
                                     เพิ่มกิจกรรมย่อย
@@ -181,7 +181,7 @@
 
                             <td *ngIf="rowIndex === 0" rowspan="3" class="text-start">
 
-                                <textarea rows="3" class="form-control mb-2" [(ngModel)]="sub.name">
+                                <textarea rows="3" class="form-control mb-2" [(ngModel)]="sub.name" placeholder="กรอกชื่อกิจกรรมย่อย">
                             </textarea>
 
                                 <!-- แถวบน -->

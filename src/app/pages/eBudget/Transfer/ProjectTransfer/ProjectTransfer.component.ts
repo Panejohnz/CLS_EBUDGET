@@ -834,7 +834,19 @@ const plan =
     return Math.min(Math.max(1, page), maxPage);
   }
 
+  private getTodayDate(): NgbDateStruct {
+    const today = new Date();
+
+    return {
+      year: today.getFullYear(),
+      month: today.getMonth() + 1,
+      day: today.getDate()
+    };
+  }
+
   reset() {
+
+    const today = this.getTodayDate();
 
     this.form = {
 
@@ -843,11 +855,11 @@ const plan =
       BgYear:
         this.currentYear,
 
-      Transfer_Date: '',
+      Transfer_Date: today,
 
       Transfer_Doc_Number: '',
 
-      Transfer_Doc_Date: '',
+      Transfer_Doc_Date: { ...today },
 
       Transfer_Count: '',
 

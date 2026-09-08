@@ -210,7 +210,7 @@ export class ReportResultComponent
           : 0,
 
       Status_Id:
-        7
+        6
 
     };
 

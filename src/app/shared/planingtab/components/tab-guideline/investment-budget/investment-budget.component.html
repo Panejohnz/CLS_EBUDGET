@@ -162,7 +162,7 @@
                                                 คุณสมบัติ (spec)
                                             </label>
 
-                                            <textarea class="form-control" rows="3" [(ngModel)]="item.spec"></textarea>
+                                            <textarea class="form-control" rows="3" [(ngModel)]="item.spec" placeholder="กรอกรายละเอียดคุณลักษณะ"></textarea>
 
                                         </div>
 
@@ -252,11 +252,11 @@
                             <td>{{i+1}}</td>
 
                             <td>
-                                <input type="number" class="form-control form-control-sm" [(ngModel)]="r.year">
+                                <input type="number" class="form-control form-control-sm" [(ngModel)]="r.year" placeholder="ปี">
                             </td>
 
                             <td>
-                                <input class="form-control form-control-sm" [(ngModel)]="r.assetNumber">
+                                <input class="form-control form-control-sm" [(ngModel)]="r.assetNumber" placeholder="เลขครุภัณฑ์">
                             </td>
 
                         </tr>

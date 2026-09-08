@@ -39,7 +39,7 @@ export class EbudgetService {
 
         // if (!this.currentUserSubject || !this.currentUserSubject.value) {
 
-        //     window.location.href = 'https://bfast.pacc.go.th/cls_erp_management_front/';
+        //     window.location.href = 'https://app.celestsoft.com/cls_erp_management_front/';
         //     return of(null);
         // }
 
@@ -66,7 +66,7 @@ export class EbudgetService {
 
         if (!this.currentUserSubject || !this.currentUserSubject.value) {
 
-            window.location.href = 'https://bfast.pacc.go.th/cls_erp_management_front/';
+            window.location.href = 'https://app.celestsoft.com/cls_erp_management_front/';
             return of(null);
         }
 

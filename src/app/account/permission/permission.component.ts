@@ -158,7 +158,7 @@ export class PermissionComponent implements OnInit, OnDestroy {
 
       if (!this.token) {
         // No token provided, redirect to FDA website
-        window.location.href = 'https://bfast.pacc.go.th/cls_erp_management_front/';
+        window.location.href = 'https://app.celestsoft.com/cls_erp_management_front/';
         return;
       }
 
@@ -351,7 +351,7 @@ debugger
       const trustedHosts = new Set([
         window.location.hostname,
         '172.10.101.38',
-        'bfast.pacc.go.th',
+        'app.celestsoft.com',
         'app.celestsoft.com',
         'localhost'
       ]);
@@ -360,7 +360,7 @@ debugger
       }
 
       // ใช้ host เดียวกับระบบปัจจุบันเสมอ เพื่อให้ userSession เดิมถูกอ่านได้
-      // รองรับค่่า Sytem_URL เก่าที่เคยเก็บเป็น app.celestsoft.com หรือ bfast.pacc.go.th
+      // รองรับค่่า Sytem_URL เก่าที่เคยเก็บเป็น app.celestsoft.com หรือ app.celestsoft.com
       if (url.hostname !== window.location.hostname) {
         url.protocol = window.location.protocol;
         url.host = window.location.host;

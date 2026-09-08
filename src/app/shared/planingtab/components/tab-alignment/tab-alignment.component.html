@@ -47,7 +47,7 @@
                 <div class="col-md-12">
                     <label class="form-label">เป้าหมาย</label>
 
-                    <input class="form-control" [(ngModel)]="planLevel1Main.Target" name="l1_target">
+                    <input class="form-control" [(ngModel)]="planLevel1Main.Target" name="l1_target" placeholder="กรอกเป้าหมาย">
                 </div>
 
             </div>
@@ -124,7 +124,7 @@
 
                     <div class="col-md-12">
                         <label class="form-label">เป้าหมาย</label>
-                        <input type="text" class="form-control" [(ngModel)]="item.Target" name="sub_target_{{i}}">
+                        <input type="text" class="form-control" [(ngModel)]="item.Target" name="sub_target_{{i}}" placeholder="กรอกเป้าหมาย">
                     </div>
 
                     <div class="col-md-12">
@@ -194,7 +194,7 @@
                         ความสอดคล้องของโครงการกับเป้าหมายของแผนแม่บท (โปรดอธิบาย)
                     </label>
 
-                    <textarea class="form-control" rows="3" [(ngModel)]="planLevel2.Description" name="l2_desc">
+                    <textarea class="form-control" rows="3" [(ngModel)]="planLevel2.Description" name="l2_desc" placeholder="กรอกคำอธิบายความสอดคล้อง">
         </textarea>
                 </div>
 
@@ -221,7 +221,7 @@
                         ความสอดคล้องของโครงการกับเป้าหมายของแผนย่อย (โปรดอธิบาย)
                     </label>
 
-                    <textarea class="form-control" rows="3" [(ngModel)]="planLevel2.SubplanDesc" name="l2_subdesc">
+                    <textarea class="form-control" rows="3" [(ngModel)]="planLevel2.SubplanDesc" name="l2_subdesc" placeholder="กรอกคำอธิบายความสอดคล้อง">
         </textarea>
                 </div>
 
@@ -365,7 +365,7 @@
             </label>
 
             <div class="input-group">
-                <input type="text" class="form-control" [(ngModel)]="item.Title" name="cabinet_{{i}}">
+                <input type="text" class="form-control" [(ngModel)]="item.Title" name="cabinet_{{i}}" placeholder="กรอกรายการที่สอดคล้อง">
 
                 <button class="btn btn-danger" (click)="removeSecurity(i, item)">
                     <i class="bx bx-trash"></i>
@@ -605,7 +605,7 @@
                         ความสอดคล้องของโครงการกับเป้าหมาย (โปรดอธิบาย)
                     </label>
 
-                    <textarea class="form-control" rows="3" [(ngModel)]="model.Project_Plan_Level3.Description"
+                    <textarea class="form-control" rows="3" [(ngModel)]="model.Project_Plan_Level3.Description" placeholder="กรอกคำอธิบายความสอดคล้องของโครงการกับเป้าหมาย"
                         name="l2_desc">
         </textarea>
                 </div>
@@ -633,7 +633,7 @@
                         ความสอดคล้องของโครงการกับเป้าหมายของแผนย่อย (โปรดอธิบาย)
                     </label>
 
-                    <textarea class="form-control" rows="3" [(ngModel)]="model.Project_Plan_Level3.SubplanDesc"
+                    <textarea class="form-control" rows="3" [(ngModel)]="model.Project_Plan_Level3.SubplanDesc" placeholder="กรอกคำอธิบายความสอดคล้องของโครงการกับเป้าหมายของแผนย่อย"
                         name="l2_subdesc">
         </textarea>
                 </div>
@@ -876,7 +876,7 @@
         <div *ngFor="let item of model.Project_Cabinet; let i = index"
             class="input-group mb-2 border rounded p-3 bg-light">
 
-            <input type="text" class="form-control" [(ngModel)]="item.Title" name="cabinet_{{i}}">
+            <input type="text" class="form-control" [(ngModel)]="item.Title" name="cabinet_{{i}}" placeholder="กรอกมติคณะรัฐมนตรี">
 
             <button class="btn btn-danger" (click)="removeCabinet(i,item)">
                 <i class="bx bx-trash"></i>

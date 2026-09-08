@@ -100,7 +100,7 @@
 
 
                                 <td class="text-center">{{pageStartIndex + $index}}</td>
-                                <td class="text-center">{{data.Department_Short_Name}}</td>
+                                <td class="text-center">{{data.Department_Name}}</td>
 
                                 <td>
                                     {{data.Plan_Name }}
@@ -312,6 +312,11 @@
     </div>
 
     <div class="modal-footer">
+        <button class="btn btn-danger text-black" (click)="modal.dismiss()">
+
+            ยกเลิก
+
+        </button>
 
         <button class="btn btn-success" [disabled]="!hasSelectedCopyProjects" (click)="copyProjectToRequest(modal)">
 
@@ -320,11 +325,6 @@
 
         </button>
 
-        <button class="btn btn-danger text-black" (click)="modal.dismiss()">
-
-            ยกเลิก
-
-        </button>
 
     </div>
 

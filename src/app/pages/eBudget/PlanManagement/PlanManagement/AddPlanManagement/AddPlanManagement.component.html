@@ -115,15 +115,15 @@
         <ng-template #targetModal let-modal>
 
             <!-- HEADER -->
-            <div class="modal-header border-0 bg-light">
+            <div class="modal-header shared-page-header p-3">
 
                 <div>
 
-                    <h5 class="modal-title fw-bold mb-1">
+                    <h5 class="modal-title text-white">
                         กำหนดเป้าหมาย
                     </h5>
 
-                    <small class="text-muted">
+                    <small class="text-white-50">
                         กรอกจำนวนเป้าหมายรายเดือน
                     </small>
 
@@ -152,7 +152,7 @@
                     </div>
 
                     <!-- ปุ่มเพิ่ม -->
-                    <button class="btn btn-success text-black rounded-pill px-4" (click)="addTargetRow()">
+                    <button class="btn btn-primary" (click)="addTargetRow()">
                         + เพิ่มรายการ
                     </button>
 
@@ -160,7 +160,70 @@
                 </div>
 
                 <!-- TABLE CARD -->
-                <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card border-0 shadow-sm overflow-hidden">
+                    <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+                        <table class="table table-bordered align-middle text-center mb-0" style="table-layout: fixed;">
+                            <thead class="text-center text-white sticky-header" style="background-color: #556398;">
+                                <tr>
+                                    <th style="width:250px">รายการ</th>
+                                    <th colspan="6">เป้าหมายรายเดือน</th>
+                                    <th style="width:120px">รวม</th>
+                                    <th style="width:90px">ลบ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngFor="let t of targetList; let i = index">
+                                    <tr *ngIf="i > 0" class="table-light">
+                                        <td colspan="9" class="p-1"></td>
+                                    </tr>
+                                    <tr>
+                                        <td rowspan="4" class="align-middle">
+                                            <input type="text" class="form-control" [(ngModel)]="t.unit"
+                                                placeholder="ระบุหน่วยนับ">
+                                        </td>
+                                        <td>ต.ค.</td><td>พ.ย.</td><td>ธ.ค.</td><td>ม.ค.</td><td>ก.พ.</td><td>มี.ค.</td>
+                                        <td rowspan="4" class="align-middle text-end fw-bold">
+                                            {{ getTargetSum(t) | number:'1.2-2' }}
+                                        </td>
+                                        <td rowspan="4" class="align-middle">
+                                            <button class="btn btn-danger btn-sm" *ngIf="targetList.length > 1"
+                                                (click)="removeTargetRow(i, t)">
+                                                <i class="ri-delete-bin-line"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="number" class="form-control text-end" [(ngModel)]="t.oct" placeholder="ระบุเป้าหมาย"></td>
+                                        <td><input type="number" class="form-control text-end" [(ngModel)]="t.nov" placeholder="ระบุเป้าหมาย"></td>
+                                        <td><input type="number" class="form-control text-end" [(ngModel)]="t.dec" placeholder="ระบุเป้าหมาย"></td>
+                                        <td><input type="number" class="form-control text-end" [(ngModel)]="t.jan" placeholder="ระบุเป้าหมาย"></td>
+                                        <td><input type="number" class="form-control text-end" [(ngModel)]="t.feb" placeholder="ระบุเป้าหมาย"></td>
+                                        <td><input type="number" class="form-control text-end" [(ngModel)]="t.mar" placeholder="ระบุเป้าหมาย"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>เม.ย.</td><td>พ.ค.</td><td>มิ.ย.</td><td>ก.ค.</td><td>ส.ค.</td><td>ก.ย.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="number" class="form-control text-end" [(ngModel)]="t.apr" placeholder="ระบุเป้าหมาย"></td>
+                                        <td><input type="number" class="form-control text-end" [(ngModel)]="t.may" placeholder="ระบุเป้าหมาย"></td>
+                                        <td><input type="number" class="form-control text-end" [(ngModel)]="t.jun" placeholder="ระบุเป้าหมาย"></td>
+                                        <td><input type="number" class="form-control text-end" [(ngModel)]="t.jul" placeholder="ระบุเป้าหมาย"></td>
+                                        <td><input type="number" class="form-control text-end" [(ngModel)]="t.aug" placeholder="ระบุเป้าหมาย"></td>
+                                        <td><input type="number" class="form-control text-end" [(ngModel)]="t.sep" placeholder="ระบุเป้าหมาย"></td>
+                                    </tr>
+                                </ng-container>
+                            </tbody>
+                            <tfoot style="background-color:#556398;color:white;">
+                                <tr>
+                                    <td colspan="7" class="text-end fw-bold pe-4">รวมทั้งหมด</td>
+                                    <td class="text-end fw-bold">{{ getGrandTotal() | number:'1.2-2' }}</td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden d-none">
 
                     <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
 
@@ -358,9 +421,9 @@
             </div>
 
             <!-- FOOTER -->
-            <div class="modal-footer border-0 bg-light">
+            <div class="modal-footer">
 
-                <button class="btn btn-danger text-black rounded-pill px-4" (click)="modal.dismiss()">
+                <button class="btn btn-danger text-black" (click)="modal.dismiss()">
 
                     ยกเลิก
 

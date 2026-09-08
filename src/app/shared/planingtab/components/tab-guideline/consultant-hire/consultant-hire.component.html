@@ -34,7 +34,7 @@
 
                         <td>
                             <label class="fw-bold">ระบุชื่อโครงการ</label>
-                            <input class="form-control form-control-sm" [(ngModel)]="project.project_name">
+                            <input class="form-control form-control-sm" [(ngModel)]="project.project_name" placeholder="กรอกชื่อโครงการ">
                         </td>
 
                         <td class="text-end fw-bold">
@@ -53,12 +53,12 @@
 
                                 <div class="col-md-6">
                                     <label class="fw-bold">เหตุผลความจำเป็น</label>
-                                    <textarea class="form-control" [(ngModel)]="project.reason"></textarea>
+                                    <textarea class="form-control" [(ngModel)]="project.reason" placeholder="กรอกหลักการและเหตุผล"></textarea>
                                 </div>
 
                                 <div class="col-md-6">
                                     <label class="fw-bold">ผลประโยชน์ที่จะได้รับ</label>
-                                    <textarea class="form-control" [(ngModel)]="project.benefit"></textarea>
+                                    <textarea class="form-control" [(ngModel)]="project.benefit" placeholder="กรอกประโยชน์ที่คาดว่าจะได้รับ"></textarea>
                                 </div>
 
                             </div>
@@ -132,11 +132,11 @@
                         <td>1.{{i+1}}</td>
 
                         <td>
-                            <input class="form-control form-control-sm" [(ngModel)]="main.name">
+                            <input class="form-control form-control-sm" [(ngModel)]="main.name" placeholder="กรอกชื่อ-นามสกุล">
                         </td>
 
                         <td>
-                            <input class="form-control form-control-sm" [(ngModel)]="main.field">
+                            <input class="form-control form-control-sm" [(ngModel)]="main.field" placeholder="กรอกสาขา">
                         </td>
 
                         <td><input type="checkbox" [(ngModel)]="main.edu_bachelor"></td>
@@ -144,21 +144,21 @@
                         <td><input type="checkbox" [(ngModel)]="main.edu_phd"></td>
 
                         <td>
-                            <input type="number" class="form-control form-control-sm" [(ngModel)]="main.exp">
+                            <input type="number" class="form-control form-control-sm" [(ngModel)]="main.exp" placeholder="ปี">
                         </td>
 
                         <td>
-                            <input type="number" class="form-control form-control-sm" [(ngModel)]="main.qty"
+                            <input type="number" class="form-control form-control-sm" [(ngModel)]="main.qty" placeholder="จำนวน"
                                 (input)="calculateMain(p)">
                         </td>
 
                         <td>
-                            <input type="number" class="form-control form-control-sm" [(ngModel)]="main.month"
+                            <input type="number" class="form-control form-control-sm" [(ngModel)]="main.month" placeholder="เดือน"
                                 (input)="calculateMain(p)">
                         </td>
 
                         <td>
-                            <input type="number" class="form-control form-control-sm" [(ngModel)]="main.rate"
+                            <input type="number" class="form-control form-control-sm" [(ngModel)]="main.rate" placeholder="อัตรา"
                                 (input)="calculateMain(p)">
                         </td>
 
@@ -193,11 +193,11 @@
                         <td>2.{{i+1}}</td>
 
                         <td>
-                            <input class="form-control form-control-sm" [(ngModel)]="sup.name">
+                            <input class="form-control form-control-sm" [(ngModel)]="sup.name" placeholder="กรอกชื่อ-นามสกุล">
                         </td>
 
                         <td>
-                            <input class="form-control form-control-sm" [(ngModel)]="sup.field">
+                            <input class="form-control form-control-sm" [(ngModel)]="sup.field" placeholder="กรอกสาขา">
                         </td>
 
                         <td><input type="checkbox" [(ngModel)]="sup.edu_bachelor"></td>
@@ -205,21 +205,21 @@
                         <td><input type="checkbox" [(ngModel)]="sup.edu_phd"></td>
 
                         <td>
-                            <input type="number" class="form-control form-control-sm" [(ngModel)]="sup.exp">
+                            <input type="number" class="form-control form-control-sm" [(ngModel)]="sup.exp" placeholder="ปี">
                         </td>
 
                         <td>
-                            <input type="number" class="form-control form-control-sm" [(ngModel)]="sup.qty"
+                            <input type="number" class="form-control form-control-sm" [(ngModel)]="sup.qty" placeholder="จำนวน"
                                 (input)="calculateSupport(p)">
                         </td>
 
                         <td>
-                            <input type="number" class="form-control form-control-sm" [(ngModel)]="sup.month"
+                            <input type="number" class="form-control form-control-sm" [(ngModel)]="sup.month" placeholder="เดือน"
                                 (input)="calculateSupport(p)">
                         </td>
 
                         <td>
-                            <input type="number" class="form-control form-control-sm" [(ngModel)]="sup.rate"
+                            <input type="number" class="form-control form-control-sm" [(ngModel)]="sup.rate" placeholder="อัตรา"
                                 (input)="calculateSupport(p)">
                         </td>
 
@@ -255,13 +255,13 @@
                         <td>3.{{i+1}}</td>
 
                         <td class="text-start">
-                            <input class="form-control form-control-sm" [(ngModel)]="other.name">
+                            <input class="form-control form-control-sm" [(ngModel)]="other.name" placeholder="กรอกรายการ">
                         </td>
 
                         <td colspan="7"></td>
 
                         <td>
-                            <input type="number" class="form-control form-control-sm" [(ngModel)]="other.rate"
+                            <input type="number" class="form-control form-control-sm" [(ngModel)]="other.rate" placeholder="อัตรา"
                                 (input)="calculateOther(p)">
                         </td>
 

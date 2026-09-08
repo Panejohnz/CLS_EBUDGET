@@ -6,7 +6,7 @@
     </div>
 
     <div class="input-group border rounded p-3">
-        <textarea class="form-control" rows="5" [(ngModel)]="projectDetail.Principle" name="principle">
+        <textarea class="form-control" rows="5" [(ngModel)]="projectDetail.Principle" name="principle" placeholder="กรอกหลักการและเหตุผล">
         </textarea>
     </div>
 
@@ -61,11 +61,11 @@
                 <div class="row g-2">
 
                     <div class="col-md-7">
-                        <input class="form-control" [(ngModel)]="item.Name" name="output_name_{{i}}">
+                        <input class="form-control" [(ngModel)]="item.Name" name="output_name_{{i}}" placeholder="กรอกรายการผลผลิต">
                     </div>
 
                     <div class="col-md-2">
-                        <input class="form-control" [(ngModel)]="item.Target" name="output_target_{{i}}"
+                        <input class="form-control" [(ngModel)]="item.Target" name="output_target_{{i}}" placeholder="กรอกเป้าหมาย"
                             #outputTarget="ngModel"
                             [ngClass]="{ 'is-invalid': outputTarget.invalid && (outputTarget.dirty || outputTarget.touched || outputTargetValidationSubmitted) }"
                             required>
@@ -122,7 +122,7 @@
                 <div class="row g-2">
 
                     <div class="col-md-11">
-                        <input class="form-control" [(ngModel)]="item.Name" name="outcome_{{i}}">
+                        <input class="form-control" [(ngModel)]="item.Name" name="outcome_{{i}}" placeholder="กรอกรายการผลลัพธ์">
                     </div>
 
                     <div class="col-md-1 text-end">
@@ -151,7 +151,7 @@
     <div *ngFor="let item of expectedResults; let i = index" class="border rounded p-3 bg-light">
         <div class="row g-2">
             <div class="col-md-11">
-                <input class="form-control" [(ngModel)]="item.Name" name="expected_{{i}}">
+                <input class="form-control" [(ngModel)]="item.Name" name="expected_{{i}}" placeholder="กรอกผลที่คาดว่าจะได้รับ">
             </div>
 
             <div class="col-md-1 text-end">
@@ -177,11 +177,11 @@
         <div class="row g-2">
 
             <div class="col-md-7">
-                <input class="form-control" [(ngModel)]="item.Name" name="tg_name_{{i}}">
+                <input class="form-control" [(ngModel)]="item.Name" name="tg_name_{{i}}" placeholder="กรอกกลุ่มเป้าหมาย">
             </div>
 
             <div class="col-md-2">
-                <input class="form-control" [(ngModel)]="item.Amount" name="tg_amount_{{i}}">
+                <input class="form-control" [(ngModel)]="item.Amount" name="tg_amount_{{i}}" placeholder="กรอกจำนวน">
             </div>
 
             <div class="col-md-2">
@@ -219,7 +219,7 @@
     </div>
 
     <div class="input-group mb-2 border rounded p-3 bg-light">
-        <textarea class="form-control mb-4" rows="3" [(ngModel)]="projectDetail.Area" name="area"></textarea>
+        <textarea class="form-control mb-4" rows="3" [(ngModel)]="projectDetail.Area" name="area" placeholder="กรอกพื้นที่ดำเนินการ"></textarea>
     </div>
 </div>
 <div style="height:15px"></div>
