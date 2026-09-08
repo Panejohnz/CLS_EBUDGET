@@ -11,13 +11,13 @@ export const environment = {
     appId: '',
     measurementId: ''
   },
-//demo
+  //demo
   EMO_API: location.origin + "/CLS_E_BUDGET_BACKEND_DEMO/",
   DownloadExamUrl: location.origin + "/CLS_E_BUDGET_BACKEND_DEMO/DownLoad_File/Download_File_TEMPLATE",
   PreviewExamUrl: location.origin + "/CLS_E_BUDGET_BACKEND_DEMO/DownLoad_File/Preview_File_Template",
   GET_AUTHEN: location.origin + "/CLS_E_BUDGET_BACKEND_DEMO/GET_DATA/GET_AUTHEN",
   GET_MENU: location.origin + "/CLS_E_BUDGET_BACKEND_DEMO/GET_DATA/GetMenu",
-//real
+  //real
   // EMO_API: location.origin + "/CLS_E_BUDGET_BACKEND/",
   // DownloadExamUrl: location.origin + "/CLS_E_BUDGET_BACKEND/DownLoad_File/Download_File_TEMPLATE",
   // PreviewExamUrl: location.origin + "/CLS_E_BUDGET_BACKEND/DownLoad_File/Preview_File_Template",
@@ -32,13 +32,13 @@ export const environment = {
   // Use the public HTTPS origin to avoid browser mixed-content and CORS failures.
 
   //demo
-  //   CLS_MANAGEMENT: location.origin + '/cls_erp_management_demo/',
-  // UPDATE_SESSION: location.origin + '/cls_erp_management_demo/GET_DATA/Update_Session',
-  // MANAGEMENT_FRONT: location.origin + '/cls_erp_management_front_demo/management/dashboard'
+  CLS_MANAGEMENT: location.origin + '/cls_erp_management_demo/',
+  UPDATE_SESSION: location.origin + '/cls_erp_management_demo/GET_DATA/Update_Session',
+  MANAGEMENT_FRONT: location.origin + '/cls_erp_management_front_demo/management/dashboard'
   //real
-  CLS_MANAGEMENT: location.origin + '/cls_erp_management/',
-  UPDATE_SESSION: location.origin + '/cls_erp_management/GET_DATA/Update_Session',
-  MANAGEMENT_FRONT: location.origin + '/cls_erp_management_front/management/dashboard'
+  // CLS_MANAGEMENT: location.origin + '/cls_erp_management/',
+  // UPDATE_SESSION: location.origin + '/cls_erp_management/GET_DATA/Update_Session',
+  // MANAGEMENT_FRONT: location.origin + '/cls_erp_management_front/management/dashboard'
 
   // -------------------------------------------------------------------------------------------------------------------------
 

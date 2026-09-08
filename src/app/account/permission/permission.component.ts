@@ -298,7 +298,7 @@ debugger
 
                   if (targetUrl) {
                     this.activeModal?.close();
-                    window.location.assign(targetUrl);
+                    window.location.replace(targetUrl);
                     return;
                   }
                 }
@@ -337,7 +337,7 @@ debugger
     }
 
     this.loadingService.hide();
-    window.location.assign(targetUrl);
+    window.location.replace(targetUrl);
   }
 
   private createTrustedSystemUrl(baseUrl: string): string {
