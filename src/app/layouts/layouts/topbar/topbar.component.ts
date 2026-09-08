@@ -177,7 +177,7 @@ export class TopbarComponent implements OnInit {
   logout() {
 
     this.authService.logout();
-    window.location.href = 'https://app.celestsoft.com/cls_erp_management_front/';
+    window.location.href = 'https://bfast.pacc.go.th/cls_erp_management_front/';
     // this.router.navigate(['/auth/permission']);
   }
 

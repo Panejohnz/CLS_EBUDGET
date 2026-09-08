@@ -39,7 +39,7 @@ export class EbudgetService {
 
         // if (!this.currentUserSubject || !this.currentUserSubject.value) {
 
-        //     window.location.href = 'https://app.celestsoft.com/cls_erp_management_front/';
+        //     window.location.href = 'https://bfast.pacc.go.th/cls_erp_management_front/';
         //     return of(null);
         // }
 
@@ -66,7 +66,7 @@ export class EbudgetService {
 
         if (!this.currentUserSubject || !this.currentUserSubject.value) {
 
-            window.location.href = 'https://app.celestsoft.com/cls_erp_management_front/';
+            window.location.href = 'https://bfast.pacc.go.th/cls_erp_management_front/';
             return of(null);
         }
 
@@ -95,7 +95,7 @@ export class EbudgetService {
             .set('Plan_Id', String(planId));
 
         return this.http.get<any>(
-            'https://app.celestsoft.com/CLS_ERP_API/Finance_Api/Get_Data_Budget_Plan_Sum_Use_By_BgYear_Dept',
+            'https://bfast.pacc.go.th/CLS_ERP_API/Finance_Api/Get_Data_Budget_Plan_Sum_Use_By_BgYear_Dept',
             { params }
         );
     }
