@@ -102,12 +102,12 @@ export class ExpenseFuelLubricantComponent {
     forkJoin(requests)
       .subscribe((responses: any[]) => {
         this.Mas_Expense_Detial_Rate_List =
-          responses.reduce((list: any[], response: any) => {
+          responses.reduce((list: any[], response: any, index: number) => {
             const expenseRateList =
               response?.List_Mas_Expense_Rate;
 
             return Array.isArray(expenseRateList)
-              ? list.concat(expenseRateList)
+              ? list.concat(expenseRateList.map((rate: any) => ({ ...rate, __Expense_Detail_Id: expenseIds[index] })))
               : list;
           }, []);
 
@@ -150,6 +150,10 @@ export class ExpenseFuelLubricantComponent {
       row?.Expense_Detail_Id ??
       row?.Fk_Expense_Detial_Id ??
       row?.Fk_Expense_Detail_Id;
+  }
+
+  private getRateExpenseDetailId(row: any): any {
+    return row?.__Expense_Detail_Id ?? row?.Fk_Expense_Detail_Id ?? row?.FK_Expense_Detail_Id ?? row?.Fk_Expense_Detial_Id ?? this.getExpenseDetailId(row);
   }
 
   private getRowRate(row: any): number {
@@ -206,14 +210,8 @@ export class ExpenseFuelLubricantComponent {
 
   getExpenseDetailRate(detail: any): number {
     const detailId = this.getExpenseDetailId(detail);
-    const detailRate = this.getRowRate(detail);
-
-    if (detailRate > 0) {
-      return detailRate;
-    }
-
     const byId = this.Mas_Expense_Detial_Rate_List.find((row: any) =>
-      this.isSameId(this.getExpenseDetailId(row), detailId)
+      this.isSameId(this.getRateExpenseDetailId(row), detailId)
     );
 
     if (byId) {

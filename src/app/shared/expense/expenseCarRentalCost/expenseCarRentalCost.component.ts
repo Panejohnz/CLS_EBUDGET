@@ -112,12 +112,12 @@ export class ExpenseCarRentalCostComponent {
     forkJoin(requests)
       .subscribe((responses: any[]) => {
         this.Mas_Expense_Detial_Rate_List =
-          responses.reduce((list: any[], response: any) => {
+          responses.reduce((list: any[], response: any, index: number) => {
             const expenseRateList =
               response?.List_Mas_Expense_Rate;
 
             return Array.isArray(expenseRateList)
-              ? list.concat(expenseRateList)
+              ? list.concat(expenseRateList.map((rate: any) => ({ ...rate, __Expense_Detail_Id: expenseIds[index] })))
               : list;
           }, []);
 
@@ -352,6 +352,10 @@ export class ExpenseCarRentalCostComponent {
       row?.Fk_Expense_Detail_Id;
   }
 
+  private getRateExpenseDetailId(row: any): any {
+    return row?.__Expense_Detail_Id ?? row?.Fk_Expense_Detail_Id ?? row?.FK_Expense_Detail_Id ?? row?.Fk_Expense_Detial_Id ?? this.getExpenseDetailId(row);
+  }
+
   private getRowRate(row: any): number {
     return this.toNumber(
       row?.Request_Rate ??
@@ -431,47 +435,15 @@ export class ExpenseCarRentalCostComponent {
 
   getExpenseDetailRate(detail: any): number {
     const detailId = this.getExpenseDetailId(detail);
-    const detailRate = this.getRowRate(detail);
-
-    if (detailRate > 0) {
-      return detailRate;
-    }
-
     const byId = this.Mas_Expense_Detial_Rate_List.find((row: any) =>
-      this.isSameId(this.getExpenseDetailId(row), detailId)
+      this.isSameId(this.getRateExpenseDetailId(row), detailId)
     );
 
     if (byId) {
       return this.getRowRate(byId);
     }
 
-    const detailText = this.normalizeText([
-      detail?.Expense_Detial_Name,
-      detail?.Expense_Detail,
-      detail?.Expense_Name,
-      detail?.Expense_Detial_Short_Name
-    ].filter(Boolean).join(' '));
-
-    const byName = this.Mas_Expense_Detial_Rate_List.find((row: any) => {
-      const rateText = this.getRateRowText(row);
-
-      return rateText &&
-        detailText &&
-        (
-          rateText.includes(detailText) ||
-          detailText.includes(rateText)
-        );
-    });
-
-    if (byName) {
-      return this.getRowRate(byName);
-    }
-
-    const detailIndex = this.Mas_Expense_Detial_List.findIndex((item: any) =>
-      this.isSameId(this.getExpenseDetailId(item), detailId)
-    );
-
-    return this.getRowRate(this.Mas_Expense_Detial_Rate_List[detailIndex]);
+    return this.getRowRate(detail);
   }
 
   private applyRatesToExistingRows() {
