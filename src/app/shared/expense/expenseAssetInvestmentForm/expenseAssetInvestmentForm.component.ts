@@ -211,6 +211,20 @@ export class ExpenseAssetInvestmentFormComponent {
     return Number(value?.toString().replace(/,/g, '')) || 0;
   }
 
+  isQuantityBreakdownValid(item: any): boolean {
+    const quantity = this.toNumber(item?.qty);
+    const requestedQuantity = this.toNumber(item?.newQty);
+    const replacementQuantity = this.toNumber(item?.replaceQty);
+
+    return Math.abs(quantity - (requestedQuantity + replacementQuantity)) < 0.000001;
+  }
+
+  private updateQuantityBreakdownValidation(): void {
+    this.model.assetInvestmentQuantityInvalid = this.items.some(
+      (item: any) => !this.isQuantityBreakdownValid(item)
+    );
+  }
+
   private normalizeText(value: any): string {
     return (value ?? '').toString().trim().toLowerCase().replace(/\s+/g, '');
   }
@@ -501,6 +515,8 @@ export class ExpenseAssetInvestmentFormComponent {
 
       ];
 
+      this.updateQuantityBreakdownValidation();
+
       return;
 
     }
@@ -588,6 +604,7 @@ export class ExpenseAssetInvestmentFormComponent {
     }
 
     this.calculateAll();
+    this.updateQuantityBreakdownValidation();
     this.model.Total = this.grandTotal;
   }
 
@@ -737,6 +754,7 @@ export class ExpenseAssetInvestmentFormComponent {
       });
 
     });
+    this.updateQuantityBreakdownValidation();
     this.model.Total = this.grandTotal;
   }
 

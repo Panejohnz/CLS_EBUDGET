@@ -684,6 +684,11 @@ export class ProjectBudgetProposalAddPersonnelComponent {
       return;
     }
 
+    if (this.model?.assetInvestmentQuantityInvalid) {
+      basicAlert('warning', 'จำนวนครุภัณฑ์ไม่ตรงกัน', 'จำนวนที่ขอใหม่และจำนวนทดแทนรวมกันต้องเท่ากับจำนวน');
+      return;
+    }
+
     const missingConstructionAttachments =
       this.getMissingRequiredConstructionAttachments();
 

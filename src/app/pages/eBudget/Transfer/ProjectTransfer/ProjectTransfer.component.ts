@@ -195,9 +195,9 @@ export class ProjectTransferComponent
     this.modalService.open(
       modal,
       {
-       size:'xl',
-      centered:true,
-      windowClass:'modal-xl-custom'
+        size: 'xl',
+        centered: true,
+        windowClass: 'modal-xl-custom'
       }
     );
 
@@ -228,7 +228,8 @@ export class ProjectTransferComponent
 
       To_Plan_Id:
         Number(row.To_Plan_Id),
-
+      Plan_Id:
+        Number(row.Plan_Id),
       Transfer_Date:
         row.Transfer_Date,
 
@@ -251,10 +252,10 @@ export class ProjectTransferComponent
     this.modalService.open(
       modal,
       {
-         size:'xl',
-      centered:true,
-      windowClass:'modal-xl-custom'
-        
+        size: 'xl',
+        centered: true,
+        windowClass: 'modal-xl-custom'
+
       }
     );
 
@@ -424,7 +425,7 @@ export class ProjectTransferComponent
   }
 
   onChangeFromPlan() {
-const plan =
+    const plan =
       this.fromPlans.find(
         (x: any) =>
           Number(x.Plan_Id)
@@ -450,7 +451,7 @@ const plan =
   private loadPlanBalance(plan: any): void {
     const totalPlan = Number(plan?.Total_Plan || 0);
     const departmentId = Number(this.form?.From_Department_Id || 0);
-    const planId = Number(this.form?.From_Plan_Id || 0);
+    const planId = Number(this.form?.Plan_Id || 0);
     const bgYear = Number(this.currentYear || 0);
 
     if (!departmentId || !planId || !bgYear) {
@@ -462,7 +463,7 @@ const plan =
     this.form.balance = 0;
     this.displayBalance = '';
 
-
+alert(planId)
 
     this.servicebud.GetBudgetPlanSumUse(bgYear, departmentId, planId)
       .subscribe({
@@ -483,7 +484,7 @@ const plan =
           this.form.balance = usedAmount;
           this.displayBalance = this.masterService.formatNumber(this.form.balance);
 
-  
+
         },
         error: (error: any) => {
           console.error('Unable to load used budget amount.', error);
@@ -494,7 +495,7 @@ const plan =
   }
 
   onChangeToPlan() {
-const plan =
+    const plan =
       this.plans.find(
         (x: any) =>
           Number(x.Plan_Id)
@@ -578,7 +579,7 @@ const plan =
       To_Plan_Id:
         this.form.To_Plan_Id || 0,
 
-    
+
 
       Transfer_Description:
         this.form.Transfer_Description || '',

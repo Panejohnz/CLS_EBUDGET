@@ -168,7 +168,7 @@
                     <td>
 
                         <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."  placeholder="ระบุจำนวนที่ขอใหม่" 
-                            inputmode="decimal" class="form-control " [(ngModel)]="item.newQty"
+                            inputmode="decimal" class="form-control " [class.is-invalid]="!isQuantityBreakdownValid(item)" [(ngModel)]="item.newQty"
                             (ngModelChange)="updateDetailItems()">
 
                         <textarea class="form-control mt-1" rows="2" placeholder="ระบุเหตุผลการขอใหม่"
@@ -176,13 +176,17 @@
 
                             </textarea>
 
+                        <div *ngIf="!isQuantityBreakdownValid(item)" class="invalid-feedback d-block">
+                            จำนวนที่ขอใหม่และจำนวนทดแทนรวมกันต้องเท่ากับจำนวน
+                        </div>
+
                     </td>
 
                     <!-- reason replace -->
                     <td>
 
                         <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."  placeholder="ระบุจำนวนที่ทดแทน" 
-                            inputmode="decimal" class="form-control " [(ngModel)]="item.replaceQty"
+                            inputmode="decimal" class="form-control " [class.is-invalid]="!isQuantityBreakdownValid(item)" [(ngModel)]="item.replaceQty"
                             (ngModelChange)="updateDetailItems()">
 
                         <textarea class="form-control mt-1" rows="2" placeholder="ระบุเหตุผลการทดแทน"

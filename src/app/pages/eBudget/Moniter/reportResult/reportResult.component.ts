@@ -61,6 +61,8 @@ export class ReportResultComponent
     Report_Attach_File: []
   };
   Mas_Unit_Lists: any
+  private usedAmountLoadVersion = 0;
+  selectedPlanUsedAmount = 0;
   get totalPlanBudget(): number {
     return this.griddata.reduce(
       (sum: number, item: any) =>
@@ -72,7 +74,7 @@ export class ReportResultComponent
   get totalUsedBudget(): number {
     return this.griddata.reduce(
       (sum: number, item: any) =>
-        sum + Number(item.Total || 0),
+        sum + Number(item.Used_Amount || 0),
       0
     );
   }
@@ -222,6 +224,7 @@ export class ReportResultComponent
         this.allData = Array.isArray(response.List_Budget_Plan_Data_Table.Data)
           ? response.List_Budget_Plan_Data_Table.Data
           : [];
+        this.loadUsedAmounts(this.allData);
         this.department = Array.isArray(response.Mas_Department_Lists)
           ? response.Mas_Department_Lists
           : [];
@@ -243,6 +246,39 @@ export class ReportResultComponent
 
       });
 
+  }
+
+  private loadUsedAmounts(rows: any[]): void {
+    const loadVersion = ++this.usedAmountLoadVersion;
+    const bgYear = Number(this.currentYear || 0);
+
+    rows.forEach((row: any) => {
+      const planId = Number(row?.Plan_Id || 0);
+      const departmentId = Number(row?.Department_Id || 0);
+      row.Used_Amount = 0;
+
+      if (!bgYear || !departmentId || !planId) {
+        return;
+      }
+
+      this.servicebud.GetBudgetPlanSumUse(bgYear, departmentId, planId)
+        .subscribe({
+          next: (response: any) => {
+            if (loadVersion !== this.usedAmountLoadVersion) return;
+
+            row.Used_Amount = (response?.List_Sum_Use_Amount_Budget_Plan_Api || [])
+              .reduce(
+                (total: number, item: any) => total + Number(item?.sum_use_amount || 0),
+                0
+              );
+          },
+          error: () => {
+            if (loadVersion === this.usedAmountLoadVersion) {
+              row.Used_Amount = 0;
+            }
+          }
+        });
+    });
   }
 
   applyFilter() {
@@ -328,6 +364,7 @@ export class ReportResultComponent
   ) {
 
     this.selectedItem = data;
+    this.loadSelectedPlanUsedAmount(data);
 
     const createPayload = {
 
@@ -575,6 +612,31 @@ export class ReportResultComponent
             }
           });
 
+      });
+  }
+
+  private loadSelectedPlanUsedAmount(plan: any): void {
+    const bgYear = Number(this.currentYear || 0);
+    const departmentId = Number(plan?.Department_Id || 0);
+    const planId = Number(plan?.Plan_Id || 0);
+
+    this.selectedPlanUsedAmount = Number(plan?.Used_Amount || 0);
+    if (!bgYear || !departmentId || !planId) return;
+
+    this.servicebud.GetBudgetPlanSumUse(bgYear, departmentId, planId)
+      .subscribe({
+        next: (response: any) => {
+          if (Number(this.selectedItem?.Plan_Id) !== planId) return;
+
+          this.selectedPlanUsedAmount = (response?.List_Sum_Use_Amount_Budget_Plan_Api || [])
+            .reduce(
+              (total: number, item: any) => total + Number(item?.sum_use_amount || 0),
+              0
+            );
+        },
+        error: () => {
+          // Keep the value already loaded for the selected row if the refresh fails.
+        }
       });
   }
   mapPlanDetail(data: any[], planSource: any = this.selectedItem) {
@@ -1117,7 +1179,7 @@ export class ReportResultComponent
   }
 
   getProjectGrandActualTotal(): number {
-    return this.getProjectGrandMonthTotal('actual');
+    return this.selectedPlanUsedAmount;
   }
 
   getProjectGrandWithdrawTotal(): number {
@@ -1573,18 +1635,7 @@ export class ReportResultComponent
 
   }
   getGrandActual() {
-
-    return this.reportData
-      .reduce(
-
-        (sum: any, item: any) =>
-
-          sum +
-          this.getTotalActual(item),
-
-        0
-
-      );
+    return this.selectedPlanUsedAmount;
 
   }
 

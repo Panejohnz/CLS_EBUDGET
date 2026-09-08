@@ -503,7 +503,7 @@
                         <td class="text-end">
 
 
-                            {{data.Total || 0 | number:'1.2-2'}}
+                            {{data.Used_Amount || 0 | number:'1.2-2'}}
                         </td>
 
                         <td class="text-end">
@@ -512,7 +512,7 @@
                             (
                             (data.Total_Plan || 0)
                             -
-                            (data.Total || 0)
+                            (data.Used_Amount || 0)
                             )
                             | number:'1.2-2'
                             }}
