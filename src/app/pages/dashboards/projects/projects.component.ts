@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { EbudgetService } from 'src/app/core/services/ebudget.service';
 import { BudgetYearService } from 'src/app/core/services/budget-year.service';
 
@@ -19,6 +21,7 @@ export class ProjectsComponent implements OnInit {
   dashboardData: any[] = [];
   currentYear = 0;
   selectedDepartmentId = 0;
+  private dashboardLoadVersion = 0;
 
   chartNotes = {
     pieBudgetType: '',
@@ -209,6 +212,7 @@ export class ProjectsComponent implements OnInit {
   dashboardCheck: any = null;
 
 getDashboard() {
+  const loadVersion = ++this.dashboardLoadVersion;
   const model = {
     FUNC_CODE: 'FUNC-Get_Dashboard',
     BgYear: this.currentYear,
@@ -239,9 +243,11 @@ getDashboard() {
             ? response.List_Dashboard_Check[0]
             : response.List_Dashboard_Check || null;
 
-      console.log('dashboardCheck', this.dashboardCheck);
-
-      this.bindDashboard();
+      this.loadDashboardUsage(this.dashboardData, loadVersion, () => {
+        if (loadVersion === this.dashboardLoadVersion) {
+          this.bindDashboard();
+        }
+      });
     },
 
     error: (err: any) => {
@@ -255,22 +261,112 @@ getDashboard() {
   });
 }
 
+  private loadDashboardUsage(
+    dashboardRows: any[],
+    loadVersion: number,
+    complete: () => void
+  ): void {
+    const rows = Array.isArray(dashboardRows) ? dashboardRows : [];
+    const requests = new Map<string, { departmentId: number; planId: number }>();
+
+    rows.forEach((row: any) => {
+      const planId = Number(row?.Budget_Plan_Id || row?.Fk_Budget_Plan_Id || 0);
+      const departmentId = Number(row?.Department_Id || this.selectedDepartmentId || 0);
+
+      if (planId > 0 && departmentId > 0) {
+        requests.set(`${departmentId}_${planId}`, { departmentId, planId });
+      }
+    });
+
+    if (requests.size === 0) {
+      complete();
+      return;
+    }
+
+    const requestEntries = Array.from(requests.entries());
+    forkJoin(
+      requestEntries.map(([, request]) =>
+        this.servicebud
+          .GetBudgetPlanSumUse(this.currentYear, request.departmentId, request.planId)
+          .pipe(catchError(() => of(null)))
+      )
+    ).subscribe((responses: any[]) => {
+      if (loadVersion !== this.dashboardLoadVersion) {
+        return;
+      }
+
+      const usageByPlan = new Map<string, any>();
+      responses.forEach((response: any, index: number) => {
+        usageByPlan.set(
+          requestEntries[index][0],
+          this.getDashboardUsageTotals(response)
+        );
+      });
+
+      this.dashboardData = rows.map((row: any) => {
+        const planId = Number(row?.Budget_Plan_Id || row?.Fk_Budget_Plan_Id || 0);
+        const departmentId = Number(row?.Department_Id || this.selectedDepartmentId || 0);
+        const usage = usageByPlan.get(`${departmentId}_${planId}`);
+
+        return usage ? { ...row, ...usage } : row;
+      });
+
+      complete();
+    });
+  }
+
+  private getDashboardUsageTotals(response: any): any {
+    const usageRows = response?.List_Sum_Use_Amount_Budget_Plan_Api;
+    const list = Array.isArray(usageRows)
+      ? usageRows
+      : Array.isArray(usageRows?.Data)
+        ? usageRows.Data
+        : [];
+
+    const sum = (fields: string[]): number => list.reduce(
+      (total: number, item: any) => total + fields.reduce(
+        (fieldTotal: number, field: string) =>
+          fieldTotal + this.toDashboardNumber(item?.[field]),
+        0
+      ),
+      0
+    );
+
+    return {
+      Sum_Used: sum(['sum_use_amount']),
+      Sum_Withdraw: sum(['sum_withdraw_amount']),
+      Sum_Used_Tri1: sum(['Oct_Use', 'Nov_Use', 'Dec_Use']),
+      Sum_Withdraw_Tri1: sum(['Oct_Withdraw', 'Nov_Withdraw', 'Dec_Withdraw']),
+      Sum_Used_Tri2: sum(['Jan_Use', 'Feb_Use', 'Mar_Use']),
+      Sum_Withdraw_Tri2: sum(['Jan_Withdraw', 'Feb_Withdraw', 'Mar_Withdraw']),
+      Sum_Used_Tri3: sum(['Apr_Use', 'May_Use', 'Jun_Use']),
+      Sum_Withdraw_Tri3: sum(['Apr_Withdraw', 'May_Withdraw', 'Jun_Withdraw']),
+      Sum_Used_Tri4: sum(['Jul_Use', 'Aug_Use', 'Sep_Use']),
+      Sum_Withdraw_Tri4: sum(['Jul_Withdraw', 'Aug_Withdraw', 'Sep_Withdraw'])
+    };
+  }
+
+  private toDashboardNumber(value: any): number {
+    const numberValue = Number(String(value ?? 0).replace(/,/g, ''));
+    return Number.isFinite(numberValue) ? numberValue : 0;
+  }
+
   bindDashboard() {
     const data = this.dashboardData || [];
 
     const totalBudget = this.sum(data, 'Total_Plan');
     const totalAdjust = this.sum(data, 'Adjust');
-    const totalburse = 0;
+    const totalburse = this.sum(data, 'Sum_Withdraw');
     const totalRemaining = totalAdjust - totalburse;
 
     const recurringAdjust = this.sumByBudgetTypeIds(data, 'Adjust', [1, 2, 4, 5]);
     const recurringBudget = this.sumByBudgetTypeIds(data, 'Total_Plan', [1, 2, 4, 5]);
-    const recurringburse = 0;
+    const recurringburse = this.sumByBudgetTypeIds(data, 'Sum_Withdraw', [1, 2, 4, 5]);
     const recurringRemaining =  recurringAdjust  - recurringburse;
 
     const investmentAdjust = this.sumByBudgetTypeIds(data, 'Adjust', [3]);
     const investmentBudget = this.sumByBudgetTypeIds(data, 'Total_Plan', [3]);
-    const investmentburse = 0;
+    const investmentburse = this.sumByBudgetTypeIds(data, 'Sum_Withdraw', [3]);
     const investmentRemaining = investmentAdjust - investmentburse;
 
     this.statData = [

@@ -1189,10 +1189,59 @@ export class AddPlanManagementComponent
   }
 
   get planManagementPlannedTotal(): number {
+    const activities = this.model?.activities;
+
+    // ProjectPlanning Tab 4 updates this same model directly.  Prefer its
+    // current monthly values over the previously saved Total_Plan.
+    if (
+      this.isProjectPlanningExpenseType(this.model?.selectedExpenseTypeId) &&
+      Array.isArray(activities) &&
+      activities.length > 0
+    ) {
+      return this.getProjectPlanningPlannedTotal(activities);
+    }
+
     const savedTotal =
       this.toOptionalNumber(this.model?.Budget_Plan?.Total_Plan);
 
     return savedTotal ?? this.getAllBudget();
+  }
+
+  private getProjectPlanningPlannedTotal(activities: any[]): number {
+    return activities.reduce(
+      (total: number, activity: any) =>
+        total + this.getProjectPlanningActivityTotal(activity),
+      0
+    );
+  }
+
+  private getProjectPlanningActivityTotal(activity: any): number {
+    const subActivities = Array.isArray(activity?.SubActivities)
+      ? activity.SubActivities
+      : [];
+
+    if (subActivities.length > 0) {
+      return subActivities.reduce(
+        (total: number, subActivity: any) =>
+          total + this.getProjectPlanningActivityTotal(subActivity),
+        0
+      );
+    }
+
+    return (activity?.quarters || []).reduce(
+      (total: number, quarter: any) =>
+        total + (quarter?.months || []).reduce(
+          (monthTotal: number, month: any) =>
+            monthTotal + this.toPlanNumber(month?.budget),
+          0
+        ),
+      0
+    );
+  }
+
+  private toPlanNumber(value: any): number {
+    const numericValue = Number(String(value ?? 0).replace(/,/g, ''));
+    return Number.isFinite(numericValue) ? numericValue : 0;
   }
 
   isProjectPlanningExpenseType(expenseTypeId: any): boolean {
@@ -1224,7 +1273,6 @@ export class AddPlanManagementComponent
     if (!isEditing) {
       return true;
     }
-    alert(totalPlan + ' ' + updateAmount)
     if (this.isSameAmount(totalPlan, updateAmount)) {
       return true;
     }

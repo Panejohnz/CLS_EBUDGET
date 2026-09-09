@@ -41,6 +41,8 @@ export class MasExpenseDetailComponent implements OnInit {
   List_Mas_Business_Level: any[] = [];
   List_Mas_Expense_Lists: any[] = [];
 
+  readonly businessLevelRequiredExpenseIds = [21, 67, 68, 39, 22, 19];
+
   readonly pageSize = 30;
   pagination = { page: 1, startIndex: 0, endIndex: 0, total: 0 };
   ratePagination = { page: 1, startIndex: 0, endIndex: 0, total: 0 };
@@ -310,6 +312,12 @@ export class MasExpenseDetailComponent implements OnInit {
     return expense?.Expense_Name ?? '';
   }
 
+  isBusinessLevelRequired(expenseId: any = this.Mas_Expense_Detial?.Fk_Expense_Id): boolean {
+    const normalizedId = this.normalizeSelectId(expenseId);
+    return normalizedId != null &&
+      this.businessLevelRequiredExpenseIds.includes(Number(normalizedId));
+  }
+
   private getNextOrderSeq(list: any[]): number {
     if (!list?.length) {
       return 1;
@@ -513,7 +521,7 @@ export class MasExpenseDetailComponent implements OnInit {
       });
       return;
     }
-    if (!businessLevelName) {
+    if (this.isBusinessLevelRequired(expenseId) && !businessLevelName) {
       Swal.fire({
         title: 'กรุณากรอกข้อมูล',
         text: 'กรุณากรอกชื่อระดับ',
@@ -541,16 +549,16 @@ export class MasExpenseDetailComponent implements OnInit {
       this.toBit(row.Is_Rate_Null) === 0 && Number(row.Expense_Rate) !== 0
     );
 
-    if (!hasActiveRate) {
-      Swal.fire({
-        title: 'กรุณากรอกข้อมูล',
-        text: 'กรุณากำหนดอัตราอย่างน้อย 1 รายการ',
-        icon: 'warning',
-        confirmButtonColor: 'rgb(3, 142, 220)',
-        confirmButtonText: 'OK',
-      });
-      return;
-    }
+    // if (!hasActiveRate) {
+    //   Swal.fire({
+    //     title: 'กรุณากรอกข้อมูล',
+    //     text: 'กรุณากำหนดอัตราอย่างน้อย 1 รายการ',
+    //     icon: 'warning',
+    //     confirmButtonColor: 'rgb(3, 142, 220)',
+    //     confirmButtonText: 'OK',
+    //   });
+    //   return;
+    // }
 
     this.Mas_Expense_Detial.Fk_Expense_Id = expenseId;
     this.Mas_Expense_Detial.Child_Detial_Name = businessLevelName;

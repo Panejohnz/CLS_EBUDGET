@@ -128,7 +128,7 @@
         </select>
       </div>
       <div class="col-md-6">
-        <label class="form-label">ชื่อระดับ <span class="text-danger">*</span></label>
+        <label class="form-label">ชื่อระดับ <span class="text-danger" *ngIf="isBusinessLevelRequired()">*</span></label>
         <input type="text" class="form-control" [(ngModel)]="Mas_Expense_Detial.Child_Detial_Name">
       </div>
       <div class="col-md-12">
