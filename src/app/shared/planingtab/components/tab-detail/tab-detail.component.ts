@@ -309,12 +309,16 @@ export class TabDetailComponent implements OnInit, OnChanges {
   }
 
   addOutput() {
-    this.outputs.push({
+    if (!Array.isArray(this.model?.Project_Output)) {
+      this.model.Project_Output = [];
+    }
+
+    this.model.Project_Output.push({
       Name: '',
       Target: '',
       Unit: null
     });
-    this.outputs = [...this.model.Project_Output];
+    this.outputs = this.model.Project_Output;
   }
 
   validateBeforeSave(): boolean {
