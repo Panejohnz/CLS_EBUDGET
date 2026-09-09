@@ -63,6 +63,8 @@ export class ReportResultComponent
   Mas_Unit_Lists: any
   private usedAmountLoadVersion = 0;
   selectedPlanUsedAmount = 0;
+  selectedPlanWithdrawAmount = 0;
+  private selectedPlanUsageByMonth: Record<string, { use: number; withdraw: number }> = {};
   get totalPlanBudget(): number {
     return this.griddata.reduce(
       (sum: number, item: any) =>
@@ -526,6 +528,7 @@ export class ReportResultComponent
                 monthList,
                 data
               );
+            this.applySelectedPlanUsageToReport();
 
             console.log(
               'reportData after map',
@@ -621,6 +624,8 @@ export class ReportResultComponent
     const planId = Number(plan?.Plan_Id || 0);
 
     this.selectedPlanUsedAmount = Number(plan?.Used_Amount || 0);
+    this.selectedPlanWithdrawAmount = 0;
+    this.selectedPlanUsageByMonth = {};
     if (!bgYear || !departmentId || !planId) return;
 
     this.servicebud.GetBudgetPlanSumUse(bgYear, departmentId, planId)
@@ -628,16 +633,63 @@ export class ReportResultComponent
         next: (response: any) => {
           if (Number(this.selectedItem?.Plan_Id) !== planId) return;
 
-          this.selectedPlanUsedAmount = (response?.List_Sum_Use_Amount_Budget_Plan_Api || [])
-            .reduce(
-              (total: number, item: any) => total + Number(item?.sum_use_amount || 0),
-              0
-            );
+          const usageList = Array.isArray(response?.List_Sum_Use_Amount_Budget_Plan_Api)
+            ? response.List_Sum_Use_Amount_Budget_Plan_Api
+            : [];
+          const months = ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'];
+
+          this.selectedPlanUsedAmount = usageList.reduce(
+            (total: number, item: any) => total + this.toApiAmount(item?.sum_use_amount),
+            0
+          );
+          this.selectedPlanWithdrawAmount = usageList.reduce(
+            (total: number, item: any) => total + this.toApiAmount(item?.sum_withdraw_amount),
+            0
+          );
+          this.selectedPlanUsageByMonth = months.reduce((result: any, month: string) => {
+            result[month] = {
+              use: usageList.reduce((sum: number, item: any) => sum + this.toApiAmount(item?.[`${month}_Use`]), 0),
+              withdraw: usageList.reduce((sum: number, item: any) => sum + this.toApiAmount(item?.[`${month}_Withdraw`]), 0)
+            };
+            return result;
+          }, {});
+          this.applySelectedPlanUsageToReport();
         },
         error: () => {
           // Keep the value already loaded for the selected row if the refresh fails.
         }
       });
+  }
+
+  private toApiAmount(value: any): number {
+    return Number(String(value ?? 0).replace(/,/g, '')) || 0;
+  }
+
+  private applySelectedPlanUsageToReport(): void {
+    const months = ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'];
+    const firstReportRow = this.reportData?.[0];
+
+    if (firstReportRow?.quarters) {
+      months.forEach((month: string, index: number) => {
+        const row = firstReportRow.quarters?.[Math.floor(index / 3)]?.[index % 3];
+        if (row) {
+          row.plan = this.selectedPlanUsageByMonth[month]?.use || 0;
+          row.resbill = this.selectedPlanUsageByMonth[month]?.withdraw || 0;
+        }
+      });
+    }
+
+    const firstProjectActivity = this.flattenProjectActivities(this.model?.activities || [])
+      .find((activity: any) => !activity?.SubActivities?.length);
+    if (firstProjectActivity?.quarters) {
+      months.forEach((month: string, index: number) => {
+        const row = firstProjectActivity.quarters?.[Math.floor(index / 3)]?.months?.[index % 3];
+        if (row) {
+          row.actual = this.selectedPlanUsageByMonth[month]?.use || 0;
+          row.resbill = this.selectedPlanUsageByMonth[month]?.withdraw || 0;
+        }
+      });
+    }
   }
   mapPlanDetail(data: any[], planSource: any = this.selectedItem) {
 
@@ -1183,7 +1235,7 @@ export class ReportResultComponent
   }
 
   getProjectGrandWithdrawTotal(): number {
-    return this.getProjectGrandMonthTotal('resbill');
+    return this.selectedPlanWithdrawAmount;
   }
 
   private getProjectActivityMonthTotal(activity: any, field: string): number {
@@ -1215,18 +1267,7 @@ export class ReportResultComponent
   }
 
   getGrandWithdraw() {
-
-    return this.reportData
-      .reduce(
-
-        (sum: any, item: any) =>
-
-          sum +
-          this.getTotalWithdraw(item),
-
-        0
-
-      );
+    return this.selectedPlanWithdrawAmount;
 
   }
 
