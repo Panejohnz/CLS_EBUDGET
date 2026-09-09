@@ -910,7 +910,7 @@ bindPlanChart(data: any[]) {
     },
 
     dataLabels: {
-      enabled: true,
+      enabled: false,
 
       enabledOnSeries: useCountFallback
         ? [0]
@@ -924,7 +924,7 @@ bindPlanChart(data: any[]) {
       style: {
         fontSize: '11px',
         fontWeight: 'bold',
-        colors: ['#ffffff']
+        colors: ['#1f2937']
       }
     },
 
@@ -1113,7 +1113,7 @@ bindDepartmentChart(data: any[]) {
 
     // ตัวเลขบนแท่งกราฟ
     dataLabels: {
-      enabled: true,
+      enabled: false,
 
       enabledOnSeries: useCountFallback
         ? [0]
@@ -1133,7 +1133,7 @@ bindDepartmentChart(data: any[]) {
       style: {
         fontSize: '11px',
         fontWeight: 'bold',
-        colors: ['#ffffff']
+        colors: ['#1f2937']
       }
     },
 

@@ -4,6 +4,6 @@
 }
 
 .card-body:has(h6 .text-danger) label::after {
-  color: var(--bs-danger);
+  color: #dc3545 !important;
   content: ' *';
 }

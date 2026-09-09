@@ -10,6 +10,6 @@
     overflow: visible !important;
 }
 .card-body:has(h6 .text-danger) .form-label::after {
-    color: var(--bs-danger);
+    color: #dc3545 !important;
     content: ' *';
 }
