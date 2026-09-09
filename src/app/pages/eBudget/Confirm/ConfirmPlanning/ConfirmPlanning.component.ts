@@ -95,7 +95,7 @@ export class ConfirmPlanningComponent {
   get Total(): number {
     return this.griddata.reduce(
       (sum: number, item: any) =>
-        sum + Number(item.Total_Plan || 0),
+        sum + Number(item.Total || 0),
       0
     );
   }

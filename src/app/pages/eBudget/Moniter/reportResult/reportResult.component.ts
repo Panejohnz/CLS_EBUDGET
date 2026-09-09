@@ -64,6 +64,7 @@ export class ReportResultComponent
   private usedAmountLoadVersion = 0;
   selectedPlanUsedAmount = 0;
   selectedPlanWithdrawAmount = 0;
+  selectedPlanTransferAmount = 0;
   private selectedPlanUsageByMonth: Record<string, { use: number; withdraw: number }> = {};
   get totalPlanBudget(): number {
     return this.griddata.reduce(
@@ -367,6 +368,7 @@ export class ReportResultComponent
 
     this.selectedItem = data;
     this.loadSelectedPlanUsedAmount(data);
+    this.loadSelectedPlanTransferAmount(data);
 
     const createPayload = {
 
@@ -659,6 +661,44 @@ export class ReportResultComponent
           // Keep the value already loaded for the selected row if the refresh fails.
         }
       });
+  }
+
+  private loadSelectedPlanTransferAmount(plan: any): void {
+    const bgYear = Number(this.currentYear || 0);
+    const planId = Number(plan?.Plan_Id || 0);
+    const departmentId = Number(plan?.Department_Id || 0);
+
+    this.selectedPlanTransferAmount = 0;
+    if (!bgYear || !planId || !departmentId) return;
+
+    this.servicebud.GatewayGetData({
+      FUNC_CODE: 'FUNC-GET_Budget_Plan_Transfer',
+      BgYear: bgYear
+    }).subscribe({
+      next: (response: any) => {
+        if (Number(this.selectedItem?.Plan_Id) !== planId) return;
+
+        const transfers = Array.isArray(response?.List_Budget_Plan_Transfer_Data_Table?.Data)
+          ? response.List_Budget_Plan_Transfer_Data_Table.Data
+          : [];
+
+        const netTransferAmount = transfers.reduce((total: number, item: any) => {
+          const amount = this.toApiAmount(item?.Transfer_Amount);
+          const isFromPlan = Number(item?.From_Plan_Id) === planId &&
+            Number(item?.From_Department_Id) === departmentId;
+          const isToPlan = Number(item?.To_Plan_Id) === planId &&
+            Number(item?.To_Department_Id) === departmentId;
+
+          if (isFromPlan) return total - amount;
+          if (isToPlan) return total + amount;
+          return total;
+        }, 0);
+        this.selectedPlanTransferAmount = netTransferAmount;
+      },
+      error: () => {
+        this.selectedPlanTransferAmount = 0;
+      }
+    });
   }
 
   private toApiAmount(value: any): number {
@@ -1692,6 +1732,17 @@ export class ReportResultComponent
 
   async save(modal: any) {
 
+    const invalidAttachmentNames = this.getInvalidNewReportAttachmentNames();
+
+    if (invalidAttachmentNames.length > 0) {
+      basicAlert(
+        'warning',
+        'ไม่สามารถแนบไฟล์ได้',
+        `กรุณาเลือกไฟล์ใหม่: ${invalidAttachmentNames.join(', ')}`
+      );
+      return;
+    }
+
     const userConfirmed =
       await confirmAlert(
         'info',
@@ -1926,6 +1977,24 @@ export class ReportResultComponent
         error: error => reject(error)
       });
     });
+  }
+
+  private getInvalidNewReportAttachmentNames(): string[] {
+    return this.getCurrentReportAttachFiles()
+      .filter((item: any) =>
+        !!item?.file &&
+        !item?.Pending_Delete &&
+        Number(item?.Active ?? 1) !== 0
+      )
+      .filter((item: any) => {
+        const file = item.file;
+        return !file ||
+          typeof file.name !== 'string' ||
+          !file.name.trim() ||
+          typeof file.size !== 'number' ||
+          file.size <= 0;
+      })
+      .map((item: any) => item?.File_Name || item?.NAME_FAKE || 'ไฟล์ที่เลือก');
   }
 
   private isPendingUploadFile(item: any): boolean {

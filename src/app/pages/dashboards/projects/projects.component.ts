@@ -82,7 +82,8 @@ export class ProjectsComponent implements OnInit {
     series: [],
     chart: {
       height: 350,
-      type: 'line'
+      type: 'bar',
+      stacked: false
     },
     stroke: {
       width: [0, 0, 3],
@@ -91,7 +92,7 @@ export class ProjectsComponent implements OnInit {
     colors: ['#4e73df', '#1cc88a', '#e74a3b'],
     plotOptions: {
       bar: {
-        columnWidth: '40%',
+        columnWidth: '55%',
         borderRadius: 4
       }
     },
@@ -746,9 +747,15 @@ bindPlanChart(data: any[]) {
   this.comboChart = {
     ...this.comboChart,
 
+    chart: {
+      ...this.comboChart.chart,
+      type: 'bar',
+      stacked: false
+    },
+
     plotOptions: {
       bar: {
-        columnWidth: '25%',
+        columnWidth: '55%',
         borderRadius: 3
       }
     },

@@ -701,6 +701,19 @@ export class ProjectBudgetProposalAddPersonnelComponent {
       return;
     }
 
+    const invalidAttachmentNames = this.getInvalidNewAttachmentNames(
+      this.model?.Budget_Request_Attach_File || []
+    );
+
+    if (invalidAttachmentNames.length > 0) {
+      basicAlert(
+        'warning',
+        'ไม่สามารถแนบไฟล์ได้',
+        `กรุณาเลือกไฟล์ใหม่: ${invalidAttachmentNames.join(', ')}`
+      );
+      return;
+    }
+
     const findById = (
       list: any[],
       key: string,
@@ -1192,6 +1205,24 @@ export class ProjectBudgetProposalAddPersonnelComponent {
         error: error => reject(error)
       });
     });
+  }
+
+  private getInvalidNewAttachmentNames(files: any[]): string[] {
+    return (Array.isArray(files) ? files : [])
+      .filter((item: any) =>
+        !!item?.file &&
+        !item?.Pending_Delete &&
+        Number(item?.Active ?? 1) !== 0
+      )
+      .filter((item: any) => {
+        const file = item.file;
+        return !file ||
+          typeof file.name !== 'string' ||
+          !file.name.trim() ||
+          typeof file.size !== 'number' ||
+          file.size <= 0;
+      })
+      .map((item: any) => item?.File_Name || item?.NAME_FAKE || 'ไฟล์ที่เลือก');
   }
 
   private getMissingRequiredConstructionAttachments(): string[] {
