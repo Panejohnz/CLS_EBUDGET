@@ -1224,11 +1224,12 @@ export class AddPlanManagementComponent
     if (!isEditing) {
       return true;
     }
-
+    alert(totalPlan + ' ' + updateAmount)
     if (this.isSameAmount(totalPlan, updateAmount)) {
       return true;
     }
-
+// console.log(this.model.activities);
+console.log(this.activities);
     basicAlert(
       'warning',
       'จำนวนเงินไม่ตรงกัน',
@@ -1495,10 +1496,10 @@ export class AddPlanManagementComponent
     const activity = {
 
       id:
-        this.model?.Budget_Plan_Detail?.Plan_Detail_Id || Date.now(),
+        this.getBudgetPlanDetails()[0]?.Plan_Detail_Id || Date.now(),
 
       name:
-        this.model?.Budget_Plan_Detail?.Activity_Name || '',
+        this.getBudgetPlanDetails()[0]?.Activity_Name || '',
 
       quarters:
         this.generateYear(),
@@ -1510,7 +1511,7 @@ export class AddPlanManagementComponent
     };
 
     const d =
-      this.model?.Budget_Plan_Detail?.[0];
+      this.getBudgetPlanDetails()[0];
 
     if (d) {
       const amounts = [
@@ -1610,6 +1611,22 @@ export class AddPlanManagementComponent
     if (this.model.Budget_Plan.Is_Bureau_Indicator) {
       this.Is_Bureau_Indicator = true
     }
+  }
+
+  private getBudgetPlanDetails(): any[] {
+    const details = this.model?.Budget_Plan_Detail;
+
+    if (Array.isArray(details)) {
+      return details;
+    }
+
+    if (Array.isArray(details?.Data)) {
+      return details.Data;
+    }
+
+    return details && typeof details === 'object'
+      ? [details]
+      : [];
   }
 
   onExpenseChange(item: any) {
@@ -2008,7 +2025,8 @@ export class AddPlanManagementComponent
 
   getAllBudget(): number {
 
-    return this.activities.reduce(
+
+    return this.model.activities.reduce(
 
       (sum: number, act: any) => {
 
@@ -2082,6 +2100,7 @@ export class AddPlanManagementComponent
       return;
     }
 
+    
     const totalPlan = this.getAllBudget();
     const totalAllocation = this.resolveAllocationTotal();
     const originalUpdateAmount =
@@ -2105,7 +2124,7 @@ export class AddPlanManagementComponent
     const detailPayload = {
 
       Plan_Detail_Id:
-        this.model?.Budget_Plan_Detail[0]?.Plan_Detail_Id || 0,
+        this.getBudgetPlanDetails()[0]?.Plan_Detail_Id || 0,
 
       Fk_Budget_Plan:
         this.model?.Budget_Plan?.Plan_Id || 0,
