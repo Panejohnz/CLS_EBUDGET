@@ -2074,7 +2074,7 @@ console.log(this.activities);
   getAllBudget(): number {
 
 
-    return this.model.activities.reduce(
+    return this.activities.reduce(
 
       (sum: number, act: any) => {
 
