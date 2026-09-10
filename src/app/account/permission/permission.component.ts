@@ -461,7 +461,7 @@ export class PermissionComponent implements OnInit, OnDestroy {
   retry(): void {
     // this.error = '';
     // this.checkTokenAndAuthenticate();
-    window.location.href = 'https://bfast.pacc.go.th/cls_erp_management_front_demo/';
+    window.location.href = 'https://bfast.pacc.go.th/cls_erp_management_front/';
   }
 
   private convertToMenuStructure(menuData: MenuDataResponse): MenuItem[] {
