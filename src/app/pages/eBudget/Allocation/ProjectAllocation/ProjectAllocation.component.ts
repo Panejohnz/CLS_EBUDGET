@@ -50,6 +50,104 @@ export class ProjectAllocationComponent implements OnInit {
 
   groupData: any[] = [];
 
+  toggleExpenseDetails(item: any): void {
+    item.detailsExpanded = !item.detailsExpanded;
+    if (!item.detailsExpanded || item.detailsLoaded || item.detailsLoading) return;
+
+    const requestId = Number(item.FK_Request_Id || item.Request_Id || 0);
+    const planId = Number(item.Plan_Id || 0);
+    if (!requestId && !planId) {
+      item.expenseDetails = [];
+      item.detailsLoaded = true;
+      return;
+    }
+
+    item.detailsLoading = true;
+    item.detailsError = false;
+    this.servicebud.GatewayGetData({
+      FUNC_CODE: planId ? 'FUNC-GET_BUDGET_PLAN_BY_ID' : 'FUNC-GET_BUDGET_REQUEST_BY_ID',
+      Plan_Id: planId,
+      Request_Id: requestId,
+      Project_Id: 0
+    }).subscribe({
+      next: (response: any) => {
+        item.detailsLoading = false;
+        if (response.RESULT != null) {
+          item.detailsError = true;
+          return;
+        }
+        const source = planId
+          ? response.Budget_Plan_Detail_Items
+          : response.Budget_Request_Detail_Item;
+        const rows = Array.isArray(source) ? source : (source?.Data || []);
+        const details = this.mapExpenseDetails(rows, item, planId, requestId);
+        if (planId && details.length === 0 && requestId) {
+          this.loadRequestExpenseDetails(item, requestId);
+          return;
+        }
+        item.expenseDetails = details;
+        item.detailsLoaded = true;
+      },
+      error: () => {
+        item.detailsLoading = false;
+        item.detailsError = true;
+      }
+    });
+  }
+
+  private loadRequestExpenseDetails(item: any, requestId: number): void {
+    this.servicebud.GatewayGetData({
+      FUNC_CODE: 'FUNC-GET_BUDGET_REQUEST_BY_ID',
+      Request_Id: requestId,
+      Project_Id: 0
+    }).subscribe({
+      next: (response: any) => {
+        item.detailsLoading = false;
+        if (response.RESULT != null) {
+          item.detailsError = true;
+          return;
+        }
+        const source = response.Budget_Request_Detail_Item;
+        const rows = Array.isArray(source) ? source : (source?.Data || []);
+        item.expenseDetails = this.mapExpenseDetails(rows, item, 0, requestId);
+        item.detailsLoaded = true;
+      },
+      error: () => {
+        item.detailsLoading = false;
+        item.detailsError = true;
+      }
+    });
+  }
+
+  private mapExpenseDetails(rows: any[], item: any, planId: number, requestId: number): any[] {
+    return rows
+      .filter((detail: any) =>
+        (planId
+          ? Number(detail.Fk_Budget_Plan) === planId
+          : Number(detail.Fk_Request_Budget) === requestId) &&
+        Number(detail.Fk_Expense_Id) === Number(item.Fk_Expense_List) &&
+        detail.Active !== false && Number(detail.Active ?? 1) !== 0
+      )
+      .map((detail: any) => {
+        const adjust1 = Number(detail.Adjust1 ?? 0);
+        const adjust2 = Number(detail.Adjust2 ?? 0);
+        const adjust3 = Number(detail.Adjust3 ?? 0);
+        const mapped = {
+          ...detail,
+          Adjust1: adjust1,
+          Adjust2: adjust2,
+          Adjust3: adjust3,
+          Adjust1Temp: adjust1,
+          Adjust2Temp: adjust2,
+          Adjust3Temp: adjust3,
+          Update_Amount: Number(detail.Update_Amount ?? 0),
+          isDirty: false
+        };
+        this.syncAdjustDisplays(mapped);
+        return mapped;
+      });
+  }
+
   selectedDepartmentId: any = null;
 
   currentYear: any;
@@ -921,7 +1019,11 @@ export class ProjectAllocationComponent implements OnInit {
   saveAdjust() {
 
     const allItems = this.getAllItems();
-    const items = allItems.filter((item: any) => this.isBudgetItemChanged(item));
+    const detailItems = this.getAllExpenseDetailItems();
+    const items = allItems.filter((item: any) =>
+      this.isBudgetItemChanged(item) ||
+      item.expenseDetails?.some((detail: any) => detail.isDirty)
+    );
 
     if (items.length === 0) {
       basicAlert('warning', 'ไม่มีรายการที่เปลี่ยนแปลง', '');
@@ -960,14 +1062,13 @@ export class ProjectAllocationComponent implements OnInit {
 
     // }
 
+    const userIdentify = this.userSession?.authenData?.IDENTIFY || '';
     const payload = items.map((item: any) => {
       const requestId =
         item.Request_Id ||
         item.FK_Request_Id ||
         item.Fk_Request_Id ||
         0;
-      const userIdentify = this.userSession?.authenData?.IDENTIFY || '';
-
       return {
 
         FK_Request_Id:
@@ -1044,7 +1145,23 @@ export class ProjectAllocationComponent implements OnInit {
         'FUNC-Insert_Budget_Plan',
 
       List_Budget_Plan:
-        payload
+        payload,
+
+      Allocation_Budget_Plan_Detail_Items: detailItems
+        .filter(({ detail }: any) => detail.isDirty)
+        .map(({ item, detail }: any) => ({
+          Plan_Item_Id: Number(detail.Plan_Item_Id || 0),
+          Plan_Id: Number(item.Plan_Id || 0),
+          Fk_Expense_Id: Number(detail.Fk_Expense_Id || item.Fk_Expense_List || 0),
+          Fk_Expense_Detial_Id: detail.Fk_Expense_Detial_Id || detail.Fk_Expense_Detail_Id || null,
+          Expense_Detail: detail.Expense_Detail || '',
+          Request_Id: Number(item.FK_Request_Id || item.Request_Id || 0),
+          Adjust1: Number(detail.Adjust1Temp || 0),
+          Adjust2: Number(detail.Adjust2Temp || 0),
+          Adjust3: Number(detail.Adjust3Temp || 0),
+          Update_Amount: this.getDetailAllocateTotal(detail),
+          Update_User: userIdentify
+        }))
 
     };
 
@@ -1054,6 +1171,11 @@ export class ProjectAllocationComponent implements OnInit {
 
         next: async (response: any) => {
 
+          if (response?.RESULT != null) {
+            basicAlert('error', 'บันทึกไม่สำเร็จ', String(response.RESULT));
+            return;
+          }
+
           items.forEach((item: any) => {
 
             item.Adjust1 = Number(item.Adjust1Temp || 0);
@@ -1061,6 +1183,14 @@ export class ProjectAllocationComponent implements OnInit {
             item.Adjust3 = Number(item.Adjust3Temp || 0);
             item.isDirty = false;
             item.isNewBudget = false;
+
+            item.expenseDetails?.forEach((detail: any) => {
+              detail.Adjust1 = Number(detail.Adjust1Temp || 0);
+              detail.Adjust2 = Number(detail.Adjust2Temp || 0);
+              detail.Adjust3 = Number(detail.Adjust3Temp || 0);
+              detail.Update_Amount = this.getDetailAllocateTotal(detail);
+              detail.isDirty = false;
+            });
 
           });
 
@@ -1414,6 +1544,33 @@ export class ProjectAllocationComponent implements OnInit {
       (Number(item.Adjust2Temp) || 0) +
       (Number(item.Adjust3Temp) || 0);
 
+  }
+
+  getDetailAllocateTotal(detail: any): number {
+    return (Number(detail.Adjust1Temp) || 0) +
+      (Number(detail.Adjust2Temp) || 0) +
+      (Number(detail.Adjust3Temp) || 0);
+  }
+
+  private getAllExpenseDetailItems(): Array<{ item: any; detail: any }> {
+    return this.getAllItems().flatMap((item: any) =>
+      (item.expenseDetails || []).map((detail: any) => ({ item, detail }))
+    );
+  }
+
+  formatDetailAdjustCurrency(
+    event: Event,
+    detail: any,
+    parent: any,
+    field: 'Adjust1Temp' | 'Adjust2Temp' | 'Adjust3Temp'
+  ): void {
+    this.masterService.formatCurrency(event, (result) => {
+      const displayField = field.replace('Temp', 'Display');
+      detail[displayField] = result.formatted;
+      detail[field] = result.numeric;
+      detail.isDirty = true;
+      parent.detailsDirty = true;
+    });
   }
 
   sumAdjust1(node: any): number {

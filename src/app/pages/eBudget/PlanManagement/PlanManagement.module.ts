@@ -24,6 +24,7 @@ import { AddPlanManagementComponent } from './PlanManagement/AddPlanManagement/A
 import { ExamineComponent } from './examine/examine.component';
 import { ProjectPlanningComponent } from './Planing/projectPlanning/projectPlanning.component';
 import { ProjectBudgetProposalAddPersonnelComponent } from './PlanManagement/AddPlanManagement/BudgetProposalAdd/BudgetProposalAddPersonnel.component';
+import { ProjectAllocationByDepartmentModule } from '../Allocation/ProjectAllocationByDepartment/ProjectAllocationByDepartment.module';
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     url: 'https://httpbin.org/post',
@@ -60,6 +61,7 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
         AutocompleteLibModule,
         NgbAccordionModule,
         SharedModule,
+        ProjectAllocationByDepartmentModule,
         EmonitorMasterRoutingModule
     ],
     providers: [

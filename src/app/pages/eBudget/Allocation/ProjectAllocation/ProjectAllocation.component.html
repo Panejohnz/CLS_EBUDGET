@@ -383,13 +383,21 @@
                                                             <ng-container *ngIf="budget.expanded">
 
                                                                 <!-- ITEM -->
-                                                                <tr *ngFor="let item of budget.items">
+                                                                <ng-container *ngFor="let item of budget.items">
+                                                                <tr>
 
                                                                     <!-- EXPENSE -->
                                                                     <td class="text-start">
                                                                         <div class="d-flex align-items-center gap-2"
                                                                             style="padding-left: 108px;">
-                                                                            <span>-</span>
+                                                                            <button *ngIf="item.Fk_Budget_Type == 3 && !item.isNewBudget; else expenseBullet"
+                                                                                type="button" class="btn btn-sm btn-light py-0 px-2"
+                                                                                [attr.aria-expanded]="!!item.detailsExpanded"
+                                                                                aria-label="แสดงรายละเอียดค่าใช้จ่าย"
+                                                                                (click)="toggleExpenseDetails(item)">
+                                                                                {{ item.detailsExpanded ? '−' : '+' }}
+                                                                            </button>
+                                                                            <ng-template #expenseBullet><span>-</span></ng-template>
                                                                             <div class="flex-grow-1">
                                                                                 <ng-container
                                                                                     *ngIf="item.isNewBudget; else showExpenseName">
@@ -482,6 +490,47 @@
                                                                     </td>
 
                                                                 </tr>
+
+                                                                <ng-container *ngIf="item.Fk_Budget_Type == 3 && item.detailsExpanded">
+                                                                    <tr *ngIf="item.detailsLoading || item.detailsError || (item.detailsLoaded && !item.expenseDetails?.length)">
+                                                                        <td colspan="6" class="text-start text-muted" style="padding-left: 144px;">
+                                                                            {{ item.detailsLoading ? 'กำลังโหลดรายละเอียด...' : item.detailsError ? 'โหลดรายละเอียดไม่สำเร็จ กรุณาปิดแล้วเปิดรายการอีกครั้ง' : 'ไม่พบรายละเอียดค่าใช้จ่าย' }}
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr *ngFor="let detail of item.expenseDetails" class="bg-light">
+                                                                        <td class="text-start" style="padding-left: 144px;">
+                                                                            − {{ detail.Expense_Detail || '-' }}
+                                                                        </td>
+                                                                        <td class="text-end text-muted">
+                                                                            {{ (detail.Total || 0) | number:'1.2-2' }}
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" class="form-control form-control-sm text-end border-danger"
+                                                                                [value]="detail.Adjust1Display"
+                                                                                (keypress)="allowNumericOnly($event)"
+                                                                                (input)="formatDetailAdjustCurrency($event, detail, item, 'Adjust1Temp')"
+                                                                                inputmode="decimal">
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" class="form-control form-control-sm text-end border-danger"
+                                                                                [value]="detail.Adjust2Display"
+                                                                                (keypress)="allowNumericOnly($event)"
+                                                                                (input)="formatDetailAdjustCurrency($event, detail, item, 'Adjust2Temp')"
+                                                                                inputmode="decimal">
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" class="form-control form-control-sm text-end border-danger"
+                                                                                [value]="detail.Adjust3Display"
+                                                                                (keypress)="allowNumericOnly($event)"
+                                                                                (input)="formatDetailAdjustCurrency($event, detail, item, 'Adjust3Temp')"
+                                                                                inputmode="decimal">
+                                                                        </td>
+                                                                        <td class="text-end fw-bold">
+                                                                            {{ getDetailAllocateTotal(detail) | number:'1.2-2' }}
+                                                                        </td>
+                                                                    </tr>
+                                                                </ng-container>
+                                                                </ng-container>
 
                                                             </ng-container>
 

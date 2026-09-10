@@ -1,0 +1,62 @@
+<div class="card">
+  <div class="card-header shared-page-header">
+    <h4 class="card-title mb-0 text-white">จัดสรรงบประมาณแยกตามหน่วยงาน</h4>
+  </div>
+  <div class="card-body">
+    <div *ngIf="loading" class="text-muted">กำลังโหลดข้อมูล...</div>
+    <div *ngIf="!loading" class="table-responsive">
+      <table class="table table-bordered align-middle text-center">
+        <thead class="text-white" style="background-color: #556398;">
+          <tr>
+            <th class="text-start" style="min-width: 320px;">รายการค่าใช้จ่าย</th>
+            <th *ngFor="let department of departments" style="min-width: 180px;">{{ department.Department_Name }}</th>
+            <th style="min-width: 160px;">รวม </th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngTemplateOutlet="nodeRows; context: { $implicit: rows, level: 0 }"></ng-container>
+          <tr *ngIf="!rows.length">
+            <td [attr.colspan]="departments.length + 2" class="text-muted">ไม่พบข้อมูล</td>
+          </tr>
+        </tbody>
+        <tfoot class="text-white" style="background-color: #556398;">
+          <tr>
+            <td class="text-end fw-bold">รวมทั้งหมด</td>
+            <td *ngFor="let department of departments" class="text-end fw-bold">{{ totalForDepartment(department.Department_Id) | number:'1.2-2' }}</td>
+            <td class="text-end fw-bold">{{ totalAdjust1() | number:'1.2-2' }}</td>
+          </tr>
+        </tfoot>
+      </table>
+      <div *ngIf="!readOnly" class="text-end mt-3">
+        <button type="button" class="btn btn-success" (click)="saveDetails()">
+          บันทึก
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #nodeRows let-nodes let-level="level">
+  <ng-container *ngFor="let node of nodes">
+    <tr [ngClass]="'step-' + node.type" (click)="toggle(node)" [class.cursor-pointer]="node.children.length">
+      <td class="text-start" [style.padding-left.px]="20 + (level * 28)">
+        <i *ngIf="node.children.length" class="me-2" [ngClass]="node.expanded ? 'ri-arrow-down-s-line' : 'ri-arrow-right-s-line'"></i>
+        <span *ngIf="!node.children.length">- </span>{{ node.name }}
+      </td>
+      <td *ngFor="let department of departments" class="text-end fw-bold">
+        <input *ngIf="!readOnly && ((node.type === 'detail' && node.parent?.Department_Id === department.Department_Id) || (node.isDirectAmount && node.Department_Id === department.Department_Id))"
+          type="number" min="0" step="0.01" class="form-control form-control-sm text-end"
+          [ngModel]="node.totalAdjust1" [ngModelOptions]="{ standalone: true }"
+          (click)="$event.stopPropagation()"
+          (ngModelChange)="node.isDirectAmount ? updateDirectAmount(node, $event) : updateDetailAmount(node, $event)">
+        <ng-container *ngIf="readOnly || !((node.type === 'detail' && node.parent?.Department_Id === department.Department_Id) || (node.isDirectAmount && node.Department_Id === department.Department_Id))">
+          {{ (node.amounts[department.Department_Id] || 0) | number:'1.2-2' }}
+        </ng-container>
+      </td>
+      <td class="text-end fw-bold">{{ node.totalAdjust1 | number:'1.2-2' }}</td>
+    </tr>
+    <ng-container *ngIf="node.expanded && node.children.length">
+      <ng-container *ngTemplateOutlet="nodeRows; context: { $implicit: node.children, level: level + 1 }"></ng-container>
+    </ng-container>
+  </ng-container>
+</ng-template>

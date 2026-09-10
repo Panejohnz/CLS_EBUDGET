@@ -20,6 +20,7 @@ import lottie from 'lottie-web';
 import { SharedModule } from '../../../shared/shared.module';
 import { EmonitorMasterRoutingModule } from './Allocation-roution.module';
 import { ProjectAllocationComponent } from './ProjectAllocation/ProjectAllocation.component';
+import { ProjectAllocationByDepartmentModule } from './ProjectAllocationByDepartment/ProjectAllocationByDepartment.module';
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     url: 'https://httpbin.org/post',
     maxFilesize: 50,
@@ -51,6 +52,7 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
         AutocompleteLibModule,
         NgbAccordionModule,
         SharedModule,
+        ProjectAllocationByDepartmentModule,
         EmonitorMasterRoutingModule
     ],
     providers: [

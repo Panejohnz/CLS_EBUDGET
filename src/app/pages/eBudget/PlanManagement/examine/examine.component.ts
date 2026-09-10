@@ -45,6 +45,12 @@ interface BudgetNode {
   `]
 })
 export class ExamineComponent {
+  private readonly directAllocationExpenseIds = new Set<number>([64, 70, 73, 74, 75]);
+  private readonly equipmentDetailIds = new Set<number>([
+    67, 68, 69, 70, 456, 488, 506, 535, 550, 622, 624, 627, 630,
+    638, 643, 648, 657, 673, 674, 675, 678, 681, 684, 700, 701,
+    702, 703, 704
+  ]);
   constructor(
     private modalService: NgbModal,
     public service: GridJsService,
@@ -65,6 +71,73 @@ export class ExamineComponent {
   allData: any[] = [];
 
   groupData: any[] = [];
+
+  toggleExpenseDetails(item: any): void {
+    if (this.isDirectAllocation(item)) return;
+    item.detailsExpanded = !item.detailsExpanded;
+    if (!item.detailsExpanded || item.detailsLoaded || item.detailsLoading) return;
+
+    const planId = Number(item.Plan_Id || 0);
+    item.detailsLoading = true;
+    item.detailsError = false;
+    this.servicebud.GatewayGetData({
+      FUNC_CODE: planId ? 'FUNC-GET_BUDGET_PLAN_BY_ID' : 'FUNC-GET_BUDGET_REQUEST_BY_ID',
+      Plan_Id: planId,
+      Request_Id: planId ? 0 : Number(item.FK_Request_Id || 0),
+      Project_Id: 0
+    }).subscribe({
+      next: (response: any) => {
+        item.detailsLoading = false;
+        if (response.RESULT != null) {
+          item.detailsError = true;
+          return;
+        }
+
+        const source = planId ? response.Budget_Plan_Detail_Items : response.Budget_Request_Detail_Item;
+        const rows = Array.isArray(source) ? source : (source?.Data || []);
+        item.expenseDetails = rows.filter((detail: any) =>
+          (!planId || Number(detail.Fk_Expense_Id || 0) === Number(item.Fk_Expense_List || 0)) &&
+          (!planId || Number(detail.Fk_Budget_Plan) === planId) &&
+          detail.Active !== false && Number(detail.Active ?? 1) !== 0
+        );
+        item.detailsLoaded = true;
+        this.appendEquipmentRequestDetails(item);
+      },
+      error: () => {
+        item.detailsLoading = false;
+        item.detailsError = true;
+      }
+    });
+  }
+
+  isDirectAllocation(item: any): boolean {
+    return this.directAllocationExpenseIds.has(Number(item?.Fk_Expense_List || 0));
+  }
+
+  private appendEquipmentRequestDetails(item: any): void {
+    const requestId = Number(item.FK_Request_Id || 0);
+    if (!requestId) return;
+    this.servicebud.GatewayGetData({
+      FUNC_CODE: 'FUNC-GET_BUDGET_REQUEST_BY_ID', Request_Id: requestId, Plan_Id: 0, Project_Id: 0
+    }).subscribe((response: any) => {
+      const source = response?.Budget_Request_Detail_Item;
+      const details = (Array.isArray(source) ? source : source?.Data || []).filter((detail: any) => {
+        const detailId = Number(detail.Fk_Expense_Detail_Id ?? detail.Fk_Expense_Detial_Id ?? 0);
+        return this.equipmentDetailIds.has(detailId) &&
+          Number(detail.Fk_Expense_Id || 0) === Number(item.Fk_Expense_List || 0) &&
+          detail.Active !== false && Number(detail.Active ?? 1) !== 0;
+      });
+      item.expenseDetails = item.expenseDetails || [];
+      details.forEach((detail: any) => {
+        const detailId = Number(detail.Fk_Expense_Detail_Id ?? detail.Fk_Expense_Detial_Id ?? 0);
+        const existing = item.expenseDetails.find((old: any) =>
+          Number(old.Fk_Expense_Detail_Id ?? old.Fk_Expense_Detial_Id ?? 0) === detailId
+        );
+        if (existing) Object.assign(existing, detail);
+        else item.expenseDetails.push(detail);
+      });
+    });
+  }
 
   selectedDepartmentId: any = null;
 
@@ -164,9 +237,7 @@ export class ExamineComponent {
           }
         }
 
-        if (this.selectedDepartmentId) {
-          this.applyFilter();
-        }
+        this.applyFilter();
 
       });
 
@@ -178,8 +249,10 @@ export class ExamineComponent {
 
   applyFilter() {
 
+    const departmentId = this.isDepartmentLocked ? this.selectedDepartmentId : null;
+
     // ยังไม่เลือก
-    if (!this.selectedDepartmentId) {
+    if (this.isDepartmentLocked && !departmentId) {
 
       this.table_display = false;
 
@@ -196,14 +269,8 @@ export class ExamineComponent {
     // FILTER REQUEST
     // =====================================
 
-    const rows = structuredClone(this.allData.filter(
-
-      (x: any) =>
-
-        x.Department_Id ==
-
-        this.selectedDepartmentId
-
+    const rows = structuredClone(this.allData.filter((x: any) =>
+      !departmentId || x.Department_Id == departmentId
     ));
 
     // =====================================
@@ -212,11 +279,8 @@ export class ExamineComponent {
 
     let model = {
 
-      FUNC_CODE:
-        'FUNC-Get_Budget_Plan_Tabel',
-
-      Department_Id:
-        this.selectedDepartmentId
+      FUNC_CODE: 'FUNC-Get_Budget_Plan_main',
+      BgYear: this.currentYear
 
     };
 
@@ -224,12 +288,13 @@ export class ExamineComponent {
       .GatewayGetData(model)
       .subscribe((response: any) => {
 
-        const plans =
+        const plans = (
           Array.isArray(
-            response.List_Budget_Plan_Data_Table.Data
+            response.List_Budget_Plan_Data_Table?.Data
           )
             ? response.List_Budget_Plan_Data_Table.Data
-            : [];
+            : []
+        ).filter((plan: any) => !departmentId || plan.Department_Id == departmentId);
 
         // =====================================
         // MERGE PLAN

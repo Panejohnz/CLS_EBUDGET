@@ -1,0 +1,70 @@
+diff --git a/CLS_EBUDGET_BACKEND/Models/MODEL_APP.vb b/CLS_EBUDGET_BACKEND/Models/MODEL_APP.vb
+--- a/CLS_EBUDGET_BACKEND/Models/MODEL_APP.vb
++++ b/CLS_EBUDGET_BACKEND/Models/MODEL_APP.vb
+@@ -2,0 +3,14 @@
++Public Class Allocation_Budget_Plan_Detail_Item
++    Public Property Plan_Item_Id As Integer
++    Public Property Plan_Id As Integer
++    Public Property Request_Id As Integer
++    Public Property Fk_Expense_Id As Integer
++    Public Property Fk_Expense_Detial_Id As Integer?
++    Public Property Expense_Detail As String
++    Public Property Adjust1 As Decimal?
++    Public Property Adjust2 As Decimal?
++    Public Property Adjust3 As Decimal?
++    Public Property Update_Amount As Decimal?
++    Public Property Update_User As String
++End Class
++
+@@ -357,0 +358,1 @@
++    Public Property Allocation_Budget_Plan_Detail_Items As New List(Of Allocation_Budget_Plan_Detail_Item)
+diff --git a/CLS_EBUDGET_BACKEND/class/dao/dao_erp_budget.vb b/CLS_EBUDGET_BACKEND/class/dao/dao_erp_budget.vb
+--- a/CLS_EBUDGET_BACKEND/class/dao/dao_erp_budget.vb
++++ b/CLS_EBUDGET_BACKEND/class/dao/dao_erp_budget.vb
+@@ -1060,0 +1061,5 @@
++        Public Sub GetData_By_Request_And_Expense(ByVal requestId As Integer, ByVal expenseId As Integer)
++            datas = (From g In db.Budget_Plans Where g.FK_Request_Id = requestId And g.Fk_Expense_List = expenseId Select g)
++            For Each Me.fields In datas
++            Next
++        End Sub
+diff --git a/CLS_EBUDGET_BACKEND/class/CLASS_CORE_FUNC/CORE_FUNC.vb b/CLS_EBUDGET_BACKEND/class/CLASS_CORE_FUNC/CORE_FUNC.vb
+--- a/CLS_EBUDGET_BACKEND/class/CLASS_CORE_FUNC/CORE_FUNC.vb
++++ b/CLS_EBUDGET_BACKEND/class/CLASS_CORE_FUNC/CORE_FUNC.vb
+@@ -3072,0 +3073,2 @@
++            UpdateAllocationPlanDetailItems(MODEL_APP.Allocation_Budget_Plan_Detail_Items)
++
+@@ -3104,0 +3105,36 @@
++    Private Sub UpdateAllocationPlanDetailItems(items As List(Of Allocation_Budget_Plan_Detail_Item))
++        If items Is Nothing Then Return
++
++        For Each item In items
++            Dim planId As Integer = item.Plan_Id
++            If planId <= 0 AndAlso item.Request_Id > 0 Then
++                Dim plan As New dao_erp_budget.TB_Budget_Plan
++                plan.GetData_By_Request_And_Expense(item.Request_Id, item.Fk_Expense_Id)
++                planId = plan.fields.Plan_Id
++            End If
++            If planId <= 0 Then Continue For
++
++            Dim target As New dao_erp_budget.TB_Budget_Plan_Detail_Item
++            If item.Plan_Item_Id > 0 Then
++                target.GetData_By_Id(item.Plan_Item_Id)
++            Else
++                Dim candidates As New dao_erp_budget.TB_Budget_Plan_Detail_Item
++                candidates.GetData_By_FK_Id(planId)
++                target.fields = candidates.Details.FirstOrDefault(Function(x) _
++                    x.Fk_Expense_Detial_Id.GetValueOrDefault() = item.Fk_Expense_Detial_Id.GetValueOrDefault() AndAlso _
++                    String.Equals(x.Expense_Detail, item.Expense_Detail, StringComparison.Ordinal))
++            End If
++            If target.fields Is Nothing OrElse target.fields.Plan_Item_Id <= 0 Then Continue For
++
++            target.fields.Adjust1 = item.Adjust1
++            target.fields.Adjust2 = item.Adjust2
++            target.fields.Adjust3 = item.Adjust3
++            target.fields.Update_Amount = item.Update_Amount
++            target.fields.Update_Date = Date.Now
++            target.fields.Update_User = item.Update_User
++            target.update()
++        Next
++    End Sub
++
