@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class BudgetYearService {
+  private readonly storageKey = 'select_year';
   private listYearSubject = new BehaviorSubject<any[]>([]);
   public listYear$: Observable<any[]> = this.listYearSubject.asObservable();
 
@@ -22,17 +23,13 @@ export class BudgetYearService {
       this.listYearSubject.next(years);
     }
   }
-  private yearChangeSubject = new BehaviorSubject<number>(
-    new Date().getFullYear() + 543
-  );
+  private yearChangeSubject = new BehaviorSubject<number>(this.getStoredOrDefaultYear());
 
   yearChanged$ = this.yearChangeSubject.asObservable();
 
   setYear(year: number) {
-    if (year < 2500) {
-      year += 543;
-    }
-
+    year = this.normalizeYear(year);
+    this.persistYear(year);
     this.yearChangeSubject.next(year);
   }
 
@@ -44,6 +41,28 @@ export class BudgetYearService {
 
   getListYear(): any[] {
     return this.listYearSubject.value;
+  }
+
+  private getStoredOrDefaultYear(): number {
+    if (typeof sessionStorage !== 'undefined') {
+      const stored = sessionStorage.getItem(this.storageKey) || localStorage.getItem(this.storageKey);
+      const year = Number(stored);
+      if (Number.isFinite(year) && year > 2400 && year < 3000) {
+        return year;
+      }
+    }
+    return new Date().getFullYear() + 543;
+  }
+
+  private normalizeYear(year: number): number {
+    const numericYear = Number(year) || 0;
+    return numericYear < 2500 ? numericYear + 543 : numericYear;
+  }
+
+  private persistYear(year: number): void {
+    if (typeof sessionStorage === 'undefined') return;
+    sessionStorage.setItem(this.storageKey, String(year));
+    localStorage.setItem(this.storageKey, String(year));
   }
 
 }

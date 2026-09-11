@@ -116,6 +116,10 @@ export class TopbarComponent implements OnInit {
       sessionStorage.setItem('select_year', this.select_year.toString());
     }
 
+    // Keep BudgetYearService in sync after a browser refresh.  Components use
+    // this service as their source of BgYear, not the topbar subject below.
+    this.budgetYearService.setYear(this.select_year);
+
     // Broadcast initial year through both methods
     this.yearChangeSubject.next(this.select_year);
     // Broadcast via EventService so sidebar can receive it

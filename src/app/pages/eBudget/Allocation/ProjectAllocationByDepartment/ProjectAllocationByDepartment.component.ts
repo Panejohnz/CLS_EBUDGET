@@ -100,7 +100,9 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
               { key: `activity_${plan.Fk_Activity_Id || plan.Activity_Name}`, name: plan.Activity_Name || '-', type: 'activity' },
               { key: `budget_${plan.Fk_Budget_Type || plan.Budget_Type}`, name: plan.Budget_Type_Name || plan.Budget_Type || '-', type: 'budget' },
               {
-                key: `expense_${plan.Plan_Id || plan.Request_Id || 0}_${plan.Fk_Expense_List || 0}_${plan.Project_Name || plan.Expense_Name || plan.Expense_List}`,
+                // Do not include Plan_Id / Request_Id here.  The same expense must be
+                // rendered on one row, with its amounts separated by department.
+                key: `expense_${plan.Fk_Expense_List || 0}_${plan.Project_Name || plan.Expense_Name || plan.Expense_List}`,
                 name: plan.Project_Name || plan.Expense_Name || plan.Expense_List || '-',
                 type: 'expense',
                 Plan_Id: Number(plan.Plan_Id || 0),
@@ -116,8 +118,22 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
             path.forEach((part, index) => {
               let node = nodes.find(x => x.key === part.key);
               if (!node) {
-                node = { ...part, parent: parentNode, children: [], expanded: true, amounts: {}, totalAdjust1: 0 };
+                node = {
+                  ...part,
+                  parent: parentNode,
+                  children: [],
+                  expanded: true,
+                  amounts: {},
+                  totalAdjust1: 0,
+                  sources: [],
+                  sourcesByDepartment: {}
+                };
                 nodes.push(node);
+              }
+              if (index === path.length - 1) {
+                node.sources.push(plan);
+                node.sourcesByDepartment[departmentId] = node.sourcesByDepartment[departmentId] || [];
+                node.sourcesByDepartment[departmentId].push(plan);
               }
               node.amounts[departmentId] = (Number(node.amounts[departmentId]) || 0) + amount;
               node.totalAdjust1 += amount;
@@ -158,11 +174,18 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
   }
 
   private loadInvestmentDetails(node: any): void {
-    const usePlan = Number(node.Plan_Id) > 0;
+    node.children = [];
+    (node.sources || []).forEach((sourcePlan: any) => this.loadInvestmentDetailsForSource(node, sourcePlan));
+  }
+
+  private loadInvestmentDetailsForSource(node: any, sourcePlan: any): void {
+    const planId = Number(sourcePlan.Plan_Id || 0);
+    const requestId = Number(sourcePlan.FK_Request_Id || sourcePlan.Fk_Request_Id || sourcePlan.Request_Id || 0);
+    const usePlan = planId > 0;
     this.servicebud.GatewayGetData({
       FUNC_CODE: usePlan ? 'FUNC-GET_BUDGET_PLAN_BY_ID' : 'FUNC-GET_BUDGET_REQUEST_BY_ID',
-      Plan_Id: usePlan ? node.Plan_Id : 0,
-      Request_Id: usePlan ? 0 : node.Request_Id,
+      Plan_Id: usePlan ? planId : 0,
+      Request_Id: usePlan ? 0 : requestId,
       Project_Id: 0
     }).subscribe((response: any) => {
       const source = usePlan
@@ -173,13 +196,12 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
           Number(detail.Fk_Expense_Id) === Number(node.Fk_Expense_List) &&
           detail.Active !== false && Number(detail.Active ?? 1) !== 0
         );
-      node.children = details.map((detail: any, index: number) => this.createDetailNode(node, detail, index));
-      this.appendEquipmentRequestDetails(node);
+      details.forEach((detail: any, index: number) => this.mergeDetailNode(node, detail, sourcePlan, index));
     });
   }
 
   /** รายการครุภัณฑ์บางรายการยังไม่มีใน Plan detail จึงดึงจาก Request detail มาเสริม */
-  private appendEquipmentRequestDetails(node: any): void {
+  /* private appendEquipmentRequestDetails(node: any): void {
     if (!Number(node.Request_Id)) return;
     this.servicebud.GatewayGetData({
       FUNC_CODE: 'FUNC-GET_BUDGET_REQUEST_BY_ID',
@@ -211,21 +233,67 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
         }
       });
     });
-  }
+  } */
 
-  private createDetailNode(node: any, detail: any, index: number): any {
+  private createDetailNode(node: any, detail: any, sourcePlan: any, index: number): any {
     const amount = this.allocationAmount(detail);
     return {
-      key: `${node.key}_detail_${detail.Plan_Item_Id || detail.Request_Item_Id || detail.Fk_Expense_Detail_Id || detail.Fk_Expense_Detial_Id || index}`,
+      key: `${node.key}_detail_${detail.Fk_Expense_Detail_Id || detail.Fk_Expense_Detial_Id || detail.Expense_Detail || index}`,
       name: detail.Expense_Detail || '-',
       type: 'detail',
       children: [],
       expanded: false,
       parent: node,
       detail,
-      amounts: { [node.Department_Id]: amount },
+      detailByDepartment: { [Number(sourcePlan.Department_Id)]: [detail] },
+      amounts: { [Number(sourcePlan.Department_Id)]: amount },
       totalAdjust1: amount
     };
+  }
+
+  private mergeDetailNode(node: any, detail: any, sourcePlan: any, index: number): void {
+    const detailNode = this.createDetailNode(node, detail, sourcePlan, index);
+    const departmentId = Number(sourcePlan.Department_Id || 0);
+    const existing = node.children.find((child: any) => child.key === detailNode.key);
+    if (!existing) {
+      detail.__allocationSource = sourcePlan;
+      node.children.push(detailNode);
+      return;
+    }
+
+    detail.__allocationSource = sourcePlan;
+    existing.detailByDepartment[departmentId] = existing.detailByDepartment[departmentId] || [];
+    existing.detailByDepartment[departmentId].push(detail);
+    existing.amounts[departmentId] = (Number(existing.amounts[departmentId]) || 0) + detailNode.totalAdjust1;
+    existing.totalAdjust1 += detailNode.totalAdjust1;
+  }
+
+  private applyAmountToDetails(details: any[], amount: number): void {
+    details.forEach((detail: any, index: number) => {
+      const nextAmount = index === 0 ? amount : 0;
+      const previous = this.allocationAmount(detail);
+      const source = detail.__allocationSource;
+      detail.Adjust1 = nextAmount;
+      detail.Update_Amount = nextAmount;
+      detail.isDirty = true;
+
+      if (source) {
+        source._allocationAmount = (source._allocationAmount ?? this.allocationAmount(source)) + (nextAmount - previous);
+        source.Adjust1 = source._allocationAmount;
+        source.Update_Amount = source._allocationAmount;
+        source.isDirty = true;
+      }
+    });
+  }
+
+  private applyAmountToSources(sources: any[], amount: number): void {
+    sources.forEach((source: any, index: number) => {
+      const nextAmount = index === 0 ? amount : 0;
+      source.Adjust1 = nextAmount;
+      source.Update_Amount = nextAmount;
+      source._allocationAmount = nextAmount;
+      source.isDirty = true;
+    });
   }
 
   private getExpenseNodes(nodes: any[]): any[] {
@@ -245,15 +313,15 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
     return Number(value) || 0;
   }
 
-  updateDetailAmount(node: any, value: any): void {
+  updateDetailAmount(node: any, departmentId: number, value: any): void {
     const amount = Number(value) || 0;
-    const departmentId = Number(node.parent?.Department_Id || 0);
-    const previous = Number(node.totalAdjust1) || 0;
+    const previous = Number(node.amounts[departmentId]) || 0;
     const delta = amount - previous;
     node.amounts[departmentId] = amount;
-    node.totalAdjust1 = amount;
-    node.detail.Adjust1 = amount;
-    node.detail.isDirty = true;
+    node.totalAdjust1 = (Number(node.totalAdjust1) || 0) + delta;
+
+    const details = node.detailByDepartment?.[departmentId] || [];
+    this.applyAmountToDetails(details, amount);
 
     let parent = node.parent;
     while (parent) {
@@ -263,14 +331,13 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
     }
   }
 
-  updateDirectAmount(node: any, value: any): void {
+  updateDirectAmount(node: any, departmentId: number, value: any): void {
     const amount = Number(value) || 0;
-    const departmentId = Number(node.Department_Id || 0);
-    const previous = Number(node.totalAdjust1) || 0;
+    const previous = Number(node.amounts[departmentId]) || 0;
     const delta = amount - previous;
     node.amounts[departmentId] = amount;
-    node.totalAdjust1 = amount;
-    node.source.Adjust1 = amount;
+    node.totalAdjust1 = (Number(node.totalAdjust1) || 0) + delta;
+    this.applyAmountToSources(node.sourcesByDepartment?.[departmentId] || [], amount);
     node.isDirty = true;
 
     let parent = node.parent;
@@ -285,23 +352,26 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
     return this.masterService.formatNumber(value || 0, 2);
   }
 
-  onAmountInput(event: Event, node: any): void {
+  onAmountInput(event: Event, node: any, departmentId: number): void {
     const input = event.target as HTMLInputElement;
     const amount = this.parseAmount(input.value);
-    this.setNodeAmount(node, amount);
-    node.editAmountText = input.value;
+    this.setNodeAmount(node, departmentId, amount);
+    node.editAmountText = node.editAmountText || {};
+    node.editAmountText[departmentId] = input.value;
   }
 
-  onAmountFocus(node: any): void {
-    node.editAmountText = this.formatAmount(node.totalAdjust1);
+  onAmountFocus(node: any, departmentId: number): void {
+    node.editAmountText = node.editAmountText || {};
+    node.editAmountText[departmentId] = this.formatAmount(node.amounts[departmentId]);
   }
 
-  onAmountBlur(node: any): void {
-    node.editAmountText = this.formatAmount(node.totalAdjust1);
+  onAmountBlur(node: any, departmentId: number): void {
+    node.editAmountText = node.editAmountText || {};
+    node.editAmountText[departmentId] = this.formatAmount(node.amounts[departmentId]);
   }
 
-  inputAmountValue(node: any): string {
-    return node.editAmountText ?? this.formatAmount(node.totalAdjust1);
+  inputAmountValue(node: any, departmentId: number): string {
+    return node.editAmountText?.[departmentId] ?? this.formatAmount(node.amounts[departmentId]);
   }
 
   private parseAmount(value: any): number {
@@ -309,49 +379,61 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
     return Number(numeric) || 0;
   }
 
-  private setNodeAmount(node: any, amount: number): void {
-    if (node.isDirectAmount) {
-      this.updateDirectAmount(node, amount);
+  private setNodeAmount(node: any, departmentId: number, amount: number): void {
+    if (node.isDirectAmount || node.type === 'expense') {
+      this.updateDirectAmount(node, departmentId, amount);
     } else {
-      this.updateDetailAmount(node, amount);
+      this.updateDetailAmount(node, departmentId, amount);
     }
   }
 
+  canEditAmount(node: any, departmentId: number): boolean {
+    if (node.type === 'detail') {
+      return !!node.detailByDepartment?.[departmentId]?.length;
+    }
+    // An expense with no detail rows is itself the amount to allocate.
+    return node.type === 'expense' && !node.children?.length && !!node.sourcesByDepartment?.[departmentId]?.length;
+  }
+
   saveDetails(): void {
-    const detailNodes = this.getDetailNodes(this.rows).filter(node => node.detail?.isDirty);
-    const directNodes = this.getExpenseNodes(this.rows).filter(node => node.isDirectAmount && node.isDirty);
-    if (!detailNodes.length && !directNodes.length) {
+    const detailItems = this.getDetailNodes(this.rows)
+      .flatMap(node => Object.values(node.detailByDepartment || {}).flat() as any[])
+      .filter((detail: any) => detail.isDirty);
+    const directSources = this.getExpenseNodes(this.rows)
+      .filter(node => node.isDirty)
+      .flatMap(node => node.sources || []);
+    const planSources = Array.from(new Set([...directSources, ...detailItems.map((detail: any) => detail.__allocationSource)]))
+      .filter((source: any) => !!source && source.isDirty);
+    if (!detailItems.length && !planSources.length) {
       basicAlert('warning', 'ไม่มีรายการที่เปลี่ยนแปลง', '');
       return;
     }
 
-    const parents = Array.from(new Set([...detailNodes.map(node => node.parent), ...directNodes]));
     const model = {
       FUNC_CODE: 'FUNC-Insert_Budget_Plan',
-      List_Budget_Plan: parents.map((parent: any) => {
-        const source = parent.source || {};
+      List_Budget_Plan: planSources.map((source: any) => {
         return {
           ...source,
-          FK_Request_Id: Number(parent.Request_Id || source.FK_Request_Id || source.Request_Id || 0),
-          Request_Id: Number(parent.Request_Id || source.Request_Id || 0),
-          Plan_Id: Number(parent.Plan_Id || source.Plan_Id || 0),
-          Fk_Expense_List: Number(parent.Fk_Expense_List || source.Fk_Expense_List || 0),
-          Adjust1: Number(parent.totalAdjust1 || 0),
-          Update_Amount: Number(parent.totalAdjust1 || 0),
+          FK_Request_Id: Number(source.FK_Request_Id || source.Fk_Request_Id || source.Request_Id || 0),
+          Request_Id: Number(source.Request_Id || source.FK_Request_Id || source.Fk_Request_Id || 0),
+          Plan_Id: Number(source.Plan_Id || 0),
+          Fk_Expense_List: Number(source.Fk_Expense_List || 0),
+          Adjust1: Number(source._allocationAmount ?? this.allocationAmount(source)),
+          Update_Amount: Number(source._allocationAmount ?? this.allocationAmount(source)),
           BgYear: this.currentYear
         };
       }),
-      Allocation_Budget_Plan_Detail_Items: detailNodes.map(node => ({
-        Plan_Item_Id: Number(node.detail.Plan_Item_Id || 0),
-        Plan_Id: Number(node.parent.Plan_Id || 0),
-        Request_Id: Number(node.parent.Request_Id || 0),
-        Fk_Expense_Id: Number(node.parent.Fk_Expense_List || 0),
-        Fk_Expense_Detial_Id: node.detail.Fk_Expense_Detial_Id || node.detail.Fk_Expense_Detail_Id || null,
-        Expense_Detail: node.detail.Expense_Detail || '',
-        Adjust1: Number(node.totalAdjust1 || 0),
+      Allocation_Budget_Plan_Detail_Items: detailItems.map((detail: any) => ({
+        Plan_Item_Id: Number(detail.Plan_Item_Id || 0),
+        Plan_Id: Number(detail.__allocationSource?.Plan_Id || 0),
+        Request_Id: Number(detail.__allocationSource?.FK_Request_Id || detail.__allocationSource?.Fk_Request_Id || detail.__allocationSource?.Request_Id || 0),
+        Fk_Expense_Id: Number(detail.Fk_Expense_Id || detail.__allocationSource?.Fk_Expense_List || 0),
+        Fk_Expense_Detial_Id: detail.Fk_Expense_Detial_Id || detail.Fk_Expense_Detail_Id || null,
+        Expense_Detail: detail.Expense_Detail || '',
+        Adjust1: Number(detail.Adjust1 || 0),
         Adjust2: 0,
         Adjust3: 0,
-        Update_Amount: Number(node.totalAdjust1 || 0)
+        Update_Amount: Number(detail.Update_Amount ?? detail.Adjust1 ?? 0)
       }))
     };
 
@@ -361,8 +443,8 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
           basicAlert('error', 'บันทึกไม่สำเร็จ', String(response.RESULT));
           return;
         }
-        detailNodes.forEach(node => node.detail.isDirty = false);
-        directNodes.forEach(node => node.isDirty = false);
+        detailItems.forEach((detail: any) => detail.isDirty = false);
+        planSources.forEach((source: any) => source.isDirty = false);
         basicAlert('success', 'บันทึกข้อมูลเรียบร้อย', '');
         this.load();
       },

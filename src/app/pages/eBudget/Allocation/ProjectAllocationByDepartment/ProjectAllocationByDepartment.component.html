@@ -44,15 +44,15 @@
         <span *ngIf="!node.children.length">- </span>{{ node.name }}
       </td>
       <td *ngFor="let department of departments" class="text-end fw-bold">
-        <input *ngIf="!readOnly && ((node.type === 'detail' && node.parent?.Department_Id === department.Department_Id) || (node.isDirectAmount && node.Department_Id === department.Department_Id))"
+        <input *ngIf="!readOnly && canEditAmount(node, department.Department_Id)"
           type="text" inputmode="decimal" class="form-control form-control-sm text-end"
-          [value]="inputAmountValue(node)"
+          [value]="inputAmountValue(node, department.Department_Id)"
           (click)="$event.stopPropagation()"
           (keydown)="masterService.allowNumericOnly($event)"
-          (focus)="onAmountFocus(node)"
-          (input)="onAmountInput($event, node)"
-          (blur)="onAmountBlur(node)">
-        <ng-container *ngIf="readOnly || !((node.type === 'detail' && node.parent?.Department_Id === department.Department_Id) || (node.isDirectAmount && node.Department_Id === department.Department_Id))">
+          (focus)="onAmountFocus(node, department.Department_Id)"
+          (input)="onAmountInput($event, node, department.Department_Id)"
+          (blur)="onAmountBlur(node, department.Department_Id)">
+        <ng-container *ngIf="readOnly || !canEditAmount(node, department.Department_Id)">
           {{ (node.amounts[department.Department_Id] || 0) | number:'1.2-2' }}
         </ng-container>
       </td>
