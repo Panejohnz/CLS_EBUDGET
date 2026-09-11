@@ -286,13 +286,35 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
   }
 
   onAmountInput(event: Event, node: any): void {
-    this.masterService.formatCurrency(event, (result) => {
-      if (node.isDirectAmount) {
-        this.updateDirectAmount(node, result.numeric);
-      } else {
-        this.updateDetailAmount(node, result.numeric);
-      }
-    }, 2);
+    const input = event.target as HTMLInputElement;
+    const amount = this.parseAmount(input.value);
+    this.setNodeAmount(node, amount);
+    node.editAmountText = input.value;
+  }
+
+  onAmountFocus(node: any): void {
+    node.editAmountText = this.formatAmount(node.totalAdjust1);
+  }
+
+  onAmountBlur(node: any): void {
+    node.editAmountText = this.formatAmount(node.totalAdjust1);
+  }
+
+  inputAmountValue(node: any): string {
+    return node.editAmountText ?? this.formatAmount(node.totalAdjust1);
+  }
+
+  private parseAmount(value: any): number {
+    const numeric = String(value ?? '').replace(/,/g, '');
+    return Number(numeric) || 0;
+  }
+
+  private setNodeAmount(node: any, amount: number): void {
+    if (node.isDirectAmount) {
+      this.updateDirectAmount(node, amount);
+    } else {
+      this.updateDetailAmount(node, amount);
+    }
   }
 
   saveDetails(): void {
