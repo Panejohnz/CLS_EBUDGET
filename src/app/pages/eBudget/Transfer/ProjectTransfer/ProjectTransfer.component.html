@@ -317,6 +317,35 @@
                                         </ng-select>
 
                                     </div>
+                                    <div class="col-md-6 mt-2" *ngIf="fromPlanDetailsLoading || fromPlanDetails.length">
+
+                                        <label>
+                                            รายการย่อย :
+                                        </label>
+
+                                        <ng-select [items]="fromPlanDetails" bindLabel="Expense_Detail"
+                                            bindValue="Plan_Item_Id" [(ngModel)]="form.From_Plan_Detail_Item_Id"
+                                            (change)="onChangeFromPlanDetail()" appendTo="body"
+                                            [loading]="fromPlanDetailsLoading"
+                                            placeholder="-- เลือกรายการย่อย --">
+
+                                            <ng-template ng-label-tmp let-item="item">
+                                                {{ item.Expense_Detail }}
+                                                <span class="text-muted" *ngIf="item.Total">
+                                                    ({{ item.Total | number:'1.2-2' }})
+                                                </span>
+                                            </ng-template>
+
+                                            <ng-template ng-option-tmp let-item="item">
+                                                <div class="d-flex justify-content-between gap-2">
+                                                    <span>{{ item.Expense_Detail }}</span>
+                                                    <span class="text-muted">{{ item.Total | number:'1.2-2' }}</span>
+                                                </div>
+                                            </ng-template>
+
+                                        </ng-select>
+
+                                    </div>
                                     <div class="col-md-6   mt-2">
 
                                         <label>
@@ -432,7 +461,7 @@
 
                     <div class="modal-footer">
 
-                        <button class="btn btn-success text-black" (click)="save(); modal.close()">
+                        <button class="btn btn-success text-black" (click)="save(modal)">
 
                             บันทึก
 

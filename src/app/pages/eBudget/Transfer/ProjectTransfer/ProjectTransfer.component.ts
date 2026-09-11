@@ -98,6 +98,8 @@ export class ProjectTransferComponent
   fromPlans: any[] = [];
 
   toPlans: any[] = [];
+  fromPlanDetails: any[] = [];
+  fromPlanDetailsLoading = false;
   currentYear: any;
   readonly pageSize = 30;
   pagination = { page: 1 };
@@ -228,6 +230,10 @@ export class ProjectTransferComponent
 
       To_Plan_Id:
         Number(row.To_Plan_Id),
+      From_Plan_Detail_Item_Id:
+        Number(row.From_Plan_Detail_Item_Id || row.From_Plan_Item_Id || 0) || null,
+      From_Plan_Detail_Name:
+        row.From_Plan_Detail_Name || row.From_Plan_Item_Name || '',
       Plan_Id:
         Number(row.Plan_Id),
       Transfer_Date:
@@ -245,7 +251,7 @@ export class ProjectTransferComponent
 
     this.onChangeToDepartment();
 
-    this.onChangeFromPlan();
+    this.onChangeFromPlan(true);
 
     this.onChangeToPlan();
 
@@ -384,6 +390,8 @@ export class ProjectTransferComponent
     if (!isEditMode) {
 
       this.form.From_Plan_Id = null;
+      this.form.From_Plan_Detail_Item_Id = null;
+      this.form.From_Plan_Detail_Name = '';
 
     }
 
@@ -399,6 +407,8 @@ export class ProjectTransferComponent
     this.form.balance = 0;
     this.displayProjectBudget = '';
     this.displayBalance = '';
+    this.fromPlanDetails = [];
+    this.fromPlanDetailsLoading = false;
 
   }
 
@@ -424,7 +434,13 @@ export class ProjectTransferComponent
     );
   }
 
-  onChangeFromPlan() {
+  onChangeFromPlan(preserveDetail = false) {
+    const selectedDetailId = preserveDetail
+      ? this.form.From_Plan_Detail_Item_Id
+      : null;
+    const selectedDetailName = preserveDetail
+      ? this.form.From_Plan_Detail_Name
+      : '';
     const plan =
       this.fromPlans.find(
         (x: any) =>
@@ -437,6 +453,9 @@ export class ProjectTransferComponent
 
     this.form.From_Plan_Name =
       plan?.Project_Name || plan?.Expense_List;
+    this.form.From_Plan_Detail_Item_Id = selectedDetailId;
+    this.form.From_Plan_Detail_Name = selectedDetailName;
+    this.fromPlanDetails = [];
 
     this.form.projectBudget =
       Number(plan?.Total_Plan || 0);
@@ -445,13 +464,14 @@ export class ProjectTransferComponent
       this.masterService.formatNumber(this.form.projectBudget);
 
     this.loadPlanBalance(plan);
+    this.loadFromPlanDetails(plan);
 
   }
 
   private loadPlanBalance(plan: any): void {
     const totalPlan = Number(plan?.Total_Plan || 0);
     const departmentId = Number(this.form?.From_Department_Id || 0);
-    const planId = Number(this.form?.Plan_Id || 0);
+    const planId = Number(this.form?.From_Plan_Id || 0);
     const bgYear = Number(this.currentYear || 0);
 
     if (!departmentId || !planId || !bgYear) {
@@ -462,8 +482,6 @@ export class ProjectTransferComponent
 
     this.form.balance = 0;
     this.displayBalance = '';
-
-alert(planId)
 
     this.servicebud.GetBudgetPlanSumUse(bgYear, departmentId, planId)
       .subscribe({
@@ -494,9 +512,120 @@ alert(planId)
       });
   }
 
+  private loadFromPlanDetails(plan: any): void {
+    const planId = Number(plan?.Plan_Id || this.form?.From_Plan_Id || 0);
+    const requestId = Number(plan?.FK_Request_Id || plan?.Request_Id || 0);
+    const expenseId = Number(plan?.Fk_Expense_List || plan?.Fk_Expense_Id || 0);
+
+    if (!planId && !requestId) {
+      return;
+    }
+
+    this.fromPlanDetailsLoading = true;
+
+    this.servicebud.GatewayGetData({
+      FUNC_CODE: planId ? 'FUNC-GET_BUDGET_PLAN_BY_ID' : 'FUNC-GET_BUDGET_REQUEST_BY_ID',
+      Plan_Id: planId,
+      Request_Id: requestId,
+      Project_Id: 0
+    }).subscribe({
+      next: (response: any) => {
+        this.fromPlanDetailsLoading = false;
+
+        if (response?.RESULT != null) {
+          this.fromPlanDetails = [];
+          return;
+        }
+
+        const source = planId
+          ? response?.Budget_Plan_Detail_Items
+          : response?.Budget_Request_Detail_Item;
+        const rows = Array.isArray(source) ? source : (source?.Data || []);
+
+        this.fromPlanDetails = rows
+          .filter((detail: any) =>
+            (planId
+              ? Number(detail.Fk_Budget_Plan || detail.Plan_Id || 0) === planId
+              : Number(detail.Fk_Request_Budget || detail.Request_Id || 0) === requestId) &&
+            (!expenseId || Number(detail.Fk_Expense_Id || 0) === expenseId) &&
+            detail.Active !== false &&
+            Number(detail.Active ?? 1) !== 0
+          )
+          .map((detail: any) => {
+            const itemId = Number(detail.Plan_Item_Id || detail.Request_Item_Id || detail.IDA || 0);
+            return {
+              ...detail,
+              Plan_Item_Id: itemId,
+              Request_Item_Id: Number(detail.Request_Item_Id || itemId || 0),
+              Expense_Detail: detail.Expense_Detail || '-',
+              Total: Number(detail.Total || detail.Sum_Amount || detail.Price || detail.Update_Amount || 0)
+            };
+          })
+          .filter((detail: any) => detail.Plan_Item_Id);
+
+        this.resolveSelectedFromPlanDetail();
+      },
+      error: () => {
+        this.fromPlanDetailsLoading = false;
+        this.fromPlanDetails = [];
+      }
+    });
+  }
+
+  private resolveSelectedFromPlanDetail(): void {
+    if (!this.fromPlanDetails.length) {
+      return;
+    }
+
+    const selectedId = Number(this.form.From_Plan_Detail_Item_Id || 0);
+    const selectedName = String(this.form.From_Plan_Detail_Name || '').trim();
+    const transferAmount = Number(this.form.Transfer_Amount || 0);
+
+    let detail = selectedId
+      ? this.fromPlanDetails.find((x: any) =>
+        Number(x.Plan_Item_Id) === selectedId ||
+        Number(x.Request_Item_Id) === selectedId ||
+        Number(x.IDA || 0) === selectedId
+      )
+      : null;
+
+    if (!detail && selectedName) {
+      detail = this.fromPlanDetails.find((x: any) =>
+        String(x.Expense_Detail || '').trim() === selectedName
+      );
+    }
+
+    if (!detail && transferAmount) {
+      const amountMatches = this.fromPlanDetails.filter((x: any) =>
+        Number(x.Total || 0) === transferAmount
+      );
+
+      if (amountMatches.length === 1) {
+        detail = amountMatches[0];
+      }
+    }
+
+    if (!detail) {
+      return;
+    }
+
+    this.form.From_Plan_Detail_Item_Id = detail.Plan_Item_Id;
+    this.form.From_Plan_Detail_Name = detail.Expense_Detail || '';
+  }
+
+  onChangeFromPlanDetail(): void {
+    const detail = this.fromPlanDetails.find((x: any) =>
+      Number(x.Plan_Item_Id) === Number(this.form.From_Plan_Detail_Item_Id) ||
+      Number(x.Request_Item_Id) === Number(this.form.From_Plan_Detail_Item_Id) ||
+      Number(x.IDA || 0) === Number(this.form.From_Plan_Detail_Item_Id)
+    );
+
+    this.form.From_Plan_Detail_Name = detail?.Expense_Detail || '';
+  }
+
   onChangeToPlan() {
     const plan =
-      this.plans.find(
+      this.toPlans.find(
         (x: any) =>
           Number(x.Plan_Id)
           ===
@@ -510,7 +639,7 @@ alert(planId)
 
   }
 
-  save() {
+  save(modal?: any) {
     const fromPlan = this.fromPlans.find(
       (x: any) =>
         Number(x.Plan_Id)
@@ -562,6 +691,12 @@ alert(planId)
         fromPlan?.Expense_List
         ||
         '',
+
+      From_Plan_Detail_Item_Id:
+        this.form.From_Plan_Detail_Item_Id || 0,
+
+      From_Plan_Detail_Name:
+        this.form.From_Plan_Detail_Name || '',
 
       To_Plan_Name:
         toPlan?.Project_Name
@@ -628,6 +763,8 @@ alert(planId)
           this.getData();
 
           this.reset();
+
+          modal?.close();
 
         },
 
@@ -872,6 +1009,10 @@ alert(planId)
 
       From_Plan_Name: '',
 
+      From_Plan_Detail_Item_Id: null,
+
+      From_Plan_Detail_Name: '',
+
       To_Department_Id: null,
 
       To_Department_Name: '',
@@ -895,6 +1036,8 @@ alert(planId)
     this.displayAmount = '';
     this.displayProjectBudget = '';
     this.displayBalance = '';
+    this.fromPlanDetails = [];
+    this.fromPlanDetailsLoading = false;
 
   }
 
