@@ -10,6 +10,7 @@ import { NationalSocialDevelopmentPlanComponent } from './MasProjectPlan/Sub_Pag
 import { MasProjectPlanNationalStrategyZComponent } from './MasProjectPlan/Sub_Pages/MasProjectPlanNationalStrategyZ/MasProjectPlanNationalStrategyZ.component';
 import { MasProjectPlanSDGsPlanComponent } from './MasProjectPlan/Sub_Pages/MasProjectPlanSDGsPlan/MasProjectPlanSDGsPlan.component';
 import { MasProjectPlanMasterPlan5Component } from './MasProjectPlan/Sub_Pages/MasProjectPlanMasterPlan5/MasProjectPlanMasterPlan5.component';
+import { MenuSaveControlComponent } from './MenuSaveControl/MenuSaveControl.component';
 
 
 const routes: Routes = [
@@ -22,6 +23,10 @@ const routes: Routes = [
   {
     path: 'MasExpenseDetail',
     component: MasExpenseDetailComponent
+  },
+  {
+    path: 'MenuSaveControl',
+    component: MenuSaveControlComponent
   },
   {
     path: 'MasProjectPlan',

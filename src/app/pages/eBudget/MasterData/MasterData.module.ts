@@ -26,6 +26,7 @@ import { NationalEconomicDevelopmentPlanComponent } from './MasProjectPlan/Sub_P
 import { NationalSocialDevelopmentPlanComponent } from './MasProjectPlan/Sub_Pages/NationalSocialDevelopmentPlan/NationalSocialDevelopmentPlan.component';
 import { MasProjectPlanSDGsPlanComponent } from './MasProjectPlan/Sub_Pages/MasProjectPlanSDGsPlan/MasProjectPlanSDGsPlan.component';
 import { MasProjectPlanMasterPlan5Component } from './MasProjectPlan/Sub_Pages/MasProjectPlanMasterPlan5/MasProjectPlanMasterPlan5.component';
+import { MenuSaveControlComponent } from './MenuSaveControl/MenuSaveControl.component';
 
 
 @NgModule({
@@ -34,6 +35,7 @@ import { MasProjectPlanMasterPlan5Component } from './MasProjectPlan/Sub_Pages/M
     MasBusinessLevelComponent,
     MasProjectPlanComponent,
     MasExpenseDetailComponent,
+    MenuSaveControlComponent,
     MasProjectPlanNationalStrategyZComponent,
     MasProjectPlanMasterPlanYComponent,
     MasProjectPlanMasterPlan5Component,

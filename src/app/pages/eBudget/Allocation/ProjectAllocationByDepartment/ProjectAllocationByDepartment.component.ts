@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { EbudgetService } from 'src/app/core/services/ebudget.service';
 import { BudgetYearService } from 'src/app/core/services/budget-year.service';
+import { MasterService } from 'src/app/core/services/Master.service';
 
 @Component({
   selector: 'app-project-allocation-by-department',
@@ -31,7 +32,8 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
 
   constructor(
     private servicebud: EbudgetService,
-    private budgetYearService: BudgetYearService
+    private budgetYearService: BudgetYearService,
+    public masterService: MasterService
   ) { }
 
   ngOnInit(): void {
@@ -277,6 +279,20 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
       parent.totalAdjust1 = (Number(parent.totalAdjust1) || 0) + delta;
       parent = parent.parent;
     }
+  }
+
+  formatAmount(value: any): string {
+    return this.masterService.formatNumber(value || 0, 2);
+  }
+
+  onAmountInput(event: Event, node: any): void {
+    this.masterService.formatCurrency(event, (result) => {
+      if (node.isDirectAmount) {
+        this.updateDirectAmount(node, result.numeric);
+      } else {
+        this.updateDetailAmount(node, result.numeric);
+      }
+    }, 2);
   }
 
   saveDetails(): void {
