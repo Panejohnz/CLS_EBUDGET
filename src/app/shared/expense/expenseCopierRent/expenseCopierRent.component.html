@@ -32,19 +32,19 @@
 
                         <td>
                             <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
-                                inputmode="decimal" class="form-control text-center" [(ngModel)]="item.qty"
+                                inputmode="decimal" class="form-control text-center" [(ngModel)]="item.qty" (input)="onNumericInput($event, item, i, 'qty')"
                                 (ngModelChange)="calculate(i)"    placeholder="ระบุจำนวนเครื่อง">
                         </td>
 
                         <td>
                             <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
-                                inputmode="decimal" class="form-control text-center" [(ngModel)]="item.month"
+                                inputmode="decimal" class="form-control text-center" [(ngModel)]="item.month" (input)="onNumericInput($event, item, i, 'month')"
                                 (ngModelChange)="calculate(i)" placeholder="ระบุจำนวนเดือน">
                         </td>
 
                         <td>
                             <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="."
-                            class="form-control text-end" [ngModel]="formatNumber(item.price)"
+                            class="form-control text-end" [(ngModel)]="item.price" (input)="onPriceInput($event, item, i)"
                                 (ngModelChange)="onPriceChange($event, item, i)" placeholder="ระบุอัตรา(บาท)">
                         </td>
 

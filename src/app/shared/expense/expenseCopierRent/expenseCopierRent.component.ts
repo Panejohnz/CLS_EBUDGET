@@ -363,11 +363,11 @@ export class ExpenseCopierRentComponent {
 
     item.total =
 
-      (Number(item.price) || 0) *
+      this.toNumber(item.price) *
 
-      (Number(item.qty) || 0) *
+      this.toNumber(item.qty) *
 
-      (Number(item.month) || 0);
+      this.toNumber(item.month);
 
     this.calculateGrandTotal();
 
@@ -383,12 +383,20 @@ export class ExpenseCopierRentComponent {
 
         (sum: number, x: any) =>
 
-          sum + (Number(x.total) || 0),
+          sum + this.toNumber(x.total),
 
         0
 
       );
 
+  }
+
+  private toNumber(value: any): number {
+    if (value === null || value === undefined || value === '') {
+      return 0;
+    }
+
+    return Number(value.toString().replace(/,/g, '')) || 0;
   }
 
   formatNumber(value: any): string {
@@ -404,14 +412,25 @@ export class ExpenseCopierRentComponent {
 
   }
 
-  onPriceChange(value: string, item: any, i: number): void {
+  onPriceChange(value: any, item: any, i: number): void {
 
-    const numericValue = value.replace(/,/g, '');
+    const numericValue = (value ?? '').toString().replace(/,/g, '');
 
     item.price = parseFloat(numericValue) || 0;
 
     this.calculate(i);
 
+  }
+
+  onPriceInput(event: Event, item: any, i: number): void {
+    const value = (event.target as HTMLInputElement)?.value || '';
+    this.onPriceChange(value, item, i);
+  }
+
+  onNumericInput(event: Event, item: any, i: number, field: 'qty' | 'month'): void {
+    const value = (event.target as HTMLInputElement)?.value || '';
+    item[field] = this.toNumber(value);
+    this.calculate(i);
   }
 
   updateDetailItems() {
