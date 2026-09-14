@@ -166,7 +166,7 @@
                 <div class="col-md-12">
                     <label class="form-label">ประเด็น</label>
 
-                    <ng-select [items]="listMasterPlan" bindLabel="Master_Plan_Name" bindValue="Master_Plan_Id"
+                    <ng-select data-required-key="Master_Plan_Id" [items]="listMasterPlan" bindLabel="Master_Plan_Name" bindValue="Master_Plan_Id"
                         [(ngModel)]="planLevel2.Master_Plan_Id" (ngModelChange)="onChangeMasterPlan($event)"
                         placeholder="-- เลือก --">
                     </ng-select>

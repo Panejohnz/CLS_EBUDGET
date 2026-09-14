@@ -1385,15 +1385,15 @@ export class ProjectPlanningComponent {
     );
   }
 
-  private failRequired(tab: number, message: string): false {
+  private failRequired(tab: number, message: string, requiredKey?: string): false {
     this.currentTab = tab;
     this.firstLoad = tab === 1;
-    this.focusFirstEmptyPlanningField(tab);
+    this.focusFirstEmptyPlanningField(tab, requiredKey);
     basicAlert('info', message, '');
     return false;
   }
 
-  private focusFirstEmptyPlanningField(tab: number): void {
+  private focusFirstEmptyPlanningField(tab: number, requiredKey?: string): void {
     // Wait for Angular to reveal the selected tab before locating its first
     // empty control.  This keeps Save validation helpful without changing it.
     setTimeout(() => {
@@ -1407,10 +1407,14 @@ export class ProjectPlanningComponent {
       const host = document.querySelector(hostSelectors[tab]);
       if (!host) return;
 
+      const markedControl = requiredKey
+        ? host.querySelector<HTMLElement>(`[data-required-key="${requiredKey}"]`)
+        : null;
+
       const controls = Array.from(host.querySelectorAll<HTMLElement>(
         'input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]), textarea, select, .ng-select'
       ));
-      const empty = controls.find((control: HTMLElement) => {
+      const empty = markedControl || controls.find((control: HTMLElement) => {
         if (control.classList.contains('ng-select')) {
           return !control.querySelector('.ng-value');
         }
@@ -1437,9 +1441,9 @@ export class ProjectPlanningComponent {
     }, 0);
   }
 
-  private requireValue(value: any, message: string, tab: number): boolean {
+  private requireValue(value: any, message: string, tab: number, requiredKey?: string): boolean {
     if (this.isEmptyRequiredValue(value)) {
-      return this.failRequired(tab, message);
+      return this.failRequired(tab, message, requiredKey);
     }
 
     return true;
@@ -1489,7 +1493,7 @@ export class ProjectPlanningComponent {
       { value: level1.Issues_Id, msg: 'กรุณาเลือกประเด็นยุทธศาสตร์' },
       { value: level1.Issues_Sub_Id, msg: 'กรุณาเลือกประเด็นย่อย' },
       { value: level1.Target, msg: 'กรุณากรอกเป้าหมายยุทธศาสตร์ชาติ' },
-      { value: level2.Master_Plan_Id, msg: 'กรุณาเลือกแผนแม่บทฯ ประเด็น' },
+      { value: level2.Master_Plan_Id, msg: 'กรุณาเลือกแผนแม่บทฯ ประเด็น', key: 'Master_Plan_Id' },
       { value: level2.Plan_Goals_Id, msg: 'กรุณาเลือกเป้าหมายระดับประเด็น (Y2)' },
       { value: level2.Plan_Tactics_Id, msg: 'กรุณาเลือกตัวชี้วัดเป้าหมายระดับประเด็น' },
       { value: level2.Description, msg: 'กรุณากรอกความสอดคล้องของโครงการกับแผนแม่บทฯ' },
@@ -1521,7 +1525,7 @@ export class ProjectPlanningComponent {
     ];
 
     for (const field of alignmentFields) {
-      if (!this.requireValue(field.value, field.msg, 2)) {
+      if (!this.requireValue(field.value, field.msg, 2, field.key)) {
         return false;
       }
     }
