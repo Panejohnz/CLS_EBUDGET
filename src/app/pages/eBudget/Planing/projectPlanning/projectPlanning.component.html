@@ -227,6 +227,7 @@
                     <li class="nav-item">
                         <button class="nav-link" [class.active]="currentTab">
                             1. ข้อมูลทั่วไป
+                            <span *ngIf="getTabMissingCount(1)" class="badge rounded-pill bg-danger ms-1">{{ getTabMissingCount(1) }}</span>
                         </button>
                     </li>
 
@@ -241,12 +242,14 @@
                         <button class="nav-link" [class.active]="currentTab === 2 || currentTab === 1"
                             (click)="goTab(2)">
                             2. ความเชื่อมโยงกับแผนระดับต่างๆ
+                            <span *ngIf="getTabMissingCount(2)" class="badge rounded-pill bg-danger ms-1">{{ getTabMissingCount(2) }}</span>
                         </button>
                     </li>
 
                     <li class="nav-item">
                         <button class="nav-link" [class.active]="currentTab === 3" (click)="goTab(3)">
                             3. รายละเอียดโครงการ
+                            <span *ngIf="getTabMissingCount(3)" class="badge rounded-pill bg-danger ms-1">{{ getTabMissingCount(3) }}</span>
                         </button>
                     </li>
                     <li class="nav-item">
@@ -260,6 +263,10 @@
                         </button>
                     </li>
                 </ul>
+                <div class="alert alert-warning py-2 px-3 mb-3" *ngIf="planningMissingCount">
+                    ยังมีข้อมูลบังคับกรอก <strong>{{ planningMissingCount }}</strong> รายการ
+                    <span class="ms-1 text-muted">ดูจำนวนที่ชื่อ Tab และกดเลือก Tab เพื่อกรอกต่อได้</span>
+                </div>
                 <app-tab-alignment [hidden]="!firstLoad && currentTab !== 2" [model]="project_planing">
                 </app-tab-alignment>
                 <app-tab-detail [hidden]="currentTab !== 3" [model]="project_planing">

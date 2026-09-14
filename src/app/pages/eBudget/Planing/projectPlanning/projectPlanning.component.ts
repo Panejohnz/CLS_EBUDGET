@@ -761,6 +761,55 @@ export class ProjectPlanningComponent {
     this.firstLoad = false;
   }
 
+  /** Non-blocking progress indicator for the Planning tabs. */
+  getTabMissingCount(tab: number): number {
+    const plan = this.project_planing || {};
+    const data = plan.Project_Plan || plan;
+    const missing = (values: any[]) => values.filter(value => this.isEmptyRequiredValue(value)).length;
+
+    if (tab === 1) {
+      const showPlanningSelectors = Number(plan.Budget_Type ?? data?.Budget_Type) !== 1;
+      return missing([
+        ...(showPlanningSelectors ? [plan.projectType, plan.selectedPlan, plan.selectedProduct, plan.selectedActivity] : []),
+        plan.selectedBudget, data?.Used_BG, data?.Project_Name, data?.Project_Type_Id,
+        (Number(data?.Operation1 || 0) === 1 || Number(data?.Operation2 || 0) === 1) ? 1 : null
+      ]);
+    }
+
+    if (tab === 2) {
+      const level1 = Array.isArray(plan.Project_Plan_Level1)
+        ? (plan.Project_Plan_Level1[0] || {}) : (plan.Project_Plan_Level1 || {});
+      const level2 = plan.Project_Plan_Level2 || {};
+      const level3 = plan.Project_Plan_Level3 || {};
+      return missing([
+        level1.Strategic_Id, level1.Issues_Id, level1.Issues_Sub_Id, level1.Target,
+        level2.Master_Plan_Id, level2.Plan_Goals_Id, level2.Plan_Tactics_Id, level2.Description,
+        level2.Subplan_Id, level2.Target_Y1_Id, level2.SubplanDesc, level2.DevGuideline_Id,
+        level2.Landmark_Id, level2.Landmark_Gloals_Id, level2.Landmark_Tacticts_Id,
+        level2.Landmark_Guidelines_Id, level2.Landmark_Sub_Guidelines_Id,
+        level3.Project_Plan_Id_5, level3.Project_Plan_Goals_Id_5, level3.Indicators_Id_5,
+        level3.Goals_Guidelines_Id_5, level3.Project_Plan_Id, level3.Project_Plan_Goals_Id,
+        level3.Indicators_Id, level3.Measure_Id
+      ]);
+    }
+
+    if (tab === 3) {
+      const detail = Array.isArray(plan.Project_Detail) ? {} : (plan.Project_Detail || {});
+      return missing([detail.Principle, detail.Area, detail.Start_Date, detail.End_Date]) +
+        (this.hasFilledRows(plan.Project_Objective, ['Name']) ? 0 : 1) +
+        (this.hasFilledRows(plan.Project_Output, ['Name', 'Target', 'Unit']) ? 0 : 1) +
+        (this.hasFilledRows(plan.Project_Outcome, ['Name']) ? 0 : 1) +
+        (this.hasFilledRows(plan.Project_Expected, ['Name']) ? 0 : 1) +
+        (this.hasFilledRows(plan.Project_TargetGroup, ['Name', 'Amount', 'Unit']) ? 0 : 1);
+    }
+
+    return 0;
+  }
+
+  get planningMissingCount(): number {
+    return [1, 2, 3].reduce((sum, tab) => sum + this.getTabMissingCount(tab), 0);
+  }
+
   async deletePlan(data: any) {
     if (data.Status_Id > 1) {
       basicAlert('warning', 'ไม่สามารถลบข้อมูลได้ เนื่องจากโครงการอยู่ในสถานะที่ไม่สามารถแก้ไขได้', '');
@@ -1303,8 +1352,7 @@ export class ProjectPlanningComponent {
     for (const f of fields) {
 
       if (!f.value) {
-        basicAlert('info', f.msg, '');
-        return false;
+        return this.failRequired(1, f.msg);
       }
     }
 
@@ -1340,8 +1388,53 @@ export class ProjectPlanningComponent {
   private failRequired(tab: number, message: string): false {
     this.currentTab = tab;
     this.firstLoad = tab === 1;
+    this.focusFirstEmptyPlanningField(tab);
     basicAlert('info', message, '');
     return false;
+  }
+
+  private focusFirstEmptyPlanningField(tab: number): void {
+    // Wait for Angular to reveal the selected tab before locating its first
+    // empty control.  This keeps Save validation helpful without changing it.
+    setTimeout(() => {
+      const hostSelectors: Record<number, string> = {
+        1: 'app-tab-general',
+        2: 'app-tab-alignment:not([hidden])',
+        3: 'app-tab-detail:not([hidden])',
+        4: 'app-tab-guideline:not([hidden])',
+        5: 'app-tab-coordinator:not([hidden])'
+      };
+      const host = document.querySelector(hostSelectors[tab]);
+      if (!host) return;
+
+      const controls = Array.from(host.querySelectorAll<HTMLElement>(
+        'input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]), textarea, select, .ng-select'
+      ));
+      const empty = controls.find((control: HTMLElement) => {
+        if (control.classList.contains('ng-select')) {
+          return !control.querySelector('.ng-value');
+        }
+        const input = control as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
+        return !String(input.value ?? '').trim();
+      });
+      if (!empty) return;
+
+      empty.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const focusTarget = empty.classList.contains('ng-select')
+        ? empty.querySelector<HTMLElement>('.ng-select-container input, .ng-select-container')
+        : empty;
+      empty.classList.remove('required-field-highlight');
+      focusTarget?.classList.remove('required-field-highlight');
+      // Restart the animation each time Save finds an incomplete field.
+      void empty.offsetWidth;
+      empty.classList.add('required-field-highlight');
+      focusTarget?.classList.add('required-field-highlight');
+      focusTarget?.focus();
+      setTimeout(() => {
+        empty.classList.remove('required-field-highlight');
+        focusTarget?.classList.remove('required-field-highlight');
+      }, 3600);
+    }, 0);
   }
 
   private requireValue(value: any, message: string, tab: number): boolean {
