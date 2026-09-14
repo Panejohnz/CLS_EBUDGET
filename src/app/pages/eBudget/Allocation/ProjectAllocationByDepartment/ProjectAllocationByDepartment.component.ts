@@ -19,12 +19,7 @@ import { MasterService } from 'src/app/core/services/Master.service';
 })
 export class ProjectAllocationByDepartmentComponent implements OnInit {
   @Input() readOnly = false;
-  private readonly directAllocationExpenseIds = new Set<number>([64, 70, 73, 74, 75]);
-  private readonly equipmentDetailIds = new Set<number>([
-    67, 68, 69, 70, 456, 488, 506, 535, 550, 622, 624, 627, 630,
-    638, 643, 648, 657, 673, 674, 675, 678, 681, 684, 700, 701,
-    702, 703, 704
-  ]);
+  private expenseListById = new Map<number, any>();
   departments: any[] = [];
   rows: any[] = [];
   loading = false;
@@ -47,6 +42,23 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
   load(): void {
     if (!this.currentYear) return;
     this.loading = true;
+    this.servicebud.GatewayGetData({
+      FUNC_CODE: 'FUNC-GET_Mas_Expense_List',
+      Mas_Expense_List: { Fk_Expense_Type_Id: 0 }
+    }).subscribe({
+      next: (response: any) => {
+        const expenseLists = Array.isArray(response?.Mas_Expense_Lists) ? response.Mas_Expense_Lists : [];
+        this.expenseListById = new Map(expenseLists.map((item: any) => [Number(item.Expense_Id), item]));
+        this.loadRequests();
+      },
+      error: () => {
+        this.expenseListById.clear();
+        this.loadRequests();
+      }
+    });
+  }
+
+  private loadRequests(): void {
     this.servicebud.GatewayGetData({ FUNC_CODE: 'FUNC-Get_Budget_Request_List', BgYear: this.currentYear })
       .subscribe({
         next: (requestResponse: any) => {
@@ -109,7 +121,8 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
                 Request_Id: Number(plan.FK_Request_Id || plan.Fk_Request_Id || plan.Request_Id || 0),
                 Fk_Expense_List: Number(plan.Fk_Expense_List || 0),
                 Department_Id: departmentId,
-                isDirectAmount: this.directAllocationExpenseIds.has(Number(plan.Fk_Expense_List)),
+                isAdjustList: this.isAdjustList(plan.Fk_Expense_List),
+                isDirectAmount: !this.isAdjustList(plan.Fk_Expense_List),
                 source: plan
               }
             ];
@@ -169,8 +182,21 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
 
   private loadInvestmentDetailRows(): void {
     this.getExpenseNodes(this.rows)
-      .filter(node => !node.isDirectAmount && (node.Plan_Id || node.Request_Id))
+      .filter(node =>
+        node.isAdjustList &&
+        !(node.sources || []).some((source: any) => this.isProjectTypeOne(source)) &&
+        (node.Plan_Id || node.Request_Id)
+      )
       .forEach(node => this.loadInvestmentDetails(node));
+  }
+
+  private isAdjustList(expenseId: any): boolean {
+    const expense = this.expenseListById.get(Number(expenseId));
+    return expense?.Is_Adjust_List === true;
+  }
+
+  private isProjectTypeOne(source: any): boolean {
+    return Number(source?.Project_Type_Id || 0) === 1;
   }
 
   private loadInvestmentDetails(node: any): void {
@@ -391,8 +417,18 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
     if (node.type === 'detail') {
       return !!node.detailByDepartment?.[departmentId]?.length;
     }
-    // An expense with no detail rows is itself the amount to allocate.
-    return node.type === 'expense' && !node.children?.length && !!node.sourcesByDepartment?.[departmentId]?.length;
+    // Projects do not have detail rows.  When Is_Adjust_List is true, adjust the
+    // amount directly on the project row instead.
+    const sources = node.sourcesByDepartment?.[departmentId] || [];
+    if (node.type !== 'expense' || !sources.length) return false;
+
+    const isProject = sources.some((source: any) => this.isProjectTypeOne(source));
+    if (node.isAdjustList) {
+      // When an adjustable list has no detail rows (including projects), the
+      // allocation amount is entered on the expense row itself.
+      return !node.children?.length;
+    }
+    return !isProject;
   }
 
   saveDetails(): void {
