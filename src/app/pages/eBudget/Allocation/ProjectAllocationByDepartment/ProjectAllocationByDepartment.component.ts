@@ -244,6 +244,19 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
           .filter((detail: any) => Number(detail.Fk_Budget_Plan || planId) === planId);
         const savedByKey = new Map(savedDetails.map((detail: any) => [this.detailKey(detail), detail]));
 
+        // Once a Plan has detail items, the parent expense and every hierarchy
+        // row must reflect the sum of those detail-item Update_Amount values.
+        // Do not use Budget_Plan.Total/Total_Plan for that allocated row.
+        if (savedDetails.length) {
+          const detailTotal = savedDetails.reduce(
+            // Do not fall back to Total here.  A blank Update_Amount means
+            // that detail has not been allocated and contributes zero.
+            (sum: number, detail: any) => sum + this.updateAmountOnly(detail),
+            0
+          );
+          this.replaceSourceAmount(node, sourcePlan, detailTotal);
+        }
+
         requestDetails.forEach((requestDetail: any, index: number) => {
           const savedDetail = savedByKey.get(this.detailKey(requestDetail));
           const detail = savedDetail ? {
@@ -258,6 +271,35 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
         });
       });
     });
+  }
+
+  private replaceSourceAmount(node: any, source: any, amount: number): void {
+    const departmentId = Number(source?.Department_Id || 0);
+    const previous = Number(source._displayAmount ?? this.mainRowAmount(source)) || 0;
+    const delta = amount - previous;
+    if (!delta) return;
+
+    source._displayAmount = amount;
+    let current = node;
+    while (current) {
+      current.amounts[departmentId] = (Number(current.amounts[departmentId]) || 0) + delta;
+      current.totalAdjust1 = (Number(current.totalAdjust1) || 0) + delta;
+      current = current.parent;
+    }
+  }
+
+  private updateAmountOnly(item: any): number {
+    const value = item?.Update_Amount ?? item?.update_amount;
+    return value !== null && value !== undefined && String(value).trim() !== ''
+      ? Number(value) || 0
+      : 0;
+  }
+
+  private detailAllocationAmount(detail: any, source: any): number {
+    // Once a Plan exists, detail rows show only the final saved amount.
+    return Number(source?.Plan_Id || 0) > 0
+      ? this.updateAmountOnly(detail)
+      : this.allocationAmount(detail);
   }
 
   private filterExpenseDetails(source: any, expenseId: number): any[] {
@@ -313,7 +355,7 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
   } */
 
   private createDetailNode(node: any, detail: any, sourcePlan: any, index: number): any {
-    const amount = this.allocationAmount(detail);
+    const amount = this.detailAllocationAmount(detail, sourcePlan);
     return {
       key: `${node.key}_detail_${detail.Fk_Expense_Detail_Id || detail.Fk_Expense_Detial_Id || detail.Expense_Detail || index}`,
       name: detail.Expense_Detail || '-',
@@ -348,8 +390,8 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
   private applyAmountToDetails(details: any[], amount: number): void {
     details.forEach((detail: any, index: number) => {
       const nextAmount = index === 0 ? amount : 0;
-      const previous = this.allocationAmount(detail);
       const source = detail.__allocationSource;
+      const previous = this.detailAllocationAmount(detail, source);
       detail.Adjust1 = nextAmount;
       detail.Update_Amount = nextAmount;
       detail.isDirty = true;
@@ -383,6 +425,12 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
   /** ค่า Adjust1 ที่ว่างหมายถึงยังไม่จัดสรร จึงแสดงยอดคำของบ (Total) แทน
    * แต่ค่า 0 ที่ผู้ใช้กรอกไว้ต้องยังคงเป็น 0 */
   private allocationAmount(item: any): number {
+    // A saved detail item must use its final allocated value, including 0.
+    const updateAmount = item?.Update_Amount ?? item?.update_amount;
+    if (updateAmount !== null && updateAmount !== undefined && String(updateAmount).trim() !== '') {
+      return Number(updateAmount) || 0;
+    }
+
     const adjust = item?.Adjust1 ?? item?.adjust1;
     const value = adjust !== null && adjust !== undefined && String(adjust).trim() !== ''
       ? adjust
@@ -391,9 +439,13 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
   }
 
   private mainRowAmount(item: any): number {
-    // Once an allocation has been saved, Budget_Plan.Total_Plan is the amount
-    // for the table hierarchy.  Adjust1 remains an allocation-edit field.
+    // Update_Amount is the final allocated amount after the allocation is saved.
+    // It must take precedence over the original plan/request totals.
     if (Number(item?.Plan_Id || 0) > 0) {
+      const updateAmount = item?.Update_Amount ?? item?.update_amount;
+      if (updateAmount !== null && updateAmount !== undefined && String(updateAmount).trim() !== '') {
+        return Number(updateAmount) || 0;
+      }
       return Number(item.Total_Plan ?? item.Total ?? 0) || 0;
     }
     return Number(item?.Total ?? 0) || 0;
