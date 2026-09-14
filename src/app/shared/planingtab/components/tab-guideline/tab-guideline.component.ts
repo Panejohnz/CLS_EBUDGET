@@ -42,9 +42,13 @@ export class TabGuidelineComponent {
   };
 
   @Input() model: any
+  @Input() addActivityRequest = 0;
   activities: any[] = [];
 
-  ngOnChanges() {
+  ngOnChanges(changes?: any) {
+    if (changes?.addActivityRequest && !changes.addActivityRequest.firstChange) {
+      this.addActivity();
+    }
     console.log('activities',this.model.activities);
 
     if (this.model?.activities?.length) {

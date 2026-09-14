@@ -1,4 +1,4 @@
-import { Component, Input, ElementRef, ViewChild, CUSTOM_ELEMENTS_SCHEMA, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, ElementRef, ViewChild, CUSTOM_ELEMENTS_SCHEMA, OnChanges, OnInit, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { environment } from '../../../../../../environments/environment';
@@ -31,6 +31,8 @@ export class ProjectPlanningComponent implements OnInit, OnChanges {
   @Input() modal: any;
   @Input() expenseItem: any;
   @Input() model: any;
+  @Input() addActivityRequest = 0;
+  @Output() tabChanged = new EventEmitter<number>();
   @ViewChild(TabGuidelineComponent)
   guidelineComp!: TabGuidelineComponent;
   @ViewChild(TabDetailComponent)
@@ -93,6 +95,9 @@ export class ProjectPlanningComponent implements OnInit, OnChanges {
   }
   currentYear: any
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes['addActivityRequest'] && !changes['addActivityRequest'].firstChange) {
+      this.guidelineComp?.addActivity();
+    }
     if (changes['model']) {
       this.bindInputModel();
     }
@@ -477,6 +482,7 @@ export class ProjectPlanningComponent implements OnInit, OnChanges {
 
   goTab(tab: number) {
     this.currentTab = tab;
+    this.tabChanged.emit(tab);
     this.firstLoad = false; // 👈 พอกดครั้งแรก จบโหมดเริ่มต้น
   }
 

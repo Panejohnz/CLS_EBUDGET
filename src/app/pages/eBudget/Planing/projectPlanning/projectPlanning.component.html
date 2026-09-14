@@ -265,7 +265,8 @@
                 <app-tab-detail [hidden]="currentTab !== 3" [model]="project_planing">
                 </app-tab-detail>
 
-                <app-tab-guideline [hidden]="currentTab !== 4" [model]="project_planing">
+                <app-tab-guideline [hidden]="currentTab !== 4" [model]="project_planing"
+                    [addActivityRequest]="guidelineAddActivityRequest">
                 </app-tab-guideline>
                 <app-tab-coordinator [hidden]="currentTab !== 5" [model]="project_planing">
                 </app-tab-coordinator>
@@ -274,14 +275,19 @@
 
     </div>
     <div style="height:10px"></div>
-    <div class="modal-footer">
-        <button class="btn btn-danger text-black" (click)="modal.dismiss()">
-            ยกเลิก
+    <div class="modal-footer d-flex justify-content-between align-items-center">
+        <button *ngIf="currentTab === 4" class="btn btn-primary" (click)="requestAddGuidelineActivity()">
+            + เพิ่มกิจกรรมหลัก
         </button>
-        <button class="btn btn-success text-black" [disabled]="isSaveLocked" (click)="savePlan(modal)">
-            บันทึก
-        </button>
-
+        <span *ngIf="currentTab !== 4"></span>
+        <div class="d-flex gap-2">
+            <button class="btn btn-danger text-black" (click)="modal.dismiss()">
+                ยกเลิก
+            </button>
+            <button class="btn btn-success text-black" [disabled]="isSaveLocked" (click)="savePlan(modal)">
+                บันทึก
+            </button>
+        </div>
     </div>
     <div style="height:10px"></div>
 </ng-template>

@@ -13,6 +13,16 @@ export class ProjectBudgetProposalAddPersonnelComponent {
 
   @Input() model: any;
   @Input() modalRef: any;
+  planningTab = 1;
+  guidelineAddActivityRequest = 0;
+
+  requestAddGuidelineActivity(): void {
+    this.guidelineAddActivityRequest++;
+  }
+
+  get isProjectPlanningExpense(): boolean {
+    return [64, 70, 73, 74, 75].includes(Number(this.model?.selectedExpenseTypeId || 0));
+  }
 
   constructor(
     public serviceebud: EbudgetService,

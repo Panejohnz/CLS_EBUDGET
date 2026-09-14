@@ -18,7 +18,6 @@ import { AuthenticationService } from 'src/app/core/services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { ProjectPlanService } from 'src/app/core/services/ProjectPlan.service'
 import { BudgetYearService } from 'src/app/core/services/budget-year.service';
-import { TabGuidelineComponent } from 'src/app/shared/planingtab/components/tab-guideline/tab-guideline.component';
 @Component({
   selector: 'projectPlanning',
   providers: [GridJsService, DecimalPipe, EbudgetService],
@@ -48,8 +47,11 @@ import { TabGuidelineComponent } from 'src/app/shared/planingtab/components/tab-
   `]
 })
 export class ProjectPlanningComponent {
-  @ViewChild(TabGuidelineComponent)
-  guidelineComp!: TabGuidelineComponent;
+  guidelineAddActivityRequest = 0;
+
+  requestAddGuidelineActivity(): void {
+    this.guidelineAddActivityRequest++;
+  }
   emptyplan: any = {
     Plan_Id: 0,
     Plan_Name: '',

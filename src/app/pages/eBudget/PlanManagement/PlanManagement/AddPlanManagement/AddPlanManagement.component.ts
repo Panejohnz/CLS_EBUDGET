@@ -1141,6 +1141,12 @@ export class AddPlanManagementComponent
   @Input() model: any = {};
 
   @Input() modalRef: any;
+  planningTab = 1;
+  guidelineAddActivityRequest = 0;
+
+  requestAddGuidelineActivity(): void {
+    this.guidelineAddActivityRequest++;
+  }
 
   @ViewChild(ProjectPlanningComponent)
   projectPlanningComp?: ProjectPlanningComponent;

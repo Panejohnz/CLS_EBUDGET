@@ -261,7 +261,7 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label">ส่วนสนับสนุน (ถ้ามี)</label>
+                    <label class="form-label optional-label">ส่วนสนับสนุน (ถ้ามี)</label>
 
                     <ng-select [items]="listValueChain" bindLabel="Value_Chain_Name" bindValue="Value_Chain_Id"
                         [(ngModel)]="planLevel2.ValueChain_Support_Id" (ngModelChange)="onChangeValueChainSupport()"
@@ -270,7 +270,7 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label">ปัจจัยสนับสนุน (ถ้ามี)</label>
+                    <label class="form-label optional-label">ปัจจัยสนับสนุน (ถ้ามี)</label>
 
                     <ng-select [items]="listValueChainFactorSupport" bindLabel="Factor_Name" bindValue="Factor_Id"
                         [(ngModel)]="planLevel2.ValueChain_Factor_Support_Id" placeholder="-- เลือก --">
@@ -674,7 +674,7 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label">ส่วนสนับสนุน (ถ้ามี)</label>
+                    <label class="form-label optional-label">ส่วนสนับสนุน (ถ้ามี)</label>
 
                     <ng-select [items]="listValueChain5" bindLabel="Value_Chain_Name" bindValue="Value_Chain_Id"
                         [(ngModel)]="model.Project_Plan_Level3.ValueChain_Support_Id"
@@ -683,7 +683,7 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label">ปัจจัยสนับสนุน (ถ้ามี)</label>
+                    <label class="form-label optional-label">ปัจจัยสนับสนุน (ถ้ามี)</label>
 
                     <ng-select [items]="listValueChainFactorSupport5" bindLabel="Factor_Name" bindValue="Factor_Id"
                         [(ngModel)]="model.Project_Plan_Level3.ValueChain_Factor_Support_Id" placeholder="-- เลือก --">

@@ -84,14 +84,24 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
           console.log('source', source);
 
           const plans = Array.isArray(source) ? source : [];
-          const investmentRequests = requests.filter((request: any) =>
-            Number(request.Fk_Budget_Type) === 3 &&
-            !plans.some((plan: any) =>
-              Number(plan.FK_Request_Id || plan.Fk_Request_Id || plan.Request_Id || 0) === Number(request.Request_Id || 0) &&
-              Number(plan.Fk_Expense_List || 0) === Number(request.Fk_Expense_List || 0)
-            )
-          );
-          const displayRows = [...plans, ...investmentRequests];
+          // The request is the master row for Allocation.  A Budget_Plan only
+          // supplies the latest allocated values after that request is saved.
+          const planByRequestAndExpense = new Map<string, any>();
+          plans.forEach((plan: any) => {
+            const requestId = Number(plan.FK_Request_Id || plan.Fk_Request_Id || plan.Request_Id || 0);
+            const expenseId = Number(plan.Fk_Expense_List || 0);
+            if (requestId) {
+              planByRequestAndExpense.set(`${requestId}_${expenseId}`, plan);
+            }
+          });
+          const displayRows = requests.map((request: any) => {
+            const requestId = Number(request.Request_Id || request.FK_Request_Id || request.Fk_Request_Id || 0);
+            const expenseId = Number(request.Fk_Expense_List || 0);
+            const plan = planByRequestAndExpense.get(`${requestId}_${expenseId}`);
+            // Request is used only until allocation is saved.  Once a matching
+            // plan exists, Plan is the single source of truth for that row.
+            return plan || request;
+          });
           const departmentMap = new Map<number, any>();
           const rootNodes: any[] = [];
 
@@ -105,7 +115,7 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
               });
             }
 
-            const amount = this.allocationAmount(plan);
+            const amount = this.mainRowAmount(plan);
             const path = [
               { key: `plan_${plan.Fk_Plan_Id || plan.Plan_Name}`, name: plan.Plan_Name || '-', type: 'plan' },
               { key: `product_${plan.Fk_Product_Id || plan.Product_Name}`, name: plan.Product_Name || '-', type: 'product' },
@@ -207,23 +217,64 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
   private loadInvestmentDetailsForSource(node: any, sourcePlan: any): void {
     const planId = Number(sourcePlan.Plan_Id || 0);
     const requestId = Number(sourcePlan.FK_Request_Id || sourcePlan.Fk_Request_Id || sourcePlan.Request_Id || 0);
-    const usePlan = planId > 0;
+    if (!requestId) return;
+
     this.servicebud.GatewayGetData({
-      FUNC_CODE: usePlan ? 'FUNC-GET_BUDGET_PLAN_BY_ID' : 'FUNC-GET_BUDGET_REQUEST_BY_ID',
-      Plan_Id: usePlan ? planId : 0,
-      Request_Id: usePlan ? 0 : requestId,
+      FUNC_CODE: 'FUNC-GET_BUDGET_REQUEST_BY_ID',
+      Plan_Id: 0,
+      Request_Id: requestId,
       Project_Id: 0
     }).subscribe((response: any) => {
-      const source = usePlan
-        ? response?.Budget_Plan_Detail_Items
-        : (response?.Budget_Request_Detail_Item || response?.Budget_Request_Detail);
-      const details = (Array.isArray(source) ? source : source?.Data || [])
-        .filter((detail: any) =>
-          Number(detail.Fk_Expense_Id) === Number(node.Fk_Expense_List) &&
-          detail.Active !== false && Number(detail.Active ?? 1) !== 0
-        );
-      details.forEach((detail: any, index: number) => this.mergeDetailNode(node, detail, sourcePlan, index));
+      const requestDetails = this.filterExpenseDetails(
+        response?.Budget_Request_Detail_Item || response?.Budget_Request_Detail,
+        node.Fk_Expense_List
+      );
+      if (!planId) {
+        requestDetails.forEach((detail: any, index: number) => this.mergeDetailNode(node, detail, sourcePlan, index));
+        return;
+      }
+
+      this.servicebud.GatewayGetData({
+        FUNC_CODE: 'FUNC-GET_BUDGET_PLAN_BY_ID',
+        Plan_Id: planId,
+        Request_Id: 0,
+        Project_Id: 0
+      }).subscribe((planResponse: any) => {
+        const savedDetails = this.filterExpenseDetails(planResponse?.Budget_Plan_Detail_Items, node.Fk_Expense_List)
+          .filter((detail: any) => Number(detail.Fk_Budget_Plan || planId) === planId);
+        const savedByKey = new Map(savedDetails.map((detail: any) => [this.detailKey(detail), detail]));
+
+        requestDetails.forEach((requestDetail: any, index: number) => {
+          const savedDetail = savedByKey.get(this.detailKey(requestDetail));
+          const detail = savedDetail ? {
+            ...requestDetail,
+            Plan_Item_Id: savedDetail.Plan_Item_Id,
+            Adjust1: savedDetail.Adjust1,
+            Adjust2: savedDetail.Adjust2,
+            Adjust3: savedDetail.Adjust3,
+            Update_Amount: savedDetail.Update_Amount
+          } : requestDetail;
+          this.mergeDetailNode(node, detail, sourcePlan, index);
+        });
+      });
     });
+  }
+
+  private filterExpenseDetails(source: any, expenseId: number): any[] {
+    const details = Array.isArray(source) ? source : source?.Data || [];
+    return details.filter((detail: any) =>
+      Number(detail.Fk_Expense_Id) === Number(expenseId) &&
+      detail.Active !== false && Number(detail.Active ?? 1) !== 0
+    );
+  }
+
+  private detailKey(detail: any): string {
+    return String(
+      detail.Fk_Expense_Detail_Id ??
+      detail.Fk_Expense_Detial_Id ??
+      detail.Fk_Plan_Detail_Id ??
+      detail.Expense_Detail ?? ''
+    );
   }
 
   /** รายการครุภัณฑ์บางรายการยังไม่มีใน Plan detail จึงดึงจาก Request detail มาเสริม */
@@ -339,6 +390,15 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
     return Number(value) || 0;
   }
 
+  private mainRowAmount(item: any): number {
+    // Once an allocation has been saved, Budget_Plan.Total_Plan is the amount
+    // for the table hierarchy.  Adjust1 remains an allocation-edit field.
+    if (Number(item?.Plan_Id || 0) > 0) {
+      return Number(item.Total_Plan ?? item.Total ?? 0) || 0;
+    }
+    return Number(item?.Total ?? 0) || 0;
+  }
+
   updateDetailAmount(node: any, departmentId: number, value: any): void {
     const amount = Number(value) || 0;
     const previous = Number(node.amounts[departmentId]) || 0;
@@ -448,8 +508,16 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
     const model = {
       FUNC_CODE: 'FUNC-Insert_Budget_Plan',
       List_Budget_Plan: planSources.map((source: any) => {
+        const {
+          Create_Date,
+          Update_Date,
+          _requestAmount,
+          _allocationAmount,
+          isDirty,
+          ...planPayload
+        } = source;
         return {
-          ...source,
+          ...planPayload,
           FK_Request_Id: Number(source.FK_Request_Id || source.Fk_Request_Id || source.Request_Id || 0),
           Request_Id: Number(source.Request_Id || source.FK_Request_Id || source.Fk_Request_Id || 0),
           Plan_Id: Number(source.Plan_Id || 0),

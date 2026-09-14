@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, CUSTOM_ELEMENTS_SCHEMA, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, ViewChild, CUSTOM_ELEMENTS_SCHEMA, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { environment } from '../../../../../../environments/environment';
@@ -31,6 +31,8 @@ export class ProjectPlanningComponent {
   @Input() modal: any;
   @Input() expenseItem: any;
   @Input() model: any;
+  @Input() addActivityRequest = 0;
+  @Output() tabChanged = new EventEmitter<number>();
 
   @ViewChild(TabGuidelineComponent)
   guidelineComp!: TabGuidelineComponent;
@@ -92,6 +94,12 @@ export class ProjectPlanningComponent {
     , private authService: AuthenticationService, private ProjectPlanService: ProjectPlanService, private budgetYearService: BudgetYearService) {
   }
   currentYear: any
+  ngOnChanges(changes?: any): void {
+    if (changes?.addActivityRequest && !changes.addActivityRequest.firstChange) {
+      this.guidelineComp?.addActivity();
+    }
+  }
+
   ngOnInit(): void {
 
     this.get_data()
@@ -405,6 +413,7 @@ export class ProjectPlanningComponent {
 
   goTab(tab: number) {
     this.currentTab = tab;
+    this.tabChanged.emit(tab);
     this.firstLoad = false; // 👈 พอกดครั้งแรก จบโหมดเริ่มต้น
   }
 

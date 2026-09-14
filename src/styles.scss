@@ -232,4 +232,34 @@
     z-index: 9999 !important;
 }
 
+/* Keep data tables readable on phones.  They should scroll horizontally rather
+   than compress every column until Thai text is rendered one character per line. */
+@media (max-width: 767.98px) {
+    .table-responsive {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .table-responsive > table.table {
+        min-width: 960px;
+        table-layout: auto !important;
+    }
+
+    .table-responsive > table.table th {
+        min-width: 110px;
+        white-space: nowrap;
+    }
+
+    .table-responsive > table.table td {
+        min-width: 110px;
+        word-break: normal;
+        overflow-wrap: normal;
+    }
+
+    .table-responsive > table.table th:first-child,
+    .table-responsive > table.table td:first-child {
+        min-width: 180px;
+    }
+}
+
 @import './app/shared/expense/expense-shared.scss';

@@ -467,7 +467,8 @@
             </div>
             @if([64,70,73,74,75].includes(model.selectedExpenseTypeId)){
 
-            <projectPlanning [model]="model" [expenseItem]="expenseItem">
+            <projectPlanning [model]="model" [expenseItem]="expenseItem"
+                [addActivityRequest]="guidelineAddActivityRequest" (tabChanged)="planningTab = $event">
 
             </projectPlanning>
 
@@ -625,8 +626,15 @@
 
     </div>
 
-    <div class="modal-footer">
+    <div class="modal-footer d-flex justify-content-between align-items-center">
 
+        <button *ngIf="isProjectPlanningExpenseType(model?.selectedExpenseTypeId) && planningTab === 4"
+            class="btn btn-primary" (click)="requestAddGuidelineActivity()">
+            + เพิ่มกิจกรรมหลัก
+        </button>
+        <span *ngIf="!(isProjectPlanningExpenseType(model?.selectedExpenseTypeId) && planningTab === 4)"></span>
+
+        <div class="d-flex gap-2">
         <button class="btn btn-danger text-black" (click)="closeModal()">
 
             ยกเลิก
@@ -638,6 +646,7 @@
             บันทึก
 
         </button>
+        </div>
 
     </div>
 

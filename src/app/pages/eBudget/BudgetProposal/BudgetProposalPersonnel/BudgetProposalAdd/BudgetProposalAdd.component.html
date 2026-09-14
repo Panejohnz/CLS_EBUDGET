@@ -681,7 +681,8 @@
 
                 @else if ([64,70,73,74,75].includes(model.selectedExpenseTypeId)) {
                 <div class="px-custom">
-                    <projectPlanning [model]="model" [expenseItem]="expenseItem">
+                    <projectPlanning [model]="model" [expenseItem]="expenseItem"
+                        [addActivityRequest]="guidelineAddActivityRequest" (tabChanged)="planningTab = $event">
 
                     </projectPlanning>
                 </div>
@@ -697,7 +698,12 @@
             </div>
             <div style="height:15px"></div>
             <!-- FIXED FOOTER -->
-            <div class="modal-footer footer-fixed">
+            <div class="modal-footer footer-fixed d-flex justify-content-between align-items-center">
+                <button *ngIf="isProjectPlanningExpense && planningTab === 4" class="btn btn-primary"
+                    (click)="requestAddGuidelineActivity()">
+                    + เพิ่มกิจกรรมหลัก
+                </button>
+                <span *ngIf="!(isProjectPlanningExpense && planningTab === 4)"></span>
                 <span class="text-danger me-2" *ngIf="isRequiredConstructionAttachmentMissing">
                     กรุณาแนบไฟล์บังคับให้ครบ
                 </span>
