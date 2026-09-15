@@ -17,7 +17,7 @@ export const environment = {
   // PreviewExamUrl: location.origin + "/CLS_E_BUDGET_BACKEND_DEMO/DownLoad_File/Preview_File_Template",
   // GET_AUTHEN: location.origin + "/CLS_E_BUDGET_BACKEND_DEMO/GET_DATA/GET_AUTHEN",
   // GET_MENU: location.origin + "/CLS_E_BUDGET_BACKEND_DEMO/GET_DATA/GetMenu",
-  //real
+  // //real
   EMO_API: location.origin + "/CLS_E_BUDGET_BACKEND/",
   DownloadExamUrl: location.origin + "/CLS_E_BUDGET_BACKEND/DownLoad_File/Download_File_TEMPLATE",
   PreviewExamUrl: location.origin + "/CLS_E_BUDGET_BACKEND/DownLoad_File/Preview_File_Template",

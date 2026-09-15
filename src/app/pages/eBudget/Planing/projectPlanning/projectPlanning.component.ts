@@ -52,6 +52,18 @@ export class ProjectPlanningComponent {
   requestAddGuidelineActivity(): void {
     this.guidelineAddActivityRequest++;
   }
+
+  getGuidelineActivitiesTotal(): number {
+    const totalOf = (activity: any): number => {
+      if (activity?.SubActivities?.length) {
+        return activity.SubActivities.reduce((sum: number, sub: any) => sum + totalOf(sub), 0);
+      }
+      return (activity?.quarters || []).reduce((sum: number, quarter: any) =>
+        sum + (quarter?.months || []).reduce((monthSum: number, month: any) =>
+          monthSum + this.toSaveNumber(month?.budget), 0), 0);
+    };
+    return (this.project_planing?.activities || []).reduce((sum: number, activity: any) => sum + totalOf(activity), 0);
+  }
   emptyplan: any = {
     Plan_Id: 0,
     Plan_Name: '',

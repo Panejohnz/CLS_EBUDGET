@@ -287,6 +287,9 @@
             + เพิ่มกิจกรรมหลัก
         </button>
         <span *ngIf="currentTab !== 4"></span>
+        <span class="fw-bold text-primary">
+            รวมเงินทุกกิจกรรม: {{ getGuidelineActivitiesTotal() | number:'1.2-2' }} บาท
+        </span>
         <div class="d-flex gap-2">
             <button class="btn btn-danger text-black" (click)="modal.dismiss()">
                 ยกเลิก

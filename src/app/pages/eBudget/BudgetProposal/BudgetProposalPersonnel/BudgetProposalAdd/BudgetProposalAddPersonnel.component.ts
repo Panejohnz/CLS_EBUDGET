@@ -20,6 +20,18 @@ export class ProjectBudgetProposalAddPersonnelComponent {
     this.guidelineAddActivityRequest++;
   }
 
+  getGuidelineActivitiesTotal(): number {
+    const totalOf = (activity: any): number => {
+      if (activity?.SubActivities?.length) {
+        return activity.SubActivities.reduce((sum: number, sub: any) => sum + totalOf(sub), 0);
+      }
+      return (activity?.quarters || []).reduce((sum: number, quarter: any) =>
+        sum + (quarter?.months || []).reduce((monthSum: number, month: any) =>
+          monthSum + (Number(month?.budget) || 0), 0), 0);
+    };
+    return (this.model?.activities || []).reduce((sum: number, activity: any) => sum + totalOf(activity), 0);
+  }
+
   get isProjectPlanningExpense(): boolean {
     return [64, 70, 73, 74, 75].includes(Number(this.model?.selectedExpenseTypeId || 0));
   }

@@ -699,24 +699,29 @@
             <div style="height:15px"></div>
             <!-- FIXED FOOTER -->
             <div class="modal-footer footer-fixed d-flex justify-content-between align-items-center">
-                <button *ngIf="isProjectPlanningExpense && planningTab === 4" class="btn btn-primary"
-                    (click)="requestAddGuidelineActivity()">
-                    + เพิ่มกิจกรรมหลัก
-                </button>
-                <span *ngIf="!(isProjectPlanningExpense && planningTab === 4)"></span>
-                <span class="text-danger me-2" *ngIf="isRequiredConstructionAttachmentMissing">
-                    กรุณาแนบไฟล์บังคับให้ครบ
-                </span>
-                <button class="btn btn-danger text-black" (click)="closeModal()">
-                    ยกเลิก
-                </button>
-
-                
-
-                <button class="btn btn-success text-black"
-                    [disabled]="isSaveLocked || isRequiredConstructionAttachmentMissing" (click)="save()">
-                    บันทึก
-                </button>
+                <div style="min-width: 160px;">
+                    <button *ngIf="isProjectPlanningExpense && planningTab === 4" class="btn btn-primary"
+                        (click)="requestAddGuidelineActivity()">
+                        + เพิ่มกิจกรรมหลัก
+                    </button>
+                </div>
+                <div class="flex-grow-1 text-center">
+                    <span *ngIf="isProjectPlanningExpense" class="fw-bold text-primary">
+                        รวมเงินทุกกิจกรรม: {{ getGuidelineActivitiesTotal() | number:'1.2-2' }} บาท
+                    </span>
+                    <span class="text-danger ms-3" *ngIf="isRequiredConstructionAttachmentMissing">
+                        กรุณาแนบไฟล์บังคับให้ครบ
+                    </span>
+                </div>
+                <div class="d-flex gap-2" style="min-width: 160px; justify-content: flex-end;">
+                    <button class="btn btn-danger text-black" (click)="closeModal()">
+                        ยกเลิก
+                    </button>
+                    <button class="btn btn-success text-black"
+                        [disabled]="isSaveLocked || isRequiredConstructionAttachmentMissing" (click)="save()">
+                        บันทึก
+                    </button>
+                </div>
 
             </div>
 

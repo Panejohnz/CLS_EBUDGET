@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { EbudgetService } from 'src/app/core/services/ebudget.service';
 import { BudgetYearService } from 'src/app/core/services/budget-year.service';
 import { MasterService } from 'src/app/core/services/Master.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-project-allocation-by-department',
@@ -20,6 +21,10 @@ import { MasterService } from 'src/app/core/services/Master.service';
 export class ProjectAllocationByDepartmentComponent implements OnInit {
   @Input() readOnly = false;
   private expenseListById = new Map<number, any>();
+  private planOrderById = new Map<number, number>();
+  private productOrderById = new Map<number, number>();
+  private activityOrderById = new Map<number, number>();
+  private budgetOrderById = new Map<number, number>();
   departments: any[] = [];
   rows: any[] = [];
   loading = false;
@@ -49,13 +54,25 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
       next: (response: any) => {
         const expenseLists = Array.isArray(response?.Mas_Expense_Lists) ? response.Mas_Expense_Lists : [];
         this.expenseListById = new Map(expenseLists.map((item: any) => [Number(item.Expense_Id), item]));
-        this.loadRequests();
+        this.loadPlanOrder(() => this.loadRequests());
       },
       error: () => {
         this.expenseListById.clear();
-        this.loadRequests();
+        this.loadPlanOrder(() => this.loadRequests());
       }
     });
+  }
+
+  private loadPlanOrder(done: () => void): void {
+    this.servicebud.GatewayGetData({ FUNC_CODE: 'FUNC-GET_Mas_General', BgYear: this.currentYear })
+      .subscribe({
+        next: (response: any) => {
+          const plans = Array.isArray(response?.Mas_Plan_Lists) ? response.Mas_Plan_Lists : [];
+          this.planOrderById = this.toOrderMap(plans, 'Plan_Id');
+          done();
+        },
+        error: () => done()
+      });
   }
 
   private loadRequests(): void {
@@ -116,9 +133,9 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
             const amount = this.mainRowAmount(plan);
             const path = [
               { key: `plan_${plan.Fk_Plan_Id || plan.Plan_Name}`, name: plan.Plan_Name || '-', type: 'plan' },
-              { key: `product_${plan.Fk_Product_Id || plan.Product_Name}`, name: plan.Product_Name || '-', type: 'product' },
-              { key: `activity_${plan.Fk_Activity_Id || plan.Activity_Name}`, name: plan.Activity_Name || '-', type: 'activity' },
-              { key: `budget_${plan.Fk_Budget_Type || plan.Budget_Type}`, name: plan.Budget_Type_Name || plan.Budget_Type || '-', type: 'budget' },
+              { key: `product_${plan.Fk_Product_Id || plan.Product_Name}`, name: plan.Product_Name || '-', type: 'product', entityId: Number(plan.Fk_Product_Id || 0) },
+              { key: `activity_${plan.Fk_Activity_Id || plan.Activity_Name}`, name: plan.Activity_Name || '-', type: 'activity', entityId: Number(plan.Fk_Activity_Id || 0) },
+              { key: `budget_${plan.Fk_Budget_Type || plan.Budget_Type}`, name: plan.Budget_Type_Name || plan.Budget_Type || '-', type: 'budget', entityId: Number(plan.Fk_Budget_Type || 0) },
               {
                 // Do not include Plan_Id / Request_Id here.  The same expense must be
                 // rendered on one row, with its amounts separated by department.
@@ -134,6 +151,7 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
                 source: plan
               }
             ];
+            path[0].entityId = Number(plan.Fk_Plan_Id || 0);
             let nodes = rootNodes;
             let parentNode: any = null;
             path.forEach((part, index) => {
@@ -165,6 +183,7 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
 
           this.departments = Array.from(departmentMap.values());
           this.rows = rootNodes;
+          this.loadHierarchyOrder(displayRows);
           this.loadInvestmentDetailRows();
           this.loading = false;
         },
@@ -194,6 +213,81 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
       }
     });
     return row;
+  }
+
+  private loadHierarchyOrder(rows: any[]): void {
+    const planIds = this.uniqueIds(rows, 'Fk_Plan_Id');
+    const productIds = this.uniqueIds(rows, 'Fk_Product_Id');
+    const expenseIds = this.uniqueIds(rows, 'Fk_Expense_List');
+    const requests: any[] = [];
+
+    // Products and activities are filtered master endpoints, therefore fetch
+    // only IDs which occur on this Allocation page.
+    planIds.forEach(id => requests.push(
+      this.servicebud.GatewayGetData({ FUNC_CODE: 'FUNC-GET_Mas_Product', Mas_Plan: { Plan_Id: id } })
+    ));
+    productIds.forEach(id => requests.push(
+      this.servicebud.GatewayGetData({ FUNC_CODE: 'FUNC-GET_Mas_Activity', Mas_Product: { Product_Id: id } })
+    ));
+    expenseIds.forEach(id => requests.push(
+      this.servicebud.GatewayGetData({ FUNC_CODE: 'FUNC-GET_Mas_Budget_Type', Mas_Expense_List: { Expense_Id: id } })
+    ));
+
+    if (!requests.length) {
+      this.sortHierarchyNodes(this.rows);
+      return;
+    }
+
+    forkJoin(requests).subscribe({
+      next: (responses: any[]) => {
+        const products = responses.flatMap(response => response?.Mas_Product_Lists || []);
+        const activities = responses.flatMap(response => response?.Mas_Activity_Lists || []);
+        const budgets = responses.flatMap(response => response?.Mas_Budget_Types || []);
+        this.productOrderById = this.toOrderMap(products, 'Product_Id');
+        this.activityOrderById = this.toOrderMap(activities, 'Activity_Id');
+        this.budgetOrderById = this.toOrderMap(budgets, 'Budget_Type_Id');
+        this.sortHierarchyNodes(this.rows);
+      },
+      error: () => this.sortHierarchyNodes(this.rows)
+    });
+  }
+
+  private uniqueIds(rows: any[], field: string): number[] {
+    return Array.from(new Set(rows.map(row => Number(row?.[field] || 0)).filter(Boolean)));
+  }
+
+  private toOrderMap(items: any[], idField: string): Map<number, number> {
+    const map = new Map<number, number>();
+    items.forEach(item => {
+      const id = Number(item?.[idField] || 0);
+      const order = Number(item?.Order_Seq);
+      if (id && Number.isFinite(order)) map.set(id, order);
+    });
+    return map;
+  }
+
+  private sortHierarchyNodes(nodes: any[]): void {
+    nodes.sort((left, right) => {
+      const leftOrder = this.nodeOrder(left);
+      const rightOrder = this.nodeOrder(right);
+      if (leftOrder === null && rightOrder === null) return 0;
+      if (leftOrder === null) return 1;
+      if (rightOrder === null) return -1;
+      return leftOrder - rightOrder;
+    });
+    nodes.forEach(node => this.sortHierarchyNodes(node.children || []));
+  }
+
+  private nodeOrder(node: any): number | null {
+    const id = Number(node?.entityId || 0);
+    const orders: Record<string, Map<number, number>> = {
+      plan: this.planOrderById,
+      product: this.productOrderById,
+      activity: this.activityOrderById,
+      budget: this.budgetOrderById
+    };
+    const value = orders[node?.type]?.get(id);
+    return value === undefined ? null : value;
   }
 
   totalForDepartment(departmentId: number): number {

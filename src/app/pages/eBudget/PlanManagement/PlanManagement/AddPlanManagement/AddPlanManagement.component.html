@@ -633,6 +633,10 @@
             + เพิ่มกิจกรรมหลัก
         </button>
         <span *ngIf="!(isProjectPlanningExpenseType(model?.selectedExpenseTypeId) && planningTab === 4)"></span>
+        <span *ngIf="isProjectPlanningExpenseType(model?.selectedExpenseTypeId)"
+            class="fw-bold text-primary">
+            รวมเงินทุกกิจกรรม: {{ getGuidelineActivitiesTotal() | number:'1.2-2' }} บาท
+        </span>
 
         <div class="d-flex gap-2">
         <button class="btn btn-danger text-black" (click)="closeModal()">

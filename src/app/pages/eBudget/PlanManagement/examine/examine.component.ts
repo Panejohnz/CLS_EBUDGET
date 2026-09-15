@@ -5,7 +5,7 @@ import { environment } from '../../../../../environments/environment';
 import { HttpHeaders } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { FormGroup, FormBuilder, FormArray, FormControl, FormControlName, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GridJsService } from '../../../tables/gridjs/gridjs.service';
@@ -51,6 +51,10 @@ export class ExamineComponent {
     638, 643, 648, 657, 673, 674, 675, 678, 681, 684, 700, 701,
     702, 703, 704
   ]);
+  private planOrderById = new Map<number, number>();
+  private productOrderById = new Map<number, number>();
+  private activityOrderById = new Map<number, number>();
+  private budgetOrderById = new Map<number, number>();
   constructor(
     private modalService: NgbModal,
     public service: GridJsService,
@@ -237,10 +241,21 @@ export class ExamineComponent {
           }
         }
 
-        this.applyFilter();
+        this.loadPlanOrder(() => this.applyFilter());
 
       });
 
+  }
+
+  private loadPlanOrder(done: () => void): void {
+    this.servicebud.GatewayGetData({ FUNC_CODE: 'FUNC-GET_Mas_General', BgYear: this.currentYear })
+      .subscribe({
+        next: (response: any) => {
+          this.planOrderById = this.toOrderMap(response?.Mas_Plan_Lists || [], 'Plan_Id');
+          done();
+        },
+        error: () => done()
+      });
   }
 
   // =====================================
@@ -392,6 +407,8 @@ export class ExamineComponent {
               Plan_Name:
                 row.Plan_Name || '-',
 
+              entityId: Number(row.Fk_Plan_Id || 0),
+
               expanded: true,
 
               products: []
@@ -425,6 +442,8 @@ export class ExamineComponent {
 
               Product_Name:
                 row.Product_Name || '-',
+
+              entityId: Number(row.Fk_Product_Id || 0),
 
               expanded: true,
 
@@ -460,6 +479,8 @@ export class ExamineComponent {
               Activity_Name:
                 row.Activity_Name || '-',
 
+              entityId: Number(row.Fk_Activity_Id || 0),
+
               expanded: true,
 
               budgets: []
@@ -493,6 +514,8 @@ export class ExamineComponent {
 
               Fk_Budget_Type:
                 row.Fk_Budget_Type || 0,
+
+              entityId: Number(row.Fk_Budget_Type || 0),
 
               Budget_Type:
                 row.Budget_Type_Name || row.Budget_Type || '-',
@@ -581,8 +604,77 @@ export class ExamineComponent {
 
         });
 
+        this.loadHierarchyOrder(rows);
+
       });
 
+  }
+
+  private loadHierarchyOrder(rows: any[]): void {
+    const planIds = this.uniqueIds(rows, 'Fk_Plan_Id');
+    const productIds = this.uniqueIds(rows, 'Fk_Product_Id');
+    const expenseIds = this.uniqueIds(rows, 'Fk_Expense_List');
+    const requests: Observable<any>[] = [];
+    planIds.forEach(id => requests.push(this.servicebud.GatewayGetData({
+      FUNC_CODE: 'FUNC-GET_Mas_Product', Mas_Plan: { Plan_Id: id }
+    })));
+    productIds.forEach(id => requests.push(this.servicebud.GatewayGetData({
+      FUNC_CODE: 'FUNC-GET_Mas_Activity', Mas_Product: { Product_Id: id }
+    })));
+    expenseIds.forEach(id => requests.push(this.servicebud.GatewayGetData({
+      FUNC_CODE: 'FUNC-GET_Mas_Budget_Type', Mas_Expense_List: { Expense_Id: id }
+    })));
+
+    if (!requests.length) {
+      this.sortGroupData();
+      return;
+    }
+    forkJoin(requests).subscribe({
+      next: (responses: any[]) => {
+        this.productOrderById = this.toOrderMap(responses.flatMap(item => item?.Mas_Product_Lists || []), 'Product_Id');
+        this.activityOrderById = this.toOrderMap(responses.flatMap(item => item?.Mas_Activity_Lists || []), 'Activity_Id');
+        this.budgetOrderById = this.toOrderMap(responses.flatMap(item => item?.Mas_Budget_Types || []), 'Budget_Type_Id');
+        this.sortGroupData();
+      },
+      error: () => this.sortGroupData()
+    });
+  }
+
+  private uniqueIds(rows: any[], field: string): number[] {
+    return Array.from(new Set(rows.map(row => Number(row?.[field] || 0)).filter(Boolean)));
+  }
+
+  private toOrderMap(items: any[], idField: string): Map<number, number> {
+    const map = new Map<number, number>();
+    items.forEach(item => {
+      const id = Number(item?.[idField] || 0);
+      const order = Number(item?.Order_Seq);
+      if (id && Number.isFinite(order)) map.set(id, order);
+    });
+    return map;
+  }
+
+  private sortGroupData(): void {
+    this.sortNodes(this.groupData, this.planOrderById);
+    this.groupData.forEach(plan => {
+      this.sortNodes(plan.products || [], this.productOrderById);
+      (plan.products || []).forEach((product: any) => {
+        this.sortNodes(product.activities || [], this.activityOrderById);
+        (product.activities || []).forEach((activity: any) =>
+          this.sortNodes(activity.budgets || [], this.budgetOrderById));
+      });
+    });
+  }
+
+  private sortNodes(nodes: any[], orderMap: Map<number, number>): void {
+    nodes.sort((left, right) => {
+      const leftOrder = orderMap.get(Number(left.entityId || 0));
+      const rightOrder = orderMap.get(Number(right.entityId || 0));
+      if (leftOrder === undefined && rightOrder === undefined) return 0;
+      if (leftOrder === undefined) return 1;
+      if (rightOrder === undefined) return -1;
+      return leftOrder - rightOrder;
+    });
   }
 
   // =====================================

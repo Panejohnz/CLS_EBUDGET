@@ -403,6 +403,15 @@ export class TabGuidelineComponent {
 
     return total;
   }
+
+  // Total shown at the bottom of Tab 4.  getActivityTotal already resolves a
+  // main activity with sub-activities to the sub-activity total, so each
+  // activity is counted once only.
+  getAllActivitiesTotal(): number {
+    return (this.model?.activities || []).reduce((sum: number, activity: any) => {
+      return sum + this.getActivityTotal(activity);
+    }, 0);
+  }
   getSubActivitiesTotal(act: any): number {
 
     let total = 0;
