@@ -2,7 +2,7 @@
   <div class="card-header shared-page-header">
     <h4 class="card-title mb-0 text-white">จัดสรรงบประมาณแยกตามหน่วยงาน</h4>
   </div>
-  <div class="card-body">
+  <div class="card-body allocation-card-body">
     <div *ngIf="loading" class="text-muted">กำลังโหลดข้อมูล...</div>
     <div *ngIf="!loading" class="table-responsive">
       <table class="table table-bordered align-middle text-center">
@@ -27,12 +27,15 @@
           </tr>
         </tfoot>
       </table>
-      <div *ngIf="!readOnly" class="text-end mt-3">
-        <button type="button" class="btn btn-success" (click)="saveDetails()">
-          บันทึก
-        </button>
-      </div>
     </div>
+  </div>
+</div>
+
+<div *ngIf="!readOnly" class="allocation-save-footer">
+  <div class="d-flex justify-content-end">
+    <button type="button" class="btn btn-success" (click)="saveDetails()">
+      บันทึก
+    </button>
   </div>
 </div>
 

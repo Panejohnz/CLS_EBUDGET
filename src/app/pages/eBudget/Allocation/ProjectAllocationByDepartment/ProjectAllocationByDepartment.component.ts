@@ -15,6 +15,32 @@ import { forkJoin } from 'rxjs';
     .step-budget > td { background-color: #d8eef7 !important; }
     .step-expense > td { background-color: #ffffff !important; }
     .step-detail > td { background-color: #f1f3f5 !important; }
+    .allocation-card-body { padding-bottom: 82px; }
+    .allocation-save-footer {
+      position: fixed;
+      left: var(--vz-vertical-menu-width, 250px);
+      right: 0;
+      bottom: 0;
+      z-index: 1030;
+      padding: 10px 28px;
+      background: rgba(255, 255, 255, .97);
+      border-top: 1px solid #d9dee7;
+      box-shadow: 0 -3px 12px rgba(0, 0, 0, .10);
+    }
+    :host-context(html[data-sidebar-size="sm"]) .allocation-save-footer,
+    :host-context(html[data-sidebar-size="sm-hover"]) .allocation-save-footer {
+      left: var(--vz-vertical-menu-width-sm, 70px);
+    }
+    :host-context(html[data-sidebar-size="md"]) .allocation-save-footer {
+      left: var(--vz-vertical-menu-width-md, 180px);
+    }
+    :host-context(html[data-layout="horizontal"]) .allocation-save-footer,
+    :host-context(html[data-sidebar-visibility="hidden"]) .allocation-save-footer {
+      left: 0;
+    }
+    @media (max-width: 767.98px) {
+      .allocation-save-footer { left: 0; padding: 8px 16px; }
+    }
   `],
   providers: [EbudgetService]
 })
