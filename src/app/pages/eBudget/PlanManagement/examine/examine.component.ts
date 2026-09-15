@@ -148,6 +148,16 @@ export class ExamineComponent {
   currentYear: any;
   userSession: any;
 
+  get sessionDepartmentId(): number | null {
+    if (this.userSession?.permissionData?.VIEW_DATA != 3) {
+      return null;
+    }
+    const value = this.userSession?.permissionData?.Department_id
+      ?? this.userSession?.permissionData?.Department_Id
+      ?? null;
+    return value === null || value === undefined || value === '' ? null : Number(value);
+  }
+
   get isDepartmentLocked(): boolean {
     return this.userSession?.permissionData?.VIEW_DATA == 3;
   }

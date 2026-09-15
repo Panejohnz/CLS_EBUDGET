@@ -15,6 +15,51 @@ import { forkJoin } from 'rxjs';
     .step-budget > td { background-color: #d8eef7 !important; }
     .step-expense > td { background-color: #ffffff !important; }
     .step-detail > td { background-color: #f1f3f5 !important; }
+    .allocation-table {
+      border-color: #9daabd !important;
+    }
+    .allocation-table > :not(caption) > * > * {
+      border-color: #aeb9c8 !important;
+    }
+    .allocation-table thead th,
+    .allocation-table tfoot td {
+      border-color: #d3d9e3 !important;
+    }
+    .allocation-table th:first-child,
+    .allocation-table td:first-child {
+      position: sticky;
+      left: 0;
+      z-index: 2;
+      box-shadow: 2px 0 4px rgba(0, 0, 0, .08);
+    }
+    .allocation-table th:last-child,
+    .allocation-table td:last-child {
+      position: sticky;
+      right: 0;
+      z-index: 2;
+      box-shadow: -2px 0 4px rgba(0, 0, 0, .08);
+    }
+    .allocation-table thead th:first-child,
+    .allocation-table thead th:last-child,
+    .allocation-table tfoot td:first-child,
+    .allocation-table tfoot td:last-child {
+      z-index: 4;
+      background-color: #556398 !important;
+    }
+    .allocation-table .step-plan > td:first-child { background-color: #dff5e4 !important; }
+    .allocation-table .step-product > td:first-child { background-color: #f3e1f7 !important; }
+    .allocation-table .step-activity > td:first-child { background-color: #fff2c7 !important; }
+    .allocation-table .step-budget > td:first-child { background-color: #d8eef7 !important; }
+    .allocation-table .step-expense > td:first-child { background-color: #ffffff !important; }
+    .allocation-table .step-detail > td:first-child { background-color: #f1f3f5 !important; }
+    .allocation-table .step-plan > td:last-child { background-color: #dff5e4 !important; }
+    .allocation-table .step-product > td:last-child { background-color: #f3e1f7 !important; }
+    .allocation-table .step-activity > td:last-child { background-color: #fff2c7 !important; }
+    .allocation-table .step-budget > td:last-child { background-color: #d8eef7 !important; }
+    .allocation-table .step-expense > td:last-child { background-color: #ffffff !important; }
+    .allocation-table .step-detail > td:last-child { background-color: #f1f3f5 !important; }
+    .allocation-table-scroll { cursor: grab; touch-action: pan-y; }
+    .allocation-table-scroll.is-dragging { cursor: grabbing; user-select: none; }
     .allocation-card-body { padding-bottom: 82px; }
     .allocation-save-footer {
       position: fixed;
@@ -46,6 +91,9 @@ import { forkJoin } from 'rxjs';
 })
 export class ProjectAllocationByDepartmentComponent implements OnInit {
   @Input() readOnly = false;
+  // When supplied by PlanManagement/examine, only show the signed-in
+  // department.  Allocation itself omits this input and still shows all.
+  @Input() departmentId: number | null = null;
   private expenseListById = new Map<number, any>();
   private planOrderById = new Map<number, number>();
   private productOrderById = new Map<number, number>();
@@ -55,6 +103,11 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
   rows: any[] = [];
   loading = false;
   currentYear: number | null = null;
+  private tableDragging = false;
+  private tableDragMoved = false;
+  private tableDragStartX = 0;
+  private tableDragStartScrollLeft = 0;
+  private suppressNodeClick = false;
 
   constructor(
     private servicebud: EbudgetService,
@@ -142,7 +195,9 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
             const expenseId = Number(request.Fk_Expense_List || 0);
             const plan = planByRequestAndExpense.get(`${requestId}_${expenseId}`);
             return this.mergeRequestAndPlan(request, plan);
-          });
+          }).filter((row: any) =>
+            !this.departmentId || Number(row.Department_Id || 0) === Number(this.departmentId)
+          );
           const departmentMap = new Map<number, any>();
           const rootNodes: any[] = [];
 
@@ -326,6 +381,52 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
 
   toggle(node: any): void {
     if (node.children?.length) node.expanded = !node.expanded;
+  }
+
+  startTableDrag(event: PointerEvent): void {
+    const target = event.target as HTMLElement;
+    if (target.closest('input, button, textarea, select, .ng-select, a, label')) return;
+    if (event.pointerType === 'mouse' && event.button !== 0) return;
+
+    const container = event.currentTarget as HTMLElement;
+    this.tableDragging = true;
+    this.tableDragMoved = false;
+    this.tableDragStartX = event.clientX;
+    this.tableDragStartScrollLeft = container.scrollLeft;
+    container.classList.add('is-dragging');
+    container.setPointerCapture?.(event.pointerId);
+  }
+
+  moveTableDrag(event: PointerEvent): void {
+    if (!this.tableDragging) return;
+    const container = event.currentTarget as HTMLElement;
+    const distance = event.clientX - this.tableDragStartX;
+    if (Math.abs(distance) > 3) this.tableDragMoved = true;
+    container.scrollLeft = this.tableDragStartScrollLeft - distance;
+    if (this.tableDragMoved) event.preventDefault();
+  }
+
+  endTableDrag(event: PointerEvent): void {
+    if (!this.tableDragging) return;
+    const container = event.currentTarget as HTMLElement;
+    this.tableDragging = false;
+    container.classList.remove('is-dragging');
+    if (container.hasPointerCapture?.(event.pointerId)) {
+      container.releasePointerCapture(event.pointerId);
+    }
+    if (this.tableDragMoved) {
+      this.suppressNodeClick = true;
+      setTimeout(() => this.suppressNodeClick = false);
+    }
+  }
+
+  onNodeClick(event: MouseEvent, node: any): void {
+    if (this.suppressNodeClick) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+    this.toggle(node);
   }
 
   private loadInvestmentDetailRows(): void {

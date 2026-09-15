@@ -4,8 +4,12 @@
   </div>
   <div class="card-body allocation-card-body">
     <div *ngIf="loading" class="text-muted">กำลังโหลดข้อมูล...</div>
-    <div *ngIf="!loading" class="table-responsive">
-      <table class="table table-bordered align-middle text-center">
+    <div *ngIf="!loading" class="table-responsive allocation-table-scroll"
+      (pointerdown)="startTableDrag($event)"
+      (pointermove)="moveTableDrag($event)"
+      (pointerup)="endTableDrag($event)"
+      (pointercancel)="endTableDrag($event)">
+      <table class="table table-bordered align-middle text-center allocation-table">
         <thead class="text-white" style="background-color: #556398;">
           <tr>
             <th class="text-start" style="min-width: 320px;">รายการค่าใช้จ่าย</th>
@@ -41,7 +45,7 @@
 
 <ng-template #nodeRows let-nodes let-level="level">
   <ng-container *ngFor="let node of nodes">
-    <tr [ngClass]="'step-' + node.type" (click)="toggle(node)" [class.cursor-pointer]="node.children.length">
+    <tr [ngClass]="'step-' + node.type" (click)="onNodeClick($event, node)" [class.cursor-pointer]="node.children.length">
       <td class="text-start" [style.padding-left.px]="20 + (level * 28)">
         <i *ngIf="node.children.length" class="me-2" [ngClass]="node.expanded ? 'ri-arrow-down-s-line' : 'ri-arrow-right-s-line'"></i>
         <span *ngIf="!node.children.length">- </span>{{ node.name }}
