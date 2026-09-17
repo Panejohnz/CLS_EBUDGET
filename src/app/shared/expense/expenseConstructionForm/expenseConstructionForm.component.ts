@@ -3,7 +3,19 @@ import { Component, Input } from '@angular/core';
 @Component({
   selector: 'app-expense-construction-form',
   templateUrl: './expenseConstructionForm.component.html',
-  styles: ``
+  styles: `
+    .construction-detail-card {
+      border: 1px solid #556398;
+      box-shadow: none;
+    }
+
+    .construction-detail-card-header {
+      background-color: #556398;
+      border-bottom: 1px solid #556398;
+      color: #fff;
+      font-weight: 600;
+    }
+  `
 })
 export class ExpenseConstructionFormComponent {
 
