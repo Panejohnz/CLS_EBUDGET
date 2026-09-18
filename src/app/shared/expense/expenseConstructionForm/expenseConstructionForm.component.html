@@ -98,7 +98,7 @@
                 <!-- ระยะเวลา -->
                 <td>
 
-                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                    <input type="text" inputmode="numeric" pattern="[0-9]*"
                         placeholder="ระบุปี" class="form-control  text-center" [(ngModel)]="item.year"
                         (ngModelChange)="onBaseYearChange()">
 
@@ -187,108 +187,116 @@
 
 </div>
 
-<!-- BINDING YEAR -->
-<div class="mt-4">
+<!-- DETAIL CARD -->
+<div class="card construction-detail-card mt-4">
 
-    <label class="fw-semibold">
-        ระยะผูกพัน
-    </label>
-
-<div class="col-md-4 mt-2">
-
-    <label *ngFor="let y of [1,2,3,4,5]" class="me-3">
-
-        <input
-            type="radio"
-            name="bindingYear"
-            [value]="y"
-            [(ngModel)]="bindingYear"
-            (change)="onYearChange()">
-
-        {{ y }} ปี
-
-    </label>
-
-</div>
-
-</div>
-
-<!-- YEARLY -->
-<div class="mt-4" *ngIf="bindingYear">
-
-    <label class="fw-semibold">
-        กระจายเงิน / งวดงาน
-    </label>
-
-    <div class="row mt-2 align-items-center" *ngFor="let y of yearly; let i=index">
-
-        <div class="col-md-1">
-
-            ปีงบประมาณ {{ yearly[i].year || '-' }}
-
-        </div>
-
-        <!-- amount -->
-        <div class="col-md-2">
-
-            <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
-                class="form-control  text-end" [(ngModel)]="yearly[i].amount" (ngModelChange)="onYearlyAmountChange(i)"
-                placeholder="จำนวนเงิน">
-
-        </div>
-
-        <!-- milestone -->
-        <div class="col-md-2">
-
-            <input class="form-control" [(ngModel)]="yearly[i].milestone" (ngModelChange)="updateDetailItems()"
-                placeholder="จำนวนงวด">
-
-        </div>
-           <div class="col-md-7"></div>
-
+    <div class="card-header construction-detail-card-header">
+        รายละเอียดการผูกพันและเอกสารประกอบ
     </div>
 
-    <div class="row mt-2 align-items-center fw-bold">
+    <div class="card-body">
 
-        <div class="col-md-1">
-            รวมทั้งสิ้น
+        <!-- BINDING YEAR -->
+        <div>
+
+            <label class="fw-semibold">
+                ระยะผูกพัน
+            </label>
+
+            <div class="d-flex flex-wrap gap-3 mt-2">
+
+                <label *ngFor="let y of [1,2,3,4,5]" class="mb-0">
+
+                    <input type="radio" name="bindingYear" [value]="y" [(ngModel)]="bindingYear"
+                        (change)="onYearChange()">
+
+                    {{ y }} ปี
+
+                </label>
+
+            </div>
+
         </div>
 
-        <div class="col-md-2 text-end" [class.text-danger]="yearlyTotal > grandTotal">
-            {{ yearlyTotal | number:'1.2-2' }}
+        <!-- YEARLY -->
+        <div class="mt-4" *ngIf="bindingYear">
+
+            <label class="fw-semibold">
+                กระจายเงิน / งวดงาน
+            </label>
+
+            <div class="row g-2 mt-1 align-items-center" *ngFor="let y of yearly; let i=index">
+
+                <div class="col-md-2">
+
+                    ปีงบประมาณ {{ yearly[i].year || '-' }}
+
+                </div>
+
+                <!-- amount -->
+                <div class="col-md-3">
+
+                    <input type="text" mask="separator.2" thousandSeparator="," decimalMarker="." inputmode="decimal"
+                        class="form-control text-end" [(ngModel)]="yearly[i].amount"
+                        (ngModelChange)="onYearlyAmountChange(i)" placeholder="จำนวนเงิน">
+
+                </div>
+
+                <!-- milestone -->
+                <div class="col-md-3">
+
+                    <input class="form-control" [(ngModel)]="yearly[i].milestone"
+                        (ngModelChange)="updateDetailItems()" placeholder="จำนวนงวด">
+
+                </div>
+
+            </div>
+
+            <div class="row g-2 mt-2 align-items-center fw-bold">
+
+                <div class="col-md-2">
+                    รวมทั้งสิ้น
+                </div>
+
+                <div class="col-md-3 text-end" [class.text-danger]="yearlyTotal > grandTotal">
+                    {{ yearlyTotal | number:'1.2-2' }}
+                </div>
+
+                <div class="col-md-4 text-danger" *ngIf="yearlyTotal > grandTotal">
+                    ยอดรวมต้องไม่เกินวงเงินรวม
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="col-md-1 text-danger" *ngIf="yearlyTotal > grandTotal">
-            ยอดรวมต้องไม่เกินวงเงินรวม
-        </div>
+        <!-- SPEC -->
+        <div class="mt-4">
 
-    </div>
+            <label class="fw-semibold">
+                คุณสมบัติ (spec)
+            </label>
 
-</div>
-
-<!-- SPEC -->
-<div class="mt-4">
-
-    <label class="fw-semibold">
-        คุณสมบัติ (spec)
-    </label>
-
-    <textarea rows="4" class="form-control" [(ngModel)]="spec" (ngModelChange)="updateDetailItems()">
+            <textarea rows="4" class="form-control" [(ngModel)]="spec" (ngModelChange)="updateDetailItems()">
 
             </textarea>
 
-</div>
+        </div>
 
-<!-- ATTACHMENT -->
-<div class="row mt-4" *ngIf="model">
+        <!-- ATTACHMENT -->
+        <div class="row g-3 mt-2" *ngIf="model">
 
-    <div class="col-6" *ngFor="let file of attachmentConfig; let i = index">
+            <div class="col-md-6" *ngFor="let file of attachmentConfig; let i = index">
 
-        <app-expense-attachment [model]="model"
-            [title]="(i + 1) + '. ' + file.label + (file.required ? ' (บังคับ)' : ' (ไม่บังคับ)')"
-            filterField="TYPE_ID" [filterValue]="file.typeId" [horizontal]="true">
+                <app-expense-attachment [model]="model"
+                    [title]="(i + 1) + '. ' + file.label + (file.required ? ' (บังคับ)' : ' (ไม่บังคับ)')"
+                    filterField="TYPE_ID" [filterValue]="file.typeId" [horizontal]="true">
 
-        </app-expense-attachment>
+                </app-expense-attachment>
+
+            </div>
+
+        </div>
 
     </div>
 

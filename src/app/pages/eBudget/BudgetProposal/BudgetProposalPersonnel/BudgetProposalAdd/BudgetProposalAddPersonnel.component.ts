@@ -1311,7 +1311,8 @@ export class ProjectBudgetProposalAddPersonnelComponent {
     const rows =
       (this.model?.Budget_Request_Detail_Item || [])
         .filter((item: any) =>
-          Number(item?.Fk_Expense_Id || 0) === selectedExpenseId
+          Number(item?.Fk_Expense_Id || 0) === selectedExpenseId &&
+          !this.isConstructionAllocationRow(item)
         );
 
     return rows.reduce((sum: number, item: any) => {
@@ -1340,6 +1341,13 @@ export class ProjectBudgetProposalAddPersonnelComponent {
     }
 
     return 0;
+  }
+
+  private isConstructionAllocationRow(item: any): boolean {
+    const expenseDetail = String(item?.Expense_Detail || '');
+
+    return expenseDetail === 'CONSTRUCTION_FLAG' ||
+      expenseDetail.startsWith('YEAR_');
   }
 
   mapActivities() {
