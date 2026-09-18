@@ -24,7 +24,7 @@ export class Report_R006Component {
 
   constructor(private sanitizer: DomSanitizer) {
     const url =
-      'https://bfast.pacc.go.th/CLS_ERP_BUDGET_REPORT/Report/Budget_Report_R006.aspx';
+      'https://app.celestsoft.com/CLS_ERP_BUDGET_REPORT/Report/Budget_Report_R006.aspx';
     this.reportUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 }
