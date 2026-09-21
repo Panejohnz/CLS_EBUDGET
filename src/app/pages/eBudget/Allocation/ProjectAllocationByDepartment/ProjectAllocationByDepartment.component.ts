@@ -311,7 +311,7 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
           this.departments = Array.from(departmentMap.values());
           this.rows = rootNodes;
           this.loadHierarchyOrder(displayRows);
-          this.loadInvestmentDetailRows();
+          this.loadAllocationDetails();
           this.loading = false;
         },
         error: () => {
@@ -526,6 +526,89 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
         (node.Plan_Id || node.Request_Id)
       )
       .forEach(node => this.loadInvestmentDetails(node));
+  }
+
+  /** Loads every Allocation detail in one request instead of Request/Plan ById per row. */
+  private loadAllocationDetails(): void {
+    this.servicebud.GatewayGetData({
+      FUNC_CODE: 'FUNC-GET_ALLOCATION_DETAILS',
+      BgYear: this.currentYear
+    }).subscribe({
+      next: (response: any) => {
+        if (response?.RESULT != null || !response?.List_Allocation_Details_Data_Table) {
+          this.loadInvestmentDetailRows();
+          return;
+        }
+        const source = response?.List_Allocation_Details_Data_Table?.Data || [];
+        const rows = Array.isArray(source) ? source : [];
+        const requestDetails = new Map<number, any[]>();
+        const planDetails = new Map<number, any[]>();
+
+        rows.forEach((detail: any) => {
+          const isPlan = String(detail.Detail_Source || '').toUpperCase() === 'PLAN';
+          const ownerId = Number(isPlan ? detail.Plan_Id : detail.Request_Id);
+          if (!ownerId) return;
+          const detailsByOwner = isPlan ? planDetails : requestDetails;
+          const items = detailsByOwner.get(ownerId) || [];
+          items.push(detail);
+          detailsByOwner.set(ownerId, items);
+        });
+
+        this.getExpenseNodes(this.rows)
+          .filter(node => node.isAdjustList &&
+            !(node.sources || []).some((item: any) => this.isProjectTypeOne(item)))
+          .forEach(node => {
+            node.children = [];
+            (node.sources || []).forEach((sourcePlan: any) =>
+              this.mergeAllocationDetailsForSource(node, sourcePlan, requestDetails, planDetails));
+          });
+      },
+      // Keep the existing per-item loader as a compatibility fallback until the
+      // SP is deployed to every environment.
+      error: () => this.loadInvestmentDetailRows()
+    });
+  }
+
+  private mergeAllocationDetailsForSource(
+    node: any,
+    sourcePlan: any,
+    requestDetailsById: Map<number, any[]>,
+    planDetailsById: Map<number, any[]>
+  ): void {
+    const requestId = Number(sourcePlan.FK_Request_Id || sourcePlan.Fk_Request_Id || sourcePlan.Request_Id || 0);
+    const planId = Number(sourcePlan.Plan_Id || 0);
+    const requestDetails = this.filterExpenseDetails(requestDetailsById.get(requestId) || [], node.Fk_Expense_List);
+    if (!planId) {
+      requestDetails.forEach((detail: any, index: number) => this.mergeDetailNode(node, detail, sourcePlan, index));
+      return;
+    }
+
+    const savedDetails = this.filterExpenseDetails(planDetailsById.get(planId) || [], node.Fk_Expense_List);
+    const savedByKey = new Map(savedDetails.map((detail: any) => [this.persistenceDetailKey(detail), detail]));
+    const hasPlanAdjust1 = this.hasAdjust1Amount(sourcePlan);
+    const hasSavedDetailAmount = savedDetails.some((detail: any) =>
+      this.hasUpdateAmount(detail) || this.hasAdjust1Amount(detail));
+    if (!hasPlanAdjust1 && hasSavedDetailAmount) {
+      const detailTotal = savedDetails.reduce(
+        (sum: number, detail: any) => sum + this.detailAllocationAmount(detail, sourcePlan), 0);
+      this.replaceSourceAmount(node, sourcePlan, detailTotal);
+    }
+
+    requestDetails.forEach((requestDetail: any, index: number) => {
+      const savedDetail = savedByKey.get(this.persistenceDetailKey(requestDetail));
+      const detail = savedDetail ? {
+        ...requestDetail,
+        Plan_Item_Id: savedDetail.Plan_Item_Id,
+        Total: savedDetail.Total,
+        Adjust1: savedDetail.Adjust1,
+        Adjust2: savedDetail.Adjust2,
+        Adjust3: savedDetail.Adjust3,
+        Update_Amount: savedDetail.Update_Amount,
+        __planDetailTotal: savedDetail.Total
+      } : requestDetail;
+      if (!savedDetail) detail.__planDetailTotal = 0;
+      this.mergeDetailNode(node, detail, sourcePlan, index);
+    });
   }
 
   private isAdjustList(expenseId: any): boolean {
