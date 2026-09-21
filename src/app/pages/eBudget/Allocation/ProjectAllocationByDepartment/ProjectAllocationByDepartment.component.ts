@@ -25,6 +25,18 @@ import { forkJoin } from 'rxjs';
     .allocation-table tfoot td {
       border-color: #d3d9e3 !important;
     }
+    .allocation-table thead th {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      background-color: #556398 !important;
+    }
+    .allocation-table tfoot td {
+      position: sticky;
+      bottom: 0;
+      z-index: 3;
+      background-color: #556398 !important;
+    }
     .allocation-table th:first-child,
     .allocation-table td:first-child {
       position: sticky;
@@ -58,8 +70,25 @@ import { forkJoin } from 'rxjs';
     .allocation-table .step-budget > td:last-child { background-color: #d8eef7 !important; }
     .allocation-table .step-expense > td:last-child { background-color: #ffffff !important; }
     .allocation-table .step-detail > td:last-child { background-color: #f1f3f5 !important; }
-    .allocation-table-scroll { cursor: grab; touch-action: pan-y; }
+    .table-responsive.allocation-table-scroll {
+      height: calc(100vh - 230px) !important;
+      max-height: calc(100vh - 230px) !important;
+      overflow-x: auto !important;
+      overflow-y: auto !important;
+      cursor: grab;
+      touch-action: pan-y;
+    }
     .allocation-table-scroll.is-dragging { cursor: grabbing; user-select: none; }
+    .tree-toggle {
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      vertical-align: middle;
+    }
+    .tree-toggle:hover { background: rgba(85, 99, 152, .12); border-radius: 4px; }
     .allocation-card-body { padding-bottom: 82px; }
     .allocation-save-footer {
       position: fixed;
@@ -85,6 +114,10 @@ import { forkJoin } from 'rxjs';
     }
     @media (max-width: 767.98px) {
       .allocation-save-footer { left: 0; padding: 8px 16px; }
+      .table-responsive.allocation-table-scroll {
+        height: calc(100vh - 190px) !important;
+        max-height: calc(100vh - 190px) !important;
+      }
     }
   `],
   providers: [EbudgetService]
@@ -226,10 +259,10 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
 
             const amount = this.mainRowAmount(plan);
             const path = [
-              { key: `plan_${plan.Fk_Plan_Id || plan.Plan_Name}`, name: plan.Plan_Name || '-', type: 'plan' },
-              { key: `product_${plan.Fk_Product_Id || plan.Product_Name}`, name: plan.Product_Name || '-', type: 'product', entityId: Number(plan.Fk_Product_Id || 0) },
-              { key: `activity_${plan.Fk_Activity_Id || plan.Activity_Name}`, name: plan.Activity_Name || '-', type: 'activity', entityId: Number(plan.Fk_Activity_Id || 0) },
-              { key: `budget_${plan.Fk_Budget_Type || plan.Budget_Type}`, name: plan.Budget_Type_Name || plan.Budget_Type || '-', type: 'budget', entityId: Number(plan.Fk_Budget_Type || 0) },
+              { key: this.hierarchyKey('plan', plan.Plan_Name, plan.Fk_Plan_Id), name: plan.Plan_Name || '-', type: 'plan' },
+              { key: this.hierarchyKey('product', plan.Product_Name, plan.Fk_Product_Id), name: plan.Product_Name || '-', type: 'product', entityId: Number(plan.Fk_Product_Id || 0) },
+              { key: this.hierarchyKey('activity', plan.Activity_Name, plan.Fk_Activity_Id), name: plan.Activity_Name || '-', type: 'activity', entityId: Number(plan.Fk_Activity_Id || 0) },
+              { key: this.hierarchyKey('budget', plan.Budget_Type_Name || plan.Budget_Type, plan.Fk_Budget_Type), name: plan.Budget_Type_Name || plan.Budget_Type || '-', type: 'budget', entityId: Number(plan.Fk_Budget_Type || 0) },
               {
                 // Do not include Plan_Id / Request_Id here.  The same expense must be
                 // rendered on one row, with its amounts separated by department.
@@ -307,6 +340,19 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
       }
     });
     return row;
+  }
+
+  /**
+   * Master IDs from old request rows are not always consistent.  The Tree is a
+   * display hierarchy, so rows with the same displayed hierarchy text belong
+   * together; only fall back to the ID when that text is unavailable.
+   */
+  private hierarchyKey(type: string, name: any, id: any): string {
+    const normalizedName = String(name ?? '')
+      .trim()
+      .toLocaleLowerCase()
+      .replace(/\s+/g, ' ');
+    return `${type}_${normalizedName || Number(id || 0) || '-'}`;
   }
 
   /**
@@ -418,6 +464,12 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
 
   toggle(node: any): void {
     if (node.children?.length) node.expanded = !node.expanded;
+  }
+
+  toggleNode(event: MouseEvent, node: any): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.toggle(node);
   }
 
   startTableDrag(event: PointerEvent): void {
