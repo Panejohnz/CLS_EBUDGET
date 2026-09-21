@@ -217,12 +217,14 @@ export class TabGuidelineComponent {
     activity.SubActivities?.push({
       id: Date.now(),
       name: '',
+      Seq: (activity.SubActivities?.length || 0) + 1,
       noBudget: activity.noBudget ?? this.getDefaultNoBudget(),
       consultSelf: false,
       consultHire: false,
       quarters: this.generateYear(),
       SubActivities: []
     });
+    this.reIndexSort();
     this.clearMainIfHasSub(activity);
   }
 
@@ -256,6 +258,7 @@ export class TabGuidelineComponent {
     act.SubActivities.push({
       name: '',
       owner: '',
+      Seq: (act.SubActivities?.length || 0) + 1,
       quarters: this.generateYear(),
       SubActivities: [],
       otherExpenses: [],
@@ -264,6 +267,7 @@ export class TabGuidelineComponent {
       consultSelf: false,
       consultHire: false
     });
+    this.reIndexSort();
 
   }
   async removeSub(act: any, i: number) {
