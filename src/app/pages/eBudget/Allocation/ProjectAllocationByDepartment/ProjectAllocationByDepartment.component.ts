@@ -95,6 +95,9 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
   // department.  Allocation itself omits this input and still shows all.
   @Input() departmentId: number | null = null;
   private expenseListById = new Map<number, any>();
+  // A rate is attached to the expense-detail master, not the request item.
+  // Keep it here because Allocation loads request details lazily per source.
+  private rateNullByExpenseDetailId = new Map<number, boolean>();
   private planOrderById = new Map<number, number>();
   private productOrderById = new Map<number, number>();
   private activityOrderById = new Map<number, number>();
@@ -502,52 +505,59 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
         response?.Budget_Request_Detail_Item || response?.Budget_Request_Detail,
         node.Fk_Expense_List
       );
-      if (!planId) {
-        requestDetails.forEach((detail: any, index: number) => this.mergeDetailNode(node, detail, sourcePlan, index));
-        return;
-      }
-
-      this.servicebud.GatewayGetData({
-        FUNC_CODE: 'FUNC-GET_BUDGET_PLAN_BY_ID',
-        Plan_Id: planId,
-        Request_Id: 0,
-        Project_Id: 0
-      }).subscribe((planResponse: any) => {
-        const savedDetails = this.filterExpenseDetails(planResponse?.Budget_Plan_Detail_Items, node.Fk_Expense_List)
-          .filter((detail: any) => Number(detail.Fk_Budget_Plan || planId) === planId);
-        const savedByKey = new Map(savedDetails.map((detail: any) => [this.detailKey(detail), detail]));
-
-        // Once a Plan has detail items, the parent expense and every hierarchy
-        // row must reflect the sum of those detail-item Update_Amount values.
-        // Do not use Budget_Plan.Total/Total_Plan for that allocated row.
-        const hasPlanAdjust1 = this.hasAdjust1Amount(sourcePlan);
-        const hasSavedDetailAmount = savedDetails.some((detail: any) =>
-          this.hasUpdateAmount(detail) || this.hasAdjust1Amount(detail)
-        );
-        // Budget_Plan.Adjust1 is the allocated amount for the main row.  Only
-        // fall back to detail rows when the main Plan has not been adjusted.
-        if (!hasPlanAdjust1 && hasSavedDetailAmount) {
-          const detailTotal = savedDetails.reduce(
-            (sum: number, detail: any) => sum + this.detailAllocationAmount(detail, sourcePlan),
-            0
-          );
-          this.replaceSourceAmount(node, sourcePlan, detailTotal);
+      this.applyRateNullFlags(requestDetails, () => {
+        if (!planId) {
+          requestDetails.forEach((detail: any, index: number) => this.mergeDetailNode(node, detail, sourcePlan, index));
+          return;
         }
 
-        requestDetails.forEach((requestDetail: any, index: number) => {
-          const savedDetail = savedByKey.get(this.detailKey(requestDetail));
-          const detail = savedDetail ? {
-            ...requestDetail,
-            Plan_Item_Id: savedDetail.Plan_Item_Id,
-            Total: savedDetail.Total,
-            Adjust1: savedDetail.Adjust1,
-            Adjust2: savedDetail.Adjust2,
-            Adjust3: savedDetail.Adjust3,
-            Update_Amount: savedDetail.Update_Amount,
-            __planDetailTotal: savedDetail.Total
-          } : requestDetail;
-          if (!savedDetail) detail.__planDetailTotal = 0;
-          this.mergeDetailNode(node, detail, sourcePlan, index);
+        this.servicebud.GatewayGetData({
+          FUNC_CODE: 'FUNC-GET_BUDGET_PLAN_BY_ID',
+          Plan_Id: planId,
+          Request_Id: 0,
+          Project_Id: 0
+        }).subscribe((planResponse: any) => {
+          const savedDetails = this.filterExpenseDetails(planResponse?.Budget_Plan_Detail_Items, node.Fk_Expense_List)
+            .filter((detail: any) => Number(detail.Fk_Budget_Plan || planId) === planId);
+          this.applyRateNullFlags(savedDetails, () => {
+            // A Budget_Plan detail does not consistently retain Request_Item_Id.
+            // Match persisted values by master detail + description, while the
+            // display tree below groups custom ("other") rows by Request_Item_Id.
+            const savedByKey = new Map(savedDetails.map((detail: any) => [this.persistenceDetailKey(detail), detail]));
+
+            // Once a Plan has detail items, the parent expense and every hierarchy
+            // row must reflect the sum of those detail-item Update_Amount values.
+            // Do not use Budget_Plan.Total/Total_Plan for that allocated row.
+            const hasPlanAdjust1 = this.hasAdjust1Amount(sourcePlan);
+            const hasSavedDetailAmount = savedDetails.some((detail: any) =>
+              this.hasUpdateAmount(detail) || this.hasAdjust1Amount(detail)
+            );
+            // Budget_Plan.Adjust1 is the allocated amount for the main row.  Only
+            // fall back to detail rows when the main Plan has not been adjusted.
+            if (!hasPlanAdjust1 && hasSavedDetailAmount) {
+              const detailTotal = savedDetails.reduce(
+                (sum: number, detail: any) => sum + this.detailAllocationAmount(detail, sourcePlan),
+                0
+              );
+              this.replaceSourceAmount(node, sourcePlan, detailTotal);
+            }
+
+            requestDetails.forEach((requestDetail: any, index: number) => {
+              const savedDetail = savedByKey.get(this.persistenceDetailKey(requestDetail));
+              const detail = savedDetail ? {
+                ...requestDetail,
+                Plan_Item_Id: savedDetail.Plan_Item_Id,
+                Total: savedDetail.Total,
+                Adjust1: savedDetail.Adjust1,
+                Adjust2: savedDetail.Adjust2,
+                Adjust3: savedDetail.Adjust3,
+                Update_Amount: savedDetail.Update_Amount,
+                __planDetailTotal: savedDetail.Total
+              } : requestDetail;
+              if (!savedDetail) detail.__planDetailTotal = 0;
+              this.mergeDetailNode(node, detail, sourcePlan, index);
+            });
+          });
         });
       });
     });
@@ -621,13 +631,61 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
     );
   }
 
+  private applyRateNullFlags(details: any[], done: () => void): void {
+    const unknownDetailIds = Array.from(new Set(details
+      .map(detail => Number(detail.Fk_Expense_Detail_Id ?? detail.Fk_Expense_Detial_Id ?? 0))
+      .filter(detailId => detailId > 0 && !this.rateNullByExpenseDetailId.has(detailId))));
+
+    if (!unknownDetailIds.length) {
+      this.setRateNullFlags(details);
+      done();
+      return;
+    }
+
+    forkJoin(unknownDetailIds.map(detailId => this.servicebud.GatewayGetData({
+      FUNC_CODE: 'FUNC-Get_Mas_Expense_Rate',
+      Fk_Expense_Id: detailId
+    }))).subscribe({
+      next: (responses: any[]) => {
+        responses.forEach((response: any, index: number) => {
+          const rates = response?.List_Mas_Expense_Rate || response?.Mas_Expense_Rate || [];
+          const rate = Array.isArray(rates) ? rates[0] : rates;
+          this.rateNullByExpenseDetailId.set(unknownDetailIds[index], this.isRateNull(rate?.Is_Rate_Null));
+        });
+        this.setRateNullFlags(details);
+        done();
+      },
+      // If rate data cannot be read, keep the existing safe behavior: group by
+      // master expense detail rather than accidentally splitting normal items.
+      error: () => {
+        unknownDetailIds.forEach(detailId => this.rateNullByExpenseDetailId.set(detailId, false));
+        this.setRateNullFlags(details);
+        done();
+      }
+    });
+  }
+
+  private setRateNullFlags(details: any[]): void {
+    details.forEach(detail => {
+      const detailId = Number(detail.Fk_Expense_Detail_Id ?? detail.Fk_Expense_Detial_Id ?? 0);
+      detail.Is_Rate_Null = this.rateNullByExpenseDetailId.get(detailId) ? 1 : 0;
+    });
+  }
+
+  private isRateNull(value: any): boolean {
+    return value === true || value === 1 || String(value).toLowerCase() === 'true';
+  }
+
   private detailKey(detail: any): string {
-    return String(
-      detail.Fk_Expense_Detail_Id ??
-      detail.Fk_Expense_Detial_Id ??
-      detail.Fk_Plan_Detail_Id ??
-      detail.Expense_Detail ?? ''
-    );
+    const detailId = detail.Fk_Expense_Detail_Id ?? detail.Fk_Expense_Detial_Id ?? detail.Fk_Plan_Detail_Id ?? 0;
+    return this.isRateNull(detail.Is_Rate_Null)
+      ? `REQUEST_${detail.Request_Item_Id ?? detail.Plan_Item_Id ?? detail.Expense_Detail ?? ''}`
+      : `DETAIL_${detailId}`;
+  }
+
+  private persistenceDetailKey(detail: any): string {
+    const detailId = detail.Fk_Expense_Detail_Id ?? detail.Fk_Expense_Detial_Id ?? detail.Fk_Plan_Detail_Id ?? 0;
+    return `${detailId}_${String(detail.Expense_Detail ?? '').trim()}`;
   }
 
   /** รายการครุภัณฑ์บางรายการยังไม่มีใน Plan detail จึงดึงจาก Request detail มาเสริม */
@@ -668,7 +726,7 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
   private createDetailNode(node: any, detail: any, sourcePlan: any, index: number): any {
     const amount = this.detailAllocationAmount(detail, sourcePlan);
     return {
-      key: `${node.key}_detail_${detail.Fk_Expense_Detail_Id || detail.Fk_Expense_Detial_Id || detail.Expense_Detail || index}`,
+      key: `${node.key}_detail_${this.detailKey(detail) || index}`,
       name: detail.Expense_Detail || '-',
       type: 'detail',
       children: [],
