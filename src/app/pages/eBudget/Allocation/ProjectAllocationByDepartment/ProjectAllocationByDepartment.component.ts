@@ -182,18 +182,28 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
           const plans = Array.isArray(source) ? source : [];
           // The request is the master row for Allocation.  A Budget_Plan only
           // supplies the latest allocated values after that request is saved.
-          const planByRequestAndExpense = new Map<string, any>();
+          const planByRequest = new Map<number, any[]>();
           plans.forEach((plan: any) => {
-            const requestId = Number(plan.FK_Request_Id || plan.Fk_Request_Id || plan.Request_Id || 0);
-            const expenseId = Number(plan.Fk_Expense_List || 0);
+            // Some historical Budget_Plan rows return the relation as
+            // FK_Request_Id_Copy.  Use the request relation as the primary
+            // key; Fk_Expense_List is only used to distinguish multiple rows
+            // belonging to the same request.
+            const requestId = Number(
+              plan.FK_Request_Id || plan.Fk_Request_Id || plan.FK_Request_Id_Copy || plan.Request_Id || 0
+            );
             if (requestId) {
-              planByRequestAndExpense.set(`${requestId}_${expenseId}`, plan);
+              const plansForRequest = planByRequest.get(requestId) || [];
+              plansForRequest.push(plan);
+              planByRequest.set(requestId, plansForRequest);
             }
           });
           const displayRows = requests.map((request: any) => {
-            const requestId = Number(request.Request_Id || request.FK_Request_Id || request.Fk_Request_Id || 0);
+            const requestId = Number(
+              request.Request_Id || request.FK_Request_Id || request.Fk_Request_Id || request.FK_Request_Id_Copy || 0
+            );
             const expenseId = Number(request.Fk_Expense_List || 0);
-            const plan = planByRequestAndExpense.get(`${requestId}_${expenseId}`);
+            const plansForRequest = planByRequest.get(requestId) || [];
+            const plan = this.findPlanForRequest(plansForRequest, expenseId);
             return this.mergeRequestAndPlan(request, plan);
           }).filter((row: any) =>
             !this.departmentId || Number(row.Department_Id || 0) === Number(this.departmentId)
@@ -294,6 +304,30 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
       }
     });
     return row;
+  }
+
+  /**
+   * A request that has never been allocated has no Budget_Plan, so it must
+   * retain its requested Total.  When a Budget_Plan exists, use that row's
+   * allocated values.  Prefer the matching expense when a request has more
+   * than one expense; support old rows where Fk_Expense_List was not saved.
+   */
+  private findPlanForRequest(plansForRequest: any[], expenseId: number): any | undefined {
+    if (!plansForRequest.length) return undefined;
+
+    const exactExpensePlan = plansForRequest.find((plan: any) =>
+      Number(plan.Fk_Expense_List || plan.FK_Expense_List || 0) === expenseId
+    );
+    if (exactExpensePlan) return exactExpensePlan;
+
+    const planWithoutExpense = plansForRequest.find((plan: any) =>
+      !Number(plan.Fk_Expense_List || plan.FK_Expense_List || 0)
+    );
+    if (planWithoutExpense) return planWithoutExpense;
+
+    // One request normally creates one allocation row.  This fallback keeps
+    // historical plans visible even when the API uses a different expense key.
+    return plansForRequest.length === 1 ? plansForRequest[0] : undefined;
   }
 
   private loadHierarchyOrder(rows: any[]): void {
