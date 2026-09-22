@@ -4,8 +4,8 @@
   </div>
 
   <div class="card-body">
-    <div class="border rounded p-3 bg-light">
-      <div class="d-flex justify-content-between align-items-center mb-3 gap-2">
+    <div class="border rounded p-3 bg-light rate-workspace">
+      <div class="d-flex justify-content-between align-items-center mb-3 gap-2 rate-toolbar">
         <div style="width:300px;">
           <input type="text" class="form-control" placeholder="ค้นหาแท็บ..."
             [(ngModel)]="tabSearchTerm" (input)="onTabSearchChange()">
@@ -17,19 +17,28 @@
       </div>
 
       @if (rateExpenseTabs.length > 0) {
-      <ul class="nav nav-tabs mb-3">
-        @for (tab of filteredRateExpenseTabs; track tab.Fk_Expense_Id) {
-        <li class="nav-item">
-          <button type="button" class="nav-link" [class.active]="selectedRateExpenseId === tab.Fk_Expense_Id"
-            (click)="setRateExpenseTab(tab.Fk_Expense_Id)">
-            <span [innerHTML]="highlightTabName(tab.Expense_Name)"></span>
-          </button>
-        </li>
-        }
-      </ul>
+      <section class="rate-tab-section mb-3">
+        <div class="rate-tab-section__heading">
+          <span class="rate-tab-section__icon"><i class="ri-list-check-2"></i></span>
+          <div>
+            <div class="rate-tab-section__title">เลือกหมวดค่าใช้จ่าย</div>
+          </div>
+        </div>
+        <ul class="nav nav-tabs rate-tab-list">
+          @for (tab of filteredRateExpenseTabs; track tab.Fk_Expense_Id) {
+          <li class="nav-item">
+            <button type="button" class="nav-link" [class.active]="selectedRateExpenseId === tab.Fk_Expense_Id"
+              (click)="setRateExpenseTab(tab.Fk_Expense_Id)">
+              <i class="ri-file-list-3-line"></i>
+              <span [innerHTML]="highlightTabName(tab.Expense_Name)"></span>
+            </button>
+          </li>
+          }
+        </ul>
+      </section>
       }
 
-      <div class="d-flex justify-content-start align-items-center mb-3">
+      <div class="d-flex justify-content-start align-items-center mb-3 rate-content-toolbar">
         <div style="width:300px;">
           <input type="text" class="form-control" placeholder="ค้นหารายการ..."
             [(ngModel)]="service.searchTerm" (input)="filterSearch()">

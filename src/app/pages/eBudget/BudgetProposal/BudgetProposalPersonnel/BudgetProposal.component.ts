@@ -165,11 +165,13 @@ export class ProjectBudgetProposalComponent {
 
       this.griddataTemp = [...this.allData];
 
+
       this.loadMasSearchOptions();
 
     });
 
   }
+
 
   private loadMasSearchOptions() {
     const model = {
