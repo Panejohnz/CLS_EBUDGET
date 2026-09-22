@@ -47,7 +47,13 @@
   <ng-container *ngFor="let node of nodes">
     <tr [ngClass]="'step-' + node.type" (click)="onNodeClick($event, node)" [class.cursor-pointer]="node.children.length">
       <td class="text-start" [style.padding-left.px]="20 + (level * 28)">
-        <i *ngIf="node.children.length" class="me-2" [ngClass]="node.expanded ? 'ri-arrow-down-s-line' : 'ri-arrow-right-s-line'"></i>
+        <button *ngIf="node.children.length" type="button" class="tree-toggle me-1"
+          (click)="toggleNode($event, node)"
+          [attr.aria-expanded]="node.expanded"
+          [attr.aria-label]="node.expanded ? 'ปิดรายการย่อย' : 'เปิดรายการย่อย'"
+          [title]="node.expanded ? 'ปิดรายการย่อย' : 'เปิดรายการย่อย'">
+          <i [ngClass]="node.expanded ? 'ri-arrow-down-s-line' : 'ri-arrow-right-s-line'"></i>
+        </button>
         <span *ngIf="!node.children.length">- </span>{{ node.name }}
       </td>
       <td *ngFor="let department of departments" class="text-end fw-bold">

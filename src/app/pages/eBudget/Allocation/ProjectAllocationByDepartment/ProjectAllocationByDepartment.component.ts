@@ -25,6 +25,18 @@ import { forkJoin } from 'rxjs';
     .allocation-table tfoot td {
       border-color: #d3d9e3 !important;
     }
+    .allocation-table thead th {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      background-color: #556398 !important;
+    }
+    .allocation-table tfoot td {
+      position: sticky;
+      bottom: 0;
+      z-index: 3;
+      background-color: #556398 !important;
+    }
     .allocation-table th:first-child,
     .allocation-table td:first-child {
       position: sticky;
@@ -58,8 +70,25 @@ import { forkJoin } from 'rxjs';
     .allocation-table .step-budget > td:last-child { background-color: #d8eef7 !important; }
     .allocation-table .step-expense > td:last-child { background-color: #ffffff !important; }
     .allocation-table .step-detail > td:last-child { background-color: #f1f3f5 !important; }
-    .allocation-table-scroll { cursor: grab; touch-action: pan-y; }
+    .table-responsive.allocation-table-scroll {
+      height: calc(100vh - 230px) !important;
+      max-height: calc(100vh - 230px) !important;
+      overflow-x: auto !important;
+      overflow-y: auto !important;
+      cursor: grab;
+      touch-action: pan-y;
+    }
     .allocation-table-scroll.is-dragging { cursor: grabbing; user-select: none; }
+    .tree-toggle {
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      vertical-align: middle;
+    }
+    .tree-toggle:hover { background: rgba(85, 99, 152, .12); border-radius: 4px; }
     .allocation-card-body { padding-bottom: 82px; }
     .allocation-save-footer {
       position: fixed;
@@ -85,6 +114,10 @@ import { forkJoin } from 'rxjs';
     }
     @media (max-width: 767.98px) {
       .allocation-save-footer { left: 0; padding: 8px 16px; }
+      .table-responsive.allocation-table-scroll {
+        height: calc(100vh - 190px) !important;
+        max-height: calc(100vh - 190px) !important;
+      }
     }
   `],
   providers: [EbudgetService]
@@ -226,10 +259,10 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
 
             const amount = this.mainRowAmount(plan);
             const path = [
-              { key: `plan_${plan.Fk_Plan_Id || plan.Plan_Name}`, name: plan.Plan_Name || '-', type: 'plan' },
-              { key: `product_${plan.Fk_Product_Id || plan.Product_Name}`, name: plan.Product_Name || '-', type: 'product', entityId: Number(plan.Fk_Product_Id || 0) },
-              { key: `activity_${plan.Fk_Activity_Id || plan.Activity_Name}`, name: plan.Activity_Name || '-', type: 'activity', entityId: Number(plan.Fk_Activity_Id || 0) },
-              { key: `budget_${plan.Fk_Budget_Type || plan.Budget_Type}`, name: plan.Budget_Type_Name || plan.Budget_Type || '-', type: 'budget', entityId: Number(plan.Fk_Budget_Type || 0) },
+              { key: this.hierarchyKey('plan', plan.Plan_Name, plan.Fk_Plan_Id), name: plan.Plan_Name || '-', type: 'plan' },
+              { key: this.hierarchyKey('product', plan.Product_Name, plan.Fk_Product_Id), name: plan.Product_Name || '-', type: 'product', entityId: Number(plan.Fk_Product_Id || 0) },
+              { key: this.hierarchyKey('activity', plan.Activity_Name, plan.Fk_Activity_Id), name: plan.Activity_Name || '-', type: 'activity', entityId: Number(plan.Fk_Activity_Id || 0) },
+              { key: this.hierarchyKey('budget', plan.Budget_Type_Name || plan.Budget_Type, plan.Fk_Budget_Type), name: plan.Budget_Type_Name || plan.Budget_Type || '-', type: 'budget', entityId: Number(plan.Fk_Budget_Type || 0) },
               {
                 // Do not include Plan_Id / Request_Id here.  The same expense must be
                 // rendered on one row, with its amounts separated by department.
@@ -278,7 +311,7 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
           this.departments = Array.from(departmentMap.values());
           this.rows = rootNodes;
           this.loadHierarchyOrder(displayRows);
-          this.loadInvestmentDetailRows();
+          this.loadAllocationDetails();
           this.loading = false;
         },
         error: () => {
@@ -307,6 +340,19 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
       }
     });
     return row;
+  }
+
+  /**
+   * Master IDs from old request rows are not always consistent.  The Tree is a
+   * display hierarchy, so rows with the same displayed hierarchy text belong
+   * together; only fall back to the ID when that text is unavailable.
+   */
+  private hierarchyKey(type: string, name: any, id: any): string {
+    const normalizedName = String(name ?? '')
+      .trim()
+      .toLocaleLowerCase()
+      .replace(/\s+/g, ' ');
+    return `${type}_${normalizedName || Number(id || 0) || '-'}`;
   }
 
   /**
@@ -420,6 +466,12 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
     if (node.children?.length) node.expanded = !node.expanded;
   }
 
+  toggleNode(event: MouseEvent, node: any): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.toggle(node);
+  }
+
   startTableDrag(event: PointerEvent): void {
     const target = event.target as HTMLElement;
     if (target.closest('input, button, textarea, select, .ng-select, a, label')) return;
@@ -474,6 +526,89 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
         (node.Plan_Id || node.Request_Id)
       )
       .forEach(node => this.loadInvestmentDetails(node));
+  }
+
+  /** Loads every Allocation detail in one request instead of Request/Plan ById per row. */
+  private loadAllocationDetails(): void {
+    this.servicebud.GatewayGetData({
+      FUNC_CODE: 'FUNC-GET_ALLOCATION_DETAILS',
+      BgYear: this.currentYear
+    }).subscribe({
+      next: (response: any) => {
+        if (response?.RESULT != null || !response?.List_Allocation_Details_Data_Table) {
+          this.loadInvestmentDetailRows();
+          return;
+        }
+        const source = response?.List_Allocation_Details_Data_Table?.Data || [];
+        const rows = Array.isArray(source) ? source : [];
+        const requestDetails = new Map<number, any[]>();
+        const planDetails = new Map<number, any[]>();
+
+        rows.forEach((detail: any) => {
+          const isPlan = String(detail.Detail_Source || '').toUpperCase() === 'PLAN';
+          const ownerId = Number(isPlan ? detail.Plan_Id : detail.Request_Id);
+          if (!ownerId) return;
+          const detailsByOwner = isPlan ? planDetails : requestDetails;
+          const items = detailsByOwner.get(ownerId) || [];
+          items.push(detail);
+          detailsByOwner.set(ownerId, items);
+        });
+
+        this.getExpenseNodes(this.rows)
+          .filter(node => node.isAdjustList &&
+            !(node.sources || []).some((item: any) => this.isProjectTypeOne(item)))
+          .forEach(node => {
+            node.children = [];
+            (node.sources || []).forEach((sourcePlan: any) =>
+              this.mergeAllocationDetailsForSource(node, sourcePlan, requestDetails, planDetails));
+          });
+      },
+      // Keep the existing per-item loader as a compatibility fallback until the
+      // SP is deployed to every environment.
+      error: () => this.loadInvestmentDetailRows()
+    });
+  }
+
+  private mergeAllocationDetailsForSource(
+    node: any,
+    sourcePlan: any,
+    requestDetailsById: Map<number, any[]>,
+    planDetailsById: Map<number, any[]>
+  ): void {
+    const requestId = Number(sourcePlan.FK_Request_Id || sourcePlan.Fk_Request_Id || sourcePlan.Request_Id || 0);
+    const planId = Number(sourcePlan.Plan_Id || 0);
+    const requestDetails = this.filterExpenseDetails(requestDetailsById.get(requestId) || [], node.Fk_Expense_List);
+    if (!planId) {
+      requestDetails.forEach((detail: any, index: number) => this.mergeDetailNode(node, detail, sourcePlan, index));
+      return;
+    }
+
+    const savedDetails = this.filterExpenseDetails(planDetailsById.get(planId) || [], node.Fk_Expense_List);
+    const savedByKey = new Map(savedDetails.map((detail: any) => [this.persistenceDetailKey(detail), detail]));
+    const hasPlanAdjust1 = this.hasAdjust1Amount(sourcePlan);
+    const hasSavedDetailAmount = savedDetails.some((detail: any) =>
+      this.hasUpdateAmount(detail) || this.hasAdjust1Amount(detail));
+    if (!hasPlanAdjust1 && hasSavedDetailAmount) {
+      const detailTotal = savedDetails.reduce(
+        (sum: number, detail: any) => sum + this.detailAllocationAmount(detail, sourcePlan), 0);
+      this.replaceSourceAmount(node, sourcePlan, detailTotal);
+    }
+
+    requestDetails.forEach((requestDetail: any, index: number) => {
+      const savedDetail = savedByKey.get(this.persistenceDetailKey(requestDetail));
+      const detail = savedDetail ? {
+        ...requestDetail,
+        Plan_Item_Id: savedDetail.Plan_Item_Id,
+        Total: savedDetail.Total,
+        Adjust1: savedDetail.Adjust1,
+        Adjust2: savedDetail.Adjust2,
+        Adjust3: savedDetail.Adjust3,
+        Update_Amount: savedDetail.Update_Amount,
+        __planDetailTotal: savedDetail.Total
+      } : requestDetail;
+      if (!savedDetail) detail.__planDetailTotal = 0;
+      this.mergeDetailNode(node, detail, sourcePlan, index);
+    });
   }
 
   private isAdjustList(expenseId: any): boolean {
