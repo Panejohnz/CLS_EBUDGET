@@ -645,6 +645,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       if (!this.menuItems || this.menuItems.length === 0) {
         console.log('No menu from session, using menuService items:', menuItems);
         this.menuItems = menuItems;
+        this.scheduleActiveMenuRefresh();
       } else {
         console.log('Using menu from session, ignoring menuService items');
       }
@@ -679,6 +680,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         this.menuItems = session.menuData;
         // อัปเดต menuService ด้วย
         this.menuService.updateMenuItems(session.menuData);
+        this.scheduleActiveMenuRefresh();
         return;
       }
     }
@@ -698,6 +700,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         if (response && response.menuItems) {
           this.menuService.updateMenuItems(response.menuItems);
           this.menuItems = response.menuItems;
+          this.scheduleActiveMenuRefresh();
         }
       },
       error: (error) => {
@@ -1080,8 +1083,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
       pathName = pathName.replace('/velzon/angular/modern', '');
     }
 
-    const active = this.findMenuItem(pathName, this.menuItems)
-    this.toggleItem(active)
+    // Navigation must not toggle an already-expanded menu closed. Keep the
+    // current expanded state and only ensure the active route's parents open.
+    this.openActiveMenuPath(this.menuItems || []);
     const ul = document.getElementById("navbar-nav");
     if (ul) {
       const items = Array.from(ul.querySelectorAll("a.nav-link"));
@@ -1118,6 +1122,36 @@ export class SidebarComponent implements OnInit, OnDestroy {
     }
 
     return null;
+  }
+
+  isMenuActive(item: MenuItem): boolean {
+    if (item.link && !this.isExternalLink(item.link)) {
+      const currentUrl = this.router.url.split('?')[0].split('#')[0];
+      const menuLink = item.link.split('?')[0].split('#')[0];
+      if (currentUrl === menuLink) {
+        return true;
+      }
+    }
+
+    return (item.subItems || []).some((subItem: MenuItem) => this.isMenuActive(subItem));
+  }
+
+  private openActiveMenuPath(items: MenuItem[]): boolean {
+    for (const item of items) {
+      if (item.subItems?.length && this.openActiveMenuPath(item.subItems)) {
+        item.isCollapsed = false;
+        return true;
+      }
+
+      if (item.link && this.isMenuActive(item)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private scheduleActiveMenuRefresh(): void {
+    setTimeout(() => this.initActiveMenu(), 0);
   }
 
   /**

@@ -147,6 +147,17 @@ export class ProjectPlanningComponent {
     return this.userSession?.permissionData?.VIEW_DATA == 3;
   }
 
+  get modalDepartmentName(): string {
+    const project = this.project_planing || {};
+    const departmentId = project.Department_Id ?? project.selectedDepartment;
+    return project.Department_Name || project.Department_Short_Name ||
+      this.department.find((item: any) => String(item.Department_Id) === String(departmentId))?.Department_Name || '';
+  }
+
+  get isEditingProject(): boolean {
+    return Number(this.project_planing?.Project_Id || 0) > 0;
+  }
+
   get lockedDepartmentId(): any {
     return this.userSession?.permissionData?.Department_id ??
       this.userSession?.permissionData?.Department_Id ??
