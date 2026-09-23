@@ -22,7 +22,7 @@
 
                 <ng-select [items]="Mas_Plan_Lists" bindLabel="Plan_Name" bindValue="Plan_Id"
                     [(ngModel)]="model.selectedPlanPropos" name="selectedPlan" (ngModelChange)="Onchange_type_Plan()"
-                    placeholder="-- เลือก --">
+                    [disabled]="readOnly" placeholder="-- เลือก --">
 
                 </ng-select>
 
@@ -36,7 +36,7 @@
 
                 <ng-select [items]="Mas_Product" bindLabel="Product_Name" bindValue="Product_Id"
                     [(ngModel)]="model.selectedProductPropos" name="selectedProduct"
-                    (ngModelChange)="Onchange_type_Product()" placeholder="-- เลือก --">
+                    (ngModelChange)="Onchange_type_Product()" [disabled]="readOnly" placeholder="-- เลือก --">
 
                 </ng-select>
 
@@ -49,7 +49,7 @@
                 </label><span class="text-danger">*</span>
 
                 <ng-select [items]="Mas_Activity" bindLabel="Activity_Name" bindValue="Activity_Id"
-                    [(ngModel)]="model.selectedActivityPropos" name="selectedActivity" placeholder="-- เลือก --">
+                    [(ngModel)]="model.selectedActivityPropos" name="selectedActivity" [disabled]="readOnly" placeholder="-- เลือก --">
 
                 </ng-select>
 
@@ -91,13 +91,13 @@
                     รายการค่าใช้จ่าย
                 </label><span class="text-danger">*</span>
 
-                <!-- <ng-select [disabled]="model.Budget_Request.Request_Id" [items]="expenseOptions" bindLabel="Expense_Name"
+                <!-- <ng-select [disabled]="readOnly || model.Budget_Request.Request_Id" [items]="expenseOptions" bindLabel="Expense_Name"
                     bindValue="Expense_Id" [(ngModel)]="model.selectedExpenseTypeId" (ngModelChange)="onExpenseChange($event)"
                     placeholder="-- กรุณาเลือกรายการค่าใช้จ่าย --">
                 
                 </ng-select> -->
 
-                <ng-select appendTo="body" [disabled]="model.Budget_Request.Request_Id" [items]="expenseOptions"
+                <ng-select appendTo="body" [disabled]="readOnly || model.Budget_Request.Request_Id" [items]="expenseOptions"
                     class="expense-select" bindLabel="Expense_Name" bindValue="Expense_Id"
                     [(ngModel)]="model.selectedExpenseTypeId" (ngModelChange)="onExpenseChange($event)"
                     placeholder="-- กรุณาเลือกรายการค่าใช้จ่าย --">
@@ -147,14 +147,14 @@
 
 
             <!-- BODY -->
-            <div class="modal-body bg-light-subtle">
+            <div class="modal-body bg-light-subtle" [class.readonly-project-detail]="readOnly">
 
                 <!-- ACTION -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
 
                     <!-- Checkbox -->
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="budgetIndicator"
+                        <input class="form-check-input" type="checkbox" id="budgetIndicator" [disabled]="readOnly"
                             [(ngModel)]="Is_Bureau_Indicator">
 
                         <label class="form-check-label fw-medium" for="budgetIndicator">
@@ -163,7 +163,7 @@
                     </div>
 
                     <!-- ปุ่มเพิ่ม -->
-                    <button class="btn btn-primary" (click)="addTargetRow()">
+                    <button *ngIf="!readOnly" class="btn btn-primary" (click)="addTargetRow()">
                         + เพิ่มรายการ
                     </button>
 
@@ -208,7 +208,7 @@
                                     <!-- เดือน ต.ค.-มี.ค. -->
                                     <tr class="month-header">
                                         <td rowspan="4" class="align-middle">
-                                            <input type="textarea" class="form-control" [(ngModel)]="t.unit"
+                                            <input type="textarea" class="form-control" [(ngModel)]="t.unit" [readonly]="readOnly"
                                                 placeholder="ระบุหน่วยนับ">
                                         </td>
 
@@ -224,7 +224,7 @@
                                         </td>
 
                                         <td rowspan="4" class="align-middle">
-                                            <button class="btn btn-danger btn-sm" *ngIf="targetList.length > 1"
+                                            <button class="btn btn-danger btn-sm" *ngIf="!readOnly && targetList.length > 1"
                                                 (click)="removeTargetRow(i,t)">
                                                 <i class="ri-delete-bin-line"></i>
                                             </button>
@@ -234,32 +234,32 @@
                                     <!-- ช่องกรอก ต.ค.-มี.ค. -->
                                     <tr>
                                         <td>
-                                            <input type="number" class="form-control text-end" [(ngModel)]="t.oct"
+                                            <input type="number" class="form-control text-end" [readonly]="readOnly" [(ngModel)]="t.oct"
                                                 placeholder="ระบุเป้าหมาย">
                                         </td>
 
                                         <td>
-                                            <input type="number" class="form-control text-end" [(ngModel)]="t.nov"
+                                            <input type="number" class="form-control text-end" [readonly]="readOnly" [(ngModel)]="t.nov"
                                                 placeholder="ระบุเป้าหมาย">
                                         </td>
 
                                         <td>
-                                            <input type="number" class="form-control text-end" [(ngModel)]="t.dec"
+                                            <input type="number" class="form-control text-end" [readonly]="readOnly" [(ngModel)]="t.dec"
                                                 placeholder="ระบุเป้าหมาย">
                                         </td>
 
                                         <td>
-                                            <input type="number" class="form-control text-end" [(ngModel)]="t.jan"
+                                            <input type="number" class="form-control text-end" [readonly]="readOnly" [(ngModel)]="t.jan"
                                                 placeholder="ระบุเป้าหมาย">
                                         </td>
 
                                         <td>
-                                            <input type="number" class="form-control text-end" [(ngModel)]="t.feb"
+                                            <input type="number" class="form-control text-end" [readonly]="readOnly" [(ngModel)]="t.feb"
                                                 placeholder="ระบุเป้าหมาย">
                                         </td>
 
                                         <td>
-                                            <input type="number" class="form-control text-end" [(ngModel)]="t.mar"
+                                            <input type="number" class="form-control text-end" [readonly]="readOnly" [(ngModel)]="t.mar"
                                                 placeholder="ระบุเป้าหมาย">
                                         </td>
                                     </tr>
@@ -277,32 +277,32 @@
                                     <!-- ช่องกรอก เม.ย.-ก.ย. -->
                                     <tr>
                                         <td>
-                                            <input type="number" class="form-control text-end" [(ngModel)]="t.apr"
+                                            <input type="number" class="form-control text-end" [readonly]="readOnly" [(ngModel)]="t.apr"
                                                 placeholder="ระบุเป้าหมาย">
                                         </td>
 
                                         <td>
-                                            <input type="number" class="form-control text-end" [(ngModel)]="t.may"
+                                            <input type="number" class="form-control text-end" [readonly]="readOnly" [(ngModel)]="t.may"
                                                 placeholder="ระบุเป้าหมาย">
                                         </td>
 
                                         <td>
-                                            <input type="number" class="form-control text-end" [(ngModel)]="t.jun"
+                                            <input type="number" class="form-control text-end" [readonly]="readOnly" [(ngModel)]="t.jun"
                                                 placeholder="ระบุเป้าหมาย">
                                         </td>
 
                                         <td>
-                                            <input type="number" class="form-control text-end" [(ngModel)]="t.jul"
+                                            <input type="number" class="form-control text-end" [readonly]="readOnly" [(ngModel)]="t.jul"
                                                 placeholder="ระบุเป้าหมาย">
                                         </td>
 
                                         <td>
-                                            <input type="number" class="form-control text-end" [(ngModel)]="t.aug"
+                                            <input type="number" class="form-control text-end" [readonly]="readOnly" [(ngModel)]="t.aug"
                                                 placeholder="ระบุเป้าหมาย">
                                         </td>
 
                                         <td>
-                                            <input type="number" class="form-control text-end" [(ngModel)]="t.sep"
+                                            <input type="number" class="form-control text-end" [readonly]="readOnly" [(ngModel)]="t.sep"
                                                 placeholder="ระบุเป้าหมาย">
                                         </td>
                                     </tr>
@@ -347,7 +347,7 @@
 
                 </button>
 
-                <button class="btn btn-success text-black" [disabled]="isSaveLocked" (click)="saveTarget(modal)">
+                <button *ngIf="!readOnly" class="btn btn-success text-black" [disabled]="isSaveLocked" (click)="saveTarget(modal)">
 
                     บันทึก
 
@@ -376,7 +376,7 @@
             </div>
 
             <!-- CONTENT -->
-            <div class="expense-body">
+            <div class="expense-body" [class.readonly-project-detail]="readOnly">
                 <!-- component อื่นๆ -->
                 @if([1,2,3,4,5,6,7,8,10,11,12,14,15,16].includes(model.selectedExpenseTypeId)){
 
@@ -679,7 +679,7 @@
 
                 }
 
-                @else if ([64,70,73,74,75].includes(model.selectedExpenseTypeId)) {
+                @else if (isProjectPlanningExpense) {
                 <div class="px-custom">
                     <projectPlanning [model]="model" [expenseItem]="expenseItem"
                         [addActivityRequest]="guidelineAddActivityRequest" (tabChanged)="planningTab = $event">
@@ -700,7 +700,7 @@
             <!-- FIXED FOOTER -->
             <div class="modal-footer footer-fixed d-flex justify-content-between align-items-center">
                 <div style="min-width: 160px;">
-                    <button *ngIf="isProjectPlanningExpense && planningTab === 4" class="btn btn-primary"
+                    <button *ngIf="!readOnly && isProjectPlanningExpense && planningTab === 4" class="btn btn-primary"
                         (click)="requestAddGuidelineActivity()">
                         + เพิ่มกิจกรรมหลัก
                     </button>
@@ -717,7 +717,7 @@
                     <button class="btn btn-danger text-black" (click)="closeModal()">
                         ยกเลิก
                     </button>
-                    <button class="btn btn-success text-black"
+                    <button *ngIf="!readOnly" class="btn btn-success text-black"
                         [disabled]="isSaveLocked || isRequiredConstructionAttachmentMissing" (click)="save()">
                         บันทึก
                     </button>

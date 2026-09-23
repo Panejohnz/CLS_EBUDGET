@@ -213,7 +213,7 @@
 <ng-template #fullDataModal let-modal>
 
     <div class="modal-header shared-page-header p-3">
-        <h5 class="modal-title text-white">ข้อมูลโครงการ</h5>
+        <h5 class="modal-title text-white">ข้อมูลโครงการ<span *ngIf="isEditingProject && modalDepartmentName"> - หน่วยงาน : {{ modalDepartmentName }}</span></h5>
         <button type="button" class="btn-close" (click)="modal.dismiss('Close click')"></button>
     </div>
 

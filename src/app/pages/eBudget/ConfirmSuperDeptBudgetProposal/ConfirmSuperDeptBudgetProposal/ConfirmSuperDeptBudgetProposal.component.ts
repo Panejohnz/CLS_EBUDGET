@@ -92,6 +92,8 @@ export class ConfirmSuperDeptBudgetProposalComponent {
         }
     ];
     modalRef: any;
+    model: any;
+    selectedDetailRow: any = null;
     total$!: Observable<number>;
   get Total(): number {
     return this.griddata.reduce(
@@ -429,12 +431,57 @@ export class ConfirmSuperDeptBudgetProposalComponent {
     }
 
     fullModal(modal: any, data: any) {
+        if (!data?.Request_Id) return;
 
+        this.model = null;
+        this.selectedDetailRow = data;
+        this.serviceebud.GatewayGetData({
+            FUNC_CODE: 'FUNC-GET_BUDGET_REQUEST_BY_ID',
+            Request_Id: data.Request_Id,
+            Project_Id: data.FK_Project_Plan_Id || data.FK_Project_Plan_Id_copy || 0
+        }).subscribe((response: any) => {
+            this.model = {
+                Budget_Request: response.Budget_Request || {},
+                Budget_Request_Detail_Item: this.toArray(response.Budget_Request_Detail_Item)
+            };
+            this.resolveExpenseName(() => this.openDetailModal(modal));
+        }, () => {
+            basicAlert('error', 'ไม่สามารถโหลดรายละเอียดคำของบประมาณได้', '');
+        });
+    }
 
+    private toArray(value: any): any[] {
+        if (Array.isArray(value)) return value;
+        if (Array.isArray(value?.Data)) return value.Data;
+        if (value && typeof value === 'object') return Object.values(value);
+        return [];
+    }
+
+    private openDetailModal(modal: any): void {
         this.modalRef = this.modalService.open(modal, {
             backdrop: 'static',
-            windowClass: 'modal-95'
+            windowClass: 'full-screen-modal'
         });
+    }
+
+    private resolveExpenseName(done: () => void): void {
+        const request = this.model?.Budget_Request || {};
+        const existingName = request.Expense_Name || request.Expense_List ||
+            this.selectedDetailRow?.Expense_Name || this.selectedDetailRow?.Expense_List;
+        if (existingName || !request.Fk_Expense_List) {
+            done();
+            return;
+        }
+
+        this.serviceebud.GatewayGetData({
+            FUNC_CODE: 'FUNC-GET_Mas_Expense_List',
+            Mas_Expense_List: { Fk_Expense_Type_Id: 0 }
+        }).subscribe((response: any) => {
+            const expense = this.toArray(response?.Mas_Expense_Lists)
+                .find((item: any) => String(item.Expense_Id) === String(request.Fk_Expense_List));
+            if (expense?.Expense_Name) request.Expense_Name = expense.Expense_Name;
+            done();
+        }, () => done());
     }
     deletePlan(data: any) {
 

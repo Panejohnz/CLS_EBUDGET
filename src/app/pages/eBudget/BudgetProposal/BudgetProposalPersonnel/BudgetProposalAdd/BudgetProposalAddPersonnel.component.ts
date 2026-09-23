@@ -7,16 +7,23 @@ import { BudgetYearService } from 'src/app/core/services/budget-year.service';
 @Component({
   selector: 'app-project-budget-proposal-add',
   templateUrl: './BudgetProposalAdd.component.html',
-  styleUrl: './BudgetProposalAdd.cpmponent.scss'
+  styleUrl: './BudgetProposalAdd.cpmponent.scss',
+  styles: [`
+    .readonly-project-detail {
+      pointer-events: none;
+    }
+  `]
 })
 export class ProjectBudgetProposalAddPersonnelComponent {
 
   @Input() model: any;
   @Input() modalRef: any;
+  @Input() readOnly = false;
   planningTab = 1;
   guidelineAddActivityRequest = 0;
 
   requestAddGuidelineActivity(): void {
+    if (this.readOnly) return;
     this.guidelineAddActivityRequest++;
   }
 
@@ -32,8 +39,20 @@ export class ProjectBudgetProposalAddPersonnelComponent {
     return (this.model?.activities || []).reduce((sum: number, activity: any) => sum + totalOf(activity), 0);
   }
 
+  private get projectPlanningExpenseId(): number {
+    const projectType = this.model?.projectType;
+    const candidates = [
+      this.model?.selectedExpenseTypeId,
+      this.model?.Budget_Request?.Fk_Expense_List,
+      this.model?.Project_Plan?.Fk_Expense_List,
+      projectType?.Expense_Id,
+      projectType
+    ];
+    return Number(candidates.find(value => Number(value) > 0) || 0);
+  }
+
   get isProjectPlanningExpense(): boolean {
-    return [64, 70, 73, 74, 75].includes(Number(this.model?.selectedExpenseTypeId || 0));
+    return [64, 70, 73, 74, 75].includes(this.projectPlanningExpenseId);
   }
 
   constructor(
@@ -43,6 +62,10 @@ export class ProjectBudgetProposalAddPersonnelComponent {
   ) { }
 
   get isSaveLocked(): boolean {
+    if (this.readOnly) {
+      return true;
+    }
+
     const statusId = this.model?.Budget_Request?.Status_Id ??
       this.model?.Budget_Request?.STATUS_ID ??
       this.model?.Status_Id ??
@@ -472,6 +495,8 @@ export class ProjectBudgetProposalAddPersonnelComponent {
 
 
   addTargetRow() {
+    if (this.readOnly) return;
+
 
     this.targetList.push({
 
@@ -497,6 +522,8 @@ export class ProjectBudgetProposalAddPersonnelComponent {
     });
   }
   async removeTargetRow(index: number, data: any) {
+    if (this.readOnly) return;
+
     const userConfirmed = await confirmAlert('info', 'ต้องการลบข้อมูล ?', '');
 
     if (!userConfirmed) {
@@ -523,6 +550,11 @@ export class ProjectBudgetProposalAddPersonnelComponent {
 
   }
   saveTarget(modal: any) {
+    if (this.readOnly) {
+      modal.dismiss();
+      return;
+    }
+
     if (this.isSaveLocked) {
       basicAlert('warning', '\u0e44\u0e21\u0e48\u0e2a\u0e32\u0e21\u0e32\u0e23\u0e16\u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01\u0e44\u0e14\u0e49', '');
       return;
@@ -646,6 +678,14 @@ export class ProjectBudgetProposalAddPersonnelComponent {
 
     if (!item) return;
 
+    const expenseId = Number(item);
+    this.model.selectedExpenseTypeId = expenseId;
+
+    const selectedExpense = this.expenseOptions.find(
+      (expense: any) => Number(expense.Expense_Id) === expenseId
+    );
+    this.model.projectType = selectedExpense || expenseId;
+
     let model = {
 
       FUNC_CODE: "FUNC-GET_Mas_Sub_List",
@@ -690,7 +730,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
         // 🔥 title
         const expense =
           this.expenseOptions.find(
-            x => x.Expense_Id == item
+            x => Number(x.Expense_Id) === expenseId
           );
 
         this.formTitle =
@@ -701,6 +741,10 @@ export class ProjectBudgetProposalAddPersonnelComponent {
   }
 
   async save() {
+    if (this.readOnly) {
+      return;
+    }
+
     if (this.isSaveLocked) {
       basicAlert('warning', '\u0e44\u0e21\u0e48\u0e2a\u0e32\u0e21\u0e32\u0e23\u0e16\u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01\u0e44\u0e14\u0e49', '');
       return;
@@ -912,11 +956,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
       this.model?.Project_Plan ||
       this.model;
 
-    const fkExpenseList =
-      Number(
-        this.model.Budget_Request?.Fk_Expense_List ||
-        this.model.selectedExpenseTypeId
-      );
+    const fkExpenseList = this.projectPlanningExpenseId;
 
     const shouldIncludeProjectPlan =
       [64, 70, 73, 74, 75].includes(fkExpenseList);

@@ -147,6 +147,17 @@ export class ProjectPlanningComponent {
     return this.userSession?.permissionData?.VIEW_DATA == 3;
   }
 
+  get modalDepartmentName(): string {
+    const project = this.project_planing || {};
+    const departmentId = project.Department_Id ?? project.selectedDepartment;
+    return project.Department_Name || project.Department_Short_Name ||
+      this.department.find((item: any) => String(item.Department_Id) === String(departmentId))?.Department_Name || '';
+  }
+
+  get isEditingProject(): boolean {
+    return Number(this.project_planing?.Project_Id || 0) > 0;
+  }
+
   get lockedDepartmentId(): any {
     return this.userSession?.permissionData?.Department_id ??
       this.userSession?.permissionData?.Department_Id ??
@@ -345,7 +356,8 @@ export class ProjectPlanningComponent {
   }
 
   private hasFilterOption(options: any[], value: string | null): boolean {
-    return !value || options.some(option => option.name === value);
+    const normalizedValue = (value || '').trim();
+    return !normalizedValue || options.some(option => (option.name || '').trim() === normalizedValue);
   }
 
   private updateCascadingFilterOptions() {
@@ -405,16 +417,21 @@ export class ProjectPlanningComponent {
 
     data = this.filterByDepartment(data);
 
-    if (this.selectedPlanName) {
-      data = data.filter(x => x.Plan_Name == this.selectedPlanName);
+    const normalizeFilterText = (value: any) => (value ?? '').toString().trim();
+    const selectedPlanName = normalizeFilterText(this.selectedPlanName);
+    const selectedProductName = normalizeFilterText(this.selectedProductName);
+    const selectedActivityName = normalizeFilterText(this.selectedActivityName);
+
+    if (selectedPlanName) {
+      data = data.filter(x => normalizeFilterText(x.Plan_Name) === selectedPlanName);
     }
 
-    if (this.selectedProductName) {
-      data = data.filter(x => x.Product_Name == this.selectedProductName);
+    if (selectedProductName) {
+      data = data.filter(x => normalizeFilterText(x.Product_Name) === selectedProductName);
     }
 
-    if (this.selectedActivityName) {
-      data = data.filter(x => x.Activity_Name == this.selectedActivityName);
+    if (selectedActivityName) {
+      data = data.filter(x => normalizeFilterText(x.Activity_Name) === selectedActivityName);
     }
 
     if (this.service.searchTerm) {

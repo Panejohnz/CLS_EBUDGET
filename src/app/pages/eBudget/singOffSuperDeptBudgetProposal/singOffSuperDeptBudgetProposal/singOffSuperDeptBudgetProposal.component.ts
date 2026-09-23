@@ -70,6 +70,16 @@ export class SignoffSuperDeptBudgetProposalComponent {
         }
     ];
     modalRef: any;
+    model: any;
+    selectedDetailRow: any = null;
+    detailTab = 1;
+
+    get isProjectPlanningExpense(): boolean {
+        const request = this.model?.Budget_Request || {};
+        const project = this.model?.Project_Plan || {};
+        const expenseId = Number(request.Fk_Expense_List || project.Fk_Expense_List || 0);
+        return [64, 70, 73, 74, 75].includes(expenseId);
+    }
     total$!: Observable<number>;
   get Total(): number {
     return this.griddata.reduce(
@@ -426,12 +436,151 @@ export class SignoffSuperDeptBudgetProposalComponent {
     }
 
     fullModal(modal: any, data: any) {
+        if (!data?.Request_Id) return;
 
+        this.model = null;
+        this.selectedDetailRow = data;
+        this.detailTab = 1;
+        this.serviceebud.GatewayGetData({
+            FUNC_CODE: 'FUNC-GET_BUDGET_REQUEST_BY_ID',
+            Request_Id: data.Request_Id,
+            Project_Id: data.FK_Project_Plan_Id || data.FK_Project_Plan_Id_copy || 0
+        }).subscribe((response: any) => {
+            this.model = {
+                Budget_Request: response.Budget_Request || {},
+                Budget_Request_Detail_Item: this.toArray(response.Budget_Request_Detail_Item),
+                Budget_Request_Detail: this.toArray(response.Budget_Request_Detail),
+                Project_Plan: response.Project_Plan || {},
+                Project_Detail: response.Project_Detail || {},
+                Project_Objective: this.toArray(response.Project_Objective),
+                Project_Plan_Level1: this.toArray(response.Project_Plan_Level1),
+                Project_Plan_Level1_Sub: this.toArray(response.Project_Plan_Level1_Sub),
+                Project_Cabinet: this.toArray(response.Project_Cabinet),
+                Project_Security: this.toArray(response.Project_Security),
+                Project_Plan_Level2: response.Project_Plan_Level2 || {},
+                Project_Plan_Level3: response.Project_Plan_Level3 || {},
+                Project_Coordinator: this.toArray(response.Project_Coordinator),
+                Project_Output: this.toArray(response.Project_Output),
+                Project_Outcome: this.toArray(response.Project_Outcome),
+                Project_Expected: this.toArray(response.Project_Expected),
+                Project_TargetGroup: this.toArray(response.Project_TargetGroup)
+            };
+            this.model.selectedDepartment = this.model.Project_Plan?.Department_Id;
+            this.model.projectType = this.model.Project_Plan?.Fk_Expense_List;
+            this.model.selectedPlan = this.model.Project_Plan?.Fk_Plan_Id;
+            this.model.selectedProduct = this.model.Project_Plan?.Fk_Product_Id;
+            this.model.selectedActivity = this.model.Project_Plan?.Fk_Activity_Id;
+            this.model.selectedBudget = this.model.Project_Plan?.Fk_Budget_Type;
+            this.model.activities = this.mapPlanDetail(this.toArray(response.Project_Plan_Detail));
+            this.mapItems(this.toArray(response.Project_Plan_Detail_Item), this.model.activities);
+            this.resolveExpenseName(() => this.openDetailModal(modal));
+        }, () => {
+            basicAlert('error', 'ไม่สามารถโหลดรายละเอียดคำของบประมาณได้', '');
+        });
+    }
 
+    private toArray(value: any): any[] {
+        if (Array.isArray(value)) return value;
+        if (Array.isArray(value?.Data)) return value.Data;
+        if (value && typeof value === 'object') return Object.values(value);
+        return [];
+    }
+
+    private mapPlanDetail(details: any[]): any[] {
+        return details.map((detail: any) => ({
+            id: Number(detail.Project_Detail_Id),
+            Project_Detail_Id: Number(detail.Project_Detail_Id),
+            name: detail.Activity_Name,
+            owner: detail.Responsible,
+            noBudget: Number(detail.Used_BG) === 0,
+            consult: Number(detail.Is_Consult) === 1,
+            Operation1: Number(detail.Operation1 || 0),
+            Operation2: Number(detail.Operation2 || 0),
+            consultSelf: Number(detail.Operation1 || 0) === 1,
+            consultHire: Number(detail.Operation2 || 0) === 1,
+            quarters: this.convertMonths(this.toArray(detail.Months)),
+            sumAmount: Number(detail.Sum_Amount ?? detail.Sum_Amount_Total ?? 0),
+            otherExpenses: [],
+            multiplierTotal: 0,
+            SubActivities: this.mapPlanDetail(this.toArray(detail.SubActivities))
+        }));
+    }
+
+    private mapItems(items: any[], activities: any[]): void {
+        const allActivities: any[] = [];
+        const flatten = (list: any[]) => list.forEach(activity => {
+            allActivities.push(activity);
+            flatten(activity.SubActivities || []);
+        });
+        flatten(activities);
+
+        items.forEach((item: any) => {
+            const activity = allActivities.find(entry =>
+                Number(entry.id) === Number(item.Fk_Project_Detail_Id));
+            if (!activity) return;
+
+            const total = Number(item.Total || 0);
+            activity.otherExpenses.push({
+                id: item.Project_Item_Id,
+                name: item.Expense_Name,
+                times: item.Times,
+                people: item.People,
+                rate: item.Rate,
+                total
+            });
+            activity.multiplierTotal += total;
+        });
+    }
+
+    private convertMonths(months: any[]): any[] {
+        const labels = ['ต.ค.', 'พ.ย.', 'ธ.ค.', 'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.'];
+        const mapped = months.map((month: any, index: number) => ({
+            month: labels[index],
+            selected: month.Selected,
+            budget: month.Budget
+        }));
+        return [0, 1, 2, 3].map(index => ({
+            quarter: index + 1,
+            months: mapped.slice(index * 3, index * 3 + 3)
+        }));
+    }
+
+    private openDetailModal(modal: any): void {
         this.modalRef = this.modalService.open(modal, {
             backdrop: 'static',
-            windowClass: 'modal-95'
+            windowClass: 'full-screen-modal'
         });
+
+        this.modalRef.result.then(
+            () => this.closeDetailModal(),
+            () => this.closeDetailModal()
+        );
+    }
+
+    private closeDetailModal(): void {
+        this.model = null;
+        this.selectedDetailRow = null;
+        this.get_data();
+    }
+
+    private resolveExpenseName(done: () => void): void {
+        const request = this.model?.Budget_Request || {};
+        const existingName = request.Expense_Name || request.Expense_List ||
+            this.selectedDetailRow?.Expense_Name || this.selectedDetailRow?.Expense_List;
+        if (existingName || !request.Fk_Expense_List) {
+            done();
+            return;
+        }
+
+        this.serviceebud.GatewayGetData({
+            FUNC_CODE: 'FUNC-GET_Mas_Expense_List',
+            Mas_Expense_List: { Fk_Expense_Type_Id: 0 }
+        }).subscribe((response: any) => {
+            const expense = this.toArray(response?.Mas_Expense_Lists)
+                .find((item: any) => String(item.Expense_Id) === String(request.Fk_Expense_List));
+            if (expense?.Expense_Name) request.Expense_Name = expense.Expense_Name;
+            done();
+        }, () => done());
     }
     deletePlan(data: any) {
 

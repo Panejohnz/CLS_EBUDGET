@@ -1,13 +1,23 @@
-<div class="card shadow-sm">
-  <div class="card-header">
-    <h5 class="mb-0">{{ reportTitle }}</h5>
+<div class="report-page-shell">
+  <div class="report-toolbar">
+    <div class="report-title-block">
+      
+      <h5 class="report-title">{{ reportTitle }}</h5>
+    </div>
+    
   </div>
-  <div class="card-body p-0 report-iframe-wrap">
-    <iframe
-      *ngIf="reportUrl"
-      class="report-iframe"
-      [src]="reportUrl"
-      [title]="reportTitle"
-    ></iframe>
+
+  <div class="report-frame-card">
+    <div class="report-frame-status">
+      
+    </div>
+    <div class="report-iframe-wrap">
+      <iframe
+        *ngIf="reportUrl"
+        class="report-iframe"
+        [src]="reportUrl"
+        [title]="reportTitle"
+      ></iframe>
+    </div>
   </div>
 </div>

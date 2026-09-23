@@ -78,6 +78,7 @@
                                 <th style="width:15%">โครงการ</th>
                                 <th style="width:10%">งบประมาณ</th>
                                 <th style="width:10%">สถานะ</th>
+                                <th style="width:5%">รายละเอียด</th>
                                 <th style="width:5%">ยกเลิกยืนยัน</th>
                             </tr>
                         </thead>
@@ -128,6 +129,13 @@
                                 </td>
 
                                 <td class="text-center">
+                                    <button class="btn btn-info btn-sm" (click)="fullModal(fullDataModal, data)"
+                                        [disabled]="!data.Request_Id" title="รายละเอียด">
+                                        <i class="ri-eye-line"></i>
+                                    </button>
+                                </td>
+
+                                <td class="text-center">
                                 <button class="btn btn-sm btn-danger" (click)="CancelSignOff(data.Request_Id)"
                                     [disabled]="data.Status_Id == 5"
                                     [style.opacity]="data.Status_Id == 5 ? '0.5' : '1'">
@@ -142,7 +150,7 @@
                         </tbody>
                         <tfoot>
                             <tr style="font-weight: bold; background-color: #556398;">
-                                <td colspan="8" class="text-end text-white">รวมทั้งหมด</td>
+                                <td colspan="9" class="text-end text-white">รวมทั้งหมด</td>
                                 <td class="text-end text-white">
                                     {{ Total | number:'1.2-2' }}
                                 </td>
@@ -169,6 +177,47 @@
             </div>
         </div>
     </div><ng-template #fullDataModal let-modal>
-
+    <div class="modal-header shared-page-header p-3">
+        <h5 class="modal-title text-white">รายละเอียดคำของบประมาณ</h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
+    </div>
+    <div class="modal-body" *ngIf="model">
+        @if (isProjectPlanningExpense) {
+        <div>
+            <ul class="nav nav-tabs mb-4">
+                <li class="nav-item"><button class="nav-link" [class.active]="detailTab === 1" (click)="detailTab = 1">1. ข้อมูลทั่วไป</button></li>
+                <li class="nav-item"><button class="nav-link" [class.active]="detailTab === 2" (click)="detailTab = 2">2. ความเชื่อมโยงกับแผนระดับต่างๆ</button></li>
+                <li class="nav-item"><button class="nav-link" [class.active]="detailTab === 3" (click)="detailTab = 3">3. รายละเอียดโครงการ</button></li>
+                <li class="nav-item"><button class="nav-link" [class.active]="detailTab === 4" (click)="detailTab = 4">4. แนวทางในการดำเนินการ</button></li>
+                <li class="nav-item"><button class="nav-link" [class.active]="detailTab === 5" (click)="detailTab = 5">5. ผู้ประสานงาน</button></li>
+            </ul>
+            <div class="pe-none">
+                <app-tab-general *ngIf="detailTab === 1" [model]="model"></app-tab-general>
+                <app-tab-alignment *ngIf="detailTab === 2" [model]="model"></app-tab-alignment>
+                <app-tab-detail *ngIf="detailTab === 3" [model]="model"></app-tab-detail>
+                <app-tab-guideline *ngIf="detailTab === 4" [model]="model"></app-tab-guideline>
+                <app-tab-coordinator *ngIf="detailTab === 5" [model]="model"></app-tab-coordinator>
+            </div>
+        </div>
+        } @else {
+        <div class="row g-3 mb-3">
+            <div class="col-md-4"><label class="form-label fw-semibold">หน่วยงาน</label><input class="form-control" readonly [value]="model.Budget_Request?.Department_Name || selectedDetailRow?.Department_Name || ''"></div>
+            <div class="col-md-4"><label class="form-label fw-semibold">แผนงาน</label><input class="form-control" readonly [value]="model.Budget_Request?.Plan_Name || selectedDetailRow?.Plan_Name || ''"></div>
+            <div class="col-md-4"><label class="form-label fw-semibold">ผลผลิต</label><input class="form-control" readonly [value]="model.Budget_Request?.Product_Name || selectedDetailRow?.Product_Name || ''"></div>
+            <div class="col-md-4"><label class="form-label fw-semibold">กิจกรรม</label><input class="form-control" readonly [value]="model.Budget_Request?.Activity_Name || selectedDetailRow?.Activity_Name || ''"></div>
+            <div class="col-md-4"><label class="form-label fw-semibold">หมวดงบ</label><input class="form-control" readonly [value]="model.Budget_Request?.Budget_Type || selectedDetailRow?.Budget_Type || ''"></div>
+            <div class="col-md-4"><label class="form-label fw-semibold">รายการค่าใช้จ่าย</label><input class="form-control" readonly [value]="model.Budget_Request?.Expense_Name || model.Budget_Request?.Expense_List || selectedDetailRow?.Expense_Name || selectedDetailRow?.Expense_List || model.Budget_Request_Detail_Item?.[0]?.Expense_Name || ''"></div>
+            <div class="col-md-8"><label class="form-label fw-semibold">โครงการ</label><input class="form-control" readonly [value]="model.Budget_Request?.Project_Name || selectedDetailRow?.Project_Name || ''"></div>
+            <div class="col-md-4"><label class="form-label fw-semibold">งบประมาณ</label><input class="form-control text-end" readonly [value]="(model.Budget_Request?.Total || selectedDetailRow?.Total || 0) | number:'1.2-2'"></div>
+        </div>
+        <div class="table-responsive" *ngIf="model.Budget_Request_Detail_Item?.length">
+            <table class="table table-bordered align-middle">
+                <thead class="table-light"><tr><th>รายละเอียด</th><th class="text-end">จำนวนเงิน</th></tr></thead>
+                <tbody><tr *ngFor="let item of model.Budget_Request_Detail_Item"><td>{{ item.Expense_Detail || item.Expense_Name || '-' }}</td><td class="text-end">{{ (item.Total || item.Budget_Amount || 0) | number:'1.2-2' }}</td></tr></tbody>
+            </table>
+        </div>
+        }
+    </div>
+    <div class="modal-footer"><button type="button" class="btn btn-light" (click)="modal.close()">ปิด</button></div>
     </ng-template>
 </div>

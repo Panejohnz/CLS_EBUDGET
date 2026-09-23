@@ -19,3 +19,114 @@
   background-color: #e9ecef !important;
   cursor: not-allowed;
 }
+
+.rate-workspace {
+  background: #f6f8fc !important;
+  border-color: #d8dfec !important;
+}
+
+.rate-toolbar {
+  padding: .75rem;
+  background: #fff;
+  border: 1px solid #e0e5ef;
+  border-radius: .65rem;
+  box-shadow: 0 2px 7px rgba(38, 55, 92, .05);
+}
+
+.rate-tab-section {
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #d9e0ed;
+  border-radius: .7rem;
+  box-shadow: 0 3px 10px rgba(38, 55, 92, .06);
+}
+
+.rate-tab-section__heading {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  padding: .65rem .9rem;
+  color: #36446f;
+  background: linear-gradient(90deg, #eef2fb 0%, #f8faff 100%);
+  border-bottom: 1px solid #d9e0ed;
+}
+
+.rate-tab-section__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  color: #fff;
+  background: #556398;
+  border-radius: .5rem;
+}
+
+.rate-tab-section__eyebrow {
+  margin-bottom: .1rem;
+  color: #7784a7;
+  font-size: .69rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+
+.rate-tab-section__title {
+  font-size: .9rem;
+  font-weight: 700;
+}
+
+.rate-tab-list {
+  flex-wrap: wrap;
+  gap: .45rem;
+  margin: 0;
+  padding: .65rem .75rem;
+  overflow-x: visible;
+  border-bottom: 0;
+}
+
+.rate-tab-list .nav-link {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  min-height: 2.45rem;
+  padding: .45rem .75rem;
+  color: #53617e;
+  white-space: nowrap;
+  background: #f6f8fc;
+  border: 1px solid #dbe1ec;
+  border-radius: .45rem;
+  transition: all .18s ease;
+}
+
+.rate-tab-list .nav-link:hover {
+  color: #3e4d7c;
+  background: #edf1fb;
+  border-color: #9da9ca;
+}
+
+.rate-tab-list .nav-link.active {
+  color: #fff;
+  background: #556398;
+  border-color: #556398;
+  box-shadow: 0 3px 7px rgba(85, 99, 152, .28);
+}
+
+.rate-content-toolbar {
+  padding: .8rem 0 .1rem;
+  border-top: 2px solid #d8dfec;
+}
+
+@media (max-width: 576px) {
+  .rate-toolbar {
+    align-items: stretch !important;
+    flex-direction: column;
+  }
+
+  .rate-toolbar > div {
+    width: 100% !important;
+  }
+
+  .rate-toolbar > button {
+    width: 100%;
+  }
+}
