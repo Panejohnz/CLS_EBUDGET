@@ -31,7 +31,7 @@ export class Report_R002Component implements OnInit {
     ngOnInit(): void {
         this.token = this.authService.getStoredToken() || '';
 
-        this.rawReportUrl = 'https://app.celestsoft.com/CLS_ERP_BUDGET_REPORT/Report/Budget_Report_R002.aspx?token=' + this.token;
+        this.rawReportUrl = 'https://app.celestsoft.com/CLS_ERP_BUDGET_REPORT_DEMO/Report/Budget_Report_R002.aspx?token=' + this.token;
 
         this.reportUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.rawReportUrl);
         console.log(this.rawReportUrl);
