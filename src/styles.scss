@@ -232,6 +232,115 @@
     z-index: 9999 !important;
 }
 
+.report-page-shell {
+    min-height: calc(100vh - 150px);
+    padding: 14px;
+    border-radius: 8px;
+    background: #edf2f8;
+}
+
+.report-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 20px;
+    border-radius: 8px 8px 0 0;
+    background: linear-gradient(135deg, #556398 0%, #41527f 100%);
+    color: #fff;
+    box-shadow: 0 8px 18px rgba(48, 62, 108, .16);
+}
+
+.report-title-block {
+    min-width: 0;
+}
+
+.report-kicker {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .16);
+    color: #eef5ff;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.report-title {
+    margin: 0;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.45;
+}
+
+.report-open-link {
+    flex: 0 0 auto;
+    border: 0;
+    color: #40517f !important;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(19, 28, 58, .16);
+}
+
+.report-frame-card {
+    overflow: hidden;
+    border: 1px solid #d5ddea;
+    border-top: 0;
+    border-radius: 0 0 8px 8px;
+    background: #fff;
+    box-shadow: 0 10px 24px rgba(31, 45, 78, .10);
+}
+
+.report-frame-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-bottom: 1px solid #dfe5ee;
+    background: #f8fafc;
+    color: #536179;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.report-frame-status .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: #36b37e;
+    box-shadow: 0 0 0 3px rgba(54, 179, 126, .16);
+}
+
+.report-iframe-wrap {
+    min-height: calc(100vh - 250px);
+    background: #fff;
+}
+
+.report-iframe {
+    display: block;
+    width: 100%;
+    min-height: calc(100vh - 250px);
+    border: 0;
+    background: #fff;
+}
+
+@media (max-width: 767.98px) {
+    .report-page-shell {
+        padding: 8px;
+    }
+
+    .report-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 14px;
+    }
+
+    .report-open-link {
+        width: 100%;
+    }
+}
+
 /* Keep data tables readable on phones.  They should scroll horizontally rather
    than compress every column until Thai text is rendered one character per line. */
 @media (max-width: 767.98px) {

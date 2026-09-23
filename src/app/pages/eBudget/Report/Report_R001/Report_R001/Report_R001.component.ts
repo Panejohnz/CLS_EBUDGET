@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { AuthenticationService } from '../../../../../core/services/auth.service';
 
 @Component({
   selector: 'Report_R001',
@@ -16,15 +17,28 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
     }
   `]
 })
-export class Report_R001Component {
+export class Report_R001Component implements OnInit {
+
+  token: string = '';
+
   readonly reportTitle =
     'รายงานสรุปภาพรวมคำของบประมาณรายจ่าย จำแนกตามแผนงาน ผลผลิต กิจกรรม งบรายจ่าย';
 
-  readonly reportUrl: SafeResourceUrl;
+  rawReportUrl: string = '';
+  reportUrl!: SafeResourceUrl;
 
-  constructor(private sanitizer: DomSanitizer) {
-    const url =
-      'https://app.celestsoft.com/CLS_ERP_BUDGET_REPORT/Report/Budget_Report_R001.aspx';
-    this.reportUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  constructor(
+    private sanitizer: DomSanitizer,
+    private authService: AuthenticationService
+  ) { }
+
+  ngOnInit(): void {
+    this.token = this.authService.getStoredToken() || '';
+
+    this.rawReportUrl = 'https://app.celestsoft.com/CLS_ERP_BUDGET_REPORT/Report/Budget_Report_R001.aspx?token=' + this.token;
+
+    this.reportUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.rawReportUrl);
+    console.log(this.rawReportUrl);
+
   }
-}
+}  
