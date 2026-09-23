@@ -14,6 +14,16 @@
     </div>
 
     <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-5 col-lg-4">
+                <label for="kpiSearch" class="form-label">ค้นหาตัวชี้วัด</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="ri-search-line"></i></span>
+                    <input id="kpiSearch" type="search" class="form-control" [(ngModel)]="searchTerm"
+                        (ngModelChange)="filterKpis()" placeholder="ค้นหาชื่อ, เป้าหมาย หรือปีงบประมาณ">
+                </div>
+            </div>
+        </div>
         <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
             <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
                 <thead class="text-center text-white sticky-header" style="background-color: #556398;">
@@ -52,7 +62,7 @@
 
             <div class="col col-sm-6">
                 <div class="text-sm-right float-end listjs-pagination">
-                    <ngb-pagination [collectionSize]="kpis.length" [(page)]="sortService.page"
+                    <ngb-pagination [collectionSize]="filteredKpis.length" [(page)]="sortService.page"
                         [pageSize]="sortService.pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true">
                     </ngb-pagination>
                 </div>

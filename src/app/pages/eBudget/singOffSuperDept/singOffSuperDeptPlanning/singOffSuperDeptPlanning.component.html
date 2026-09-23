@@ -78,6 +78,7 @@
                                 <th style="width:15%">โครงการ</th>
                                 <th style="width:10%">งบประมาณ</th>
                                 <th style="width:10%">สถานะ</th>
+                                                                <th style="width:5%">รายละเอียด</th>
                                 <th style="width:5%">ยกเลิกยืนยัน</th>
                             </tr>
                         </thead>
@@ -128,6 +129,14 @@
                                 </td>
 
                                 <td class="text-center">
+                                    <button class="btn btn-info btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModalgrid" (click)="fullModal(fullDataModal,data)"
+                                        [disabled]="!data.Project_Id" title="รายละเอียด">
+                                        <i class="ri-eye-line"></i>
+                                    </button>
+                                </td>
+
+                                <td class="text-center">
                                 <button class="btn btn-sm btn-danger" (click)="CancelSignOff(data.Project_Id)"
                                     [disabled]="data.Status_Id == 5"
                                     [style.opacity]="data.Status_Id == 5 ? '0.5' : '1'">
@@ -146,7 +155,7 @@
                                 <td class="text-end text-white">
                                     {{ Total | number:'1.2-2' }}
                                 </td>
-                                <td colspan="2"></td>
+                                <td colspan="3"></td>
                             </tr>
                         </tfoot>
                     </table>
@@ -169,6 +178,72 @@
             </div>
         </div>
     </div><ng-template #fullDataModal let-modal>
+        <div class="modal-header shared-page-header p-3">
+            <h5 class="modal-title text-white">รายละเอียดโครงการ</h5>
+            <button type="button" class="btn-close" (click)="modal.dismiss('Close click')"></button>
+        </div>
 
-    </ng-template>
-</div>
+        <div class="modal-body">
+            <div class="card border-0">
+                <div class="card-body">
+                    <ul class="nav nav-tabs mb-4">
+                        <li class="nav-item">
+                            <button class="nav-link" [class.active]="currentTab">
+                                1. ข้อมูลทั่วไป
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="readonly-project-detail">
+                        <app-tab-general [model]="project_planing"></app-tab-general>
+                    </div>
+
+                    <br>
+                    <ul class="nav nav-tabs mb-4">
+                        <li class="nav-item">
+                            <button class="nav-link" [class.active]="currentTab === 2 || currentTab === 1"
+                                (click)="goTab(2)">
+                                2. ความเชื่อมโยงกับแผนระดับต่างๆ
+                            </button>
+                        </li>
+
+                        <li class="nav-item">
+                            <button class="nav-link" [class.active]="currentTab === 3" (click)="goTab(3)">
+                                3. รายละเอียดโครงการ
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" [class.active]="currentTab === 4" (click)="goTab(4)">
+                                4. แนวทางในการดำเนินการ
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" [class.active]="currentTab === 5" (click)="goTab(5)">
+                                5. ผู้ประสานงาน
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="readonly-project-detail">
+                        <app-tab-alignment [hidden]="!firstLoad && currentTab !== 2" [model]="project_planing">
+                        </app-tab-alignment>
+                        <app-tab-detail [hidden]="currentTab !== 3" [model]="project_planing">
+                        </app-tab-detail>
+
+                        <app-tab-guideline [hidden]="currentTab !== 4" [model]="project_planing">
+                        </app-tab-guideline>
+                        <app-tab-coordinator [hidden]="currentTab !== 5" [model]="project_planing">
+                        </app-tab-coordinator>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="height:10px"></div>
+        <div class="modal-footer d-flex justify-content-between align-items-center">
+            <span class="fw-bold text-primary">
+                รวมเงินทุกกิจกรรม: {{ getGuidelineActivitiesTotal() | number:'1.2-2' }} บาท
+            </span>
+            <button class="btn btn-danger text-black" (click)="modal.dismiss()">
+                ปิด
+            </button>
+        </div>
+        <div style="height:10px"></div>
+    </ng-template></div>

@@ -374,7 +374,7 @@ export class ProjectBudgetProposalComponent {
             selectedProduct: res.Project_Plan?.Fk_Product_Id,
             selectedActivity: res.Project_Plan?.Fk_Activity_Id,
             selectedBudget: res.Project_Plan?.Fk_Budget_Type,
-            Project_Id: data.Project_Id,
+            Project_Id: res.Project_Plan?.Project_Id ?? data.FK_Project_Plan_Id ?? data.FK_Project_Plan_Id_copy ?? 0,
             Project_Output: res.Project_Output || [],
             Project_Outcome: res.Project_Outcome || [],
             Project_Expected: res.Project_Expected || [],

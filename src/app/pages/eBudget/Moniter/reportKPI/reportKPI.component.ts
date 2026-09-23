@@ -42,14 +42,16 @@ export class ReportKPIComponent implements OnInit {
   // =====================================
 
   kpis: any[] = [];
+  filteredKpis: any[] = [];
+  searchTerm = '';
   Mas_Unit_Lists: any[] = [];
 
   get pagedKpis(): any[] {
-    return this.sortService.changePage(this.kpis);
+    return this.sortService.changePage(this.filteredKpis);
   }
 
   get pageStartIndex(): number {
-    const total = this.kpis.length;
+    const total = this.filteredKpis.length;
     const pageSize = Number(this.sortService.pageSize) || 1;
     const currentPage = Math.max(1, Number(this.sortService.page) || 1);
     const start = (currentPage - 1) * pageSize + 1;
@@ -58,7 +60,7 @@ export class ReportKPIComponent implements OnInit {
   }
 
   get pageEndIndex(): number {
-    const total = this.kpis.length;
+    const total = this.filteredKpis.length;
     const pageSize = Number(this.sortService.pageSize) || 1;
     const currentPage = Math.max(1, Number(this.sortService.page) || 1);
 
@@ -145,10 +147,7 @@ export class ReportKPIComponent implements OnInit {
       .GatewayGetData(model)
       .subscribe((response: any) => {
 
-        this.kpis =
-
-          response
-            ?.List_Mas_Indicator || [];
+        this.kpis = response?.List_Mas_Indicator || [];
 
         if (Array.isArray(response?.List_Mas_Unit)) {
 
@@ -162,11 +161,24 @@ export class ReportKPIComponent implements OnInit {
 
         }
 
-        this.sortService.page = 1;
+        this.filterKpis();
         console.log('   this.kpis =', this.kpis);
 
       });
 
+  }
+
+  filterKpis(): void {
+    const keyword = this.searchTerm.trim().toLowerCase();
+    this.filteredKpis = !keyword
+      ? [...this.kpis]
+      : this.kpis.filter((item: any) =>
+        [item?.BgYear, item?.Indicators_Name, item?.Target, this.getKpiUnitName(item)]
+          .join(' ')
+          .toLowerCase()
+          .includes(keyword)
+      );
+    this.sortService.page = 1;
   }
 
   getUnitData() {

@@ -345,7 +345,8 @@ export class ProjectPlanningComponent {
   }
 
   private hasFilterOption(options: any[], value: string | null): boolean {
-    return !value || options.some(option => option.name === value);
+    const normalizedValue = (value || '').trim();
+    return !normalizedValue || options.some(option => (option.name || '').trim() === normalizedValue);
   }
 
   private updateCascadingFilterOptions() {
@@ -405,16 +406,21 @@ export class ProjectPlanningComponent {
 
     data = this.filterByDepartment(data);
 
-    if (this.selectedPlanName) {
-      data = data.filter(x => x.Plan_Name == this.selectedPlanName);
+    const normalizeFilterText = (value: any) => (value ?? '').toString().trim();
+    const selectedPlanName = normalizeFilterText(this.selectedPlanName);
+    const selectedProductName = normalizeFilterText(this.selectedProductName);
+    const selectedActivityName = normalizeFilterText(this.selectedActivityName);
+
+    if (selectedPlanName) {
+      data = data.filter(x => normalizeFilterText(x.Plan_Name) === selectedPlanName);
     }
 
-    if (this.selectedProductName) {
-      data = data.filter(x => x.Product_Name == this.selectedProductName);
+    if (selectedProductName) {
+      data = data.filter(x => normalizeFilterText(x.Product_Name) === selectedProductName);
     }
 
-    if (this.selectedActivityName) {
-      data = data.filter(x => x.Activity_Name == this.selectedActivityName);
+    if (selectedActivityName) {
+      data = data.filter(x => normalizeFilterText(x.Activity_Name) === selectedActivityName);
     }
 
     if (this.service.searchTerm) {
