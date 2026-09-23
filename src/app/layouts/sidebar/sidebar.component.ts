@@ -1096,9 +1096,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
         if (environment.production) {
           let path = x.pathname
           path = path.replace('/velzon/angular/modern', '');
-          return path === pathName;
+          return this.normalizeRoutePath(path) === this.normalizeRoutePath(pathName);
         } else {
-          return x.pathname === pathName;
+          return this.normalizeRoutePath(x.pathname) === this.normalizeRoutePath(pathName);
         }
 
       });
@@ -1126,14 +1126,24 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   isMenuActive(item: MenuItem): boolean {
     if (item.link && !this.isExternalLink(item.link)) {
-      const currentUrl = this.router.url.split('?')[0].split('#')[0];
-      const menuLink = item.link.split('?')[0].split('#')[0];
-      if (currentUrl === menuLink) {
+      const currentUrl = this.normalizeRoutePath(this.router.url);
+      const menuLink = this.normalizeRoutePath(item.link);
+      if (currentUrl === menuLink || (menuLink !== '/' && currentUrl.startsWith(`${menuLink}/`))) {
         return true;
       }
     }
 
     return (item.subItems || []).some((subItem: MenuItem) => this.isMenuActive(subItem));
+  }
+
+  isMenuCollapsed(item: MenuItem): boolean {
+    return !!item.isCollapsed && !this.isMenuActive(item);
+  }
+
+  private normalizeRoutePath(path: string): string {
+    const cleanedPath = String(path || '').split('?')[0].split('#')[0].trim();
+    const pathWithSlash = cleanedPath.startsWith('/') ? cleanedPath : `/${cleanedPath}`;
+    return pathWithSlash.length > 1 ? pathWithSlash.replace(/\/+$/, '') : pathWithSlash;
   }
 
   private openActiveMenuPath(items: MenuItem[]): boolean {

@@ -39,11 +39,11 @@
 }
 
 @keyframes active-menu-pulse {
-  0%, 100% { opacity: .55; box-shadow: 0 0 0 0 rgba(77, 143, 196, 0); }
+  100% { opacity: .55; box-shadow: 0 0 0 0 rgba(77, 143, 196, 0); }
   50% { opacity: 1; box-shadow: 0 0 0 4px rgba(77, 143, 196, .12); }
 }
 
 @keyframes active-menu-glow {
-  0%, 100% { box-shadow: 0 4px 12px rgba(52, 137, 197, .14), inset 0 0 0 1px #b8d8ee; }
+  100% { box-shadow: 0 4px 12px rgba(52, 137, 197, .14), inset 0 0 0 1px #b8d8ee; }
   50% { box-shadow: 0 7px 17px rgba(52, 137, 197, .27), inset 0 0 0 1px #a9d2ed; }
 }
