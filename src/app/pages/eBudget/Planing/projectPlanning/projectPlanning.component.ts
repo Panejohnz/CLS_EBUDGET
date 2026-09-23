@@ -136,7 +136,7 @@ export class ProjectPlanningComponent {
     });
 
     const url =
-      `https://app.celestsoft.com/CLS_ERP_BUDGET_REPORT/Report/Budget_Report_R007.aspx?${query.toString()}`;
+      `https://app.celestsoft.com/CLS_ERP_BUDGET_REPORT_DEMO/Report/Budget_Report_R007.aspx?${query.toString()}`;
 
     window.open(url, '_blank');
   }
