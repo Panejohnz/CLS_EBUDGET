@@ -530,8 +530,16 @@ export class ExpenseConstructionFormComponent {
 
     if (yearlyRows.length) {
 
+      // Old saves can contain more YEAR_* rows than the selected binding
+      // period.  The form must always show only the number of years selected
+      // in CONSTRUCTION_FLAG.
+      const selectedYearCount = Number(this.bindingYear || 0);
+      const rowsToBind = selectedYearCount > 0
+        ? yearlyRows.slice(0, selectedYearCount)
+        : yearlyRows;
+
       this.yearly =
-        yearlyRows.map((x: any) => ({
+        rowsToBind.map((x: any) => ({
 
           requestItemId:
             Number(x.Request_Item_Id || 0),

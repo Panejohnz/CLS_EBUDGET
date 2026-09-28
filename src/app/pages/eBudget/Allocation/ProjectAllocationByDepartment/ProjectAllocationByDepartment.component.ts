@@ -197,7 +197,8 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
           const requestSource = requestResponse?.List_Budget_Request_Data_Table?.Data || [];
           console.log(' const requestSource', requestSource);
 
-          const requests = Array.isArray(requestSource) ? requestSource : [];
+          const requests = (Array.isArray(requestSource) ? requestSource : [])
+            .filter((request: any) => this.isAllocationEligible(request));
           this.loadPlanRows(requests);
         },
         error: () => {
@@ -215,7 +216,13 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
           const source = response?.List_Budget_Plan_Data_Table?.Data || [];
           console.log('source', source);
 
-          const plans = Array.isArray(source) ? source : [];
+          // A saved Budget_Plan owns the current allocation amount even while
+          // it is still in an earlier workflow status.  Do not discard it by
+          // Status_Id here, otherwise the page falls back to the request total.
+          const plans = (Array.isArray(source) ? source : [])
+            .filter((plan: any) =>
+              plan?.Active !== false && Number(plan?.Active ?? 1) !== 0
+            );
           // The request is the master row for Allocation.  A Budget_Plan only
           // supplies the latest allocated values after that request is saved.
           const planByRequest = new Map<number, any[]>();
@@ -233,14 +240,25 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
               planByRequest.set(requestId, plansForRequest);
             }
           });
-          const displayRows = requests.map((request: any) => {
+          const requestById = new Map<number, any>();
+          requests.forEach((request: any) => {
             const requestId = Number(
               request.Request_Id || request.FK_Request_Id || request.Fk_Request_Id || request.FK_Request_Id_Copy || 0
             );
-            const expenseId = Number(request.Fk_Expense_List || 0);
-            const plansForRequest = planByRequest.get(requestId) || [];
-            const plan = this.findPlanForRequest(plansForRequest, expenseId);
-            return this.mergeRequestAndPlan(request, plan);
+            if (requestId) {
+              requestById.set(requestId, request);
+            }
+          });
+
+          // Plan Management is the source of truth for allocation totals.
+          // Build the tree from active Budget_Plan rows, then only use Request
+          // to fill descriptive fields that are absent from historical Plans.
+          const displayRows = plans.map((plan: any) => {
+            const requestId = Number(
+              plan.FK_Request_Id || plan.Fk_Request_Id || plan.FK_Request_Id_Copy || plan.Request_Id || 0
+            );
+            const request = requestById.get(requestId);
+            return request ? this.mergeRequestAndPlan(request, plan) : plan;
           }).filter((row: any) =>
             !this.departmentId || Number(row.Department_Id || 0) === Number(this.departmentId)
           );
@@ -585,14 +603,6 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
 
     const savedDetails = this.filterExpenseDetails(planDetailsById.get(planId) || [], node.Fk_Expense_List);
     const savedByKey = new Map(savedDetails.map((detail: any) => [this.persistenceDetailKey(detail), detail]));
-    const hasPlanAdjust1 = this.hasAdjust1Amount(sourcePlan);
-    const hasSavedDetailAmount = savedDetails.some((detail: any) =>
-      this.hasUpdateAmount(detail) || this.hasAdjust1Amount(detail));
-    if (!hasPlanAdjust1 && hasSavedDetailAmount) {
-      const detailTotal = savedDetails.reduce(
-        (sum: number, detail: any) => sum + this.detailAllocationAmount(detail, sourcePlan), 0);
-      this.replaceSourceAmount(node, sourcePlan, detailTotal);
-    }
 
     requestDetails.forEach((requestDetail: any, index: number) => {
       const savedDetail = savedByKey.get(this.persistenceDetailKey(requestDetail));
@@ -614,6 +624,12 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
   private isAdjustList(expenseId: any): boolean {
     const expense = this.expenseListById.get(Number(expenseId));
     return expense?.Is_Adjust_List === true;
+  }
+
+  private isAllocationEligible(item: any): boolean {
+    return item?.Active !== false &&
+      Number(item?.Active ?? 1) !== 0 &&
+      Number(item?.Status_Id ?? 0) >= 6;
   }
 
   private isProjectTypeOne(source: any): boolean {
@@ -660,23 +676,6 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
             // display tree below groups custom ("other") rows by Request_Item_Id.
             const savedByKey = new Map(savedDetails.map((detail: any) => [this.persistenceDetailKey(detail), detail]));
 
-            // Once a Plan has detail items, the parent expense and every hierarchy
-            // row must reflect the sum of those detail-item Update_Amount values.
-            // Do not use Budget_Plan.Total/Total_Plan for that allocated row.
-            const hasPlanAdjust1 = this.hasAdjust1Amount(sourcePlan);
-            const hasSavedDetailAmount = savedDetails.some((detail: any) =>
-              this.hasUpdateAmount(detail) || this.hasAdjust1Amount(detail)
-            );
-            // Budget_Plan.Adjust1 is the allocated amount for the main row.  Only
-            // fall back to detail rows when the main Plan has not been adjusted.
-            if (!hasPlanAdjust1 && hasSavedDetailAmount) {
-              const detailTotal = savedDetails.reduce(
-                (sum: number, detail: any) => sum + this.detailAllocationAmount(detail, sourcePlan),
-                0
-              );
-              this.replaceSourceAmount(node, sourcePlan, detailTotal);
-            }
-
             requestDetails.forEach((requestDetail: any, index: number) => {
               const savedDetail = savedByKey.get(this.persistenceDetailKey(requestDetail));
               const detail = savedDetail ? {
@@ -696,38 +695,6 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
         });
       });
     });
-  }
-
-  private replaceSourceAmount(node: any, source: any, amount: number): void {
-    const departmentId = Number(source?.Department_Id || 0);
-    const previous = Number(source._displayAmount ?? this.mainRowAmount(source)) || 0;
-    const delta = amount - previous;
-    if (!delta) return;
-
-    source._displayAmount = amount;
-    let current = node;
-    while (current) {
-      current.amounts[departmentId] = (Number(current.amounts[departmentId]) || 0) + delta;
-      current.totalAdjust1 = (Number(current.totalAdjust1) || 0) + delta;
-      current = current.parent;
-    }
-  }
-
-  private updateAmountOnly(item: any): number {
-    const value = item?.Update_Amount ?? item?.update_amount;
-    return value !== null && value !== undefined && String(value).trim() !== ''
-      ? Number(value) || 0
-      : 0;
-  }
-
-  private hasUpdateAmount(item: any): boolean {
-    const value = item?.Update_Amount ?? item?.update_amount;
-    return value !== null && value !== undefined && String(value).trim() !== '';
-  }
-
-  private hasAdjust1Amount(item: any): boolean {
-    const value = item?.Adjust1 ?? item?.adjust1;
-    return value !== null && value !== undefined && String(value).trim() !== '';
   }
 
   private detailAllocationAmount(detail: any, source: any): number {
@@ -760,9 +727,15 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
 
   private filterExpenseDetails(source: any, expenseId: number): any[] {
     const details = Array.isArray(source) ? source : source?.Data || [];
+    const isConstructionExpense = [65, 66].includes(Number(expenseId));
     return details.filter((detail: any) =>
       Number(detail.Fk_Expense_Id) === Number(expenseId) &&
       !this.isConstructionMetadataDetail(detail) &&
+      // Construction rows are stored by construction year. Match the same
+      // Day = @BgYear rule used by the source query supplied by users.
+      (!isConstructionExpense ||
+        String(detail.Detail_Source || '').toUpperCase() !== 'REQUEST' ||
+        !Number(detail.Day) || Number(detail.Day) === Number(this.currentYear)) &&
       detail.Active !== false && Number(detail.Active ?? 1) !== 0
     );
   }
@@ -819,7 +792,9 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
 
   private detailKey(detail: any): string {
     const detailId = detail.Fk_Expense_Detail_Id ?? detail.Fk_Expense_Detial_Id ?? detail.Fk_Plan_Detail_Id ?? 0;
-    return this.isRateNull(detail.Is_Rate_Null)
+    // Custom rows, including construction entries, have no master detail ID.
+    // Keep each Request_Item_Id separate so the table reflects the query rows.
+    return this.isRateNull(detail.Is_Rate_Null) || !Number(detailId)
       ? `REQUEST_${detail.Request_Item_Id ?? detail.Plan_Item_Id ?? detail.Expense_Detail ?? ''}`
       : `DETAIL_${detailId}`;
   }
@@ -949,17 +924,14 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
   }
 
   private mainRowAmount(item: any): number {
-    // Editable Budget_Plan rows use the main Adjust1 amount first.
+    // Budget_Plan allocation is defined by Adjust1. Do not fall back to
+    // Total_Plan, which is the plan/request total rather than the allocation.
     if (Number(item?.Plan_Id || 0) > 0) {
       const adjust = item?.Adjust1 ?? item?.adjust1;
       if (adjust !== null && adjust !== undefined && String(adjust).trim() !== '') {
         return Number(adjust) || 0;
       }
-      const updateAmount = item?.Update_Amount ?? item?.update_amount;
-      if (updateAmount !== null && updateAmount !== undefined && String(updateAmount).trim() !== '') {
-        return Number(updateAmount) || 0;
-      }
-      return Number(item.Total_Plan ?? item.Total ?? 0) || 0;
+      return 0;
     }
     return Number(item?.Total ?? 0) || 0;
   }
