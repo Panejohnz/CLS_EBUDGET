@@ -38,6 +38,8 @@ export class ExpenseConstructionFormComponent {
 
   spec = '';
 
+  private constructionFlagRequestItemId = 0;
+
 
   files: any = {};
 
@@ -283,7 +285,7 @@ export class ExpenseConstructionFormComponent {
 
     this.model.Budget_Request_Detail_Item.push({
 
-      Request_Item_Id: 0,
+      Request_Item_Id: this.constructionFlagRequestItemId || 0,
 
       Fk_Expense_Id:
         this.model.selectedExpenseTypeId,
@@ -315,7 +317,7 @@ export class ExpenseConstructionFormComponent {
 
       this.model.Budget_Request_Detail_Item.push({
 
-        Request_Item_Id: 0,
+        Request_Item_Id: item.requestItemId || 0,
 
         Fk_Expense_Id:
           this.model.selectedExpenseTypeId,
@@ -359,7 +361,7 @@ export class ExpenseConstructionFormComponent {
 
       this.model.Budget_Request_Detail_Item.push({
 
-        Request_Item_Id: 0,
+        Request_Item_Id: y.requestItemId || 0,
 
         Fk_Expense_Id:
           this.model.selectedExpenseTypeId,
@@ -427,6 +429,9 @@ export class ExpenseConstructionFormComponent {
 
     if (flagRow) {
 
+      this.constructionFlagRequestItemId =
+        Number(flagRow.Request_Item_Id || 0);
+
       this.isOld =
         flagRow.People_Type_A == 1;
 
@@ -454,9 +459,28 @@ export class ExpenseConstructionFormComponent {
       );
 
     if (itemRows.length) {
+      // Do not render records that are identical in every editable field.
+      // Existing record IDs are retained so subsequent saves update them.
+      const itemKeys = new Set<string>();
+      const uniqueItemRows = itemRows.filter((row: any) => {
+        const key = [
+          row.Expense_Detail, row.Month_Name, row.Day, row.Price,
+          row.Quantity, row.Total, row.People, row.Sum_People
+        ].map(value => String(value ?? '')).join('|');
+
+        if (itemKeys.has(key)) {
+          return false;
+        }
+
+        itemKeys.add(key);
+        return true;
+      });
 
       this.items =
-        itemRows.map((row: any) => ({
+        uniqueItemRows.map((row: any) => ({
+
+          requestItemId:
+            Number(row.Request_Item_Id || 0),
 
           name:
             row.Expense_Detail || '',
@@ -508,6 +532,9 @@ export class ExpenseConstructionFormComponent {
 
       this.yearly =
         yearlyRows.map((x: any) => ({
+
+          requestItemId:
+            Number(x.Request_Item_Id || 0),
 
           amount:
             Number(x.Price || 0),

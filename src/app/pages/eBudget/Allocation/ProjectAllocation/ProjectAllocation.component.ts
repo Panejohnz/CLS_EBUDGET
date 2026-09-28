@@ -126,6 +126,7 @@ export class ProjectAllocationComponent implements OnInit {
           ? Number(detail.Fk_Budget_Plan) === planId
           : Number(detail.Fk_Request_Budget) === requestId) &&
         Number(detail.Fk_Expense_Id) === Number(item.Fk_Expense_List) &&
+        !this.isConstructionMetadataDetail(detail) &&
         detail.Active !== false && Number(detail.Active ?? 1) !== 0
       )
       .map((detail: any) => {
@@ -146,6 +147,11 @@ export class ProjectAllocationComponent implements OnInit {
         this.syncAdjustDisplays(mapped);
         return mapped;
       });
+  }
+
+  private isConstructionMetadataDetail(detail: any): boolean {
+    const expenseDetail = String(detail?.Expense_Detail || '').trim().toUpperCase();
+    return expenseDetail === 'CONSTRUCTION_FLAG' || expenseDetail.startsWith('YEAR_');
   }
 
   selectedDepartmentId: any = null;

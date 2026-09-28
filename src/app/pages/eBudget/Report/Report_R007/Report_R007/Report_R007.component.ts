@@ -21,7 +21,7 @@ import { AuthenticationService } from '../../../../../core/services/auth.service
 export class Report_R007Component implements OnInit {
   readonly reportTitle = 'รายงานแบบฟอร์มโครงการ';
   readonly baseReportUrl =
-    'https://app.celestsoft.com/CLS_ERP_BUDGET_REPORT_DEMO/Report/Budget_Report_R007.aspx';
+    'https://app.celestsoft.com/CLS_ERP_BUDGET_REPORT/Report/Budget_Report_R007.aspx';
 
   token: string = '';
   rawReportUrl: string = '';

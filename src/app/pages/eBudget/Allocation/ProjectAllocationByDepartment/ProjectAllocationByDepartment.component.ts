@@ -762,8 +762,14 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
     const details = Array.isArray(source) ? source : source?.Data || [];
     return details.filter((detail: any) =>
       Number(detail.Fk_Expense_Id) === Number(expenseId) &&
+      !this.isConstructionMetadataDetail(detail) &&
       detail.Active !== false && Number(detail.Active ?? 1) !== 0
     );
+  }
+
+  private isConstructionMetadataDetail(detail: any): boolean {
+    const expenseDetail = String(detail?.Expense_Detail || '').trim().toUpperCase();
+    return expenseDetail === 'CONSTRUCTION_FLAG' || expenseDetail.startsWith('YEAR_');
   }
 
   private applyRateNullFlags(details: any[], done: () => void): void {

@@ -291,32 +291,21 @@ export class PlanManagementComponent {
     }
 
     if (this.service.searchTerm) {
+      const keyword = this.service.searchTerm.trim().toLowerCase();
+      const formatAmount = (value: any) => Number(value || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-      const keyword = this.service.searchTerm.toLowerCase();
-
-      data = data.filter(x =>
-
-        (x.Department_Name || '').toLowerCase().includes(keyword) ||
-        (x.Plan_Name || '').toLowerCase().includes(keyword) ||
-        (x.Product_Name || '').toLowerCase().includes(keyword) ||
-        (x.Activity_Name || '').toLowerCase().includes(keyword) ||
-        (x.Budget_Type || '').toLowerCase().includes(keyword) ||
-        (x.Project_Name || '').toLowerCase().includes(keyword) ||
-        (x.Status_Name || '').toLowerCase().includes(keyword) ||
-        String(x.Total || '').includes(keyword)
-
-      );
+      data = data.filter(x => [
+        x.Department_Name, x.Department_Short_Name, x.Plan_Name, x.Product_Name,
+        x.Activity_Name, x.Budget_Type, x.Project_Name, x.Expense_List,
+        x.Status_Name, x.Update_Amount, formatAmount(x.Update_Amount),
+        x.Total_Plan, formatAmount(x.Total_Plan)
+      ].some(value => String(value ?? '').toLowerCase().includes(keyword)));
 
     }
 
     this.griddata = data;
 
   }
-  filterSearch() {
-    this.applyFilter();
-  }
-
-
   fullModal(modal: any, data: any) {
 
     if (!this.selectedDepartmentId && !data.Plan_Id) {
