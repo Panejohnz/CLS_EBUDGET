@@ -28,7 +28,9 @@ export class AuthGuard implements CanActivate {
     ): Promise<boolean> {
         // เช็ค token และ permission เดิม
         const storedPermission = this.authenticationService.getStoredPermission();
-        const storedToken = this.authenticationService.getStoredToken();
+        const storedToken = this.authenticationService.getStoredToken()
+            || sessionStorage.getItem('token')
+            || sessionStorage.getItem('userToken');
 
         const routeToken = route.queryParams['token'] || route.queryParams['Token'];
 
@@ -41,8 +43,14 @@ export class AuthGuard implements CanActivate {
 
         // ถ้าไม่มี token
         if (!token) {
-            window.location.href = 'https://app.celestsoft.com/cls_erp_management_front/';
+            this.redirectToLogin();
             return false;
+        }
+
+        if (!environment.production && sessionStorage.getItem('currentUser')) {
+            localStorage.setItem('token', token);
+            localStorage.setItem('userToken', token);
+            return true;
         }
 
         try {
@@ -88,13 +96,22 @@ export class AuthGuard implements CanActivate {
             }
 
             // response ไม่ถูกต้อง
-            window.location.href = 'https://app.celestsoft.com/cls_erp_management_front/';
+            this.redirectToLogin();
             return false;
 
         } catch (error) {
             console.error('GetUserSession request failed:', error);
-            window.location.href = 'https://app.celestsoft.com/cls_erp_management_front/';
+            this.redirectToLogin();
             return false;
         }
+    }
+
+    private redirectToLogin(): void {
+        if (environment.production) {
+            window.location.href = 'https://app.celestsoft.com/cls_erp_management_front/';
+            return;
+        }
+
+        this.router.navigate(['/auth/login']);
     }
 }

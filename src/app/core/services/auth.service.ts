@@ -241,9 +241,10 @@ export class AuthenticationService {
    * Get stored token from session storage
    */
   getStoredToken(): string | null {
-    console.log('localStorage',localStorage);
-    
-    return localStorage.getItem('userToken');
+    return localStorage.getItem('userToken')
+      || localStorage.getItem('token')
+      || sessionStorage.getItem('userToken')
+      || sessionStorage.getItem('token');
   }
 
   /**

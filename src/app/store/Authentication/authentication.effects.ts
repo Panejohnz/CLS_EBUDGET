@@ -36,6 +36,9 @@ export class AuthenticationEffects {
               sessionStorage.setItem('toast', 'true');
               sessionStorage.setItem('currentUser', JSON.stringify(user.data));
               sessionStorage.setItem('token', user.token);
+              localStorage.setItem('currentUser', JSON.stringify(user.data));
+              localStorage.setItem('token', user.token);
+              localStorage.setItem('userToken', user.token);
               this.router.navigate(['/']);
             }
             return loginSuccess({ user });
