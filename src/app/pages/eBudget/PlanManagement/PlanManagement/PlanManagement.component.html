@@ -82,7 +82,7 @@
                                 <th style="width:10%">กิจกรรม</th>
                                 <th style="width:10%">หมวดงบ</th>
                                 <th style="width:15%">โครงการ/รายการ</th>
-                                <th style="width:10%">จัดสรรประมาณ</th>
+                                <th style="width:10%">จัดสรรงบประมาณ</th>
                                 <th style="width:10%">วางแผนงบประมาณ</th>
                                 <th style="width:10%">สถานะ</th>
                                 <th style="width:5%">แก้ไข</th>
@@ -123,7 +123,7 @@
 
 
                                 <td class=" text-end">
-                                    {{data.Update_Amount | number:'1.2-2'}}
+                                    {{ getAllocationAmount(data) | number:'1.2-2'}}
                                 </td>
                                 <td class=" text-end">
                                     {{data.Total_Plan | number:'1.2-2'}}

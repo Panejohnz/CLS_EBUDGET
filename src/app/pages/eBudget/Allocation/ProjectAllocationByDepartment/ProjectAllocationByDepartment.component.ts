@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { EbudgetService } from 'src/app/core/services/ebudget.service';
 import { BudgetYearService } from 'src/app/core/services/budget-year.service';
 import { MasterService } from 'src/app/core/services/Master.service';
-import { forkJoin } from 'rxjs';
+import { catchError, forkJoin, of } from 'rxjs';
 
 @Component({
   selector: 'app-project-allocation-by-department',
@@ -135,6 +135,7 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
   private productOrderById = new Map<number, number>();
   private activityOrderById = new Map<number, number>();
   private budgetOrderById = new Map<number, number>();
+  private departmentMasterById = new Map<number, any>();
   departments: any[] = [];
   rows: any[] = [];
   loading = false;
@@ -183,10 +184,17 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
       .subscribe({
         next: (response: any) => {
           const plans = Array.isArray(response?.Mas_Plan_Lists) ? response.Mas_Plan_Lists : [];
+          const departments = Array.isArray(response?.Mas_Department_Lists) ? response.Mas_Department_Lists : [];
           this.planOrderById = this.toOrderMap(plans, 'Plan_Id');
+          this.departmentMasterById = new Map(
+            departments.map((item: any) => [Number(item.Department_Id), item])
+          );
           done();
         },
-        error: () => done()
+        error: () => {
+          this.departmentMasterById.clear();
+          done();
+        }
       });
   }
 
@@ -210,35 +218,60 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
   }
 
   private loadPlanRows(requests: any[]): void {
-    this.servicebud.GatewayGetData({ FUNC_CODE: 'FUNC-Get_Budget_Plan_main', BgYear: this.currentYear })
+    forkJoin({
+      planResponse: this.servicebud.GatewayGetData({
+        FUNC_CODE: 'FUNC-Get_Budget_Plan_main',
+        BgYear: this.currentYear
+      }),
+      // Older deployed backends do not yet expose this endpoint.  Retain the
+      // current active-plan behavior until the backend update is deployed.
+      historyResponse: this.servicebud.GatewayGetData({
+        FUNC_CODE: 'FUNC-GET_BUDGET_PLAN_ALLOCATION_HISTORY',
+        BgYear: this.currentYear
+      }).pipe(catchError(() => of(null)))
+    })
       .subscribe({
-        next: (response: any) => {
-          const source = response?.List_Budget_Plan_Data_Table?.Data || [];
+        next: ({ planResponse, historyResponse }: any) => {
+          const source = planResponse?.List_Budget_Plan_Data_Table?.Data || [];
           console.log('source', source);
 
-          // A saved Budget_Plan owns the current allocation amount even while
-          // it is still in an earlier workflow status.  Do not discard it by
-          // Status_Id here, otherwise the page falls back to the request total.
-          const plans = (Array.isArray(source) ? source : [])
+          // Keep every Plan for Request-to-Plan matching.  An inactive Plan is
+          // still evidence that the Request was already allocated/deactivated;
+          // it must not make Allocation fall back to Budget_Request.Total.
+          const history = historyResponse?.List_Budget_Plan || [];
+          const allPlans = Array.isArray(history) && history.length
+            ? history
+            : (Array.isArray(source) ? source : []);
+          const plans = allPlans
             .filter((plan: any) =>
               plan?.Active !== false && Number(plan?.Active ?? 1) !== 0
             );
           // The request is the master row for Allocation.  A Budget_Plan only
           // supplies the latest allocated values after that request is saved.
           const planByRequest = new Map<number, any[]>();
-          plans.forEach((plan: any) => {
+          allPlans.forEach((plan: any) => {
             // Some historical Budget_Plan rows return the relation as
             // FK_Request_Id_Copy.  Use the request relation as the primary
             // key; Fk_Expense_List is only used to distinguish multiple rows
             // belonging to the same request.
             const requestId = Number(
-              plan.FK_Request_Id || plan.Fk_Request_Id || plan.FK_Request_Id_Copy || plan.Request_Id || 0
+              plan.FK_Request_Id_Copy || plan.FK_Request_Id || plan.Fk_Request_Id || plan.Request_Id || 0
             );
             if (requestId) {
               const plansForRequest = planByRequest.get(requestId) || [];
               plansForRequest.push(plan);
               planByRequest.set(requestId, plansForRequest);
             }
+          });
+          // History contains both active and inactive versions of a Plan.
+          // Always use the newest active Plan first; an inactive row is only a
+          // fallback marker when the Request has no active allocation at all.
+          planByRequest.forEach((plansForRequest: any[]) => {
+            plansForRequest.sort((left: any, right: any) => {
+              const leftActive = left?.Active !== false && Number(left?.Active ?? 1) !== 0 ? 1 : 0;
+              const rightActive = right?.Active !== false && Number(right?.Active ?? 1) !== 0 ? 1 : 0;
+              return rightActive - leftActive || Number(right?.Plan_Id || 0) - Number(left?.Plan_Id || 0);
+            });
           });
           const requestById = new Map<number, any>();
           requests.forEach((request: any) => {
@@ -250,28 +283,53 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
             }
           });
 
-          // Plan Management is the source of truth for allocation totals.
-          // Build the tree from active Budget_Plan rows, then only use Request
-          // to fill descriptive fields that are absent from historical Plans.
-          const displayRows = plans.map((plan: any) => {
+          // Budget_Request is the complete allocation scope.  A Budget_Plan
+          // only overrides the amount after the request has been allocated.
+          // This keeps newly-added request rows visible before their first save.
+          const displayRows = requests.map((request: any) => {
             const requestId = Number(
-              plan.FK_Request_Id || plan.Fk_Request_Id || plan.FK_Request_Id_Copy || plan.Request_Id || 0
+              request.Request_Id || request.FK_Request_Id || request.Fk_Request_Id || request.FK_Request_Id_Copy || 0
             );
-            const request = requestById.get(requestId);
-            return request ? this.mergeRequestAndPlan(request, plan) : plan;
-          }).filter((row: any) =>
+            const expenseId = Number(request.Fk_Expense_List || request.FK_Expense_List || 0);
+            const plan = this.findPlanForRequest(planByRequest.get(requestId) || [], expenseId);
+            return plan ? this.mergeRequestAndPlan(request, plan) : request;
+          });
+
+          plans
+            .filter((plan: any) => {
+              const requestId = Number(
+                plan.FK_Request_Id_Copy || plan.FK_Request_Id || plan.Fk_Request_Id || plan.Request_Id || 0
+              );
+              return !requestId || !requestById.has(requestId);
+            })
+            .forEach((plan: any) => displayRows.push(plan));
+
+          // Some API responses contain the same logical record once through
+          // Budget_Request and once through Budget_Plan.  The page must count
+          // it once only: a Plan is the latest state, otherwise keep Request.
+          const uniqueDisplayRows = this.uniqueAllocationRows(displayRows);
+          const filteredDisplayRows = uniqueDisplayRows.filter((row: any) =>
             !this.departmentId || Number(row.Department_Id || 0) === Number(this.departmentId)
           );
           const departmentMap = new Map<number, any>();
           const rootNodes: any[] = [];
 
-          displayRows.forEach((plan: any) => {
+          filteredDisplayRows.forEach((plan: any) => {
             const departmentId = Number(plan.Department_Id || 0);
             if (!departmentId) return;
             if (!departmentMap.has(departmentId)) {
+              const masterDepartment = this.departmentMasterById.get(departmentId);
               departmentMap.set(departmentId, {
                 Department_Id: departmentId,
-                Department_Name:  plan.Department_Short_Name || `หน่วยงาน ${departmentId}`
+                Department_Name: masterDepartment?.Department_Short_Name ||
+                  masterDepartment?.Department_Name ||
+                  plan.Department_Short_Name ||
+                  plan.Department_Name ||
+                  `หน่วยงาน ${departmentId}`,
+                Department_Type: this.departmentField(masterDepartment, 'Department_Type') ??
+                  this.departmentField(plan, 'Department_Type'),
+                Department_Cost_Code: this.departmentField(masterDepartment, 'Department_Cost_Code') ??
+                  this.departmentField(plan, 'Department_Cost_Code')
               });
             }
 
@@ -326,9 +384,9 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
             });
           });
 
-          this.departments = Array.from(departmentMap.values());
+          this.departments = this.sortDepartments(Array.from(departmentMap.values()));
           this.rows = rootNodes;
-          this.loadHierarchyOrder(displayRows);
+          this.loadHierarchyOrder(filteredDisplayRows);
           this.loadAllocationDetails();
           this.loading = false;
         },
@@ -348,7 +406,7 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
     // erasing names, department, plan/product/activity, or expense metadata.
     const row = { ...request };
     [
-      'Plan_Id', 'FK_Request_Id', 'Fk_Request_Id', 'Request_Id',
+      'Plan_Id',
       'Total', 'Total_Plan', 'Adjust1', 'Adjust2', 'Adjust3',
       'Update_Amount', 'Create_Date', 'Update_Date', 'Active'
     ].forEach(field => {
@@ -395,6 +453,32 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
     // One request normally creates one allocation row.  This fallback keeps
     // historical plans visible even when the API uses a different expense key.
     return plansForRequest.length === 1 ? plansForRequest[0] : undefined;
+  }
+
+  private uniqueAllocationRows(rows: any[]): any[] {
+    const rowsByKey = new Map<string, any>();
+
+    rows.forEach((row: any) => {
+      const requestId = Number(
+        row?.FK_Request_Id || row?.Fk_Request_Id || row?.FK_Request_Id_Copy || row?.Request_Id || 0
+      );
+      const expenseId = Number(row?.Fk_Expense_List || row?.FK_Expense_List || 0);
+      const departmentId = Number(row?.Department_Id || 0);
+      // One Budget_Request is one allocation line.  Include the project name
+      // as a safe fallback for legacy data whose Request_Id was not returned.
+      const key = requestId
+        ? `REQUEST_${requestId}_${expenseId}`
+        : `LEGACY_${departmentId}_${expenseId}_${String(row?.Project_Name || row?.Expense_Name || row?.Expense_List || '').trim()}`;
+      const current = rowsByKey.get(key);
+
+      // Prefer Budget_Plan because it holds the saved allocation.  An incoming
+      // request must never overwrite an existing plan representation.
+      if (!current || (Number(row?.Plan_Id || 0) > 0 && Number(current?.Plan_Id || 0) === 0)) {
+        rowsByKey.set(key, row);
+      }
+    });
+
+    return Array.from(rowsByKey.values());
   }
 
   private loadHierarchyOrder(rows: any[]): void {
@@ -470,6 +554,42 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
     };
     const value = orders[node?.type]?.get(id);
     return value === undefined ? null : value;
+  }
+
+  private sortDepartments(departments: any[]): any[] {
+    return [...departments].sort((left, right) =>
+      this.compareDepartmentValue(left?.Department_Type, right?.Department_Type) ||
+      this.compareDepartmentValue(left?.Department_Cost_Code, right?.Department_Cost_Code) ||
+      String(left?.Department_Name || '').localeCompare(String(right?.Department_Name || ''), 'th', { numeric: true }) ||
+      Number(left?.Department_Id || 0) - Number(right?.Department_Id || 0)
+    );
+  }
+
+  private departmentField(item: any, field: string): any {
+    if (!item) return undefined;
+    const variants = [
+      field,
+      field.replace(/_/g, ''),
+      field.charAt(0).toLowerCase() + field.slice(1),
+      field.toLowerCase()
+    ];
+    return variants.map(key => item[key]).find(value => value !== null && value !== undefined && value !== '');
+  }
+
+  private compareDepartmentValue(left: any, right: any): number {
+    const leftText = String(left ?? '').trim();
+    const rightText = String(right ?? '').trim();
+    if (!leftText && !rightText) return 0;
+    if (!leftText) return 1;
+    if (!rightText) return -1;
+
+    const leftNumber = Number(leftText);
+    const rightNumber = Number(rightText);
+    if (Number.isFinite(leftNumber) && Number.isFinite(rightNumber) && leftNumber !== rightNumber) {
+      return leftNumber - rightNumber;
+    }
+
+    return leftText.localeCompare(rightText, 'th', { numeric: true, sensitivity: 'base' });
   }
 
   totalForDepartment(departmentId: number): number {
@@ -580,6 +700,10 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
             (node.sources || []).forEach((sourcePlan: any) =>
               this.mergeAllocationDetailsForSource(node, sourcePlan, requestDetails, planDetails));
           });
+        // For an adjustable expense, Detail Item is the source of truth for
+        // the display and allocation.  Rebuild every parent total from its
+        // children so the Request/Plan header can never be counted twice.
+        this.recalculateTreeTotalsFromDetails(this.rows);
       },
       // Keep the existing per-item loader as a compatibility fallback until the
       // SP is deployed to every environment.
@@ -659,6 +783,7 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
       this.applyRateNullFlags(requestDetails, () => {
         if (!planId) {
           requestDetails.forEach((detail: any, index: number) => this.mergeDetailNode(node, detail, sourcePlan, index));
+          this.recalculateTreeTotalsFromDetails(this.rows);
           return;
         }
 
@@ -691,6 +816,7 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
               if (!savedDetail) detail.__planDetailTotal = 0;
               this.mergeDetailNode(node, detail, sourcePlan, index);
             });
+            this.recalculateTreeTotalsFromDetails(this.rows);
           });
         });
       });
@@ -703,25 +829,25 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
       return this.detailAdjust1ForSave(detail, source);
     }
 
-    // Before Plan creation, a Request detail uses its request amount.
-    const adjust = detail?.Adjust1 ?? detail?.adjust1;
-    if (adjust !== null && adjust !== undefined && String(adjust).trim() !== '') {
-      return Number(adjust) || 0;
-    }
+    // Request rows commonly carry default Adjust1/Update_Amount = 0 even
+    // before their first allocation.  Those zeros are not an allocation.
+    // Until a Budget_Plan exists, use the requested detail amount.
     return this.allocationAmount(detail);
   }
 
   private detailAdjust1ForSave(detail: any, source?: any): number {
-    const value = detail?.Adjust1 ?? detail?.adjust1;
-    if (value !== null && value !== undefined && String(value).trim() !== '') {
-      return Number(value) || 0;
-    }
-
-    // An untouched Detail Item must retain the amount currently shown in the
-    // input, rather than writing zero into Adjust1 on the first Allocation save.
     if (Number(source?.Plan_Id || 0) > 0) {
+      const value = detail?.Adjust1 ?? detail?.adjust1;
+      if (value !== null && value !== undefined && String(value).trim() !== '') {
+        return Number(value) || 0;
+      }
+
+      // An untouched saved Detail Item retains the amount shown in the input.
       return Number(detail?.__planDetailTotal ?? detail?.Total ?? detail?.total ?? detail?.Budget_Amount ?? 0) || 0;
     }
+
+    // Request details may arrive with default Adjust1 = 0; before Plan
+    // creation their requested amount is the value that must be persisted.
     return this.allocationAmount(detail);
   }
 
@@ -872,6 +998,30 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
     existing.totalAdjust1 += detailNode.totalAdjust1;
   }
 
+  private recalculateTreeTotalsFromDetails(nodes: any[]): void {
+    (nodes || []).forEach(node => {
+      if (!node?.children?.length) return;
+
+      this.recalculateTreeTotalsFromDetails(node.children);
+
+      // Only expense rows backed by allocation details must replace their
+      // header value. Direct amount rows keep their own amount as before.
+      if (node.type === 'expense' && !node.isAdjustList) return;
+
+      const totalsByDepartment: Record<number, number> = {};
+      (node.children || []).forEach((child: any) => {
+        Object.keys(child?.amounts || {}).forEach(key => {
+          const departmentId = Number(key);
+          totalsByDepartment[departmentId] = (totalsByDepartment[departmentId] || 0) +
+            (Number(child.amounts[departmentId]) || 0);
+        });
+      });
+      node.amounts = totalsByDepartment;
+      node.totalAdjust1 = Object.values(totalsByDepartment)
+        .reduce((sum: number, amount: any) => sum + (Number(amount) || 0), 0);
+    });
+  }
+
   private applyAmountToDetails(details: any[], amount: number): void {
     details.forEach((detail: any, index: number) => {
       const nextAmount = index === 0 ? amount : 0;
@@ -910,6 +1060,13 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
   /** ค่า Adjust1 ที่ว่างหมายถึงยังไม่จัดสรร จึงแสดงยอดคำของบ (Total) แทน
    * แต่ค่า 0 ที่ผู้ใช้กรอกไว้ต้องยังคงเป็น 0 */
   private allocationAmount(item: any): number {
+    // A Budget_Request can contain default 0 values in Adjust1 and
+    // Update_Amount.  They must not replace the requested Total on its first
+    // Allocation save; saved allocation fields apply only to Budget_Plan.
+    if (Number(item?.Plan_Id || 0) <= 0) {
+      return Number(item?.Total ?? item?.total ?? item?.Budget_Amount ?? 0) || 0;
+    }
+
     // A saved detail item must use its final allocated value, including 0.
     const updateAmount = item?.Update_Amount ?? item?.update_amount;
     if (updateAmount !== null && updateAmount !== undefined && String(updateAmount).trim() !== '') {
@@ -924,9 +1081,14 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
   }
 
   private mainRowAmount(item: any): number {
-    // Budget_Plan allocation is defined by Adjust1. Do not fall back to
-    // Total_Plan, which is the plan/request total rather than the allocation.
+    // A saved Budget_Plan owns the allocation shown on the main row.
+    // Update_Amount is the amount used by PlanManagement; Adjust1 remains a
+    // fallback for legacy Plan rows that predate Update_Amount.
     if (Number(item?.Plan_Id || 0) > 0) {
+      const updateAmount = item?.Update_Amount ?? item?.update_amount;
+      if (updateAmount !== null && updateAmount !== undefined && String(updateAmount).trim() !== '') {
+        return Number(updateAmount) || 0;
+      }
       const adjust = item?.Adjust1 ?? item?.adjust1;
       if (adjust !== null && adjust !== undefined && String(adjust).trim() !== '') {
         return Number(adjust) || 0;
@@ -1035,6 +1197,18 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
       .flatMap(node => node.sources || []);
     const planSources = Array.from(new Set([...directSources, ...detailItems.map((detail: any) => detail.__allocationSource)]))
       .filter((source: any) => !!source);
+
+    // Detail Item is the source of truth for adjustable lists.  Save the same
+    // subtotal to Budget_Plan, otherwise PlanManagement receives the old
+    // Request.Total while Allocation displays the Detail subtotal.
+    const detailAllocationBySource = new Map<any, number>();
+    detailItems.forEach((detail: any) => {
+      const source = detail.__allocationSource;
+      if (!source) return;
+      const amount = this.detailAdjust1ForSave(detail, source);
+      detailAllocationBySource.set(source, (detailAllocationBySource.get(source) || 0) + amount);
+    });
+
     if (!planSources.length) {
       basicAlert('warning', 'ไม่มีรายการที่เปลี่ยนแปลง', '');
       return;
@@ -1043,6 +1217,9 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
     const model = {
       FUNC_CODE: 'FUNC-Insert_Budget_Plan',
       List_Budget_Plan: planSources.map((source: any) => {
+        const allocationAmount = detailAllocationBySource.has(source)
+          ? Number(detailAllocationBySource.get(source) || 0)
+          : Number(source._allocationAmount ?? this.allocationAmount(source));
         const {
           Create_Date,
           Update_Date,
@@ -1060,8 +1237,8 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
           // API request rows name this field Expense_Name; Budget_Plan stores it
           // as Expense_List, so send the value explicitly instead of null.
           Expense_List: source.Expense_List || source.Expense_Name || '',
-          Adjust1: Number(source._allocationAmount ?? this.allocationAmount(source)),
-          Update_Amount: Number(source._allocationAmount ?? this.allocationAmount(source)),
+          Adjust1: allocationAmount,
+          Update_Amount: allocationAmount,
           BgYear: this.currentYear
         };
       }),

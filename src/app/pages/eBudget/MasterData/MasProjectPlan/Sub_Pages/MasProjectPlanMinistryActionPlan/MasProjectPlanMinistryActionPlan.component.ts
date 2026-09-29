@@ -120,11 +120,13 @@ export class MasProjectPlanMinistryActionPlanComponent implements OnInit {
         ['Indicators_Id', 'FK_Plan_Goals_Id', 'Fk_Plan_Goals_Id']
       ).map((indicator) => {
         const goalId = indicator.FK_Plan_Goals_Id ?? indicator.Fk_Plan_Goals_Id ?? null;
+        this.selectedDepartmentName = indicator.Department_Id ?? null;
         return {
           ...indicator,
           FK_Plan_Goals_Id: goalId,
           Fk_Plan_Goals_Id: goalId
         };
+
       });
 
       this.listMasProjectPlanGoalsGuidelinesAll = this.normalizeListIds(
@@ -141,14 +143,34 @@ export class MasProjectPlanMinistryActionPlanComponent implements OnInit {
           Fk_Plan_Goals_Id: goalId
         };
       });
+      this.Mas_Department_Lists = response.Mas_Department_Lists || [];
+      console.log('this.Mas_Department_Lists', this.Mas_Department_Lists);
 
       this.filterPlanSearch();
       this.filterGoalSearch();
       this.filterIndicatorSearch();
       this.filterGuidelineSearch();
     });
-  }
 
+  }
+  private getUniqueFilterOptions(data: any[], key: string): any[] {
+    const seen = new Set<string>();
+
+    return data
+      .map((item: any) => (item?.[key] || '').toString().trim())
+      .filter((name: string) => {
+        if (!name || seen.has(name)) {
+          return false;
+        }
+
+        seen.add(name);
+        return true;
+      })
+      .map((name: string) => ({ name }));
+  }
+  departmentFilterOptions: any[] = []
+  Mas_Department_Lists: any[] = []
+  selectedDepartmentName: string | null = null;
   get_unit_data(): void {
     this.serviceebud.GatewayGetData({
       FUNC_CODE: 'FUNC-Get_List_Mas_Unit'
@@ -744,7 +766,7 @@ export class MasProjectPlanMinistryActionPlanComponent implements OnInit {
     }
     this.Mas_Indicators.FK_Plan_Goals_Id = goalId;
     this.Mas_Indicators.Fk_Plan_Goals_Id = goalId;
-
+    this.Mas_Indicators.Department_Id = this.selectedDepartmentName;
     this.serviceebud.GatewayGetData({
       FUNC_CODE: 'Func-Save_Mas_Indicators',
       Mas_Indicators: this.Mas_Indicators

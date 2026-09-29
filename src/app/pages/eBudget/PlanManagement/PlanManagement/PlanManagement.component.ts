@@ -103,7 +103,10 @@ export class PlanManagementComponent {
   userSession: any
 
   get isDepartmentLocked(): boolean {
-    return this.userSession?.permissionData?.VIEW_DATA == 3;
+    // Department-only visibility is required on PlanManagement/examine.
+    // The main PlanManagement list must show the same all-department scope as
+    // Allocation, otherwise its footer total excludes allocated departments.
+    return false;
   }
 
   private resetDepartmentSelection(): void {
@@ -117,15 +120,6 @@ export class PlanManagementComponent {
 
     if (sessionStr) {
       this.userSession = JSON.parse(sessionStr);
-    } try {
-
-      if (this.userSession.permissionData.VIEW_DATA == 3) {
-        this.selectedDepartmentId = this.userSession.permissionData.Department_id
-      } else {
-
-      }
-    } catch (error) {
-
     }
     this.sortService.pageSize = 20;
     this.budgetYearService.yearChanged$.subscribe(async year => {
@@ -696,12 +690,16 @@ export class PlanManagementComponent {
 
       (sum: number, item: any) =>
 
-        sum + Number(item.Update_Amount || 0),
+        sum + this.getAllocationAmount(item),
 
       0
 
     );
 
+  }
+
+  getAllocationAmount(item: any): number {
+    return Number(item?.Update_Amount ?? item?.update_amount ?? 0) || 0;
   }
 
   get Total_Plan(): number {

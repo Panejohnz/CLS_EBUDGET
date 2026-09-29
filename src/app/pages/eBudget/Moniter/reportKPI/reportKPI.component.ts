@@ -102,7 +102,8 @@ export class ReportKPIComponent implements OnInit {
   // =====================================
   // INIT
   // =====================================
-
+  userSession: any
+  selectedDepartmentId: any = null;
   ngOnInit(): void {
 
     this.sortService.page = 1;
@@ -121,7 +122,17 @@ export class ReportKPIComponent implements OnInit {
           }
 
           this.currentYear = year;
+          const sessionStr = localStorage.getItem('userSession');
 
+          if (sessionStr) {
+            this.userSession = JSON.parse(sessionStr);
+            console.log('userSession', this.userSession);
+          }
+          if (this.userSession.permissionData.VIEW_DATA == 1) {
+            this.selectedDepartmentId = this.userSession.permissionData.Department_id
+          } else {
+
+          }
           this.getData();
 
         }
@@ -139,8 +150,8 @@ export class ReportKPIComponent implements OnInit {
         'FUNC-GET_Report_KPI',
 
       BgYear:
-        this.currentYear
-
+        this.currentYear,
+      Department_Id: this.selectedDepartmentId || 0
     };
 
     this.servicebud
