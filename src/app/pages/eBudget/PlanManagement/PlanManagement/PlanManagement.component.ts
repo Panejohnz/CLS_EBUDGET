@@ -135,26 +135,19 @@ export class PlanManagementComponent {
     });
   }
   get_data() {
-
-    let model = {
+    const model = {
       FUNC_CODE: "FUNC-Get_Budget_Plan_main",
       BgYear: this.currentYear
     };
 
-    var getData = this.servicebud.GatewayGetData(model);
-
-    getData.subscribe((response: any) => {
-
-      this.allData = Array.isArray(response.List_Budget_Plan_Data_Table.Data)
+    this.servicebud.GatewayGetData(model).subscribe((response: any) => {
+      this.allData = Array.isArray(response?.List_Budget_Plan_Data_Table?.Data)
         ? response.List_Budget_Plan_Data_Table.Data
         : [];
 
       this.griddataTemp = [...this.allData];
-
       this.loadMasSearchOptions();
-
     });
-
   }
 
   private loadMasSearchOptions() {

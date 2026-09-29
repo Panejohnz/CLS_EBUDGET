@@ -700,10 +700,10 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
             (node.sources || []).forEach((sourcePlan: any) =>
               this.mergeAllocationDetailsForSource(node, sourcePlan, requestDetails, planDetails));
           });
-        // For an adjustable expense, Detail Item is the source of truth for
-        // the display and allocation.  Rebuild every parent total from its
-        // children so the Request/Plan header can never be counted twice.
-        this.recalculateTreeTotalsFromDetails(this.rows);
+        // Keep the header amount from Budget_Plan.  Detail rows are displayed
+        // for editing only; replacing the hierarchy totals here made the
+        // amount change after the async detail request completed and diverge
+        // from PlanManagement.
       },
       // Keep the existing per-item loader as a compatibility fallback until the
       // SP is deployed to every environment.
@@ -728,8 +728,24 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
     const savedDetails = this.filterExpenseDetails(planDetailsById.get(planId) || [], node.Fk_Expense_List);
     const savedByKey = new Map(savedDetails.map((detail: any) => [this.persistenceDetailKey(detail), detail]));
 
+    // A Request may have been deactivated after Allocation was saved.  Its
+    // Request Detail is then absent from RequestScope, but the active Plan
+    // Detail remains the authoritative allocated row and must still display.
+    if (!requestDetails.length) {
+      savedDetails.forEach((savedDetail: any, index: number) => {
+        if (this.isZeroPlanDetail(savedDetail)) return;
+        const detail = {
+          ...savedDetail,
+          __planDetailTotal: savedDetail.Total
+        };
+        this.mergeDetailNode(node, detail, sourcePlan, index);
+      });
+      return;
+    }
+
     requestDetails.forEach((requestDetail: any, index: number) => {
       const savedDetail = savedByKey.get(this.persistenceDetailKey(requestDetail));
+      if (savedDetail && this.isZeroPlanDetail(savedDetail)) return;
       const detail = savedDetail ? {
         ...requestDetail,
         Plan_Item_Id: savedDetail.Plan_Item_Id,
@@ -743,6 +759,11 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
       if (!savedDetail) detail.__planDetailTotal = 0;
       this.mergeDetailNode(node, detail, sourcePlan, index);
     });
+  }
+
+  private isZeroPlanDetail(detail: any): boolean {
+    const amount = detail?.Update_Amount ?? detail?.update_amount ?? detail?.Adjust1 ?? detail?.adjust1 ?? 0;
+    return Number(amount) === 0;
   }
 
   private isAdjustList(expenseId: any): boolean {
@@ -783,7 +804,6 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
       this.applyRateNullFlags(requestDetails, () => {
         if (!planId) {
           requestDetails.forEach((detail: any, index: number) => this.mergeDetailNode(node, detail, sourcePlan, index));
-          this.recalculateTreeTotalsFromDetails(this.rows);
           return;
         }
 
@@ -816,7 +836,6 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
               if (!savedDetail) detail.__planDetailTotal = 0;
               this.mergeDetailNode(node, detail, sourcePlan, index);
             });
-            this.recalculateTreeTotalsFromDetails(this.rows);
           });
         });
       });
@@ -837,6 +856,11 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
 
   private detailAdjust1ForSave(detail: any, source?: any): number {
     if (Number(source?.Plan_Id || 0) > 0) {
+      const updateAmount = detail?.Update_Amount ?? detail?.update_amount;
+      if (updateAmount !== null && updateAmount !== undefined && String(updateAmount).trim() !== '') {
+        return Number(updateAmount) || 0;
+      }
+
       const value = detail?.Adjust1 ?? detail?.adjust1;
       if (value !== null && value !== undefined && String(value).trim() !== '') {
         return Number(value) || 0;
@@ -982,6 +1006,16 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
   }
 
   private mergeDetailNode(node: any, detail: any, sourcePlan: any, index: number): void {
+    // Every loader (batch SP and the legacy ById fallback) flows through this
+    // method.  Do not render zero-value Plan Detail rows from either source.
+    // A legacy fallback can call this with the request as sourcePlan even when
+    // the detail itself is already a Budget_Plan_Detail_Item.  Plan_Item_Id is
+    // therefore also used to identify an allocated detail row.
+    const isPlanDetail = Number(sourcePlan?.Plan_Id || 0) > 0 || Number(detail?.Plan_Item_Id || 0) > 0;
+    if (isPlanDetail && this.isZeroPlanDetail(detail)) {
+      return;
+    }
+
     const detailNode = this.createDetailNode(node, detail, sourcePlan, index);
     const departmentId = Number(sourcePlan.Department_Id || 0);
     const existing = node.children.find((child: any) => child.key === detailNode.key);
@@ -1195,8 +1229,10 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
       .flatMap(node => Object.values(node.detailByDepartment || {}).flat() as any[]);
     const directSources = this.getExpenseNodes(this.rows)
       .flatMap(node => node.sources || []);
-    const planSources = Array.from(new Set([...directSources, ...detailItems.map((detail: any) => detail.__allocationSource)]))
-      .filter((source: any) => !!source);
+    const planSources = this.uniquePlanSources([
+      ...directSources,
+      ...detailItems.map((detail: any) => detail.__allocationSource)
+    ]);
 
     // Detail Item is the source of truth for adjustable lists.  Save the same
     // subtotal to Budget_Plan, otherwise PlanManagement receives the old
@@ -1277,5 +1313,34 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
       ...(node.type === 'detail' ? [node] : []),
       ...this.getDetailNodes(node.children || [])
     ]);
+  }
+
+  /** Save one Budget_Plan only once for each Request + expense pair. */
+  private uniquePlanSources(sources: any[]): any[] {
+    const sourceByKey = new Map<string, any>();
+
+    sources.filter(Boolean).forEach((source: any) => {
+      const requestId = Number(
+        source.FK_Request_Id_Copy || source.FK_Request_Id || source.Fk_Request_Id || source.Request_Id || 0
+      );
+      const expenseId = Number(source.Fk_Expense_List || source.FK_Expense_List || 0);
+      const key = requestId
+        ? `REQUEST_${requestId}_${expenseId}`
+        : `PLAN_${Number(source.Plan_Id || 0)}_${expenseId}`;
+      const current = sourceByKey.get(key);
+
+      if (!current || this.planSourceRank(source) > this.planSourceRank(current)) {
+        sourceByKey.set(key, source);
+      }
+    });
+
+    return Array.from(sourceByKey.values());
+  }
+
+  private planSourceRank(source: any): number {
+    const planId = Number(source?.Plan_Id || 0);
+    if (!planId) return 0;
+    const active = source?.Active !== false && Number(source?.Active ?? 1) !== 0;
+    return (active ? 1_000_000_000 : 0) + planId;
   }
 }
