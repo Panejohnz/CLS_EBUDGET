@@ -128,7 +128,7 @@ export class ReportKPIComponent implements OnInit {
             this.userSession = JSON.parse(sessionStr);
             console.log('userSession', this.userSession);
           }
-          if (this.userSession.permissionData.VIEW_DATA == 1) {
+          if (this.userSession.permissionData.VIEW_DATA == 3) {
             this.selectedDepartmentId = this.userSession.permissionData.Department_id
           } else {
 
