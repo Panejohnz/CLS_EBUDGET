@@ -100,6 +100,9 @@ export class ProjectTransferComponent
   toPlans: any[] = [];
   fromPlanDetails: any[] = [];
   fromPlanDetailsLoading = false;
+  expenseLists: any[] = [];
+  expenseListsLoaded = false;
+  showFromPlanDetail = false;
   currentYear: any;
   readonly pageSize = 30;
   pagination = { page: 1 };
@@ -179,11 +182,34 @@ export class ProjectTransferComponent
 
         this.allPlans =
           response?.List_Budget_Plan || [];
+        this.expenseListsLoaded = false;
+        this.loadExpenseLists();
         this.plans = [];
         this.pagination.page = 1;
-
+        console.log(' this.allPlans', this.allPlans);
+        
       });
 
+  }
+
+  private loadExpenseLists(done?: () => void): void {
+    this.servicebud.GatewayGetData({
+      FUNC_CODE: 'FUNC-GET_Mas_Expense_List',
+      Mas_Expense_List: { Fk_Expense_Type_Id: 0 }
+    }).subscribe({
+      next: (response: any) => {
+        this.expenseLists = Array.isArray(response?.Mas_Expense_Lists)
+          ? response.Mas_Expense_Lists
+          : [];
+        this.expenseListsLoaded = true;
+        done?.();
+      },
+      error: () => {
+        this.expenseLists = [];
+        this.expenseListsLoaded = true;
+        done?.();
+      }
+    });
   }
 
   openAdd(modal: any) {
@@ -435,6 +461,13 @@ export class ProjectTransferComponent
   }
 
   onChangeFromPlan(preserveDetail = false) {
+    // In edit mode this handler can run before the master request finishes.
+    // Wait for Mas_Expense_List so Is_Adjust_List is always evaluated.
+    if (!this.expenseListsLoaded) {
+      this.loadExpenseLists(() => this.onChangeFromPlan(preserveDetail));
+      return;
+    }
+
     const selectedDetailId = preserveDetail
       ? this.form.From_Plan_Detail_Item_Id
       : null;
@@ -456,6 +489,12 @@ export class ProjectTransferComponent
     this.form.From_Plan_Detail_Item_Id = selectedDetailId;
     this.form.From_Plan_Detail_Name = selectedDetailName;
     this.fromPlanDetails = [];
+    this.showFromPlanDetail = this.isAdjustExpenseList(plan);
+
+    if (!this.showFromPlanDetail) {
+      this.form.From_Plan_Detail_Item_Id = null;
+      this.form.From_Plan_Detail_Name = '';
+    }
 
     this.form.projectBudget =
       Number(plan?.Total_Plan || 0);
@@ -464,8 +503,19 @@ export class ProjectTransferComponent
       this.masterService.formatNumber(this.form.projectBudget);
 
     this.loadPlanBalance(plan);
-    this.loadFromPlanDetails(plan);
+    if (this.showFromPlanDetail) {
+      this.loadFromPlanDetails(plan);
+    }
 
+  }
+
+  private isAdjustExpenseList(plan: any): boolean {
+    const expenseId = Number(plan?.Fk_Expense_List || plan?.Fk_Expense_Id || 0);
+    const expense = this.expenseLists.find((item: any) =>
+      Number(item?.Expense_Id || item?.Fk_Expense_List || 0) === expenseId
+    );
+    const value = expense?.Is_Adjust_List;
+    return value === true || Number(value) === 1 || String(value).toLowerCase() === 'true';
   }
 
   private loadPlanBalance(plan: any): void {
