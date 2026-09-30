@@ -53,6 +53,7 @@ export class ExpenseAssetInvestmentFormComponent {
   @Input() type!: string;
 
   @Input() expenseItem: any;
+  @Input() disableAddItem = false;
 
   config: any;
 
@@ -609,6 +610,7 @@ export class ExpenseAssetInvestmentFormComponent {
   }
 
   addItem() {
+    if (this.disableAddItem) return;
 
     this.items.push(
 

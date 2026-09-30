@@ -259,7 +259,7 @@
     <!-- action -->
     <div class="mt-3">
 
-        <button class="btn btn-primary" (click)="addItem()">
+        <button *ngIf="!disableAddItem" class="btn btn-primary" (click)="addItem()">
 
                 <i class="bx bx-plus text-black"></i>
                    <span class="text-black"> เพิ่มรายการ</span>

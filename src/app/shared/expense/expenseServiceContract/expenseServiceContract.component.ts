@@ -11,6 +11,7 @@ export class ExpenseServiceContractComponent {
 
   @Input() model: any;
   @Input() expenseItem: any;
+  @Input() disableAddItem = false;
 
   constructor(
     private modalService: NgbModal,
@@ -215,6 +216,7 @@ export class ExpenseServiceContractComponent {
   }
 
   addItem() {
+    if (this.disableAddItem) return;
 
     this.items.push(
       this.newItem()

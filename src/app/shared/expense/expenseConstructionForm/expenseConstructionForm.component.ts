@@ -21,6 +21,7 @@ export class ExpenseConstructionFormComponent {
 
   @Input() expenseItem: any;
   @Input() model: any;
+  @Input() disableAddItem = false;
 
   items: any[] = [
     this.createItem()
@@ -106,6 +107,7 @@ export class ExpenseConstructionFormComponent {
   // =========================
 
   addItem() {
+    if (this.disableAddItem) return;
 
     this.items.push(
       this.createItem()

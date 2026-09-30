@@ -482,7 +482,8 @@
 
                 @else if ([25,26,27,28,29,30,31].includes(model.selectedExpenseTypeId)) {
                 <div class="px-custom">
-                    <app-expense-service-contract [model]="model" [expenseItem]="expenseItem">
+                    <app-expense-service-contract [model]="model" [expenseItem]="expenseItem"
+                        [disableAddItem]="model.selectedExpenseTypeId === 29">
 
                     </app-expense-service-contract>
                 </div>
@@ -599,7 +600,8 @@
 
                 @else if(model.selectedExpenseTypeId == 54){
                 <div class="px-custom">
-                    <app-expense-system-maintenance-cost [model]="model" [expenseItem]="expenseItem">
+                    <app-expense-system-maintenance-cost [model]="model" [expenseItem]="expenseItem"
+                        [disableAddItem]="true">
 
                     </app-expense-system-maintenance-cost>
                 </div>
@@ -608,7 +610,8 @@
 
                 @else if(model.selectedExpenseTypeId == 55){
                 <div class="px-custom">
-                    <app-expense-car-rental-cost [model]="model" [expenseItem]="expenseItem">
+                    <app-expense-car-rental-cost [model]="model" [expenseItem]="expenseItem"
+                        [disableAddItem]="true">
 
                     </app-expense-car-rental-cost>
                 </div>
@@ -626,7 +629,7 @@
 
                 @else if([56,57,58,59,60,61,62,63].includes(model.selectedExpenseTypeId)){
                 <div class="px-custom">
-                    <app-expense-asset-investment-form [model]="model" [expenseItem]="expenseItem"
+                    <app-expense-asset-investment-form [model]="model" [expenseItem]="expenseItem" [disableAddItem]="true"
                         [type]="mapExpenseType(model.selectedExpenseTypeId)">
 
                     </app-expense-asset-investment-form>
@@ -636,7 +639,7 @@
 
                 @else if([65,66].includes(model.selectedExpenseTypeId)){
                 <div class="px-custom">
-                    <app-expense-construction-form [model]="model" [expenseItem]="expenseItem">
+                    <app-expense-construction-form [model]="model" [expenseItem]="expenseItem" [disableAddItem]="true">
 
                     </app-expense-construction-form>
                 </div>

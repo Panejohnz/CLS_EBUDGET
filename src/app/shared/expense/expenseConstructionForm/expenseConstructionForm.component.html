@@ -307,7 +307,7 @@
 
     <div>
 
-        <button class="btn btn-primary btn-sm" (click)="addItem()">
+        <button *ngIf="!disableAddItem" class="btn btn-primary btn-sm" (click)="addItem()">
 
             + เพิ่มรายการ
 

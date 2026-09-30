@@ -13,6 +13,7 @@ export class ExpenseCarRentalCostComponent {
   @Input() model: any;
 
   @Input() expenseItem: any;
+  @Input() disableAddItem = false;
 
   constructor(
     private modalService: NgbModal,
@@ -474,6 +475,7 @@ export class ExpenseCarRentalCostComponent {
   }
 
   addItem() {
+    if (this.disableAddItem) return;
 
     this.getCurrentItems().push(
 

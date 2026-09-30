@@ -31,6 +31,7 @@ export class ConfirmActionComponent {
         , private authService: AuthenticationService, private budgetYearService: BudgetYearService) {
     }
   allData: any[] = [];
+  model: any = null;
   userSession: any = {};
 
   get isDepartmentLocked(): boolean {
@@ -426,12 +427,73 @@ export class ConfirmActionComponent {
     }
 
     fullModal(modal: any, data: any) {
+        if (!data?.Plan_Id) return;
 
+        this.serviceebud.GatewayGetData({
+          FUNC_CODE: 'FUNC-GET_BUDGET_PLAN_BY_ID',
+          Plan_Id: data.Plan_Id,
+          ...(data?.FK_Project_Plan_Id && { Project_Id: data.FK_Project_Plan_Id })
+        }).subscribe((res: any) => {
+          this.model = {
+            Budget_Type: 1,
+            Budget_Plan: { ...(res?.Budget_Plan || {}), Status_Id: res?.Budget_Plan?.Status_Id ?? data.Status_Id ?? 0 },
+            Status_Id: res?.Budget_Plan?.Status_Id ?? data.Status_Id ?? 0,
+            Budget_Request_Detail_Item: res?.Budget_Plan_Detail_Items || [],
+            Budget_Plan_Detail: res?.Budget_Plan_Details || {},
+            Project_Plan: res?.Project_Plan || {},
+            Project_Detail: res?.Project_Detail || {},
+            Project_Objective: res?.Project_Objective || [],
+            Project_Plan_Level1: res?.Project_Plan_Level1 || [],
+            Project_Plan_Level1_Sub: res?.Project_Plan_Level1_Sub || [],
+            Project_Plan_Level2: res?.Project_Plan_Level2 || {},
+            Project_Plan_Level3: res?.Project_Plan_Level3 || {},
+            Project_Coordinator: res?.Project_Coordinator || [],
+            Project_Output: res?.Project_Output || [],
+            Project_Outcome: res?.Project_Outcome || [],
+            Project_Expected: res?.Project_Expected || [],
+            Project_TargetGroup: res?.Project_TargetGroup || [],
+            selectedDepartment: res?.Project_Plan?.Department_Id,
+            projectType: res?.Project_Plan?.Fk_Expense_Type,
+            selectedPlan: res?.Project_Plan?.Fk_Plan_Id,
+            selectedProduct: res?.Project_Plan?.Fk_Product_Id,
+            selectedActivity: res?.Project_Plan?.Fk_Activity_Id,
+            selectedBudget: res?.Project_Plan?.Fk_Budget_Type,
+            selectedExpenseTypeId: res?.Budget_Plan?.Fk_Expense_List ?? data?.Fk_Expense_List,
+            Project_Id: data?.FK_Project_Plan_Id || data?.Project_Id,
+            activities: this.mapPlanDetails(res?.Project_Plan_Detail || [], res?.Project_Plan_Detail_Item || [])
+          };
 
-        this.modalRef = this.modalService.open(modal, {
+          this.modalRef = this.modalService.open(modal, {
             backdrop: 'static',
-            windowClass: 'modal-95'
+            windowClass: 'full-screen-modal'
+          });
         });
+    }
+
+    private mapPlanDetails(details: any[], items: any[]): any[] {
+      const monthNames = ['ต.ค.', 'พ.ย.', 'ธ.ค.', 'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.'];
+      const create = (detail: any): any => ({
+        id: Number(detail?.Project_Detail_Id), Project_Detail_Id: Number(detail?.Project_Detail_Id),
+        name: detail?.Activity_Name, owner: detail?.Responsible,
+        noBudget: Number(detail?.Used_BG || 0) === 0, consult: Number(detail?.Is_Consult || 0) === 1,
+        consultSelf: Number(detail?.Operation1 || 0) === 1, consultHire: Number(detail?.Operation2 || 0) === 1,
+        quarters: [0, 1, 2, 3].map(q => ({ quarter: q + 1, months: (detail?.Months || []).slice(q * 3, q * 3 + 3)
+          .map((m: any, i: number) => ({ month: monthNames[q * 3 + i], selected: m.Selected, budget: m.Budget })) })),
+        sumAmount: Number(detail?.Sum_Amount ?? detail?.Sum_Amount_Total ?? 0), otherExpenses: [], multiplierTotal: 0, _edited: false,
+        SubActivities: (detail?.SubActivities || []).map((child: any) => create(child))
+      });
+      const activities = (Array.isArray(details) ? details : []).map(create);
+      const byId = new Map<number, any>();
+      const visit = (list: any[]) => list.forEach(activity => { byId.set(Number(activity.id), activity); visit(activity.SubActivities || []); });
+      visit(activities);
+      (Array.isArray(items) ? items : []).forEach((item: any) => {
+        const activity = byId.get(Number(item?.Fk_Project_Detail_Id));
+        if (!activity) return;
+        const total = Number(item?.Total || 0);
+        activity.otherExpenses.push({ id: item.Project_Item_Id, name: item.Expense_Name, times: item.Times, people: item.People, rate: item.Rate, total, input3: item.input3, input4: item.input4, input5: item.input5 });
+        activity.multiplierTotal += total;
+      });
+      return activities;
     }
     deletePlan(data: any) {
 

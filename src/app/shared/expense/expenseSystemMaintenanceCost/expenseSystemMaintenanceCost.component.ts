@@ -12,6 +12,7 @@ export class ExpenseSystemMaintenanceCostComponent {
   @Input() model: any;
 
   @Input() expenseItem: any;
+  @Input() disableAddItem = false;
 
   constructor(
     private modalService: NgbModal,
@@ -140,6 +141,7 @@ export class ExpenseSystemMaintenanceCostComponent {
   }
 
   addItem() {
+    if (this.disableAddItem) return;
 
     this.items.push({
 

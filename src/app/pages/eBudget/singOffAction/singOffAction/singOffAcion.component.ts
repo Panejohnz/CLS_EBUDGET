@@ -31,6 +31,7 @@ export class SingOffActionComponent {
     , private authService: AuthenticationService, private budgetYearService: BudgetYearService) {
   }
   allData: any[] = [];
+  model: any = null;
   selectedDepartmentName: string | null = null;
   selectedPlanName: string | null = null;
   selectedProductName: string | null = null;
@@ -390,11 +391,22 @@ export class SingOffActionComponent {
   }
 
   fullModal(modal: any, data: any) {
+    if (!data?.Plan_Id) return;
 
-
-    this.modalRef = this.modalService.open(modal, {
-      backdrop: 'static',
-      windowClass: 'modal-95'
+    this.serviceebud.GatewayGetData({
+      FUNC_CODE: 'FUNC-GET_BUDGET_PLAN_BY_ID',
+      Plan_Id: data.Plan_Id,
+      ...(data?.FK_Project_Plan_Id && { Project_Id: data.FK_Project_Plan_Id })
+    }).subscribe((res: any) => {
+      this.model = {
+        Budget_Plan: res?.Budget_Plan || data,
+        Project_Plan: res?.Project_Plan || {},
+        Budget_Plan_Detail_Items: res?.Budget_Plan_Detail_Items || []
+      };
+      this.modalRef = this.modalService.open(modal, {
+        backdrop: 'static',
+        windowClass: 'modal-95'
+      });
     });
   }
   deletePlan(data: any) {
