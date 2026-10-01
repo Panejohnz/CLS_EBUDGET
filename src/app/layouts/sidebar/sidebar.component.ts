@@ -1128,7 +1128,15 @@ export class SidebarComponent implements OnInit, OnDestroy {
     if (item.link && !this.isExternalLink(item.link)) {
       const currentUrl = this.normalizeRoutePath(this.router.url);
       const menuLink = this.normalizeRoutePath(item.link);
-      if (currentUrl === menuLink || (menuLink !== '/' && currentUrl.startsWith(`${menuLink}/`))) {
+      if (currentUrl === menuLink) {
+        return true;
+      }
+
+      // Prefer an exact menu route over a shorter route prefix.  For example,
+      // /PlanManagement/examine belongs to the allocated-budget menu and must
+      // not also activate the /PlanManagement action-plan menu.
+      const exactMenuExists = !!this.findMenuItem(currentUrl, this.menuItems || []);
+      if (!exactMenuExists && menuLink !== '/' && currentUrl.startsWith(`${menuLink}/`)) {
         return true;
       }
     }
