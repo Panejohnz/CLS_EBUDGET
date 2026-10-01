@@ -257,6 +257,23 @@
         color: white;
     }
 
+    .report-result-table-scroll {
+        max-height: 600px;
+        overflow: auto;
+        cursor: grab;
+        touch-action: pan-y;
+    }
+
+    .report-result-table-scroll.is-dragging {
+        cursor: grabbing;
+        user-select: none;
+    }
+
+    .report-result-table-scroll .report-result-activity-table {
+        min-width: 2100px;
+        margin-bottom: 0;
+    }
+
     .activity-label-box {
         border: 1px solid #ced4da;
         border-radius: 4px;
@@ -370,7 +387,7 @@
     </div>
 
     <div class="card-body">
-        <div class="d-flex justify-content-between align-items-end mb-3">
+        <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-3">
             <div style="width: 400px;">
                 <label class="fw-semibold mb-1">หน่วยงาน</label>
                 <select class="form-select" [class.readonly-select]="isDepartmentLocked"
@@ -388,6 +405,17 @@
                     </option>
 
                 </select>
+            </div>
+
+            <div class="flex-grow-1" style="min-width: 260px; max-width: 520px;">
+                <label class="fw-semibold mb-1">&#3588;&#3657;&#3609;&#3627;&#3634;</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="ri-search-line"></i>
+                    </span>
+                    <input type="text" class="form-control" [(ngModel)]="searchText" (ngModelChange)="applyFilter()"
+                        placeholder="&#3588;&#3657;&#3609;&#3627;&#3634;&#3627;&#3609;&#3656;&#3623;&#3618;&#3591;&#3634;&#3609; / &#3649;&#3612;&#3609;&#3591;&#3634;&#3609; / &#3619;&#3634;&#3618;&#3585;&#3634;&#3619; / &#3650;&#3588;&#3619;&#3591;&#3585;&#3634;&#3619;">
+                </div>
             </div>
         </div>
 
@@ -601,7 +629,11 @@
     <!-- BODY -->
     <div class="modal-body">
 
-        <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+        <div class="table-responsive report-result-table-scroll"
+            (pointerdown)="startReportTableDrag($event)"
+            (pointermove)="moveReportTableDrag($event)"
+            (pointerup)="endReportTableDrag($event)"
+            (pointercancel)="endReportTableDrag($event)">
             @if (isInvestmentBudgetType(selectedItem)) {
             <div class="d-flex justify-content-between align-items-center mb-3">
 
@@ -644,7 +676,7 @@
 
             @if (isProjectExpenseList(selectedItem)) {
 
-            <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+            <table class="table table-bordered align-middle text-center report-result-activity-table" style="table-layout: fixed;">
                 <!-- sticky header -->
                 <thead class="text-center text-white sticky-header" style="background-color: #556398;">
                     <tr>
@@ -720,7 +752,7 @@
                                 </td>
                                 <ng-container *ngFor="let q of act.quarters">
 
-                                    <td class="fw-semibold text-primary" style="cursor:pointer"
+                                    <td class="fw-semibold text-primary report-month-cell" style="cursor:pointer"
                                         (click)="openProjectMonthModal(monthModal, act, q.quarter - 1, rowIndex)">
                                         {{ q.months[rowIndex].month }}
 
@@ -807,7 +839,7 @@
                                     </td>
                                     <ng-container *ngFor="let q of sub.quarters; let qIndex = index">
 
-                                        <td class="fw-semibold text-primary" style="cursor:pointer"
+                                        <td class="fw-semibold text-primary report-month-cell" style="cursor:pointer"
                                             (click)="openProjectMonthModal(monthModal, sub, q.quarter - 1, rowIndex)">
                                             {{ q.months[rowIndex].month }}
 
@@ -896,7 +928,7 @@
                     <div class="col-md-3">
 
                         <ng-select [items]="Tri_lists" bindLabel="name" bindValue="Trimas_Id" [(ngModel)]="selectedTri"
-                            appendTo="body" (change)="onQuarterChange()" [clearable]="true" [searchable]="false"
+                            appendTo="body" (ngModelChange)="onQuarterChange($event)" [clearable]="true" [searchable]="false"
                             placeholder="-- เลือกไตรมาส --">
 
                         </ng-select>
@@ -1004,7 +1036,7 @@
 
             </div>
             }@else{
-            <table class="table table-bordered align-middle text-center">
+            <table class="table table-bordered align-middle text-center report-result-activity-table">
 
                 <!-- HEADER -->
                 <thead class="text-center text-white sticky-header" style="background-color: #556398;">
@@ -1124,7 +1156,7 @@
                             <ng-container *ngFor="let q of item.quarters; let qIndex = index">
 
                                 <!-- MONTH -->
-                                <td class="fw-semibold text-primary" style="cursor:pointer"
+                                <td class="fw-semibold text-primary report-month-cell" style="cursor:pointer"
                                     (click)="openMonthModal(monthModal,item,qIndex,mi)">
 
                                     {{ quarterMonths[qIndex][mi] }}

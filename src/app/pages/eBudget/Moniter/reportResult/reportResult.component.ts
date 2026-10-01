@@ -39,6 +39,7 @@ export class ReportResultComponent
   currentYear: any;
   department: any[] = [];
   selectedDepartmentId: any = null;
+  searchText = '';
   allData: any[] = [];
   griddata: any[] = [];
   griddataTemp: any[] = [];
@@ -62,6 +63,11 @@ export class ReportResultComponent
   };
   Mas_Unit_Lists: any
   private usedAmountLoadVersion = 0;
+  private progressLoadVersion = 0;
+  private reportTableDragging = false;
+  private reportTableDragMoved = false;
+  private reportTableDragStartX = 0;
+  private reportTableDragStartScrollLeft = 0;
   selectedPlanUsedAmount = 0;
   selectedPlanWithdrawAmount = 0;
   selectedPlanTransferAmount = 0;
@@ -284,6 +290,44 @@ export class ReportResultComponent
     });
   }
 
+  startReportTableDrag(event: PointerEvent): void {
+    const target = event.target as HTMLElement;
+    if (target.closest('input, button, textarea, select, .ng-select, a, label, .report-month-cell')) return;
+    if (event.pointerType === 'mouse' && event.button !== 0) return;
+
+    const container = event.currentTarget as HTMLElement;
+    this.reportTableDragging = true;
+    this.reportTableDragMoved = false;
+    this.reportTableDragStartX = event.clientX;
+    this.reportTableDragStartScrollLeft = container.scrollLeft;
+    container.classList.add('is-dragging');
+    container.setPointerCapture?.(event.pointerId);
+  }
+
+  moveReportTableDrag(event: PointerEvent): void {
+    if (!this.reportTableDragging) return;
+
+    const container = event.currentTarget as HTMLElement;
+    const distance = event.clientX - this.reportTableDragStartX;
+    if (Math.abs(distance) <= 3 && !this.reportTableDragMoved) return;
+
+    this.reportTableDragMoved = true;
+    container.scrollLeft = this.reportTableDragStartScrollLeft - distance;
+    event.preventDefault();
+  }
+
+  endReportTableDrag(event: PointerEvent): void {
+    if (!this.reportTableDragging) return;
+
+    const container = event.currentTarget as HTMLElement;
+    this.reportTableDragging = false;
+    this.reportTableDragMoved = false;
+    container.classList.remove('is-dragging');
+    if (container.hasPointerCapture?.(event.pointerId)) {
+      container.releasePointerCapture(event.pointerId);
+    }
+  }
+
   applyFilter() {
     let data = [
       ...this.griddataTemp
@@ -295,9 +339,36 @@ export class ReportResultComponent
       );
     }
 
+    const keyword = this.normalizeSearchText(this.searchText);
+
+    if (keyword) {
+      data = data.filter((x: any) =>
+        [
+          x.Department_Name,
+          x.Plan_Name,
+          x.Product_Name,
+          x.Activity_Name,
+          x.Budget_Type,
+          x.Expense_List,
+          x.Project_Name,
+          x.Status_Name,
+          x.Total_Plan,
+          x.Used_Amount
+        ].some(value =>
+          this.normalizeSearchText(value).includes(keyword)
+        )
+      );
+    }
+
     this.griddata = data;
     this.sortService.page = 1;
 
+  }
+
+  private normalizeSearchText(value: any): string {
+    return String(value ?? '')
+      .toLowerCase()
+      .replace(/\s+/g, '');
   }
   createQuarter() {
 
@@ -1659,7 +1730,15 @@ export class ReportResultComponent
       );
 
   }
-  onQuarterChange() {
+  onQuarterChange(selectedTri?: any) {
+
+    // ng-select emits the new value here.  Use it directly so the request
+    // cannot accidentally reuse the previously selected quarter.
+    if (selectedTri !== undefined) {
+      this.selectedTri = selectedTri;
+    }
+
+    const loadVersion = ++this.progressLoadVersion;
 
     if (!this.selectedTri) {
       this.Output_Result =
@@ -1680,18 +1759,32 @@ export class ReportResultComponent
       return;
     }
 
+    const requestedTri = Number(this.selectedTri);
+
     const model = {
       FUNC_CODE: 'FUNC-Get_Report_Budget_Plan_Progress',
       Fk_Plan_Id: this.selectedItem.Plan_Id,
-      Trimas_Id: this.selectedTri
+      Trimas_Id: requestedTri
     };
 
     this.servicebud
       .GatewayGetData(model)
       .subscribe((res: any) => {
 
-        const progress =
-          res.Report_Budget_Plan_Progress || {};
+        // Ignore an older request, or a response for another quarter. Without
+        // this check a saved Q1 response can overwrite the blank Q2 form.
+        if (
+          loadVersion !== this.progressLoadVersion ||
+          Number(this.selectedTri) !== requestedTri
+        ) {
+          return;
+        }
+
+        const responseProgress = res?.Report_Budget_Plan_Progress || {};
+        const hasMatchingProgress = Number(responseProgress?.Trimas_Id || 0) === requestedTri;
+        const progress = hasMatchingProgress
+          ? responseProgress
+          : {};
 
         this.Output_Result = progress?.Output_Result
           ? this.safeParseJson(progress.Output_Result, this.Project_Output_Default)
@@ -1707,8 +1800,9 @@ export class ReportResultComponent
         this.Summary_Result = progress.Summary_Result || '';
         this.Suggestions = progress.Suggestions || '';
         this.Progress_Id = progress.Progress_Id || 0;
-        this.Report_Attach_File =
-          this.extractReportAttachFiles(res, this.selectedItem?.Plan_Id, this.Progress_Id);
+        this.Report_Attach_File = hasMatchingProgress
+          ? this.extractReportAttachFiles(res, this.selectedItem?.Plan_Id, this.Progress_Id)
+          : [];
         this.syncReportAttachmentModel(this.Report_Attach_File);
         console.log('this.Output_Result', this.Output_Result);
 

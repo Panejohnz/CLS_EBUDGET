@@ -44,6 +44,7 @@ export class ReportKPIComponent implements OnInit {
   kpis: any[] = [];
   filteredKpis: any[] = [];
   searchTerm = '';
+  department: any[] = [];
   Mas_Unit_Lists: any[] = [];
 
   get pagedKpis(): any[] {
@@ -104,6 +105,11 @@ export class ReportKPIComponent implements OnInit {
   // =====================================
   userSession: any
   selectedDepartmentId: any = null;
+
+  get isDepartmentLocked(): boolean {
+    return Number(this.userSession?.permissionData?.VIEW_DATA || 0) === 3;
+  }
+
   ngOnInit(): void {
 
     this.sortService.page = 1;
@@ -128,7 +134,7 @@ export class ReportKPIComponent implements OnInit {
             this.userSession = JSON.parse(sessionStr);
             console.log('userSession', this.userSession);
           }
-          if (this.userSession.permissionData.VIEW_DATA == 3) {
+          if (this.isDepartmentLocked) {
             this.selectedDepartmentId = this.userSession.permissionData.Department_id
           } else {
 
@@ -160,6 +166,20 @@ export class ReportKPIComponent implements OnInit {
 
         this.kpis = response?.List_Mas_Indicator || [];
 
+        this.department = Array.isArray(response?.Mas_Department_Lists)
+          ? response.Mas_Department_Lists
+          : this.department;
+
+        if (this.selectedDepartmentId != null) {
+          const matchedDepartment = this.department.find(
+            (item: any) => String(item.Department_Id) === String(this.selectedDepartmentId)
+          );
+
+          if (matchedDepartment) {
+            this.selectedDepartmentId = matchedDepartment.Department_Id;
+          }
+        }
+
         if (Array.isArray(response?.List_Mas_Unit)) {
 
           this.Mas_Unit_Lists =
@@ -190,6 +210,11 @@ export class ReportKPIComponent implements OnInit {
           .includes(keyword)
       );
     this.sortService.page = 1;
+  }
+
+  onDepartmentChange(): void {
+    this.sortService.page = 1;
+    this.getData();
   }
 
   getUnitData() {

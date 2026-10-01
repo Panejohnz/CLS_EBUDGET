@@ -14,7 +14,18 @@
     </div>
 
     <div class="card-body">
-        <div class="row mb-3">
+        <div class="row g-3 mb-3 align-items-end">
+            <div class="col-md-5 col-lg-4">
+                <label class="form-label">&#3627;&#3609;&#3656;&#3623;&#3618;&#3591;&#3634;&#3609;</label>
+                <select class="form-select" [class.readonly-select]="isDepartmentLocked" [disabled]="isDepartmentLocked"
+                    [attr.aria-disabled]="isDepartmentLocked" [attr.tabindex]="isDepartmentLocked ? -1 : null"
+                    [(ngModel)]="selectedDepartmentId" (change)="onDepartmentChange()">
+                    <option [ngValue]="null">-- &#3648;&#3621;&#3639;&#3629;&#3585;&#3627;&#3609;&#3656;&#3623;&#3618;&#3591;&#3634;&#3609; --</option>
+                    <option *ngFor="let item of department" [ngValue]="item.Department_Id">
+                        {{ item.Department_Name }}
+                    </option>
+                </select>
+            </div>
             <div class="col-md-5 col-lg-4">
                 <label for="kpiSearch" class="form-label">ค้นหาตัวชี้วัด</label>
                 <div class="input-group">
