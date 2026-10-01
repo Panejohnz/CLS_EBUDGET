@@ -952,7 +952,9 @@ export class ReportResultComponent
     return Array.isArray(list)
       ? list.map((item: any) => ({
         ...item,
-        Name_Report: item?.Name_Report || ''
+        // Project_Output / Project_Outcome are the master targets.  Report
+        // values belong only to Report_Budget_Plan_Progress per quarter.
+        Name_Report: ''
       }))
       : [];
   }
@@ -1924,8 +1926,10 @@ export class ReportResultComponent
 
       Report_Budget_Plan_Progress: Plan_Progress,
 
-      Project_Output: this.Output_Result,
-      Project_Outcome: this.Outcome_Result
+      // Do not send quarter report values back to the project target master.
+      // They are already stored in Plan_Progress.Output_Result/Outcome_Result.
+      Project_Output: [],
+      Project_Outcome: []
     };
 
 
