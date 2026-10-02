@@ -113,8 +113,15 @@
                                         [term]="service.searchTerm">{{data.Activity_Name}}</ngb-highlight>
                                 </td>
                                 <td>{{data.Budget_Type}}</td>
-                                <td>{{data.Project_Name}}</td>
-
+                               <td>
+                                    @if(data.Is_Adjust_List){
+                                    {{data.Expense_List}}
+                                    }@else if(data.Project_Name){
+                                    {{data.Project_Name}}
+                                    }@else{
+                                    {{data.Expense_List}}
+                                    }
+                                </td>
                                 <td class="text-end">
                                     {{data.Total | number:'1.2-2'}}
                                 </td>

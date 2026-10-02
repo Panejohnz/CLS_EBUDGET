@@ -317,7 +317,7 @@
         font-weight: 400;
     }
 
-    .activity-option-label + .activity-option-label::before {
+    .activity-option-label+.activity-option-label::before {
         content: '|';
         color: #9aa5b5;
         margin-right: 14px;
@@ -517,9 +517,13 @@
                         </td>
 
                         <td>
-
+                            @if(data.Is_Adjust_List){
                             {{data.Expense_List}}
-
+                            }@else if(data.Project_Name){
+                            {{data.Project_Name}}
+                            }@else{
+                            {{data.Expense_List}}
+                            }
                         </td>
 
                         <td class="text-end">
@@ -629,10 +633,8 @@
     <!-- BODY -->
     <div class="modal-body">
 
-        <div class="table-responsive report-result-table-scroll"
-            (pointerdown)="startReportTableDrag($event)"
-            (pointermove)="moveReportTableDrag($event)"
-            (pointerup)="endReportTableDrag($event)"
+        <div class="table-responsive report-result-table-scroll" (pointerdown)="startReportTableDrag($event)"
+            (pointermove)="moveReportTableDrag($event)" (pointerup)="endReportTableDrag($event)"
             (pointercancel)="endReportTableDrag($event)">
             @if (isInvestmentBudgetType(selectedItem)) {
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -676,7 +678,8 @@
 
             @if (isProjectExpenseList(selectedItem)) {
 
-            <table class="table table-bordered align-middle text-center report-result-activity-table" style="table-layout: fixed;">
+            <table class="table table-bordered align-middle text-center report-result-activity-table"
+                style="table-layout: fixed;">
                 <!-- sticky header -->
                 <thead class="text-center text-white sticky-header" style="background-color: #556398;">
                     <tr>
@@ -766,17 +769,18 @@
                                             [ngModel]="displayValue(q.months[rowIndex].budget)"
                                             (input)="onInputFormat($event, q.months[rowIndex])"
                                             (keypress)="allowOnlyNumber($event)"
-                                            [disabled]="act.noBudget || act.SubActivities?.length > 0" style="background-color: #ebeff3;" readonly>
+                                            [disabled]="act.noBudget || act.SubActivities?.length > 0"
+                                            style="background-color: #ebeff3;" readonly>
                                     </td>
 
                                     <td>
-                                        <input class="form-control  text-end"
-                                            [(ngModel)]="q.months[rowIndex].actual" style="background-color: #ebeff3;" readonly>
+                                        <input class="form-control  text-end" [(ngModel)]="q.months[rowIndex].actual"
+                                            style="background-color: #ebeff3;" readonly>
                                     </td>
 
                                     <td>
-                                        <input class="form-control  text-end"
-                                            [(ngModel)]="q.months[rowIndex].resbill" style="background-color: #ebeff3;" readonly>
+                                        <input class="form-control  text-end" [(ngModel)]="q.months[rowIndex].resbill"
+                                            style="background-color: #ebeff3;" readonly>
                                     </td>
 
                                 </ng-container>
@@ -928,8 +932,8 @@
                     <div class="col-md-3">
 
                         <ng-select [items]="Tri_lists" bindLabel="name" bindValue="Trimas_Id" [(ngModel)]="selectedTri"
-                            appendTo="body" (ngModelChange)="onQuarterChange($event)" [clearable]="true" [searchable]="false"
-                            placeholder="-- เลือกไตรมาส --">
+                            appendTo="body" (ngModelChange)="onQuarterChange($event)" [clearable]="true"
+                            [searchable]="false" placeholder="-- เลือกไตรมาส --">
 
                         </ng-select>
 
@@ -1429,5 +1433,3 @@
         [activity]="selectedActivity" [modal]="modal">
     </app-other-expense-project>
 </ng-template>
-
-
