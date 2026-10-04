@@ -356,23 +356,29 @@ getDashboard() {
 
     const totalBudget = this.sum(data, 'Total_Plan');
     const totalAdjust = this.sum(data, 'Adjust');
+    // Some dashboard responses provide the allocated amount only in
+    // Total_Plan and leave Adjust at zero.  Use that amount for the summary
+    // cards when there is no adjustment data at all.
+    const allocatedBudget = totalAdjust !== 0 ? totalAdjust : totalBudget;
     const totalburse = this.sum(data, 'Sum_Withdraw');
-    const totalRemaining = totalAdjust - totalburse;
+    const totalRemaining = allocatedBudget - totalburse;
 
     const recurringAdjust = this.sumByBudgetTypeIds(data, 'Adjust', [1, 2, 4, 5]);
     const recurringBudget = this.sumByBudgetTypeIds(data, 'Total_Plan', [1, 2, 4, 5]);
     const recurringburse = this.sumByBudgetTypeIds(data, 'Sum_Withdraw', [1, 2, 4, 5]);
-    const recurringRemaining =  recurringAdjust  - recurringburse;
+    const recurringAllocated = recurringAdjust !== 0 ? recurringAdjust : recurringBudget;
+    const recurringRemaining = recurringAllocated - recurringburse;
 
     const investmentAdjust = this.sumByBudgetTypeIds(data, 'Adjust', [3]);
     const investmentBudget = this.sumByBudgetTypeIds(data, 'Total_Plan', [3]);
     const investmentburse = this.sumByBudgetTypeIds(data, 'Sum_Withdraw', [3]);
-    const investmentRemaining = investmentAdjust - investmentburse;
+    const investmentAllocated = investmentAdjust !== 0 ? investmentAdjust : investmentBudget;
+    const investmentRemaining = investmentAllocated - investmentburse;
 
     this.statData = [
       {
         title: 'ภาพรวมงบประมาณ',
-        value: this.formatMoney(totalAdjust),
+        value: this.formatMoney(allocatedBudget),
         Reimburse: this.formatMoney(totalburse),
         Remaining: this.formatMoney(totalRemaining),
         icon: 'ri-money-dollar-circle-line',
@@ -382,7 +388,7 @@ getDashboard() {
       },
       {
         title: 'รายจ่ายประจำ',
-        value: this.formatMoney(recurringAdjust),
+        value: this.formatMoney(recurringAllocated),
         Reimburse: this.formatMoney(recurringburse),
         Remaining: this.formatMoney(recurringRemaining),
         icon: 'ri-wallet-3-line',
@@ -392,7 +398,7 @@ getDashboard() {
       },
       {
         title: 'รายจ่ายลงทุน',
-        value: this.formatMoney(investmentAdjust),
+        value: this.formatMoney(investmentAllocated),
         Reimburse: this.formatMoney(investmentburse),
         Remaining: this.formatMoney(investmentRemaining),
         icon: 'ri-funds-line',
@@ -748,6 +754,7 @@ bindPlanChart(data: any[]) {
     !this.hasAnyNonZero(data, ['Total_Plan', 'Adjust', 'Sum_Withdraw']);
 
   const map = new Map<string, {
+    label: string;
     planOrder: number;
     plan: number;
     adjust: number;
@@ -758,10 +765,17 @@ bindPlanChart(data: any[]) {
   // รวมข้อมูลตามแผนงาน
   data.forEach((x: any) => {
 
-    const key = x.Plan_Name || '-';
+    // A plan name is not a unique identifier.  Grouping by the name caused
+    // different plans with the same displayed name to be merged in the chart.
+    const planId = x.Plan_Id ?? x.Fk_Plan_Id ?? x.Budget_Plan_Id;
+    const label = x.Plan_Name || '-';
+    const key = planId !== undefined && planId !== null && planId !== ''
+      ? `plan_${planId}`
+      : `plan_name_${label}`;
 
     if (!map.has(key)) {
       map.set(key, {
+        label,
         planOrder: Number(x.Plan_Order || x.plan_order || 9999),
         plan: 0,
         adjust: 0,
@@ -790,7 +804,7 @@ bindPlanChart(data: any[]) {
     }))
   );
 
-  const labels = sortedItems.map(([key]) => key);
+  const labels = sortedItems.map(([, value]) => value.label);
   const rows = sortedItems.map(([_, value]) => value);
 
   // ==========================
@@ -968,6 +982,7 @@ bindDepartmentChart(data: any[]) {
     !this.hasAnyNonZero(data, ['Total_Plan', 'Adjust', 'Sum_Withdraw']);
 
   const map = new Map<string, {
+    label: string;
     plan: number;
     adjust: number;
     withdraw: number;
@@ -977,10 +992,17 @@ bindDepartmentChart(data: any[]) {
   // รวมข้อมูลตามหน่วยงาน
   data.forEach((x: any) => {
 
-    const key = x.Department_Short_Name || '-';
+    // Department short names are display values and may be repeated.  Keep
+    // departments separate by their ID, with the short name used as the label.
+    const departmentId = x.Department_Id ?? x.Fk_Department_Id;
+    const label = x.Department_Short_Name || x.Department_Name || '-';
+    const key = departmentId !== undefined && departmentId !== null && departmentId !== ''
+      ? `department_${departmentId}`
+      : `department_name_${label}`;
 
     if (!map.has(key)) {
       map.set(key, {
+        label,
         plan: 0,
         adjust: 0,
         withdraw: 0,
@@ -996,7 +1018,7 @@ bindDepartmentChart(data: any[]) {
     row.count += 1;
   });
 
-  const labels = Array.from(map.keys());
+  const labels = Array.from(map.values()).map(row => row.label);
   const rows = Array.from(map.values());
 
   // ==========================
