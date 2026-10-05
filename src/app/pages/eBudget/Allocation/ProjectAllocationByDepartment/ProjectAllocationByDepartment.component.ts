@@ -128,6 +128,10 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
   // department.  Allocation itself omits this input and still shows all.
   @Input() departmentId: number | null = null;
   private expenseListById = new Map<number, any>();
+  private expenseListOrderById = new Map<number, number>();
+  private expenseTypeById = new Map<number, any>();
+  private expenseTypeOrderById = new Map<number, number>();
+  private expenseGroupOrderById = new Map<number, number>();
   // A rate is attached to the expense-detail master, not the request item.
   // Keep it here because Allocation loads request details lazily per source.
   private rateNullByExpenseDetailId = new Map<number, boolean>();
@@ -163,17 +167,35 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
   load(): void {
     if (!this.currentYear) return;
     this.loading = true;
-    this.servicebud.GatewayGetData({
-      FUNC_CODE: 'FUNC-GET_Mas_Expense_List',
-      Mas_Expense_List: { Fk_Expense_Type_Id: 0 }
+    forkJoin({
+      expenseResponse: this.servicebud.GatewayGetData({
+        FUNC_CODE: 'FUNC-GET_Mas_Expense_List',
+        Mas_Expense_List: { Fk_Expense_Type_Id: 0 }
+      }),
+      expenseTypeResponse: this.servicebud.GatewayGetData({
+        FUNC_CODE: 'FUNC-GET_Mas_Expense_Type'
+      }).pipe(catchError(() => of(null))),
+      expenseGroupResponse: this.servicebud.GatewayGetData({
+        FUNC_CODE: 'FUNC-GET_Mas_Expense_Group'
+      }).pipe(catchError(() => of(null)))
     }).subscribe({
-      next: (response: any) => {
-        const expenseLists = Array.isArray(response?.Mas_Expense_Lists) ? response.Mas_Expense_Lists : [];
+      next: ({ expenseResponse, expenseTypeResponse, expenseGroupResponse }: any) => {
+        const expenseLists = Array.isArray(expenseResponse?.Mas_Expense_Lists) ? expenseResponse.Mas_Expense_Lists : [];
+        const expenseTypes = Array.isArray(expenseTypeResponse?.Mas_Expense_Types) ? expenseTypeResponse.Mas_Expense_Types : [];
+        const expenseGroups = Array.isArray(expenseGroupResponse?.List_Mas_Expense_Group) ? expenseGroupResponse.List_Mas_Expense_Group : [];
         this.expenseListById = new Map(expenseLists.map((item: any) => [Number(item.Expense_Id), item]));
+        this.expenseListOrderById = this.toOrderMap(expenseLists, 'Expense_Id');
+        this.expenseTypeById = new Map(expenseTypes.map((item: any) => [Number(item.Expense_Type_Id), item]));
+        this.expenseTypeOrderById = this.toOrderMap(expenseTypes, 'Expense_Type_Id');
+        this.expenseGroupOrderById = this.toOrderMap(expenseGroups, 'Expense_Group_Id');
         this.loadPlanOrder(() => this.loadRequests());
       },
       error: () => {
         this.expenseListById.clear();
+        this.expenseListOrderById.clear();
+        this.expenseTypeById.clear();
+        this.expenseTypeOrderById.clear();
+        this.expenseGroupOrderById.clear();
         this.loadPlanOrder(() => this.loadRequests());
       }
     });
@@ -345,6 +367,7 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
                 key: `expense_${plan.Fk_Expense_List || 0}_${plan.Project_Name || plan.Expense_Name || plan.Expense_List}`,
                 name: plan.Project_Name || plan.Expense_Name || plan.Expense_List || '-',
                 type: 'expense',
+                entityId: Number(plan.Fk_Expense_List || 0),
                 Plan_Id: Number(plan.Plan_Id || 0),
                 Request_Id: Number(plan.FK_Request_Id || plan.Fk_Request_Id || plan.Request_Id || 0),
                 Fk_Expense_List: Number(plan.Fk_Expense_List || 0),
@@ -534,14 +557,51 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
 
   private sortHierarchyNodes(nodes: any[]): void {
     nodes.sort((left, right) => {
+      if (left?.type === 'expense' && right?.type === 'expense') {
+        return this.compareExpenseNodes(left, right);
+      }
       const leftOrder = this.nodeOrder(left);
       const rightOrder = this.nodeOrder(right);
-      if (leftOrder === null && rightOrder === null) return 0;
+      if (leftOrder === null && rightOrder === null) {
+        return String(left?.name || '').localeCompare(String(right?.name || ''), 'th', { numeric: true });
+      }
       if (leftOrder === null) return 1;
       if (rightOrder === null) return -1;
-      return leftOrder - rightOrder;
+      return leftOrder - rightOrder || String(left?.name || '').localeCompare(String(right?.name || ''), 'th', { numeric: true });
     });
     nodes.forEach(node => this.sortHierarchyNodes(node.children || []));
+  }
+
+  private compareExpenseNodes(left: any, right: any): number {
+    const leftOrder = this.expenseOrderPath(left);
+    const rightOrder = this.expenseOrderPath(right);
+
+    for (let index = 0; index < leftOrder.length; index++) {
+      if (leftOrder[index] !== rightOrder[index]) {
+        return leftOrder[index] - rightOrder[index];
+      }
+    }
+
+    return String(left?.name || '').localeCompare(String(right?.name || ''), 'th', { numeric: true });
+  }
+
+  private expenseOrderPath(node: any): number[] {
+    const expenseId = Number(node?.entityId || node?.Fk_Expense_List || 0);
+    const expense = this.expenseListById.get(expenseId);
+    const expenseTypeId = Number(
+      expense?.Fk_Expense_Type_Id ?? expense?.FK_Expense_Type_Id ?? expense?.Fk_Expense_Type ?? 0
+    );
+    const expenseType = this.expenseTypeById.get(expenseTypeId);
+    const expenseGroupId = Number(
+      expenseType?.Fk_Expense_Group_Id ?? expenseType?.FK_Expense_Group_Id ?? 0
+    );
+    const maxOrder = Number.MAX_SAFE_INTEGER;
+
+    return [
+      this.expenseGroupOrderById.get(expenseGroupId) ?? maxOrder,
+      this.expenseTypeOrderById.get(expenseTypeId) ?? maxOrder,
+      this.expenseListOrderById.get(expenseId) ?? maxOrder
+    ];
   }
 
   private nodeOrder(node: any): number | null {

@@ -322,7 +322,7 @@
     }@else if(expenseItem.Expense_Id == 54){
     <app-expense-system-maintenance-cost [modal]="modal" [expenseItem]="expenseItem">
     </app-expense-system-maintenance-cost>
-    }@else if(expenseItem.Expense_Id == 55){
+    }@else if([55,86].includes(expenseItem.Expense_Id)){
     <app-expense-car-rental-cost [modal]="modal" [expenseItem]="expenseItem">
     </app-expense-car-rental-cost>
     }@else if(expenseItem.Expense_Id == 44){
@@ -350,7 +350,7 @@
     }
 
     <!-- <div class="modal-footer"> -->
-<div class="card-footer budget-footer">
+    <div class="card-footer budget-footer">
         <button class="btn btn-danger text-black" (click)="modal.dismiss()">
             ยกเลิก
         </button>

@@ -49,7 +49,8 @@
                 </label><span class="text-danger">*</span>
 
                 <ng-select [items]="Mas_Activity" bindLabel="Activity_Name" bindValue="Activity_Id"
-                    [(ngModel)]="model.selectedActivityPropos" name="selectedActivity" [disabled]="readOnly" placeholder="-- เลือก --">
+                    [(ngModel)]="model.selectedActivityPropos" name="selectedActivity" [disabled]="readOnly"
+                    placeholder="-- เลือก --">
 
                 </ng-select>
 
@@ -97,8 +98,8 @@
                 
                 </ng-select> -->
 
-                <ng-select appendTo="body" [disabled]="readOnly || model.Budget_Request.Request_Id" [items]="expenseOptions"
-                    class="expense-select" bindLabel="Expense_Name" bindValue="Expense_Id"
+                <ng-select appendTo="body" [disabled]="readOnly || model.Budget_Request.Request_Id"
+                    [items]="expenseOptions" class="expense-select" bindLabel="Expense_Name" bindValue="Expense_Id"
                     [(ngModel)]="model.selectedExpenseTypeId" (ngModelChange)="onExpenseChange($event)"
                     placeholder="-- กรุณาเลือกรายการค่าใช้จ่าย --">
                 </ng-select>
@@ -208,8 +209,8 @@
                                     <!-- เดือน ต.ค.-มี.ค. -->
                                     <tr class="month-header">
                                         <td rowspan="4" class="align-middle">
-                                            <input type="textarea" class="form-control" [(ngModel)]="t.unit" [readonly]="readOnly"
-                                                placeholder="ระบุหน่วยนับ">
+                                            <input type="textarea" class="form-control" [(ngModel)]="t.unit"
+                                                [readonly]="readOnly" placeholder="ระบุหน่วยนับ">
                                         </td>
 
                                         <td>ต.ค.</td>
@@ -224,7 +225,8 @@
                                         </td>
 
                                         <td rowspan="4" class="align-middle">
-                                            <button class="btn btn-danger btn-sm" *ngIf="!readOnly && targetList.length > 1"
+                                            <button class="btn btn-danger btn-sm"
+                                                *ngIf="!readOnly && targetList.length > 1"
                                                 (click)="removeTargetRow(i,t)">
                                                 <i class="ri-delete-bin-line"></i>
                                             </button>
@@ -234,33 +236,33 @@
                                     <!-- ช่องกรอก ต.ค.-มี.ค. -->
                                     <tr>
                                         <td>
-                                            <input type="number" class="form-control text-end" [readonly]="readOnly" [(ngModel)]="t.oct"
-                                                placeholder="ระบุเป้าหมาย">
+                                            <input type="number" class="form-control text-end" [readonly]="readOnly"
+                                                [(ngModel)]="t.oct" placeholder="ระบุเป้าหมาย">
                                         </td>
 
                                         <td>
-                                            <input type="number" class="form-control text-end" [readonly]="readOnly" [(ngModel)]="t.nov"
-                                                placeholder="ระบุเป้าหมาย">
+                                            <input type="number" class="form-control text-end" [readonly]="readOnly"
+                                                [(ngModel)]="t.nov" placeholder="ระบุเป้าหมาย">
                                         </td>
 
                                         <td>
-                                            <input type="number" class="form-control text-end" [readonly]="readOnly" [(ngModel)]="t.dec"
-                                                placeholder="ระบุเป้าหมาย">
+                                            <input type="number" class="form-control text-end" [readonly]="readOnly"
+                                                [(ngModel)]="t.dec" placeholder="ระบุเป้าหมาย">
                                         </td>
 
                                         <td>
-                                            <input type="number" class="form-control text-end" [readonly]="readOnly" [(ngModel)]="t.jan"
-                                                placeholder="ระบุเป้าหมาย">
+                                            <input type="number" class="form-control text-end" [readonly]="readOnly"
+                                                [(ngModel)]="t.jan" placeholder="ระบุเป้าหมาย">
                                         </td>
 
                                         <td>
-                                            <input type="number" class="form-control text-end" [readonly]="readOnly" [(ngModel)]="t.feb"
-                                                placeholder="ระบุเป้าหมาย">
+                                            <input type="number" class="form-control text-end" [readonly]="readOnly"
+                                                [(ngModel)]="t.feb" placeholder="ระบุเป้าหมาย">
                                         </td>
 
                                         <td>
-                                            <input type="number" class="form-control text-end" [readonly]="readOnly" [(ngModel)]="t.mar"
-                                                placeholder="ระบุเป้าหมาย">
+                                            <input type="number" class="form-control text-end" [readonly]="readOnly"
+                                                [(ngModel)]="t.mar" placeholder="ระบุเป้าหมาย">
                                         </td>
                                     </tr>
 
@@ -277,33 +279,33 @@
                                     <!-- ช่องกรอก เม.ย.-ก.ย. -->
                                     <tr>
                                         <td>
-                                            <input type="number" class="form-control text-end" [readonly]="readOnly" [(ngModel)]="t.apr"
-                                                placeholder="ระบุเป้าหมาย">
+                                            <input type="number" class="form-control text-end" [readonly]="readOnly"
+                                                [(ngModel)]="t.apr" placeholder="ระบุเป้าหมาย">
                                         </td>
 
                                         <td>
-                                            <input type="number" class="form-control text-end" [readonly]="readOnly" [(ngModel)]="t.may"
-                                                placeholder="ระบุเป้าหมาย">
+                                            <input type="number" class="form-control text-end" [readonly]="readOnly"
+                                                [(ngModel)]="t.may" placeholder="ระบุเป้าหมาย">
                                         </td>
 
                                         <td>
-                                            <input type="number" class="form-control text-end" [readonly]="readOnly" [(ngModel)]="t.jun"
-                                                placeholder="ระบุเป้าหมาย">
+                                            <input type="number" class="form-control text-end" [readonly]="readOnly"
+                                                [(ngModel)]="t.jun" placeholder="ระบุเป้าหมาย">
                                         </td>
 
                                         <td>
-                                            <input type="number" class="form-control text-end" [readonly]="readOnly" [(ngModel)]="t.jul"
-                                                placeholder="ระบุเป้าหมาย">
+                                            <input type="number" class="form-control text-end" [readonly]="readOnly"
+                                                [(ngModel)]="t.jul" placeholder="ระบุเป้าหมาย">
                                         </td>
 
                                         <td>
-                                            <input type="number" class="form-control text-end" [readonly]="readOnly" [(ngModel)]="t.aug"
-                                                placeholder="ระบุเป้าหมาย">
+                                            <input type="number" class="form-control text-end" [readonly]="readOnly"
+                                                [(ngModel)]="t.aug" placeholder="ระบุเป้าหมาย">
                                         </td>
 
                                         <td>
-                                            <input type="number" class="form-control text-end" [readonly]="readOnly" [(ngModel)]="t.sep"
-                                                placeholder="ระบุเป้าหมาย">
+                                            <input type="number" class="form-control text-end" [readonly]="readOnly"
+                                                [(ngModel)]="t.sep" placeholder="ระบุเป้าหมาย">
                                         </td>
                                     </tr>
 
@@ -347,7 +349,8 @@
 
                 </button>
 
-                <button *ngIf="!readOnly" class="btn btn-success text-black" [disabled]="isSaveLocked" (click)="saveTarget(modal)">
+                <button *ngIf="!readOnly" class="btn btn-success text-black" [disabled]="isSaveLocked"
+                    (click)="saveTarget(modal)">
 
                     บันทึก
 
@@ -608,10 +611,9 @@
 
                 }
 
-                @else if(model.selectedExpenseTypeId == 55){
+                @else if( [55,86].includes(model.selectedExpenseTypeId)){
                 <div class="px-custom">
-                    <app-expense-car-rental-cost [model]="model" [expenseItem]="expenseItem"
-                        [disableAddItem]="true">
+                    <app-expense-car-rental-cost [model]="model" [expenseItem]="expenseItem" [disableAddItem]="true">
 
                     </app-expense-car-rental-cost>
                 </div>
@@ -629,8 +631,8 @@
 
                 @else if([56,57,58,59,60,61,62,63].includes(model.selectedExpenseTypeId)){
                 <div class="px-custom">
-                    <app-expense-asset-investment-form [model]="model" [expenseItem]="expenseItem" [disableAddItem]="true"
-                        [type]="mapExpenseType(model.selectedExpenseTypeId)">
+                    <app-expense-asset-investment-form [model]="model" [expenseItem]="expenseItem"
+                        [disableAddItem]="true" [type]="mapExpenseType(model.selectedExpenseTypeId)">
 
                     </app-expense-asset-investment-form>
                 </div>
