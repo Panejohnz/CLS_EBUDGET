@@ -513,51 +513,63 @@
                 </div> -->
 
                 <div class="dropdown ms-sm-3 header-item topbar-user" ngbDropdown placement="bottom-end" display="static">
-                    <button type="button" class="btn topbar-user-toggle" id="page-header-user-dropdown" data-bs-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false" ngbDropdownToggle>
+                   <button type="button" class="btn topbar-user-toggle" id="page-header-user-dropdown"
+                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ngbDropdownToggle>
                         <span class="d-flex align-items-center">
-                            <img class="rounded-circle header-profile-user" src="assets/images/users/user-dummy-img.jpg"
-                                alt="Header Avatar">
-                            <span class="text-start ms-xl-2">
-                                <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">
-                                    ชื่อผู้ใช้งาน : {{ userDisplayName }}
-                                </span>
-                                <span class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">
-                                    หน่วยงาน : {{ departmentDisplayName }}
-                                </span>
+                            <span class="topbar-user-trigger-icon"><i class="ri-user-3-line"></i></span>
+                            <span class="topbar-user-trigger-info text-start ms-xl-2">
+                                <span class="d-none d-xl-block topbar-user-trigger-name">{{ userData?.NAME || '-'
+                                    }}</span>
+                                <span class="d-none d-xl-flex topbar-user-trigger-detail"><i
+                                        class="ri-shield-user-line"></i>{{ permissionData?.Group_Name || '-' }}</span>
+
+
+                                <!-- <span class="d-none d-xl-flex topbar-user-trigger-detail"><i
+                                        class="ri-briefcase-4-line"></i>{{ userData?.POSITION || '-' }}</span> -->
+                                <span class="d-none d-xl-flex topbar-user-trigger-detail"><i
+                                        class="ri-building-2-line"></i>{{ permissionData?.Department_Name || '-'
+                                    }}</span>
                             </span>
                         </span>
                     </button>
                     <div class="dropdown-menu dropdown-menu-end topbar-user-menu" ngbDropdownMenu>
                         <!-- item-->
                         <div class="topbar-user-summary">
-                            <div class="topbar-user-avatar">{{ userInitial(userDisplayName) }}</div>
+                            <div class="topbar-user-avatar">{{ userInitial(userData?.NAME) }}</div>
                             <div class="min-w-0">
-                                <div class="topbar-user-name text-truncate">{{ userDisplayName || '-' }}</div>
+                                <div class="topbar-user-name text-truncate">{{ userData?.NAME || '-' }}</div>
                                 <div class="topbar-user-label">ข้อมูลผู้ใช้งาน</div>
                             </div>
                         </div>
                         <div class="topbar-user-info">
                             <div class="topbar-info-row">
                                 <i class="ri-building-2-line"></i>
-                                <div><small>หน่วยงาน</small><span>{{ departmentDisplayName || '-' }}</span></div>
+                                <div><small>หน่วยงาน</small><span>{{ permissionData?.Department_Name || '-' }}</span>
+                                </div>
                             </div>
-                        </div>
-                        <h6 class="dropdown-header visually-hidden" *ngIf="userDisplayName">
-                            ยินดีต้อนรับ | {{ userDisplayName }}
-                        </h6>
-                        <div class="dropdown-item-text px-3 pb-2 text-muted d-none" *ngIf="departmentDisplayName">
-                            {{ departmentDisplayName }}
+                            <div class="topbar-info-row">
+                                <i class="ri-shield-user-line"></i>
+                                <div><small>กลุ่มสิทธิ์</small><span>{{ permissionData?.Group_Name || '-' }}</span>
+                                </div>
+                            </div>
+                            <!-- <div class="topbar-info-row">
+                                <i class="ri-briefcase-4-line"></i>
+                                <div><small>ตำแหน่ง</small><span>{{ userData?.POSITION || '-' }}</span>
+                                </div>
+                            </div> -->
                         </div>
                         <!-- <a class="dropdown-item" routerLink="/pages/profile"><i class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Profile</span></a>
                         <a class="dropdown-item" routerLink="/apps/chat"><i class="mdi mdi-message-text-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Messages</span></a>
                         <a class="dropdown-item" routerLink="/tasks/kanban"><i class="mdi mdi-calendar-check-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Taskboard</span></a>
                         <a class="dropdown-item" routerLink="/pages/faqs"><i class="mdi mdi-lifebuoy text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Help</span></a> -->
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="javascript: void(0);" (click)="changePermission()"><i class="mdi mdi-account-switch text-muted fs-16 align-middle me-1"></i> <span class="align-middle">เปลี่ยนหน่วยงาน / กลุ่มสิทธิ์</span></a>
+                        <a class="dropdown-item" href="javascript: void(0);" (click)="changePermission()"><i
+                                class="mdi mdi-account-switch text-muted fs-16 align-middle me-1"></i> <span
+                                class="align-middle">เปลี่ยนหน่วยงาน / กลุ่มสิทธิ์</span></a>
                         <!-- <a class="dropdown-item" routerLink="/pages/profile"><i class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Balance : <b>$5971.67</b></span></a>
                         <a class="dropdown-item" routerLink="/pages/profile"><span class="badge bg-success-subtle text-success mt-1 float-end">New</span><i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Settings</span></a>
                         <a class="dropdown-item" routerLink="/auth/lockscreen/basic"><i class="mdi mdi-lock text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Lock screen</span></a> -->
+
                         <a class="dropdown-item" href="javascript: void(0);" (click)="logout()"><i
                                 class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span
                                 class="align-middle" data-key="t-logout">ออกจากระบบ</span></a>

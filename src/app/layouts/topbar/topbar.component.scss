@@ -95,6 +95,55 @@
   &:hover,
   &[aria-expanded='true'] { background: #f1f5f9; border-color: #dbe5f0; }
   &[aria-expanded='true'] { box-shadow: 0 3px 10px rgba(34, 74, 117, .08); }
+
+  @media (min-width: 1200px) {
+    min-width: 265px;
+    padding: .45rem .75rem;
+  }
+}
+
+.topbar-user-trigger-icon {
+  display: flex;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  background: #e1eef8;
+  color: #3778a8;
+  font-size: 20px;
+}
+
+.topbar-user-trigger-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.topbar-user-trigger-name {
+  overflow: hidden;
+  color: #2c4b66;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topbar-user-trigger-detail {
+  gap: .3rem;
+  align-items: center;
+  overflow: hidden;
+  color: #718499;
+  font-size: 11px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  i {
+    color: #6b97ba;
+    font-size: 12px;
+  }
 }
 
 .topbar-user-menu {
