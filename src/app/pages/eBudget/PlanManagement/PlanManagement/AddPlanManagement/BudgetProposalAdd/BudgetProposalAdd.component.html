@@ -29,7 +29,7 @@
         </div>
 
         <div class="col-md-4">
-            <label class="form-label">กิจกรรม</label>
+            <label class="form-label">กิจกรรมย่อย</label>
             <select class="form-select" [(ngModel)]="plan.mainDeptActivity">
                 <option value="">-- เลือกกิจกรรมย่อย --</option>
                 <option *ngFor="let item of mainDeptActivityOptions" [value]="item.id">

@@ -7,11 +7,13 @@
 
             <div class="card-body">
                 <br />
-                                <div class="row g-3 align-items-end mb-3">
+                <div class="row g-3 align-items-end mb-3">
                     <div class="col-lg-3">
                         <label class="form-label">หน่วยงาน</label>
-                        <ng-select [class.readonly-select]="isDepartmentLocked" [items]="departmentFilterOptions" bindLabel="name" bindValue="name"
-                            [(ngModel)]="selectedDepartmentName" [clearable]="!isDepartmentLocked" [disabled]="isDepartmentLocked" [searchable]="!isDepartmentLocked" appendTo="body" placeholder="-- เลือกหน่วยงาน --"
+                        <ng-select [class.readonly-select]="isDepartmentLocked" [items]="departmentFilterOptions"
+                            bindLabel="name" bindValue="name" [(ngModel)]="selectedDepartmentName"
+                            [clearable]="!isDepartmentLocked" [disabled]="isDepartmentLocked"
+                            [searchable]="!isDepartmentLocked" appendTo="body" placeholder="-- เลือกหน่วยงาน --"
                             (change)="onDepartmentFilterChange()">
                         </ng-select>
                     </div>
@@ -27,15 +29,15 @@
                     <div class="col-lg-3">
                         <label class="form-label">ผลผลิต(กิจกรรมหลัก)</label>
                         <ng-select [items]="productFilterOptions" bindLabel="name" bindValue="name"
-                            [(ngModel)]="selectedProductName" appendTo="body" placeholder="-- เลือกผลผลิต(กิจกรรมหลัก) --"
-                            (change)="onProductFilterChange()">
+                            [(ngModel)]="selectedProductName" appendTo="body"
+                            placeholder="-- เลือกผลผลิต(กิจกรรมหลัก) --" (change)="onProductFilterChange()">
                         </ng-select>
                     </div>
 
                     <div class="col-lg-3">
-                        <label class="form-label">กิจกรรม</label>
+                        <label class="form-label">กิจกรรมย่อย</label>
                         <ng-select [items]="activityFilterOptions" bindLabel="name" bindValue="name"
-                            [(ngModel)]="selectedActivityName" appendTo="body" placeholder="-- เลือกกิจกรรม --"
+                            [(ngModel)]="selectedActivityName" appendTo="body" placeholder="-- เลือกกิจกรรมย่อย --"
                             (change)="applyFilter()">
                         </ng-select>
                     </div>
@@ -48,51 +50,51 @@
                             </div>
 
                             <div>
-                        <!-- <button class="btn btn-light me-2" (click)="CancelConfirm()">
+                                <!-- <button class="btn btn-light me-2" (click)="CancelConfirm()">
                             ยกเลิกการยืนยันข้อมูล
                         </button> -->
 
-                        <button class="btn btn-success text-black" (click)="Confirm()">
-                            ยืนยันข้อมูล
-                        </button>
-                    </div>
-
+                                <button class="btn btn-success text-black" (click)="Confirm()">
+                                    ยืนยันข้อมูล
+                                </button>
                             </div>
+
+                        </div>
                     </div>
                 </div>
-<div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+                <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
 
-    <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
-        <!-- sticky header -->
-        <thead class="text-center text-white sticky-header" style="background-color: #556398;">
+                    <table class="table table-bordered align-middle text-center" style="table-layout: fixed;">
+                        <!-- sticky header -->
+                        <thead class="text-center text-white sticky-header" style="background-color: #556398;">
                             <tr class="text-center">
                                 <th style="width:5%">
                                     <input type="checkbox" (change)="toggleAll($event)">
                                 </th>
-                                 <th style="width:5%">ลำดับ</th>
+                                <th style="width:5%">ลำดับ</th>
                                 <th style="width:10%">หน่วยงาน</th>
                                 <th style="width:10%">แผนงาน</th>
                                 <th style="width:10%">ผลผลิต(กิจกรรมหลัก)</th>
-                                <th style="width:10%">กิจกรรม</th>
+                                <th style="width:10%">กิจกรรมย่อย</th>
                                 <th style="width:10%">หมวดงบ</th>
                                 <th style="width:15%">โครงการ</th>
                                 <th style="width:10%">งบประมาณ</th>
                                 <th style="width:10%">สถานะ</th>
                                 <th style="width:5%">รายละเอียด</th>
-                                        <th style="width:5%">ยกเลิกยืนยัน</th>
+                                <th style="width:5%">ยกเลิกยืนยัน</th>
                             </tr>
                         </thead>
 
                         <tbody>
                             @for(data of pagedGriddata; track $index){
                             <tr>
-                          <td class="text-center">
+                                <td class="text-center">
                                     <input type="checkbox" [(ngModel)]="data.selected" [disabled]="data.Status_Id == 5"
                                         [style.accent-color]="data.Status_Id == 5 ? '#bfbfbf' : ''"
                                         [style.opacity]="data.Status_Id == 5 ? '0.5' : '1'"
                                         [style.cursor]="data.Status_Id == 5 ? 'not-allowed' : 'pointer'">
                                 </td>
-                                       <td>{{pageStartIndex + $index}}</td>
+                                <td>{{pageStartIndex + $index}}</td>
                                 <td class="text-center">{{data.Department_Short_Name}}</td>
                                 <td class="text-center">
                                     <ngb-highlight [result]="data.Plan_Name"
@@ -114,7 +116,7 @@
                                 <td class="text-end">
                                     {{data.Total | number:'1.2-2'}}
                                 </td>
-                                 <td>
+                                <td>
                                     <span style="
             display:inline-block;
             padding:4px 8px;
@@ -127,7 +129,7 @@
                                         {{ data.Status_Name }}
                                     </span>
                                 </td>
-                               
+
                                 <td class="text-center">
                                     <button class="btn btn-info btn-sm" (click)="fullModal(fullDataModal, data)"
                                         [disabled]="!data.Request_Id" title="รายละเอียด">
@@ -135,19 +137,17 @@
                                     </button>
                                 </td>
 
- <td class="text-center">
-    <button
-        class="btn btn-sm btn-danger text-black"
-        (click)="CancelConfirm(data)"
-        [disabled]="data.Status_Id != 5"
-        [style.opacity]="data.Status_Id != 5 ? '0.5' : '1'">
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-danger text-black" (click)="CancelConfirm(data)"
+                                        [disabled]="data.Status_Id != 5"
+                                        [style.opacity]="data.Status_Id != 5 ? '0.5' : '1'">
 
-        ยกเลิกยืนยันข้อมูล
+                                        ยกเลิกยืนยันข้อมูล
 
-    </button>
-</td>
+                                    </button>
+                                </td>
 
-                               
+
                             </tr>
                             }
                         </tbody>
@@ -180,28 +180,55 @@
             </div>
         </div>
     </div><ng-template #fullDataModal let-modal>
-    <div class="modal-header shared-page-header p-3">
-        <h5 class="modal-title text-white">รายละเอียดคำของบประมาณ</h5>
-        <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
-    </div>
-    <div class="modal-body" *ngIf="model">
-        <div class="row g-3 mb-3">
-            <div class="col-md-4"><label class="form-label fw-semibold">หน่วยงาน</label><input class="form-control" readonly [value]="model.Budget_Request?.Department_Name || selectedDetailRow?.Department_Name || ''"></div>
-            <div class="col-md-4"><label class="form-label fw-semibold">แผนงาน</label><input class="form-control" readonly [value]="model.Budget_Request?.Plan_Name || selectedDetailRow?.Plan_Name || ''"></div>
-            <div class="col-md-4"><label class="form-label fw-semibold">ผลผลิต(กิจกรรมหลัก)</label><input class="form-control" readonly [value]="model.Budget_Request?.Product_Name || selectedDetailRow?.Product_Name || ''"></div>
-            <div class="col-md-4"><label class="form-label fw-semibold">กิจกรรม</label><input class="form-control" readonly [value]="model.Budget_Request?.Activity_Name || selectedDetailRow?.Activity_Name || ''"></div>
-            <div class="col-md-4"><label class="form-label fw-semibold">หมวดงบ</label><input class="form-control" readonly [value]="model.Budget_Request?.Budget_Type || selectedDetailRow?.Budget_Type || ''"></div>
-            <div class="col-md-4"><label class="form-label fw-semibold">รายการค่าใช้จ่าย</label><input class="form-control" readonly [value]="model.Budget_Request?.Expense_Name || model.Budget_Request?.Expense_List || selectedDetailRow?.Expense_Name || selectedDetailRow?.Expense_List || model.Budget_Request_Detail_Item?.[0]?.Expense_Name || ''"></div>
-            <div class="col-md-8"><label class="form-label fw-semibold">โครงการ</label><input class="form-control" readonly [value]="model.Budget_Request?.Project_Name || selectedDetailRow?.Project_Name || ''"></div>
-            <div class="col-md-4"><label class="form-label fw-semibold">งบประมาณ</label><input class="form-control text-end" readonly [value]="(model.Budget_Request?.Total || selectedDetailRow?.Total || 0) | number:'1.2-2'"></div>
+        <div class="modal-header shared-page-header p-3">
+            <h5 class="modal-title text-white">รายละเอียดคำของบประมาณ</h5>
+            <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
         </div>
-        <div class="table-responsive" *ngIf="model.Budget_Request_Detail_Item?.length">
-            <table class="table table-bordered align-middle">
-                <thead class="table-light"><tr><th>รายละเอียด</th><th class="text-end">จำนวนเงิน</th></tr></thead>
-                <tbody><tr *ngFor="let item of model.Budget_Request_Detail_Item"><td>{{ item.Expense_Detail || item.Expense_Name || '-' }}</td><td class="text-end">{{ (item.Total || item.Budget_Amount || 0) | number:'1.2-2' }}</td></tr></tbody>
-            </table>
+        <div class="modal-body" *ngIf="model">
+            <div class="row g-3 mb-3">
+                <div class="col-md-4"><label class="form-label fw-semibold">หน่วยงาน</label><input class="form-control"
+                        readonly
+                        [value]="model.Budget_Request?.Department_Name || selectedDetailRow?.Department_Name || ''">
+                </div>
+                <div class="col-md-4"><label class="form-label fw-semibold">แผนงาน</label><input class="form-control"
+                        readonly [value]="model.Budget_Request?.Plan_Name || selectedDetailRow?.Plan_Name || ''"></div>
+                <div class="col-md-4"><label class="form-label fw-semibold">ผลผลิต(กิจกรรมหลัก)</label><input
+                        class="form-control" readonly
+                        [value]="model.Budget_Request?.Product_Name || selectedDetailRow?.Product_Name || ''"></div>
+                <div class="col-md-4"><label class="form-label fw-semibold">กิจกรรมย่อย</label><input
+                        class="form-control" readonly
+                        [value]="model.Budget_Request?.Activity_Name || selectedDetailRow?.Activity_Name || ''"></div>
+                <div class="col-md-4"><label class="form-label fw-semibold">หมวดงบ</label><input class="form-control"
+                        readonly [value]="model.Budget_Request?.Budget_Type || selectedDetailRow?.Budget_Type || ''">
+                </div>
+                <div class="col-md-4"><label class="form-label fw-semibold">รายการค่าใช้จ่าย</label><input
+                        class="form-control" readonly
+                        [value]="model.Budget_Request?.Expense_Name || model.Budget_Request?.Expense_List || selectedDetailRow?.Expense_Name || selectedDetailRow?.Expense_List || model.Budget_Request_Detail_Item?.[0]?.Expense_Name || ''">
+                </div>
+                <div class="col-md-8"><label class="form-label fw-semibold">โครงการ</label><input class="form-control"
+                        readonly [value]="model.Budget_Request?.Project_Name || selectedDetailRow?.Project_Name || ''">
+                </div>
+                <div class="col-md-4"><label class="form-label fw-semibold">งบประมาณ</label><input
+                        class="form-control text-end" readonly
+                        [value]="(model.Budget_Request?.Total || selectedDetailRow?.Total || 0) | number:'1.2-2'"></div>
+            </div>
+            <div class="table-responsive" *ngIf="model.Budget_Request_Detail_Item?.length">
+                <table class="table table-bordered align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>รายละเอียด</th>
+                            <th class="text-end">จำนวนเงิน</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of model.Budget_Request_Detail_Item">
+                            <td>{{ item.Expense_Detail || item.Expense_Name || '-' }}</td>
+                            <td class="text-end">{{ (item.Total || item.Budget_Amount || 0) | number:'1.2-2' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
-    <div class="modal-footer"><button type="button" class="btn btn-light" (click)="modal.close()">ปิด</button></div>
+        <div class="modal-footer"><button type="button" class="btn btn-light" (click)="modal.close()">ปิด</button></div>
     </ng-template>
 </div>

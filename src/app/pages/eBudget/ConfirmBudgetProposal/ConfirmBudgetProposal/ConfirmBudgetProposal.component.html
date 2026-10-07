@@ -10,8 +10,10 @@
                 <div class="row g-3 align-items-end mb-3">
                     <div class="col-lg-3">
                         <label class="form-label">หน่วยงาน</label>
-                        <ng-select [class.readonly-select]="isDepartmentLocked" [items]="departmentFilterOptions" bindLabel="name" bindValue="name"
-                            [(ngModel)]="selectedDepartmentName" [clearable]="!isDepartmentLocked" [disabled]="isDepartmentLocked" [searchable]="!isDepartmentLocked" appendTo="body" placeholder="-- เลือกหน่วยงาน --"
+                        <ng-select [class.readonly-select]="isDepartmentLocked" [items]="departmentFilterOptions"
+                            bindLabel="name" bindValue="name" [(ngModel)]="selectedDepartmentName"
+                            [clearable]="!isDepartmentLocked" [disabled]="isDepartmentLocked"
+                            [searchable]="!isDepartmentLocked" appendTo="body" placeholder="-- เลือกหน่วยงาน --"
                             (change)="onDepartmentFilterChange()">
                         </ng-select>
                     </div>
@@ -27,15 +29,15 @@
                     <div class="col-lg-3">
                         <label class="form-label">ผลผลิต(กิจกรรมหลัก)</label>
                         <ng-select [items]="productFilterOptions" bindLabel="name" bindValue="name"
-                            [(ngModel)]="selectedProductName" appendTo="body" placeholder="-- เลือกผลผลิต(กิจกรรมหลัก) --"
-                            (change)="onProductFilterChange()">
+                            [(ngModel)]="selectedProductName" appendTo="body"
+                            placeholder="-- เลือกผลผลิต(กิจกรรมหลัก) --" (change)="onProductFilterChange()">
                         </ng-select>
                     </div>
 
                     <div class="col-lg-3">
-                        <label class="form-label">กิจกรรม</label>
+                        <label class="form-label">กิจกรรมย่อย</label>
                         <ng-select [items]="activityFilterOptions" bindLabel="name" bindValue="name"
-                            [(ngModel)]="selectedActivityName" appendTo="body" placeholder="-- เลือกกิจกรรม --"
+                            [(ngModel)]="selectedActivityName" appendTo="body" placeholder="-- เลือกกิจกรรมย่อย --"
                             (change)="applyFilter()">
                         </ng-select>
                     </div>
@@ -73,7 +75,7 @@
                                 <th style="width:10%">หน่วยงาน</th>
                                 <th style="width:10%">แผนงาน</th>
                                 <th style="width:10%">ผลผลิต(กิจกรรมหลัก)</th>
-                                <th style="width:10%">กิจกรรม</th>
+                                <th style="width:10%">กิจกรรมย่อย</th>
                                 <th style="width:10%">หมวดงบ</th>
                                 <th style="width:15%">โครงการ</th>
                                 <th style="width:10%">งบประมาณ</th>
@@ -177,29 +179,56 @@
             </div>
         </div>
     </div><ng-template #fullDataModal let-modal>
-    <div class="modal-header shared-page-header p-3">
-        <h5 class="modal-title text-white">รายละเอียดคำของบประมาณ</h5>
-        <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
-    </div>
-    <div class="modal-body" *ngIf="model">
-        <div class="row g-3 mb-3">
-            <div class="col-md-4"><label class="form-label fw-semibold">หน่วยงาน</label><input class="form-control" readonly [value]="model.Budget_Request?.Department_Name || model.Project_Plan?.Department_Name || ''"></div>
-            <div class="col-md-4"><label class="form-label fw-semibold">แผนงาน</label><input class="form-control" readonly [value]="model.Budget_Request?.Plan_Name || model.Project_Plan?.Plan_Name || ''"></div>
-            <div class="col-md-4"><label class="form-label fw-semibold">ผลผลิต(กิจกรรมหลัก)</label><input class="form-control" readonly [value]="model.Budget_Request?.Product_Name || model.Project_Plan?.Product_Name || ''"></div>
-            <div class="col-md-4"><label class="form-label fw-semibold">กิจกรรม</label><input class="form-control" readonly [value]="model.Budget_Request?.Activity_Name || model.Project_Plan?.Activity_Name || ''"></div>
-            <div class="col-md-4"><label class="form-label fw-semibold">หมวดงบ</label><input class="form-control" readonly [value]="model.Budget_Request?.Budget_Type || ''"></div>
-            <div class="col-md-4"><label class="form-label fw-semibold">รายการค่าใช้จ่าย</label><input class="form-control" readonly [value]="model.Budget_Request?.Expense_Name || model.Budget_Request?.Expense_List || selectedDetailRow?.Expense_Name || selectedDetailRow?.Expense_List || model.Budget_Request_Detail_Item?.[0]?.Expense_Name || ''"></div>
-            <div class="col-md-8"><label class="form-label fw-semibold">โครงการ</label><input class="form-control" readonly [value]="model.Budget_Request?.Project_Name || model.Project_Plan?.Project_Name || selectedDetailRow?.Project_Name || ''"></div>
-            <div class="col-md-4"><label class="form-label fw-semibold">งบประมาณ</label><input class="form-control text-end" readonly [value]="(model.Budget_Request?.Total || 0) | number:'1.2-2'"></div>
+        <div class="modal-header shared-page-header p-3">
+            <h5 class="modal-title text-white">รายละเอียดคำของบประมาณ</h5>
+            <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
         </div>
+        <div class="modal-body" *ngIf="model">
+            <div class="row g-3 mb-3">
+                <div class="col-md-4"><label class="form-label fw-semibold">หน่วยงาน</label><input class="form-control"
+                        readonly
+                        [value]="model.Budget_Request?.Department_Name || model.Project_Plan?.Department_Name || ''">
+                </div>
+                <div class="col-md-4"><label class="form-label fw-semibold">แผนงาน</label><input class="form-control"
+                        readonly [value]="model.Budget_Request?.Plan_Name || model.Project_Plan?.Plan_Name || ''"></div>
+                <div class="col-md-4"><label class="form-label fw-semibold">ผลผลิต(กิจกรรมหลัก)</label><input
+                        class="form-control" readonly
+                        [value]="model.Budget_Request?.Product_Name || model.Project_Plan?.Product_Name || ''"></div>
+                <div class="col-md-4"><label class="form-label fw-semibold">กิจกรรมย่อย</label><input
+                        class="form-control" readonly
+                        [value]="model.Budget_Request?.Activity_Name || model.Project_Plan?.Activity_Name || ''"></div>
+                <div class="col-md-4"><label class="form-label fw-semibold">หมวดงบ</label><input class="form-control"
+                        readonly [value]="model.Budget_Request?.Budget_Type || ''"></div>
+                <div class="col-md-4"><label class="form-label fw-semibold">รายการค่าใช้จ่าย</label><input
+                        class="form-control" readonly
+                        [value]="model.Budget_Request?.Expense_Name || model.Budget_Request?.Expense_List || selectedDetailRow?.Expense_Name || selectedDetailRow?.Expense_List || model.Budget_Request_Detail_Item?.[0]?.Expense_Name || ''">
+                </div>
+                <div class="col-md-8"><label class="form-label fw-semibold">โครงการ</label><input class="form-control"
+                        readonly
+                        [value]="model.Budget_Request?.Project_Name || model.Project_Plan?.Project_Name || selectedDetailRow?.Project_Name || ''">
+                </div>
+                <div class="col-md-4"><label class="form-label fw-semibold">งบประมาณ</label><input
+                        class="form-control text-end" readonly
+                        [value]="(model.Budget_Request?.Total || 0) | number:'1.2-2'"></div>
+            </div>
 
-        <div class="table-responsive" *ngIf="model.Budget_Request_Detail_Item?.length">
-            <table class="table table-bordered align-middle">
-                <thead class="table-light"><tr><th>รายละเอียด</th><th class="text-end">จำนวนเงิน</th></tr></thead>
-                <tbody><tr *ngFor="let item of model.Budget_Request_Detail_Item"><td>{{ item.Expense_Detail || item.Expense_Name || '-' }}</td><td class="text-end">{{ (item.Total || item.Budget_Amount || 0) | number:'1.2-2' }}</td></tr></tbody>
-            </table>
+            <div class="table-responsive" *ngIf="model.Budget_Request_Detail_Item?.length">
+                <table class="table table-bordered align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>รายละเอียด</th>
+                            <th class="text-end">จำนวนเงิน</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of model.Budget_Request_Detail_Item">
+                            <td>{{ item.Expense_Detail || item.Expense_Name || '-' }}</td>
+                            <td class="text-end">{{ (item.Total || item.Budget_Amount || 0) | number:'1.2-2' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
-    <div class="modal-footer"><button type="button" class="btn btn-light" (click)="modal.close()">ปิด</button></div>
-</ng-template>
+        <div class="modal-footer"><button type="button" class="btn btn-light" (click)="modal.close()">ปิด</button></div>
+    </ng-template>
 </div>

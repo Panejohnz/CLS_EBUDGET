@@ -45,7 +45,7 @@
             <div class="col-md-4">
 
                 <label class="form-label">
-                    กิจกรรม
+                    กิจกรรมย่อย
                 </label><span class="text-danger">*</span>
 
                 <ng-select [items]="Mas_Activity" bindLabel="Activity_Name" bindValue="Activity_Id"
@@ -712,7 +712,7 @@
                 </div>
                 <div class="flex-grow-1 text-center">
                     <span *ngIf="isProjectPlanningExpense" class="fw-bold text-primary">
-                        รวมเงินทุกกิจกรรม: {{ getGuidelineActivitiesTotal() | number:'1.2-2' }} บาท
+                        รวมเงินทุกกิจกรรมย่อย: {{ getGuidelineActivitiesTotal() | number:'1.2-2' }} บาท
                     </span>
                     <span class="text-danger ms-3" *ngIf="isRequiredConstructionAttachmentMissing">
                         กรุณาแนบไฟล์บังคับให้ครบ

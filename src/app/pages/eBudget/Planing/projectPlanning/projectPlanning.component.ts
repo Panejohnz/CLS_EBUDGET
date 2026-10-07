@@ -1361,7 +1361,7 @@ export class ProjectPlanningComponent {
       },
       {
         value: this.project_planing.selectedActivity,
-        msg: 'เลือกกิจกรรม'
+        msg: 'เลือกกิจกรรมย่อย'
       },
       {
         value: this.project_planing.selectedBudget,
@@ -1483,7 +1483,7 @@ export class ProjectPlanningComponent {
         { value: this.project_planing.projectType, msg: 'กรุณาเลือกประเภทโครงการ' },
         { value: this.project_planing.selectedPlan, msg: 'กรุณาเลือกแผนงาน' },
         { value: this.project_planing.selectedProduct, msg: 'กรุณาเลือกผลผลิต(กิจกรรมหลัก)' },
-        { value: this.project_planing.selectedActivity, msg: 'กรุณาเลือกกิจกรรม' },
+        { value: this.project_planing.selectedActivity, msg: 'กรุณาเลือกกิจกรรมย่อย' },
       ] : []),
       { value: this.project_planing.selectedBudget, msg: 'กรุณาเลือกหมวดงบ' },
       { value: data?.Used_BG, msg: 'กรุณาเลือกลักษณะโครงการ' },

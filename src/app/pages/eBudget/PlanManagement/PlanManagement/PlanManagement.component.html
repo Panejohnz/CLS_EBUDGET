@@ -37,9 +37,9 @@
                     </div>
 
                     <div class="col-lg-3">
-                        <label class="form-label">กิจกรรม</label>
+                        <label class="form-label">กิจกรรมย่อย</label>
                         <ng-select [items]="activityFilterOptions" bindLabel="name" bindValue="name"
-                            [(ngModel)]="selectedActivityName" appendTo="body" placeholder="-- เลือกกิจกรรม --"
+                            [(ngModel)]="selectedActivityName" appendTo="body" placeholder="-- เลือกกิจกรรมย่อย --"
                             (change)="applyFilter()">
                         </ng-select>
                     </div>
@@ -79,7 +79,7 @@
                                 <th style="width:10%">หน่วยงาน</th>
                                 <th style="width:10%">แผนงาน</th>
                                 <th style="width:10%">ผลผลิต(กิจกรรมหลัก)</th>
-                                <th style="width:10%">กิจกรรม</th>
+                                <th style="width:10%">กิจกรรมย่อย</th>
                                 <th style="width:10%">หมวดงบ</th>
                                 <th style="width:15%">โครงการ/รายการ</th>
                                 <th style="width:10%">จัดสรรงบประมาณ</th>

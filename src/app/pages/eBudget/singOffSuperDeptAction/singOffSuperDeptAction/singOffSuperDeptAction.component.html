@@ -35,9 +35,9 @@
                     </div>
 
                     <div class="col-lg-3">
-                        <label class="form-label">กิจกรรม</label>
+                        <label class="form-label">กิจกรรมย่อย</label>
                         <ng-select [items]="activityFilterOptions" bindLabel="name" bindValue="name"
-                            [(ngModel)]="selectedActivityName" appendTo="body" placeholder="-- เลือกกิจกรรม --"
+                            [(ngModel)]="selectedActivityName" appendTo="body" placeholder="-- เลือกกิจกรรมย่อย --"
                             (change)="applyFilter()">
                         </ng-select>
                     </div>
@@ -76,7 +76,7 @@
                                 <th style="width:10%">หน่วยงาน</th>
                                 <th style="width:10%">แผนงาน</th>
                                 <th style="width:10%">ผลผลิต(กิจกรรมหลัก)</th>
-                                <th style="width:10%">กิจกรรม</th>
+                                <th style="width:10%">กิจกรรมย่อย</th>
                                 <th style="width:10%">หมวดงบ</th>
                                 <th style="width:15%">โครงการ</th>
                                 <th style="width:10%">งบประมาณ</th>
@@ -198,7 +198,7 @@
                 <div class="col-md-4"><label class="form-label fw-semibold">ผลผลิต(กิจกรรมหลัก)</label><input class="form-control"
                         readonly [value]="model.Budget_Plan?.Product_Name || model.Project_Plan?.Product_Name || ''">
                 </div>
-                <div class="col-md-4"><label class="form-label fw-semibold">กิจกรรม</label><input class="form-control"
+                <div class="col-md-4"><label class="form-label fw-semibold">กิจกรรมย่อย</label><input class="form-control"
                         readonly [value]="model.Budget_Plan?.Activity_Name || model.Project_Plan?.Activity_Name || ''">
                 </div>
                 <div class="col-md-4"><label class="form-label fw-semibold">รายการค่าใช้จ่าย</label><input
