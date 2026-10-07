@@ -19,7 +19,7 @@ import { AuthenticationService } from '../../../../../core/services/auth.service
 })
 export class Report_R008Component implements OnInit {
   readonly reportTitle =
-    'รายงานผลการใช้จ่ายงบประมาณ เทียบกับแผนปฏิบัติการ จำแนกตามแผนงาน ผลผลิต กิจกรรม งบรายจ่าย';
+    'รายงานผลการใช้จ่ายงบประมาณ เทียบกับแผนปฏิบัติการ จำแนกตามแผนงาน ผลผลิต(กิจกรรมหลัก) กิจกรรมย่อย งบรายจ่าย';
 
   token: string = '';
 

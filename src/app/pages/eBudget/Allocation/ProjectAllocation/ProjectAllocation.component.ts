@@ -42,6 +42,9 @@ export class ProjectAllocationComponent implements OnInit {
   // =====================================
   Mas_Budget_Types: any[] = [];
   Mas_Expense_Lists: any[] = [];
+  private planMasterById = new Map<number, any>();
+  private productMasterById = new Map<number, any>();
+  private activityMasterById = new Map<number, any>();
   table_display: boolean = false;
 
   department: any[] = [];
@@ -262,14 +265,18 @@ export class ProjectAllocationComponent implements OnInit {
             ? response.Mas_Expense_Lists
             : this.buildExpenseListOptions(this.allData);
 
-        if (afterLoad) {
-          afterLoad();
-          return;
-        }
+        // Names stored in Budget_Request/Budget_Plan are snapshots.  Resolve
+        // their IDs against the current master records before rendering.
+        this.loadHierarchyMasters(() => {
+          if (afterLoad) {
+            afterLoad();
+            return;
+          }
 
-        if (this.selectedDepartmentId) {
-          this.applyFilter();
-        }
+          if (this.selectedDepartmentId) {
+            this.applyFilter();
+          }
+        });
       });
 
   }
@@ -450,6 +457,7 @@ export class ProjectAllocationComponent implements OnInit {
         // =========================
 
         rows.forEach((row: any) => {
+          this.applyMasterHierarchyNames(row);
 
           const planKey =
             this.buildGroupKey(row.Fk_Plan_Id, row.Plan_Name);
@@ -656,6 +664,56 @@ export class ProjectAllocationComponent implements OnInit {
 
       });
 
+  }
+
+  /** Loads the current display names for Plan, Product and Activity. */
+  private loadHierarchyMasters(done: () => void): void {
+    this.servicebud.GatewayGetData({
+      FUNC_CODE: 'FUNC-GET_Mas_Search',
+      BgYear: this.currentYear
+    }).subscribe({
+      next: (response: any) => {
+        this.planMasterById = this.toMasterMap(response?.Mas_Plan_Lists, 'Plan_Id');
+        this.productMasterById = this.toMasterMap(response?.Mas_Product_Lists, 'Product_Id');
+        this.activityMasterById = this.toMasterMap(response?.Mas_Activity_Lists, 'Activity_Id');
+        done();
+      },
+      // Keep the existing saved names as a fallback when a master request is
+      // temporarily unavailable; Allocation must remain usable.
+      error: () => {
+        this.planMasterById.clear();
+        this.productMasterById.clear();
+        this.activityMasterById.clear();
+        done();
+      }
+    });
+  }
+
+  private toMasterMap(items: any, idField: string): Map<number, any> {
+    const masterMap = new Map<number, any>();
+    (Array.isArray(items) ? items : []).forEach((item: any) => {
+      const id = Number(item?.[idField] || 0);
+      if (id) {
+        masterMap.set(id, item);
+      }
+    });
+    return masterMap;
+  }
+
+  private applyMasterHierarchyNames(row: any): void {
+    const plan = this.planMasterById.get(Number(row?.Fk_Plan_Id || 0));
+    const product = this.productMasterById.get(Number(row?.Fk_Product_Id || 0));
+    const activity = this.activityMasterById.get(Number(row?.Fk_Activity_Id || 0));
+
+    if (plan?.Plan_Name) {
+      row.Plan_Name = plan.Plan_Name;
+    }
+    if (product?.Product_Name) {
+      row.Product_Name = product.Product_Name;
+    }
+    if (activity?.Activity_Name) {
+      row.Activity_Name = activity.Activity_Name;
+    }
   }
   addBudget(budget: any) {
 

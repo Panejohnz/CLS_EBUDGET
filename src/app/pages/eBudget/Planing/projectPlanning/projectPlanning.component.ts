@@ -1357,7 +1357,7 @@ export class ProjectPlanningComponent {
       },
       {
         value: this.project_planing.selectedProduct,
-        msg: 'เลือกผลผลิต'
+        msg: 'เลือกผลผลิต(กิจกรรมหลัก)'
       },
       {
         value: this.project_planing.selectedActivity,
@@ -1482,7 +1482,7 @@ export class ProjectPlanningComponent {
       ...(showPlanningSelectors ? [
         { value: this.project_planing.projectType, msg: 'กรุณาเลือกประเภทโครงการ' },
         { value: this.project_planing.selectedPlan, msg: 'กรุณาเลือกแผนงาน' },
-        { value: this.project_planing.selectedProduct, msg: 'กรุณาเลือกผลผลิต' },
+        { value: this.project_planing.selectedProduct, msg: 'กรุณาเลือกผลผลิต(กิจกรรมหลัก)' },
         { value: this.project_planing.selectedActivity, msg: 'กรุณาเลือกกิจกรรม' },
       ] : []),
       { value: this.project_planing.selectedBudget, msg: 'กรุณาเลือกหมวดงบ' },
@@ -1565,7 +1565,7 @@ export class ProjectPlanningComponent {
     }
 
     if (!this.hasFilledRows(this.project_planing.Project_Output, ['Name', 'Target', 'Unit'])) {
-      return this.failRequired(3, 'กรุณากรอกเป้าหมายเชิงผลผลิตให้ครบ');
+      return this.failRequired(3, 'กรุณากรอกเป้าหมายเชิงผลผลิต(กิจกรรมหลัก)ให้ครบ');
     }
 
     if (!this.hasFilledRows(this.project_planing.Project_Outcome, ['Name'])) {

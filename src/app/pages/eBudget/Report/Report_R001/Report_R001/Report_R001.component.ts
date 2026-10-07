@@ -22,7 +22,7 @@ export class Report_R001Component implements OnInit {
   token: string = '';
 
   readonly reportTitle =
-    'รายงานสรุปภาพรวมคำของบประมาณรายจ่าย จำแนกตามแผนงาน ผลผลิต กิจกรรม งบรายจ่าย';
+    'รายงานสรุปภาพรวมคำของบประมาณรายจ่าย จำแนกตามแผนงาน ผลผลิต(กิจกรรมหลัก) กิจกรรมย่อย งบรายจ่าย';
 
   rawReportUrl: string = '';
   reportUrl!: SafeResourceUrl;

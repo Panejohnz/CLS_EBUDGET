@@ -25,9 +25,9 @@
                     </div>
 
                     <div class="col-lg-3">
-                        <label class="form-label">ผลผลิต</label>
+                        <label class="form-label">ผลผลิต(กิจกรรมหลัก)</label>
                         <ng-select [items]="productFilterOptions" bindLabel="name" bindValue="name"
-                            [(ngModel)]="selectedProductName" appendTo="body" placeholder="-- เลือกผลผลิต --"
+                            [(ngModel)]="selectedProductName" appendTo="body" placeholder="-- เลือกผลผลิต(กิจกรรมหลัก) --"
                             (change)="onProductFilterChange()">
                         </ng-select>
                     </div>
@@ -72,7 +72,7 @@
                                  <th style="width:5%">ลำดับ</th>
                                 <th style="width:10%">หน่วยงาน</th>
                                 <th style="width:10%">แผนงาน</th>
-                                <th style="width:10%">ผลผลิต</th>
+                                <th style="width:10%">ผลผลิต(กิจกรรมหลัก)</th>
                                 <th style="width:10%">กิจกรรม</th>
                                 <th style="width:10%">หมวดงบ</th>
                                 <th style="width:15%">โครงการ</th>
@@ -188,7 +188,7 @@
         <div class="row g-3 mb-3">
             <div class="col-md-4"><label class="form-label fw-semibold">หน่วยงาน</label><input class="form-control" readonly [value]="model.Budget_Request?.Department_Name || selectedDetailRow?.Department_Name || ''"></div>
             <div class="col-md-4"><label class="form-label fw-semibold">แผนงาน</label><input class="form-control" readonly [value]="model.Budget_Request?.Plan_Name || selectedDetailRow?.Plan_Name || ''"></div>
-            <div class="col-md-4"><label class="form-label fw-semibold">ผลผลิต</label><input class="form-control" readonly [value]="model.Budget_Request?.Product_Name || selectedDetailRow?.Product_Name || ''"></div>
+            <div class="col-md-4"><label class="form-label fw-semibold">ผลผลิต(กิจกรรมหลัก)</label><input class="form-control" readonly [value]="model.Budget_Request?.Product_Name || selectedDetailRow?.Product_Name || ''"></div>
             <div class="col-md-4"><label class="form-label fw-semibold">กิจกรรม</label><input class="form-control" readonly [value]="model.Budget_Request?.Activity_Name || selectedDetailRow?.Activity_Name || ''"></div>
             <div class="col-md-4"><label class="form-label fw-semibold">หมวดงบ</label><input class="form-control" readonly [value]="model.Budget_Request?.Budget_Type || selectedDetailRow?.Budget_Type || ''"></div>
             <div class="col-md-4"><label class="form-label fw-semibold">รายการค่าใช้จ่าย</label><input class="form-control" readonly [value]="model.Budget_Request?.Expense_Name || model.Budget_Request?.Expense_List || selectedDetailRow?.Expense_Name || selectedDetailRow?.Expense_List || model.Budget_Request_Detail_Item?.[0]?.Expense_Name || ''"></div>

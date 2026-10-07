@@ -19,9 +19,9 @@
         </div>
 
         <div class="col-md-4">
-            <label class="form-label">ผลผลิต</label>
+            <label class="form-label">ผลผลิต(กิจกรรมหลัก)</label>
             <select class="form-select" [(ngModel)]="plan.unit">
-                <option value="">-- เลือกผลผลิต --</option>
+                <option value="">-- เลือกผลผลิต(กิจกรรมหลัก) --</option>
                 <option *ngFor="let item of outputOptions" [value]="item.id">
                     {{ item.name }}
                 </option>
@@ -31,7 +31,7 @@
         <div class="col-md-4">
             <label class="form-label">กิจกรรม</label>
             <select class="form-select" [(ngModel)]="plan.mainDeptActivity">
-                <option value="">-- เลือกกิจกรรมหลักกรม --</option>
+                <option value="">-- เลือกกิจกรรมย่อย --</option>
                 <option *ngFor="let item of mainDeptActivityOptions" [value]="item.id">
                     {{ item.name }}
                 </option>

@@ -19,7 +19,7 @@ import { AuthenticationService } from '../../../../../core/services/auth.service
 })
 export class Report_R005Component implements OnInit {
   readonly reportTitle =
-    'รายงานสรุปภาพรวมแผนปฏิบัติการ จำแนกตามแผนงาน ผลผลิต กิจกรรม งบรายจ่าย';
+    'รายงานสรุปภาพรวมแผนปฏิบัติการ จำแนกตามแผนงาน ผลผลิต(กิจกรรมหลัก) กิจกรรมย่อย งบรายจ่าย';
 
   token: string = '';
 

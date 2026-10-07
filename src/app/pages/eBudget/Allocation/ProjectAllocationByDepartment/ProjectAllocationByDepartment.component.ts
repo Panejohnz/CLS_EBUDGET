@@ -140,6 +140,9 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
   private activityOrderById = new Map<number, number>();
   private budgetOrderById = new Map<number, number>();
   private departmentMasterById = new Map<number, any>();
+  private planMasterById = new Map<number, any>();
+  private productMasterById = new Map<number, any>();
+  private activityMasterById = new Map<number, any>();
   departments: any[] = [];
   rows: any[] = [];
   loading = false;
@@ -202,12 +205,17 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
   }
 
   private loadPlanOrder(done: () => void): void {
-    this.servicebud.GatewayGetData({ FUNC_CODE: 'FUNC-GET_Mas_General', BgYear: this.currentYear })
+    this.servicebud.GatewayGetData({ FUNC_CODE: 'FUNC-GET_Mas_Search', BgYear: this.currentYear })
       .subscribe({
         next: (response: any) => {
           const plans = Array.isArray(response?.Mas_Plan_Lists) ? response.Mas_Plan_Lists : [];
           const departments = Array.isArray(response?.Mas_Department_Lists) ? response.Mas_Department_Lists : [];
+          const products = Array.isArray(response?.Mas_Product_Lists) ? response.Mas_Product_Lists : [];
+          const activities = Array.isArray(response?.Mas_Activity_Lists) ? response.Mas_Activity_Lists : [];
           this.planOrderById = this.toOrderMap(plans, 'Plan_Id');
+          this.planMasterById = new Map(plans.map((item: any) => [Number(item.Plan_Id), item]));
+          this.productMasterById = new Map(products.map((item: any) => [Number(item.Product_Id), item]));
+          this.activityMasterById = new Map(activities.map((item: any) => [Number(item.Activity_Id), item]));
           this.departmentMasterById = new Map(
             departments.map((item: any) => [Number(item.Department_Id), item])
           );
@@ -215,6 +223,9 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
         },
         error: () => {
           this.departmentMasterById.clear();
+          this.planMasterById.clear();
+          this.productMasterById.clear();
+          this.activityMasterById.clear();
           done();
         }
       });
@@ -337,6 +348,7 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
           const rootNodes: any[] = [];
 
           filteredDisplayRows.forEach((plan: any) => {
+            this.applyMasterHierarchyNames(plan);
             const departmentId = Number(plan.Department_Id || 0);
             if (!departmentId) return;
             if (!departmentMap.has(departmentId)) {
@@ -419,6 +431,17 @@ export class ProjectAllocationByDepartmentComponent implements OnInit {
           this.loading = false;
         }
       });
+  }
+
+  /** Replaces request/plan snapshot names with the current master names. */
+  private applyMasterHierarchyNames(row: any): void {
+    const plan = this.planMasterById.get(Number(row?.Fk_Plan_Id || 0));
+    const product = this.productMasterById.get(Number(row?.Fk_Product_Id || 0));
+    const activity = this.activityMasterById.get(Number(row?.Fk_Activity_Id || 0));
+
+    if (plan?.Plan_Name) row.Plan_Name = plan.Plan_Name;
+    if (product?.Product_Name) row.Product_Name = product.Product_Name;
+    if (activity?.Activity_Name) row.Activity_Name = activity.Activity_Name;
   }
 
   private mergeRequestAndPlan(request: any, plan: any): any {

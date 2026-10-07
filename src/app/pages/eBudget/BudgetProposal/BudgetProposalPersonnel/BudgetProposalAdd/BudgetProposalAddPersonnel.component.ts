@@ -841,7 +841,7 @@ export class ProjectBudgetProposalAddPersonnelComponent {
     }
 
     if (!this.model.selectedProductPropos) {
-      basicAlert('warning', 'กรุณาเลือกผลผลิต', '');
+      basicAlert('warning', 'กรุณาเลือกผลผลิต(กิจกรรมหลัก)', '');
       return;
     }
 

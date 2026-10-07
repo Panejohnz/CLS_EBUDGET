@@ -31,7 +31,7 @@
             <div class="col-md-4">
 
                 <label class="form-label">
-                    ผลผลิต
+                    ผลผลิต(กิจกรรมหลัก)
                 </label><span class="text-danger">*</span>
 
                 <ng-select [items]="Mas_Product" bindLabel="Product_Name" bindValue="Product_Id"
@@ -707,7 +707,7 @@
                 <div style="min-width: 160px;">
                     <button *ngIf="!readOnly && isProjectPlanningExpense && planningTab === 4" class="btn btn-primary"
                         (click)="requestAddGuidelineActivity()">
-                        + เพิ่มกิจกรรมหลัก
+                        + เพิ่มกิจกรรมย่อย
                     </button>
                 </div>
                 <div class="flex-grow-1 text-center">

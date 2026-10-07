@@ -65,14 +65,14 @@
                 </ng-select>
             </div>
 
-            <!-- ผลผลิต -->
+            <!-- ผลผลิต(กิจกรรมหลัก) -->
             <div class="col-lg-4 col-md-6">
                 <label class="form-label">
-                    ผลผลิต <span class="text-danger">*</span>
+                    ผลผลิต(กิจกรรมหลัก) <span class="text-danger">*</span>
                 </label>
 
                 <ng-select [items]="Mas_Product" bindLabel="Product_Name" [(ngModel)]="model.selectedProduct"
-                    name="selectedProduct" [compareWith]="compareById" appendTo="body" placeholder="-- เลือกผลผลิต --"
+                    name="selectedProduct" [compareWith]="compareById" appendTo="body" placeholder="-- เลือกผลผลิต(กิจกรรมหลัก) --"
                     (ngModelChange)="Onchange_type_Product()">
                 </ng-select>
             </div>
