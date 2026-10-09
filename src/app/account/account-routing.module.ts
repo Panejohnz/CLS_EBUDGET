@@ -5,6 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { RegisterComponent } from "./register/register.component";
 import { LoginComponent } from "./login/login.component";
 import { PermissionComponent } from './permission/permission.component';
+import { AccessRequiredComponent } from './access-required/access-required.component';
 
 const routes: Routes = [
   {
@@ -22,6 +23,10 @@ const routes: Routes = [
   {
     path: "login",
     component: LoginComponent
+  },
+  {
+    path: 'access-required',
+    component: AccessRequiredComponent
   },
   {
     path: 'signin', loadChildren: () => import('./auth/signin/signin.module').then(m => m.SigninModule)

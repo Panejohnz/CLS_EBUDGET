@@ -45,6 +45,18 @@ export class AuthenticationService {
     // this.currentUser = this.currentUserSubject.asObservable();
   }
 
+  clearAllAuthStorage(): void {
+    [
+      'toast', LS_CURRENT_USER, LS_TOKEN, LS_TOKEN_LEGACY, SS_SELECTED_PERMISSION,
+      SS_USER_TOKEN, SS_AUTHEN, SS_AUTH_TOKEN, SS_TOKEN_REST, SS_USER_SESSION, SS_SIDEBAR_MENU
+    ].forEach((key) => localStorage.removeItem(key));
+    [
+      SS_SELECTED_PERMISSION, SS_USER_TOKEN, SS_AUTHEN, SS_CURRENT_USER, SS_AUTH_TOKEN,
+      SS_TOKEN_REST, 'toast', SS_USER_SESSION, SS_SIDEBAR_MENU
+    ].forEach((key) => sessionStorage.removeItem(key));
+    this.currentUserSubject.next(null!);
+  }
+
   /**
    * Performs the register
    * @param email email
@@ -112,12 +124,7 @@ export class AuthenticationService {
    */
   logout() {
     this.store.dispatch(logout());
-    // logout the user
-    // return getFirebaseBackend()!.logout();
-    localStorage.removeItem('selectedPermission');
-    localStorage.removeItem('userToken');
-    localStorage.removeItem('authen');
-    this.currentUserSubject.next(null!);
+    this.clearAllAuthStorage();
 
     return of(undefined).pipe(
 

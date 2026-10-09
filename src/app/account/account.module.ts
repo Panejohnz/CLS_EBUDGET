@@ -12,12 +12,14 @@ import { SignupModule } from "./auth/signup/signup.module";
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { PermissionComponent } from './permission/permission.component';
+import { AccessRequiredComponent } from './access-required/access-required.component';
 
 @NgModule({
   declarations: [
     RegisterComponent,
     LoginComponent,
     PermissionComponent,
+    AccessRequiredComponent,
     ToastsContainer
   ],
   imports: [

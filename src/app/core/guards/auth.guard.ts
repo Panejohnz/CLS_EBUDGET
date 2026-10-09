@@ -10,6 +10,7 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
 import { AuthenticationService } from '../services/auth.service';
+import { SessionService } from '../services/session.service';
 import { environment } from 'src/environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -19,6 +20,7 @@ export class AuthGuard implements CanActivate {
     constructor(
         private router: Router,
         private authenticationService: AuthenticationService,
+        private sessionService: SessionService,
         private http: HttpClient
     ) { }
 
@@ -26,26 +28,24 @@ export class AuthGuard implements CanActivate {
         route: ActivatedRouteSnapshot,
         state: RouterStateSnapshot
     ): Promise<boolean> {
-        // เช็ค token และ permission เดิม
-        const storedPermission = this.authenticationService.getStoredPermission();
-        const storedToken = this.authenticationService.getStoredToken()
-            || sessionStorage.getItem('token')
-            || sessionStorage.getItem('userToken');
-
         const routeToken = route.queryParams['token'] || route.queryParams['Token'];
 
-        if (!routeToken && storedPermission && storedToken) {
-            return true;
-        }
+        // เปิดหน้าภายในได้เฉพาะเมื่อมี session ที่ระบบสร้างไว้และยังไม่หมดอายุ
+        if (!routeToken) {
+            try {
+                if (this.sessionService.hasValidSession()) {
+                    return true;
+                }
+            } catch {
+                // Invalid session data is handled by redirecting below.
+            }
 
-        // รับ token จาก query param
-        const token = routeToken || storedToken || localStorage.getItem('token');
-
-        // ถ้าไม่มี token
-        if (!token) {
             this.redirectToLogin();
             return false;
         }
+
+        // รับ token ที่ระบบกลางส่งมาใน query string เพื่อสร้าง session ใหม่
+        const token = routeToken;
 
         if (!environment.production && sessionStorage.getItem('currentUser')) {
             localStorage.setItem('token', token);
@@ -107,11 +107,6 @@ export class AuthGuard implements CanActivate {
     }
 
     private redirectToLogin(): void {
-        if (environment.production) {
-            window.location.href = 'https://app.celestsoft.com/cls_erp_management_front/';
-            return;
-        }
-
-        this.router.navigate(['/auth/login']);
+        this.router.navigate(['/auth/access-required']);
     }
 }

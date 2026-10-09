@@ -158,7 +158,7 @@ export class PermissionComponent implements OnInit, OnDestroy {
 
       if (!this.token) {
         // No token provided, redirect to FDA website
-        window.location.href = 'https://app.celestsoft.com/cls_erp_management_front/';
+        window.location.href = 'https://bfast.pacc.go.th/cls_erp_management_front_demo/';
         return;
       }
 
@@ -352,7 +352,7 @@ export class PermissionComponent implements OnInit, OnDestroy {
         window.location.hostname,
         '172.10.101.38',
         'bfast.pacc.go.th',
-        'app.celestsoft.com',
+        'bfast.pacc.go.th',
         'localhost'
       ]);
       if (!trustedHosts.has(url.hostname)) {
@@ -461,7 +461,7 @@ export class PermissionComponent implements OnInit, OnDestroy {
   retry(): void {
     // this.error = '';
     // this.checkTokenAndAuthenticate();
-    window.location.href = 'https://app.celestsoft.com/cls_erp_management_front/';
+    window.location.href = 'https://bfast.pacc.go.th/cls_erp_management_front_demo/';
   }
 
   private convertToMenuStructure(menuData: MenuDataResponse): MenuItem[] {
