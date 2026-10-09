@@ -7,6 +7,6 @@ import { Component } from '@angular/core';
 })
 export class AccessRequiredComponent {
   goToLogin(): void {
-    window.location.href = 'https://bfast.pacc.go.th/cls_erp_management_front_demo/';
+    window.location.href = 'https://bfast.pacc.go.th/cls_erp_management_front/';
   }
 }
