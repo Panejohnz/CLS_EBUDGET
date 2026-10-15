@@ -456,7 +456,14 @@ export class PlanManagementComponent {
           this.project_planing.model =
             this.model;
 
+          // Create the modal only after its model is fully hydrated. Opening
+          // it before this response arrives leaves child components with the
+          // previous department/permission group's calculated state.
+          this.openDataModal(modal);
+
         });
+
+      return;
 
     } else {
 
@@ -604,6 +611,11 @@ export class PlanManagementComponent {
 
     }
 
+    this.openDataModal(modal);
+
+  }
+
+  private openDataModal(modal: any): void {
     this.modalRef = this.modalService.open(modal, {
         backdrop: 'static',
         windowClass: 'full-screen-modal' //'modal-95'
@@ -628,7 +640,6 @@ export class PlanManagementComponent {
       }
 
     );
-
   }
   mapItems(items: any[], activities: any[]) {
 

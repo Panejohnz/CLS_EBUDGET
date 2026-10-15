@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { EbudgetService } from 'src/app/core/services/ebudget.service';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { moveItemInArray } from '@angular/cdk/drag-drop';
 import {
   trigger,
   transition,
@@ -699,8 +699,18 @@ export class TabGuidelineComponent {
 
   }
   dropActivity(event: any) {
-    moveItemInArray(this.model.activities, event.previousIndex, event.currentIndex);
-    this.reIndexSort();
+    if (
+      typeof event?.previousIndex !== 'number' ||
+      typeof event?.currentIndex !== 'number'
+    ) {
+      return;
+    }
+
+    if (event.previousIndex === event.currentIndex) return;
+
+    const activities = [...(this.model?.activities || [])];
+    moveItemInArray(activities, event.previousIndex, event.currentIndex);
+    this.setActivityOrder(activities);
   }
   reIndexSort() {
     this.model.activities.forEach((a: any, i: number) => {
@@ -731,10 +741,9 @@ export class TabGuidelineComponent {
 
     this.movingIndex = index;
 
-    const arr = this.model.activities;
+    const arr = [...(this.model?.activities || [])];
     [arr[index - 1], arr[index]] = [arr[index], arr[index - 1]];
-
-    this.reIndexSort();
+    this.setActivityOrder(arr);
 
     setTimeout(() => {
       this.movingIndex = null;
@@ -742,18 +751,23 @@ export class TabGuidelineComponent {
   }
 
   moveDown(index: number) {
-    const arr = this.model.activities;
+    const arr = [...(this.model?.activities || [])];
     if (index === arr.length - 1) return;
 
     this.movingIndex = index;
 
     [arr[index], arr[index + 1]] = [arr[index + 1], arr[index]];
-
-    this.reIndexSort();
+    this.setActivityOrder(arr);
 
     setTimeout(() => {
       this.movingIndex = null;
     }, 300);
+  }
+
+  private setActivityOrder(activities: any[]): void {
+    this.model.activities = activities;
+    this.activities = activities;
+    this.reIndexSort();
   }
   animateSwap() {
     const rows = document.querySelectorAll('.row-animate');

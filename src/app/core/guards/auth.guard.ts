@@ -28,6 +28,11 @@ export class AuthGuard implements CanActivate {
         route: ActivatedRouteSnapshot,
         state: RouterStateSnapshot
     ): Promise<boolean> {
+        // Allow local development without requiring a Management session.
+        if (this.isLocalDevelopmentHost()) {
+            return true;
+        }
+
         const routeToken = route.queryParams['token'] || route.queryParams['Token'];
 
         // เปิดหน้าภายในได้เฉพาะเมื่อมี session ที่ระบบสร้างไว้และยังไม่หมดอายุ
@@ -108,5 +113,10 @@ export class AuthGuard implements CanActivate {
 
     private redirectToLogin(): void {
         this.router.navigate(['/auth/access-required']);
+    }
+
+    private isLocalDevelopmentHost(): boolean {
+        const hostname = window.location.hostname.toLowerCase();
+        return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';
     }
 }

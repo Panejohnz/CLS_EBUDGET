@@ -1194,17 +1194,30 @@ export class AddPlanManagementComponent
   }
 
   get planManagementAllocationTotal(): number {
-    const savedTotal =
-      this.toOptionalNumber(this.model?.Budget_Plan?.Total);
-
-    if (savedTotal !== null) {
-      return savedTotal;
-    }
-
     const updateAmount =
       this.toOptionalNumber(this.model?.Budget_Plan?.Update_Amount);
+    if (updateAmount !== null) {
+      return updateAmount;
+    }
 
-    return updateAmount ?? this.resolveAllocationTotal();
+    const adjust1 =
+      this.toOptionalNumber(this.model?.Budget_Plan?.Adjust1);
+    if (adjust1 !== null) {
+      return adjust1;
+    }
+
+    const totalPlan =
+      this.toOptionalNumber(this.model?.Budget_Plan?.Total_Plan);
+    if (totalPlan !== null) {
+      return totalPlan;
+    }
+
+    // Total is the original requested amount.  It is only a display fallback,
+    // not the amount used to validate a plan against its allocation.
+    const total =
+      this.toOptionalNumber(this.model?.Budget_Plan?.Total);
+
+    return total ?? this.resolveAllocationTotal();
   }
 
   get planManagementPlannedTotal(): number {
@@ -1292,11 +1305,25 @@ export class AddPlanManagementComponent
     if (!isEditing) {
       return true;
     }
+
+    // An edit opened without changing the planned monthly amounts must remain
+    // saveable. After changing department/permission, allocation fields can
+    // be refreshed independently from the persisted plan. In that case the
+    // reliable baseline is the plan total saved with this record.
+    const persistedPlanTotal = this.toOptionalNumber(
+      this.model?.Budget_Plan?.Total_Plan
+    );
+    if (
+      persistedPlanTotal !== null &&
+      this.isSameAmount(totalPlan, persistedPlanTotal)
+    ) {
+      return true;
+    }
+
     if (this.isSameAmount(totalPlan, updateAmount)) {
       return true;
     }
-// console.log(this.model.activities);
-console.log(this.activities);
+
     basicAlert(
       'warning',
       'จำนวนเงินไม่ตรงกัน',
@@ -1368,6 +1395,7 @@ console.log(this.activities);
   Mas_Expense_Lists: any[] = []
   currentYear: any
   userSession: any
+  private latestAllocationForSave: number | null = null;
   ngOnInit(): void {
     this.userSession = JSON.parse(localStorage.getItem('userSession') || '{}');
 
@@ -1400,7 +1428,7 @@ console.log(this.activities);
 
       if (this.model?.Budget_Request?.Request_Id) {
 
-        this.mapInitialData()
+        this.mapInitialData();
       }
     });
 
@@ -1411,7 +1439,7 @@ console.log(this.activities);
 
     if (this.model?.Budget_Plan?.Plan_Id) {
 
-      this.mapInitialData()
+      this.mapInitialData();
     }
   }
 
@@ -2108,6 +2136,25 @@ console.log(this.activities);
 
   }
 
+  /**
+   * Project expense types are edited in <projectPlanning>, which owns
+   * model.activities.  The legacy this.activities array is only used by the
+   * non-project monthly planner and can be empty/stale while editing a plan.
+   */
+  private getTotalPlanForSave(): number {
+    const projectActivities = this.model?.activities;
+
+    if (
+      this.isProjectPlanningExpenseType(this.model?.selectedExpenseTypeId) &&
+      Array.isArray(projectActivities) &&
+      projectActivities.length > 0
+    ) {
+      return this.getProjectPlanningPlannedTotal(projectActivities);
+    }
+
+    return this.getAllBudget();
+  }
+
   getSumTarget(): number {
 
     const t =
@@ -2147,6 +2194,39 @@ console.log(this.activities);
   }
 
   save() {
+    const planId = Number(this.model?.Budget_Plan?.Plan_Id || 0);
+    if (planId <= 0) {
+      this.latestAllocationForSave = null;
+      this.persistSave();
+      return;
+    }
+
+    // Permission switching can leave the client with a previous session's
+    // allocation values. Always validate an existing plan against a freshly
+    // loaded Budget_Plan from the server.
+    this.serviceebud.GatewayGetData({
+      FUNC_CODE: 'FUNC-GET_BUDGET_PLAN_BY_ID',
+      Plan_Id: planId
+    }).subscribe({
+      next: (response: any) => {
+        const plan = response?.Budget_Plan || {};
+        this.latestAllocationForSave =
+          this.toOptionalNumber(plan.Update_Amount) ??
+          this.toOptionalNumber(plan.Adjust1) ??
+          this.toOptionalNumber(plan.Total_Plan);
+        this.persistSave();
+      },
+      error: () => {
+        basicAlert(
+          'warning',
+          'ไม่สามารถตรวจสอบยอดจัดสรรล่าสุดได้',
+          'กรุณาลองใหม่อีกครั้ง'
+        );
+      }
+    });
+  }
+
+  private persistSave() {
     if (this.isSaveLocked) {
       basicAlert('warning', '\u0e44\u0e21\u0e48\u0e2a\u0e32\u0e21\u0e32\u0e23\u0e16\u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01\u0e44\u0e14\u0e49', '');
       return;
@@ -2168,12 +2248,25 @@ console.log(this.activities);
     }
 
     
-    const totalPlan = this.getAllBudget();
+    const totalPlan = this.getTotalPlanForSave();
     const totalAllocation = this.resolveAllocationTotal();
-    const originalUpdateAmount =
-      Number(this.model?.Budget_Plan?.Update_Amount ?? 0);
 
-    if (!this.validateEditedPlanTotals(totalPlan, originalUpdateAmount)) {
+    // Total is the original requested amount, which can be larger than the
+    // allocation.  After changing department/permission group, Update_Amount
+    // may be omitted by the API, so use the other persisted allocation fields
+    // before falling back to the amount resolved from detail rows.
+    const savedAllocationTotal =
+      this.latestAllocationForSave ??
+      this.toOptionalNumber(this.model?.Budget_Plan?.Update_Amount) ??
+      this.toOptionalNumber(this.model?.Budget_Plan?.Adjust1) ??
+      this.toOptionalNumber(this.model?.Budget_Plan?.Total_Plan) ??
+      totalAllocation;
+    const originalUpdateAmount =
+      this.latestAllocationForSave ??
+      this.toOptionalNumber(this.model?.Budget_Plan?.Update_Amount) ??
+      savedAllocationTotal;
+
+    if (!this.validateEditedPlanTotals(totalPlan, savedAllocationTotal)) {
       return;
     }
 
