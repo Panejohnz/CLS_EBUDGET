@@ -27,7 +27,6 @@ export const environment = {
   // เพิ่ม endpoint สำหรับ menu
   EXPORT_REPORT: 'https://fdaemonitor.fda.moph.go.th/CLS_EMONITOR_KPI_REPORT/Report/Report_R002.aspx',
   //ng build --base-href /CLS_ERP_BUDGET_FRONT/ --aot   --configuration production
-  //ng build --base-href /CLS_ERP_BUDGET_FRONT/ --aot   --configuration production
   // ----------------------------------------------------------------------------
   //get permission from management
   // Use the public HTTPS origin to avoid browser mixed-content and CORS failures.
