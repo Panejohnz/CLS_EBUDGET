@@ -59,53 +59,64 @@ export class AuthGuard implements CanActivate {
         }
 
         try {
-
             const response: any = await firstValueFrom(
                 this.http.post(
                     environment.CLS_MANAGEMENT + 'GET_DATA/GetUserSession',
-                    {
-                        token: token
-                    }
+                    { token: token }
                 )
             );
 
-            // เช็ค response
-            if (response ) {
+            // Token หมดอายุ หรือไม่ถูกต้อง
+            if (!response || response.success !== true) {
+                console.warn('Invalid session:', response?.message);
 
-                // เก็บ token
-                localStorage.setItem('token', token);
+                localStorage.removeItem('token');
+                localStorage.removeItem('userToken');
+                localStorage.removeItem('userSession');
+                localStorage.removeItem('selectedPermission');
+                localStorage.removeItem('authen');
 
-                // เก็บ session
-                localStorage.setItem(
-                    'userSession',
-                    // response.RESULT อันเก่านะ
-                    response
-                );
-
-                const rawSession = response?.RESULT ?? response;
-                const session = typeof rawSession === 'string' ? JSON.parse(rawSession) : rawSession;
-                const sessionToken = session?.token || token;
-
-                localStorage.setItem('token', sessionToken);
-                localStorage.setItem('userToken', sessionToken);
-                localStorage.setItem('userSession', JSON.stringify(session));
-
-                if (session?.permissionData) {
-                    localStorage.setItem('selectedPermission', JSON.stringify(session.permissionData));
-                }
-                if (session?.authenData) {
-                    localStorage.setItem('authen', JSON.stringify(session.authenData));
-                }
-
-                return true;
+                this.redirectToLogin();
+                return false;
             }
 
-            // response ไม่ถูกต้อง
-            this.redirectToLogin();
-            return false;
+            // Token ถูกต้อง
+            const rawSession = response.result;
+
+            const session = typeof rawSession === 'string'
+                ? JSON.parse(rawSession)
+                : rawSession;
+
+            if (!session || typeof session !== 'object' || Array.isArray(session)) {
+                this.redirectToLogin();
+                return false;
+            }
+
+            const sessionToken = session?.token || token;
+
+            localStorage.setItem('token', sessionToken);
+            localStorage.setItem('userToken', sessionToken);
+            localStorage.setItem('userSession', JSON.stringify(session));
+
+            if (session?.permissionData) {
+                localStorage.setItem(
+                    'selectedPermission',
+                    JSON.stringify(session.permissionData)
+                );
+            }
+
+            if (session?.authenData) {
+                localStorage.setItem(
+                    'authen',
+                    JSON.stringify(session.authenData)
+                );
+            }
+
+            return true;
 
         } catch (error) {
             console.error('GetUserSession request failed:', error);
+
             this.redirectToLogin();
             return false;
         }
