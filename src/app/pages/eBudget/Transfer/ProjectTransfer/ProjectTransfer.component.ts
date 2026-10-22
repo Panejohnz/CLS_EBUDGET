@@ -107,6 +107,24 @@ export class ProjectTransferComponent
   readonly pageSize = 30;
   pagination = { page: 1 };
 
+  // The plan dropdown uses custom label/option templates, so ng-select has no
+  // bindLabel to use for its built-in search. Search both possible names.
+  planSearchFn = (term: string, item: any): boolean => {
+    const keyword = String(term || '').trim().toLowerCase();
+    if (!keyword) {
+      return true;
+    }
+
+    return [
+      item?.Project_Name,
+      item?.Expense_List,
+      item?.Department_Name,
+      item?.Plan_Name
+    ].some((value: any) =>
+      String(value ?? '').toLowerCase().includes(keyword)
+    );
+  };
+
   ngOnInit(): void {
 
     this.budgetYearService.yearChanged$
@@ -530,8 +548,10 @@ export class ProjectTransferComponent
       return;
     }
 
-    this.form.balance = 0;
-    this.displayBalance = '';
+    // Show the selected plan's amount immediately while the used amount is
+    // loading, so the balance field never appears blank after selection.
+    this.form.balance = totalPlan;
+    this.displayBalance = this.masterService.formatNumber(totalPlan);
 
     this.servicebud.GetBudgetPlanSumUse(bgYear, departmentId, planId)
       .subscribe({
@@ -549,7 +569,7 @@ export class ProjectTransferComponent
               0
             );
 
-          this.form.balance = usedAmount;
+          this.form.balance = Math.max(0, totalPlan - usedAmount);
           this.displayBalance = this.masterService.formatNumber(this.form.balance);
 
 

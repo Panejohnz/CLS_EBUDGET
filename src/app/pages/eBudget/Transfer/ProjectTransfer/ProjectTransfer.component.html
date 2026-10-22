@@ -300,7 +300,8 @@
                                             โอนจากรายการ/โครงการ :
                                         </label>
 
-                                        <ng-select [items]="fromPlans" bindValue="Plan_Id"
+                                        <ng-select [items]="fromPlans" bindValue="Plan_Id" [searchable]="true"
+                                            [searchFn]="planSearchFn"
                                             [(ngModel)]="form.From_Plan_Id" (change)="onChangeFromPlan()"
                                             appendTo="body" placeholder="-- เลือกโครงการ --">
 
@@ -352,7 +353,8 @@
                                         <label>
                                             โอนไปรายการ/โครงการ :
                                         </label>
-                                        <ng-select [items]="toPlans" bindValue="Plan_Id" [(ngModel)]="form.To_Plan_Id"
+                                        <ng-select [items]="toPlans" bindValue="Plan_Id" [searchable]="true"
+                                            [searchFn]="planSearchFn" [(ngModel)]="form.To_Plan_Id"
                                             (change)="onChangeToPlan()" appendTo="body"
                                             placeholder="-- เลือกโครงการ --">
 
