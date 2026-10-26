@@ -454,6 +454,10 @@ export class ProjectTransferComponent
     this.fromPlanDetails = [];
     this.fromPlanDetailsLoading = false;
 
+    // The destination list also includes plans available in the source list.
+    // Rebuild it when the source department changes as well.
+    this.onChangeToDepartment();
+
   }
 
   onChangeToDepartment() {
@@ -470,12 +474,39 @@ export class ProjectTransferComponent
 
     this.form.To_Department_Name =
       dep?.Department_Name || '';
-    this.toPlans = this.allPlans.filter(
+    const destinationPlans = this.allPlans.filter(
       (x: any) =>
         Number(x.Department_Id)
         ===
         Number(this.form.To_Department_Id)
-    );
+    ).map((plan: any) => ({
+      ...plan,
+      Is_Source_Plan_Option: false
+    }));
+
+    const sourcePlans = this.allPlans.filter(
+      (x: any) =>
+        Number(x.Department_Id)
+        ===
+        Number(this.form.From_Department_Id)
+    ).map((plan: any) => ({
+      ...plan,
+      // This marker distinguishes a source option from a real destination
+      // plan.  It must not be inferred only from Department_Id because the
+      // same department may be selected on both sides.
+      Is_Source_Plan_Option: true
+    }));
+
+    const planIds = new Set<number>();
+    this.toPlans = [...destinationPlans, ...sourcePlans].filter((plan: any) => {
+      const planId = Number(plan?.Plan_Id || 0);
+      if (!planId || planIds.has(planId)) {
+        return false;
+      }
+
+      planIds.add(planId);
+      return true;
+    });
   }
 
   onChangeFromPlan(preserveDetail = false) {
@@ -723,6 +754,10 @@ export class ProjectTransferComponent
         ===
         Number(this.form.To_Plan_Id)
     );
+    const copySourcePlanToDestination = !this.isEdit &&
+      toPlan?.Is_Source_Plan_Option === true &&
+      Number(this.form.To_Department_Id) > 0 &&
+      Number(this.form.To_Department_Id) !== Number(toPlan?.Department_Id);
     const payload = {
 
       Transfer_Id:
@@ -814,7 +849,20 @@ export class ProjectTransferComponent
           : 'FUNC-Insert_Budget_Transfer',
 
       Budget_Plan_Transfer:
-        payload
+        payload,
+
+      // When the target was selected from the source list, the backend uses
+      // this source Plan_Id to create a new Budget_Plan for the destination
+      // department.  Normal transfer records are unaffected.
+      Budget_Plan: copySourcePlanToDestination
+        ? {
+          Plan_Id: Number(toPlan?.Plan_Id || 0),
+          Department_Id: Number(this.form.To_Department_Id),
+          Department_Name: this.form.To_Department_Name || '',
+          Is_Transfer: 1,
+          Create_User: this.authService?.currentUserValue?.UserName || ''
+        }
+        : null
 
     };
 

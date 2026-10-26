@@ -42,7 +42,7 @@ export class AuthGuard implements CanActivate {
                 const response: any = await firstValueFrom(
                     this.http.post(
                         environment.CLS_MANAGEMENT + 'GET_DATA/GetUserSession',
-                        { token: routeToken }
+                        { token: localStorage.getItem('token') || localStorage.getItem('userToken') || localStorage.getItem('Token')}
                     )
                 );
 
