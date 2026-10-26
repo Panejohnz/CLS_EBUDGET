@@ -30,9 +30,9 @@ export class AuthGuard implements CanActivate {
     ): Promise<boolean> {
         debugger
         // Allow local development without requiring a Management session.
-        // if (this.isLocalDevelopmentHost()) {
-        //     return true;
-        // }
+        if (this.isLocalDevelopmentHost()) {
+            return true;
+        }
 
         const routeToken = route.queryParams['token'] || route.queryParams['Token'];
 
