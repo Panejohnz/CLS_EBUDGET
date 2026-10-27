@@ -294,7 +294,7 @@ export class ProjectTransferComponent
 
     this.onChangeFromDepartment(true);
 
-    this.onChangeToDepartment();
+    this.onChangeToDepartment(true);
 
     this.onChangeFromPlan(true);
 
@@ -461,11 +461,24 @@ export class ProjectTransferComponent
 
     // The destination list also includes plans available in the source list.
     // Rebuild it when the source department changes as well.
-    this.onChangeToDepartment();
+    this.onChangeToDepartment(true);
 
   }
 
-  onChangeToDepartment() {
+  onChangeToDepartment(preservePlans = false) {
+
+    if (!preservePlans) {
+      this.form.From_Plan_Id = null;
+      this.form.From_Plan_Name = '';
+      this.form.From_Plan_Detail_Item_Id = null;
+      this.form.From_Plan_Detail_Name = '';
+      this.form.To_Plan_Id = null;
+      this.form.To_Plan_Name = '';
+      this.form.To_Plan_Id = null;
+      this.form.To_Plan_Name = '';
+      this.fromPlanDetails = [];
+      this.showFromPlanDetail = false;
+    }
 
     const dep =
       this.departments.find(
@@ -499,12 +512,19 @@ export class ProjectTransferComponent
         .map((plan: any) => Number(plan.FK_Budget_Plan_Main))
     );
 
+    const destinationExpenseIds = new Set<number>(
+      destinationPlans
+        .map((plan: any) => Number(plan?.Fk_Expense_List || plan?.Fk_Expense_Id || 0))
+        .filter((expenseId: number) => expenseId > 0)
+    );
+
     const sourcePlans = this.allPlans.filter(
       (x: any) =>
         Number(x.Department_Id)
         ===
         Number(this.form.From_Department_Id) &&
-        !alreadyTransferredSourcePlanIds.has(Number(x.Plan_Id))
+        !alreadyTransferredSourcePlanIds.has(Number(x.Plan_Id)) &&
+        !destinationExpenseIds.has(Number(x?.Fk_Expense_List || x?.Fk_Expense_Id || 0))
     ).map((plan: any) => ({
       ...plan,
       // This marker distinguishes a source option from a real destination
