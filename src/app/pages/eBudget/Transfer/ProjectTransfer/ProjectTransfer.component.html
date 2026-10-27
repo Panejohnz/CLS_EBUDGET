@@ -307,12 +307,12 @@
 
                                             <!-- ตอนเลือกแล้ว -->
                                             <ng-template ng-label-tmp let-item="item">
-                                                {{ item.Project_Name || item.Expense_List }}
+                                                {{ item.Plan_Display_Name || item.Project_Name || item.Expense_List }}
                                             </ng-template>
 
                                             <!-- ตอนแสดงใน dropdown -->
                                             <ng-template ng-option-tmp let-item="item">
-                                                {{ item.Project_Name || item.Expense_List }}
+                                                {{ item.Plan_Display_Name || item.Project_Name || item.Expense_List }}
                                             </ng-template>
 
                                         </ng-select>

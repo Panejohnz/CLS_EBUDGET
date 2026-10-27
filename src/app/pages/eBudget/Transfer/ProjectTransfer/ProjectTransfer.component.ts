@@ -118,6 +118,7 @@ export class ProjectTransferComponent
     return [
       item?.Project_Name,
       item?.Expense_List,
+      item?.Plan_Display_Name,
       item?.Department_Name,
       item?.Plan_Name
     ].some((value: any) =>
@@ -445,7 +446,11 @@ export class ProjectTransferComponent
         Number(x.Department_Id)
         ===
         Number(this.form.From_Department_Id)
-    );
+    ).map((plan: any) => ({
+      ...plan,
+      Plan_Display_Name: this.getPlanDisplayName(plan)
+    }));
+    this.appendDetailNamesToDuplicateSourcePlans();
 
     this.form.projectBudget = 0;
     this.form.balance = 0;
@@ -585,6 +590,75 @@ export class ProjectTransferComponent
       this.loadFromPlanDetails(plan);
     }
 
+  }
+
+  private getPlanDisplayName(plan: any): string {
+    return String(plan?.Project_Name || plan?.Expense_List || '').trim();
+  }
+
+  private appendDetailNamesToDuplicateSourcePlans(): void {
+    const currentDepartmentId = Number(this.form?.From_Department_Id || 0);
+    const countByName = new Map<string, number>();
+
+    this.fromPlans.forEach((plan: any) => {
+      const name = this.getPlanDisplayName(plan);
+      countByName.set(name, (countByName.get(name) || 0) + 1);
+    });
+
+    this.fromPlans
+      .filter((plan: any) =>
+        countByName.get(this.getPlanDisplayName(plan))! > 1 &&
+        !this.isProjectPlan(plan)
+      )
+      .forEach((plan: any) => {
+        const planId = Number(plan?.Plan_Id || 0);
+        if (!planId) {
+          return;
+        }
+
+        this.servicebud.GatewayGetData({
+          FUNC_CODE: 'FUNC-GET_BUDGET_PLAN_BY_ID',
+          Plan_Id: planId,
+          Request_Id: 0,
+          Project_Id: 0
+        }).subscribe({
+          next: (response: any) => {
+            // Ignore a late response after the user selects another source
+            // department or reloads the dialog.
+            if (Number(this.form?.From_Department_Id || 0) !== currentDepartmentId) {
+              return;
+            }
+
+            const source = response?.Budget_Plan_Detail_Items;
+            const rows = Array.isArray(source) ? source : (source?.Data || []);
+            const detailNames = [...new Set(rows
+              .filter((item: any) =>
+                Number(item?.Fk_Budget_Plan || 0) === planId &&
+                item?.Active !== false && Number(item?.Active ?? 1) !== 0
+              )
+              .map((item: any) => String(item?.Expense_Detail || '').trim())
+              .filter((name: string) => !!name)
+            )];
+
+            if (!detailNames.length) {
+              return;
+            }
+
+            const sourcePlan = this.fromPlans.find((item: any) =>
+              Number(item?.Plan_Id) === planId
+            );
+            if (sourcePlan) {
+              sourcePlan.Plan_Display_Name =
+                `${this.getPlanDisplayName(sourcePlan)} — ${detailNames.join(', ')}`;
+              // Replace the array reference so ng-select refreshes the text.
+              this.fromPlans = [...this.fromPlans];
+            }
+          },
+          error: () => {
+            // Keep the original label if its detail items cannot be loaded.
+          }
+        });
+      });
   }
 
   private isAdjustExpenseList(plan: any): boolean {
