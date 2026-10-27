@@ -484,11 +484,22 @@ export class ProjectTransferComponent
       Is_Source_Plan_Option: false
     }));
 
+    const alreadyTransferredSourcePlanIds = new Set<number>(
+      this.allPlans
+        .filter((plan: any) =>
+          Number(plan?.Department_Id) === Number(this.form.To_Department_Id) &&
+          Number(plan?.Is_Transfer || 0) === 1 &&
+          Number(plan?.FK_Budget_Plan_Main || 0) > 0
+        )
+        .map((plan: any) => Number(plan.FK_Budget_Plan_Main))
+    );
+
     const sourcePlans = this.allPlans.filter(
       (x: any) =>
         Number(x.Department_Id)
         ===
-        Number(this.form.From_Department_Id)
+        Number(this.form.From_Department_Id) &&
+        !alreadyTransferredSourcePlanIds.has(Number(x.Plan_Id))
     ).map((plan: any) => ({
       ...plan,
       // This marker distinguishes a source option from a real destination
@@ -510,6 +521,13 @@ export class ProjectTransferComponent
   }
 
   onChangeFromPlan(preserveDetail = false) {
+    console.log('[Transfer] onChangeFromPlan', {
+      preserveDetail,
+      fromDepartmentId: this.form?.From_Department_Id,
+      fromPlanId: this.form?.From_Plan_Id,
+      expenseListsLoaded: this.expenseListsLoaded
+    });
+
     // In edit mode this handler can run before the master request finishes.
     // Wait for Mas_Expense_List so Is_Adjust_List is always evaluated.
     if (!this.expenseListsLoaded) {
@@ -533,12 +551,23 @@ export class ProjectTransferComponent
           )
       );
 
+    console.log('[Transfer] selected source plan', plan);
+
     this.form.From_Plan_Name =
       plan?.Project_Name || plan?.Expense_List;
     this.form.From_Plan_Detail_Item_Id = selectedDetailId;
     this.form.From_Plan_Detail_Name = selectedDetailName;
     this.fromPlanDetails = [];
-    this.showFromPlanDetail = this.isAdjustExpenseList(plan);
+    // A project is transferred as a whole; its expense-list setting must not
+    // cause the sub-item selector to appear.
+    this.showFromPlanDetail = !this.isProjectPlan(plan) && this.isAdjustExpenseList(plan);
+
+    console.log('[Transfer] source plan detail condition', {
+      planId: plan?.Plan_Id,
+      expenseListId: plan?.Fk_Expense_List || plan?.Fk_Expense_Id,
+      isProjectPlan: this.isProjectPlan(plan),
+      showFromPlanDetail: this.showFromPlanDetail
+    });
 
     if (!this.showFromPlanDetail) {
       this.form.From_Plan_Detail_Item_Id = null;
@@ -565,6 +594,10 @@ export class ProjectTransferComponent
     );
     const value = expense?.Is_Adjust_List;
     return value === true || Number(value) === 1 || String(value).toLowerCase() === 'true';
+  }
+
+  private isProjectPlan(plan: any): boolean {
+    return String(plan?.Project_Name || '').trim().length > 0;
   }
 
   private loadPlanBalance(plan: any): void {
@@ -663,6 +696,13 @@ export class ProjectTransferComponent
             };
           })
           .filter((detail: any) => detail.Plan_Item_Id);
+
+        console.log('[Transfer] source plan detail response', {
+          planId,
+          requestId,
+          rawResponse: response,
+          detailRows: this.fromPlanDetails
+        });
 
         this.resolveSelectedFromPlanDetail();
       },
