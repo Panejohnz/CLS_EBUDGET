@@ -524,7 +524,10 @@ export class ProjectTransferComponent
         ===
         Number(this.form.From_Department_Id) &&
         !alreadyTransferredSourcePlanIds.has(Number(x.Plan_Id)) &&
-        !destinationExpenseIds.has(Number(x?.Fk_Expense_List || x?.Fk_Expense_Id || 0))
+        // Projects may share an Expense_Id, but they are separate transfer
+        // targets.  Only suppress duplicate expense-list items.
+        (this.isProjectPlan(x) ||
+          !destinationExpenseIds.has(Number(x?.Fk_Expense_List || x?.Fk_Expense_Id || 0)))
     ).map((plan: any) => ({
       ...plan,
       // This marker distinguishes a source option from a real destination
