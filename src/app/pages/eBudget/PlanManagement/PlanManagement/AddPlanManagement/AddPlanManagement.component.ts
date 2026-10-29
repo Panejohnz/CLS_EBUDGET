@@ -1223,6 +1223,13 @@ export class AddPlanManagementComponent
   get planManagementPlannedTotal(): number {
     const activities = this.model?.activities;
 
+    // Transfer records created before Project_Plan was cloned still point to
+    // the source department's project.  Its monthly schedule must not be
+    // treated as the target department's planned amount.
+    if (this.isLegacyTransferredProjectPlan()) {
+      return this.toOptionalNumber(this.model?.Budget_Plan?.Total_Plan) ?? 0;
+    }
+
     // ProjectPlanning Tab 4 updates this same model directly.  Prefer its
     // current monthly values over the previously saved Total_Plan.
     if (
@@ -1441,6 +1448,17 @@ export class AddPlanManagementComponent
 
       this.mapInitialData();
     }
+  }
+
+  private isLegacyTransferredProjectPlan(): boolean {
+    const budgetPlan = this.model?.Budget_Plan || {};
+    const projectPlan = this.model?.Project_Plan || {};
+
+    return Number(budgetPlan?.Is_Transfer || 0) === 1 &&
+      Number(budgetPlan?.FK_Budget_Plan_Main || 0) > 0 &&
+      Number(projectPlan?.Project_Id || 0) > 0 &&
+      Number(projectPlan?.Department_Id || 0) > 0 &&
+      Number(projectPlan?.Department_Id) !== Number(budgetPlan?.Department_Id);
   }
 
   closeModal() {
@@ -2143,6 +2161,10 @@ export class AddPlanManagementComponent
    */
   private getTotalPlanForSave(): number {
     const projectActivities = this.model?.activities;
+
+    if (this.isLegacyTransferredProjectPlan()) {
+      return this.toOptionalNumber(this.model?.Budget_Plan?.Total_Plan) ?? 0;
+    }
 
     if (
       this.isProjectPlanningExpenseType(this.model?.selectedExpenseTypeId) &&
