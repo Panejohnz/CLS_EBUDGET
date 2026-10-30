@@ -800,14 +800,9 @@ export class ProjectPlanningComponent {
     if (tab === 2) {
       const level1 = Array.isArray(plan.Project_Plan_Level1)
         ? (plan.Project_Plan_Level1[0] || {}) : (plan.Project_Plan_Level1 || {});
-      const level2 = plan.Project_Plan_Level2 || {};
       const level3 = plan.Project_Plan_Level3 || {};
       return missing([
         level1.Strategic_Id, level1.Issues_Id, level1.Issues_Sub_Id, level1.Target,
-        level2.Master_Plan_Id, level2.Plan_Goals_Id, level2.Plan_Tactics_Id, level2.Description,
-        level2.Subplan_Id, level2.Target_Y1_Id, level2.SubplanDesc, level2.DevGuideline_Id,
-        level2.Landmark_Id, level2.Landmark_Gloals_Id, level2.Landmark_Tacticts_Id,
-        level2.Landmark_Guidelines_Id, level2.Landmark_Sub_Guidelines_Id,
         level3.Project_Plan_Id_5, level3.Project_Plan_Goals_Id_5, level3.Indicators_Id_5,
         level3.Goals_Guidelines_Id_5, level3.Project_Plan_Id, level3.Project_Plan_Goals_Id,
         level3.Indicators_Id, level3.Measure_Id
@@ -1506,7 +1501,6 @@ export class ProjectPlanningComponent {
         ? (this.project_planing.Project_Plan_Level1[0] || {})
         : (this.project_planing.Project_Plan_Level1 || {});
 
-    const level2 = this.project_planing.Project_Plan_Level2 || {};
     const level3 = this.project_planing.Project_Plan_Level3 || {};
 
     const alignmentFields = [
@@ -1514,19 +1508,6 @@ export class ProjectPlanningComponent {
       { value: level1.Issues_Id, msg: 'กรุณาเลือกประเด็นยุทธศาสตร์' },
       { value: level1.Issues_Sub_Id, msg: 'กรุณาเลือกประเด็นย่อย' },
       { value: level1.Target, msg: 'กรุณากรอกเป้าหมายยุทธศาสตร์ชาติ' },
-      { value: level2.Master_Plan_Id, msg: 'กรุณาเลือกแผนแม่บทฯ ประเด็น', key: 'Master_Plan_Id' },
-      { value: level2.Plan_Goals_Id, msg: 'กรุณาเลือกเป้าหมายระดับประเด็น (Y2)' },
-      { value: level2.Plan_Tactics_Id, msg: 'กรุณาเลือกตัวชี้วัดเป้าหมายระดับประเด็น' },
-      { value: level2.Description, msg: 'กรุณากรอกความสอดคล้องของโครงการกับแผนแม่บทฯ' },
-      { value: level2.Subplan_Id, msg: 'กรุณาเลือกแผนย่อยของแผนแม่บทฯ' },
-      { value: level2.Target_Y1_Id, msg: 'กรุณาเลือกเป้าหมายแผนแม่บทย่อย (Y1)' },
-      { value: level2.SubplanDesc, msg: 'กรุณากรอกความสอดคล้องของโครงการกับเป้าหมายแผนย่อย' },
-      { value: level2.DevGuideline_Id, msg: 'กรุณาเลือกแนวทางการพัฒนาภายใต้แผนย่อย' },
-      { value: level2.Landmark_Id, msg: 'กรุณาเลือกหมุดหมายแผนพัฒนาเศรษฐกิจและสังคมแห่งชาติ' },
-      { value: level2.Landmark_Gloals_Id, msg: 'กรุณาเลือกเป้าหมายแผนพัฒนาเศรษฐกิจและสังคมแห่งชาติ' },
-      { value: level2.Landmark_Tacticts_Id, msg: 'กรุณาเลือกตัวชี้วัดแผนพัฒนาเศรษฐกิจและสังคมแห่งชาติ' },
-      { value: level2.Landmark_Guidelines_Id, msg: 'กรุณาเลือกกลยุทธ์การพัฒนา' },
-      { value: level2.Landmark_Sub_Guidelines_Id, msg: 'กรุณาเลือกกลยุทธ์ย่อย' },
       // { value: level3.Master_Plan_Id, msg: 'กรุณาเลือกแผนปฏิบัติราชการ 5 ปี ประเด็น' },
       // { value: level3.Plan_Goals_Id, msg: 'กรุณาเลือกแผนปฏิบัติราชการ 5 ปี เป้าหมายระดับประเด็น' },
       // { value: level3.Plan_Tactics_Id, msg: 'กรุณาเลือกแผนปฏิบัติราชการ 5 ปี ตัวชี้วัด' },
@@ -1546,7 +1527,7 @@ export class ProjectPlanningComponent {
     ];
 
     for (const field of alignmentFields) {
-      if (!this.requireValue(field.value, field.msg, 2, field.key)) {
+      if (!this.requireValue(field.value, field.msg, 2)) {
         return false;
       }
     }
